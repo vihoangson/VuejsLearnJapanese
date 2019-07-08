@@ -13,7 +13,7 @@ Vue.use(Moment);
 Vue.use(
   new VueSocketIO({
     debug: true,
-    connection: "http://localhost:3000"
+    connection: "http://172.16.218.252:3000"
   })
 );
 
