@@ -5,6 +5,7 @@
       <Room></Room>
       <Chat></Chat>
     </div>
+    <Group></Group>
   </div>
 </template>
 <style>
@@ -21,12 +22,14 @@
 import Header from '../global/Header'
 import Room from '../chat/RoomChat'
 import Chat from '../chat/ChatBox'
+import Group from '../group/Group'
 export default {
   name: "Home",
   components: {
     Header,
     Room,
-    Chat
+    Chat,
+    Group
   }
 };
 </script>

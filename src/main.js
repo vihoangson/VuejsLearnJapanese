@@ -6,9 +6,12 @@ import App from "./App";
 import Moment from "vue-moment";
 import VueSocketIO from "vue-socket.io";
 import store from "./store/store";
+import BootstrapVue from 'bootstrap-vue';
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Vue.config.productionTip = false;
-
+Vue.use(BootstrapVue)
 Vue.use(Moment);
 Vue.use(
   new VueSocketIO({

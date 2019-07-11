@@ -1,5 +1,5 @@
 <template>
-  <div class="room">
+  <div id="room" class="room">
     <div class="room-header">
       <div class="my-chat">
         <span>
@@ -11,9 +11,12 @@
           <option value="">All Chats</option>
         </select>
       </div>
-      <div class="create-room">
+      <div id="create-room" v-bind:class="{ active: isActive, 'create-room': true }" @click="toggleOption">
         <span>
           <svg viewBox="0 0 10 10" id="icon_plus" xmlns="http://www.w3.org/2000/svg"><path d="M4.375.625v3.75H.625v1.25h3.75v3.75h1.25v-3.75h3.75v-1.25h-3.75V.625z"></path></svg>
+          <div class="add-option">
+              <b-button v-b-modal.modal-prevent-closing>Add Group</b-button>
+          </div>
         </span>
       </div>
     </div>
@@ -167,9 +170,43 @@
 .room-name{
   width: calc((100% - 32px) - 8px);
 }
+
+.create-room .add-option{
+  display: none;
+  position: absolute;
+  top: 30px;
+  right: -263px;
+  width: 300px;
+  z-index: 20;
+}
+
+.create-room.active .add-option{
+  display: block;
+}
+.create-room .add-option button{
+
+}
 </style>
 <script>
 export default {
-  name: 'Room'
+  name: 'Room',
+  data () {
+    return {
+      isActive : false
+    }
+  },
+  methods: {
+    toggleOption: function(){
+      // Check value
+      if(this.isActive){
+        console.log("false");
+        this.isActive = false;
+      }else{
+        this.isActive = true;
+        console.log("true");
+      }
+    }
+  }
 }
+
 </script>
