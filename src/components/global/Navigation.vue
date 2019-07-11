@@ -194,8 +194,10 @@
 </style>
 <script>
 import BaseContact from '../contact/BaseContact.vue'
+import modalMixin from '@/mixins/modal'
 export default {
   name: 'Navigation',
+  mixins: [modalMixin],
   data () {
     return {
       isHidden: true
@@ -207,11 +209,7 @@ export default {
       this.$router.push({ path: "/login" });
     },
       ShowPopUpModalContact () {
-          this.$modal.show(BaseContact, {
-              text: 'This text is passed as a property'
-          }, {
-              draggable: true
-          })
+        this.showPageInModal(BaseContact,{},{pivotX: 0.5, width: '80%', resizable: true, adaptive: true},{})
       }
   }
 }
