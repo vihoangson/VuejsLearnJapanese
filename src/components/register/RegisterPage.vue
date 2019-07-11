@@ -1,8 +1,8 @@
 <template>
 	<div id="register">
-		<Header>
+		<header>
 			<img src="https://lampart-vn.com/wp-content/uploads/2019/02/logo.png" alt srcset />
-		</Header>
+		</header>
 		<div class="register-content">
 			<div class="register-inner">
 				<h2>REGISTER</h2>
@@ -52,12 +52,11 @@
 </template>
 
 <script>
-import Header from '../global/Header'
 import axios from 'axios'
 import VueRecaptcha from 'vue-recaptcha';
 export default {
 	name: "Register",
-	components: {Header, VueRecaptcha},
+	components: {VueRecaptcha},
 	mixins: [],
 	props: {
 	},
@@ -133,7 +132,21 @@ export default {
 
 		},
 		createData(data) {
-            axios.post("http://172.16.100.31/api/v1/user/register",data)
+            return new Promise((resolve, reject) => {
+                axios.post("http://sns.dev.com/api/v1/user/register",data, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'accept': 'application/json',
+                        "Access-Control-Allow-Origin": "*",
+                    }
+                })
+                    .then((res) => {
+                        resolve(res)
+                    })
+                    .catch(function (e) {
+                        reject(e)
+                    })
+            })
 		},
 	    save() {
 	        if (this.checkValidateForm()) return
@@ -143,6 +156,9 @@ export default {
 				password   : this.password,
 			}
 			this.createData(data)
+                .then((data) => {
+                    this.$router.push({name: 'login'})
+                }).catch()
 
 		}
 	}
