@@ -9,6 +9,7 @@ import store from "./store/store";
 import BootstrapVue from 'bootstrap-vue';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import VModal from 'vue-js-modal'
 
 Vue.config.productionTip = false;
 Vue.use(BootstrapVue)
@@ -19,6 +20,7 @@ Vue.use(
     connection: "http://172.16.218.252:3000"
   })
 );
+Vue.use(VModal, { dynamic: true, dialog: true })
 
 /* eslint-disable no-new */
 new Vue({
