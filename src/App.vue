@@ -1,6 +1,7 @@
 <template>
 	<div id="app">
 		<router-view @authenticated="setAuthenticated" />
+		<modals-container/>
 	</div>
 </template>
 
