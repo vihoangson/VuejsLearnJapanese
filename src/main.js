@@ -4,19 +4,21 @@ import Vue from "vue";
 import router from "./router";
 import App from "./App";
 import Moment from "vue-moment";
-import VueSocketIO from "vue-socket.io";
+// import VueSocketIO from "vue-socket.io";
 import store from "./store/store";
 import VModal from 'vue-js-modal'
 
 Vue.config.productionTip = false;
 
 Vue.use(Moment);
-Vue.use(
-  new VueSocketIO({
-    debug: true,
-    connection: "http://172.16.218.252:3000"
-  })
-);
+
+// Vue.use(
+//   new VueSocketIO({
+//     debug: true,
+//     connection: "http://172.16.218.252:3000"
+//   })
+// );
+
 Vue.use(VModal, { dynamic: true, dialog: true })
 
 /* eslint-disable no-new */

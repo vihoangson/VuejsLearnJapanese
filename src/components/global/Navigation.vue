@@ -208,7 +208,7 @@ export default {
     logout () {
 
       let token = JSON.parse(localStorage.getItem('user')).token;
-      axios.post("http://api.sns-tool.vn:81/api/v1/logout",{
+      axios.post(process.env.ROOT_API+"/api/v1/user/logout",{
         email: this.email,
         password: this.password,
         only_token: true

@@ -25,21 +25,23 @@
 						<input id="login-checkbox" type="checkbox" />
 						<label for="login-checkbox">Keep me logged in</label>
 					</div>
-          <vue-recaptcha @verify="markRecaptchaAsVerified" class="recapcha" sitekey="6LexDawUAAAAAP2dVouECeGm63c78bbwGtqJe-G1" :loadRecaptchaScript="true"></vue-recaptcha>
+          <!--<vue-recaptcha @verify="markRecaptchaAsVerified" class="recapcha" sitekey="6LexDawUAAAAAP2dVouECeGm63c78bbwGtqJe-G1" :loadRecaptchaScript="true"></vue-recaptcha>-->
           <span class="error">{{errors.pleaseTickRecaptchaMessage}}</span>
+					
 					<div class="login-form-row login-button">
 						<input type="submit" value="Login" class="btn btn-login" />
 					</div>
+
 					<div class="set-new-password">
-						<a
+						<a class='hidden'
 								@click="SetNewPassword">Set new password
 						</a>
 					</div>
-					<div>
+					<div class='text-center'>
 						<button
 								class="sign-up-button btn"
 								type="button"
-								@click="SignUp">Sign Up
+								@click="SignUp">Register
 						</button>
 					</div>
 				</form>
@@ -47,7 +49,14 @@
 		</section>
 	</div>
 </template>
+
 <style scoped>
+.hidden{
+	display: none;
+}
+.text-center{
+	text-align: center;
+}
 	.set-new-password {
 		text-align: center;
 		color: blue;
@@ -189,7 +198,7 @@ export default {
         this.errors.pleaseTickRecaptchaMessage = '* Please tick recaptcha!'
 
       if(this.email !== "" && this.password !== "" && this.recaptchaVerified){
-        axios.post("http://172.16.218.254/api/v1/login",{
+        axios.post(process.env.ROOT_API+"/api/v1/user/login",{
 				email: this.email,
 				password: this.password,
 				only_token: true
@@ -204,6 +213,10 @@ export default {
 					})
 		}
 		},
+		SetNewPassword(){
+
+		}
+		,
 		SignUp () {
             this.$router.push({name: 'register'})
 		}

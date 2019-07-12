@@ -35,8 +35,8 @@
 						<div class="error" v-if="errors.password !== ''">{{errors.password}}</div>
 					</div>
 					<div class="form-group register-form-row">
-						<vue-recaptcha @verify="markRecaptchaAsVerified" class="recapcha" sitekey="6LexDawUAAAAAP2dVouECeGm63c78bbwGtqJe-G1" :loadRecaptchaScript="true"></vue-recaptcha>
-						<div class="error" v-if="errors.pleaseTickRecaptchaMessage !== ''">{{errors.pleaseTickRecaptchaMessage}}</div>
+						<!-- <vue-recaptcha @verify="markRecaptchaAsVerified" class="recapcha" sitekey="6LexDawUAAAAAP2dVouECeGm63c78bbwGtqJe-G1" :loadRecaptchaScript="true"></vue-recaptcha>
+						<div class="error" v-if="errors.pleaseTickRecaptchaMessage !== ''">{{errors.pleaseTickRecaptchaMessage}}</div> -->
 					</div>
 					<div class="form-group register-button">
 						<button
@@ -106,7 +106,7 @@ export default {
                 isValid = true
                 this.errors.email = "Email required !"
 			}
-			let regexEmail =  /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,10}/
+			let regexEmail =  /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,3}/
             if (!regexEmail.test(this.email) && this.errors.email === "") {
                 isValid = true
                 this.errors.email = "Email invalid."
@@ -122,10 +122,10 @@ export default {
                 this.errors.password = "Minimum of 8 characters including lower case letter, upper case letter and numbers"
             }
 
-            if (!this.recaptchaVerified) {
-                isValid = true
-                this.errors.pleaseTickRecaptchaMessage = "Please tick recaptcha!"
-            }
+            // if (!this.recaptchaVerified) {
+            //     isValid = true
+            //     this.errors.pleaseTickRecaptchaMessage = "Please tick recaptcha!"
+            // }
 
             return isValid
 
@@ -133,7 +133,7 @@ export default {
 		},
 		createData(data) {
             return new Promise((resolve, reject) => {
-                axios.post("http://sns.dev.com/api/v1/user/register",data, {
+                axios.post(process.env.ROOT_API+"/api/v1/user/register",data, {
                     headers: {
                         'Content-Type': 'application/json',
                         'accept': 'application/json',
@@ -141,6 +141,7 @@ export default {
                     }
                 })
                     .then((res) => {
+
                         resolve(res)
                     })
                     .catch(function (e) {
@@ -159,6 +160,8 @@ export default {
                 .then((data) => {
                     this.$router.push({name: 'login'})
                 }).catch()
+
+		},back(){
 
 		}
 	}
