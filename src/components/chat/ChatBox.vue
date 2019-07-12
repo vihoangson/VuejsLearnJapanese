@@ -175,7 +175,7 @@
                         role="button"
                         tabindex="2"
                         aria-disabled="false"
-                        @click="sendMessage"
+                        @click="sendMessageFile"
                     >Send</div>
                     <div
                         @click="hideDropzone"
@@ -193,6 +193,7 @@
 <script>
 import vue2Dropzone from 'vue2-dropzone'
 import 'vue2-dropzone/dist/vue2Dropzone.min.css'
+import axios from 'axios'
 import { Picker } from "emoji-mart-vue";
 import TextareaEmojiPicker from "../global/TextareaEmojiPicker";
 // import ImportFile from "ImportFile";
@@ -220,14 +221,16 @@ export default {
 			list_message: this.$store.getters.get_list_message,
 			showEmojiPicker: false,
 			dropzoneOptions: {
-				url: process.env.ROOT_API + 'api/v1/' + this.urlProcessImport,
+				url: 'http://sns.dev.com/api/v1/message-file',
 				// thumbnailWidth: 150,
-				// maxFilesize: 0.5,
+				maxFilesize: 1,
 				headers: 'gfgdfgdfgdfgdgfdg',
-				maxFiles: 13,
-				// clickable: false,
+				maxFiles: 10,
+				uploadMultiple: true,
+				parallelUploads: 10,
 				// acceptedFiles: 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,.xls,.xlsx',
 				autoProcessQueue: false,
+				addRemoveLinks: true,
 				dictDefaultMessage: "<i class='fa fa-5x fa-cloud-upload'></i><div>" + 'Kéo file vào đây</div>'
 			},
 			errors: null
@@ -271,12 +274,10 @@ export default {
       this.showEmojiPicker = false;
 		},
 		getFile(file) {
-			console.log(file)
-			console.log(this)
-			// this.$router.push({ name: 'importFile' })
+
 		},
 		successImport (file, message, xhr) {
-			console.log('aaaaaaaaaa')
+			// console.log('aaaaaaaaaa')
 		},
 		showErrorMessage (file, message, xhr) {
             this.$refs['myVueDropzone'].removeFile(file)
@@ -287,7 +288,6 @@ export default {
             }
         },
         hideDropzoneCheck () {
-		    console.log(this.$refs['myVueDropzone'].getAcceptedFiles())
             if ((this.$refs['myVueDropzone'].getAcceptedFiles()).length === 0) {
                 this.hideDropzone()
             }
@@ -295,7 +295,10 @@ export default {
         hideDropzone () {
 		    this.showDropzone = false
             this.$refs['myVueDropzone'].removeAllFiles()
-        }
+        },
+		sendMessageFile () {
+			this.$refs.myVueDropzone.processQueue()
+		}
 	},
 	computed: {
 		myStyles() {
