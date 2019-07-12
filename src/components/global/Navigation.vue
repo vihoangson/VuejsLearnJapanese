@@ -44,7 +44,7 @@
           <a>Personal Settings</a>
         </li>
         <li class="menu-item" id="account">
-          <a>Account Settings</a>
+          <a @click="ShowFormEditRegister">Account Settings</a>
         </li>
         <li class="menu-item" id="api">
           <a>API Setting</a>
@@ -56,142 +56,6 @@
     </div>
   </div>
 </template>
-<style>
-.navigation{
-  display: flex;
-  align-items: center;
-  position: absolute;
-  right: 0;
-  top: 0;
-}
-.menu-admin{
-  list-style: none;
-  margin: 0;
-  display: flex;
-  align-items: center;
-  height: 42px;
-}
-.menu-admin-item{
-  position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 42px;
-    margin: 0 8px;
-    transition: background 0.2s linear 0s;
-}
-.menu-admin-item span{
-  box-sizing: border-box;
-  width: 32px;
-  height: 32px;
-  padding: 4px;
-  fill: #cccccc;
-  cursor: pointer;
-}
-.menu-admin-item span svg{
-  width: 24px;
-  height: 24px;
-}
-.my-account{
-    display: flex;
-    align-items: center;
-    box-sizing: border-box;
-    position: relative;
-    min-width: 198px;
-    height: 45px;
-    padding: 0 15px 0 3px;
-    margin-left: 8px;
-    color: #cccccc;
-    fill: #cccccc;
-    border: 2px solid #13202f;
-    border-radius: 21px 0 0 21px;
-    background-color: #13202f;
-    user-select: none;
-    cursor: pointer;
-}
-.my-account:hover{
-  color: #fff;
-  fill: #fff;
-  border-color: #33455b;
-  background-color: #33455b;
-}
-.my-account.active{
-  color: #fff;
-  fill: #fff;
-  border-radius: 21px 4px 0 0;
-  border-color: #33455b;
-  background-color: #33455b;
-}
-.avatar{
-  height: 32px;
-  margin-right: 5px;
-  vertical-align: top;
-  cursor: pointer;
-}
-.avatar img{
-  width: 32px;
-  height: 32px;
-  border-radius: 16px 16px 0 16px;
-}
-.my-account .status-name{
-    vertical-align: middle;
-    max-width: 120px;
-    color: inherit;
-    font-size: 12px;
-    font-weight: 700;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-.status-name .name{
-  font-weight: 700;
-  font-size: 1.1538em;
-}
-.status-name .menu-icon{
-  position: absolute;
-  right: 5px;
-  top: 11px;
-  width: 16px;
-  height: 16px;
-}
-.account-menu{
-  z-index: 10;
-  box-sizing: border-box;
-  position: absolute;
-  min-width: 198px;
-  top: 30px;
-  right: 0;
-  padding: 1px 0 5px;
-  background-color: #33455b;
-  border-radius: 0 0 0 5px;
-  user-select: none;
-  list-style: none;
-}
-.account-menu .menu-item{
-  height: 30px;
-  margin: 0 5px;
-  line-height: 30px;
-}
-.menu-item a{
-  display: block;
-  padding-left: 40px;
-  color: #fff;
-  border-radius: 3px;
-  text-decoration: none;
-  text-align: left;
-}
-.menu-item a:hover{
-  background: #13202f;
-  text-decoration: none;
-  cursor: pointer;
-}
-.menu-item.separate-top{
-  border-top: solid 1px #13202f;
-  padding-top: 8px;
-  margin-top: 8px;
-}
-
-</style>
 <script>
 import BaseContact from '../contact/BaseContact.vue'
 import modalMixin from '@/mixins/modal'
@@ -221,7 +85,147 @@ export default {
     },
       ShowPopUpModalContact () {
         this.showPageInModal(BaseContact,{},{pivotX: 0.5, width: '80%', resizable: true, adaptive: true},{})
+      },
+      ShowFormEditRegister () {
+        let routeToEditRegister = this.$router.resolve({path: "/register/edit"})
+          window.open(routeToEditRegister.href, '_blank')
       }
   }
 }
 </script>
+<style>
+  .navigation{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .menu-admin{
+    list-style: none;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    height: 42px;
+  }
+  .menu-admin-item{
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
+    margin: 0 8px;
+    transition: background 0.2s linear 0s;
+  }
+  .menu-admin-item span{
+    box-sizing: border-box;
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+    fill: #cccccc;
+    cursor: pointer;
+  }
+  .menu-admin-item span svg{
+    width: 24px;
+    height: 24px;
+  }
+  .my-account{
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    position: relative;
+    min-width: 198px;
+    height: 45px;
+    padding: 0 15px 0 3px;
+    margin-left: 8px;
+    color: #cccccc;
+    fill: #cccccc;
+    border: 2px solid #13202f;
+    border-radius: 21px 0 0 21px;
+    background-color: #13202f;
+    user-select: none;
+    cursor: pointer;
+  }
+  .my-account:hover{
+    color: #fff;
+    fill: #fff;
+    border-color: #33455b;
+    background-color: #33455b;
+  }
+  .my-account.active{
+    color: #fff;
+    fill: #fff;
+    border-radius: 21px 4px 0 0;
+    border-color: #33455b;
+    background-color: #33455b;
+  }
+  .avatar{
+    height: 32px;
+    margin-right: 5px;
+    vertical-align: top;
+    cursor: pointer;
+  }
+  .avatar img{
+    width: 32px;
+    height: 32px;
+    border-radius: 16px 16px 0 16px;
+  }
+  .my-account .status-name{
+    vertical-align: middle;
+    max-width: 120px;
+    color: inherit;
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .status-name .name{
+    font-weight: 700;
+    font-size: 1.1538em;
+  }
+  .status-name .menu-icon{
+    position: absolute;
+    right: 5px;
+    top: 11px;
+    width: 16px;
+    height: 16px;
+  }
+  .account-menu{
+    z-index: 10;
+    box-sizing: border-box;
+    position: absolute;
+    min-width: 198px;
+    top: 30px;
+    right: 0;
+    padding: 1px 0 5px;
+    background-color: #33455b;
+    border-radius: 0 0 0 5px;
+    user-select: none;
+    list-style: none;
+  }
+  .account-menu .menu-item{
+    height: 30px;
+    margin: 0 5px;
+    line-height: 30px;
+  }
+  .menu-item a{
+    display: block;
+    padding-left: 40px;
+    color: #fff;
+    border-radius: 3px;
+    text-decoration: none;
+    text-align: left;
+  }
+  .menu-item a:hover{
+    background: #13202f;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .menu-item.separate-top{
+    border-top: solid 1px #13202f;
+    padding-top: 8px;
+    margin-top: 8px;
+  }
+
+</style>
