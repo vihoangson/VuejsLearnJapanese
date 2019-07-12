@@ -30,12 +30,33 @@
 					<div class="login-form-row login-button">
 						<input type="submit" value="Login" class="btn btn-login" />
 					</div>
+					<div class="set-new-password">
+						<a
+								@click="SetNewPassword">Set new password
+						</a>
+					</div>
+					<div>
+						<button
+								class="sign-up-button btn"
+								type="button"
+								@click="SignUp">Sign Up
+						</button>
+					</div>
 				</form>
 			</div>
 		</section>
 	</div>
 </template>
 <style scoped>
+	.set-new-password {
+		text-align: center;
+		color: blue;
+		margin: 5px;
+	}
+	.sign-up-button {
+		color : black !important;
+		border: #ada89d 1px solid !important;
+	}
 header {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -183,6 +204,9 @@ export default {
             this.$router.push({ path: "/" });
           })
       }
+		},
+        SignUp () {
+            this.$router.push({name: 'register'})
 		}
 	}
 };
