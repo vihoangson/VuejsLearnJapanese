@@ -195,6 +195,7 @@
 <script>
 import BaseContact from '../contact/BaseContact.vue'
 import modalMixin from '@/mixins/modal'
+import axios from 'axios'
 export default {
   name: 'Navigation',
   mixins: [modalMixin],
@@ -205,6 +206,16 @@ export default {
   },
   methods : {
     logout () {
+
+      let token = JSON.parse(localStorage.getItem('user')).token;
+      axios.post("http://api.sns-tool.vn:81/api/v1/logout",{
+        email: this.email,
+        password: this.password,
+        only_token: true
+      },{
+        headers: { Authorization: "Bearer " + token }
+      })
+
       localStorage.removeItem("user");
       this.$router.push({ path: "/login" });
     },

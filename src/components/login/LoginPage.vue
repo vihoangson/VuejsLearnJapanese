@@ -10,9 +10,9 @@
 					<div class="login-form-row">
 						<label for="email">Email Address</label>
 						<div class="login-email">
-							<input type="text" v-model="username"/>
+							<input type="text" v-model="email"/>
 						</div>
-            <span class="error">{{errors.username}}</span>
+            <span class="error">{{errors.email}}</span>
 					</div>
 					<div class="login-form-row">
 						<label for="email">Password</label>
@@ -30,12 +30,33 @@
 					<div class="login-form-row login-button">
 						<input type="submit" value="Login" class="btn btn-login" />
 					</div>
+					<div class="set-new-password">
+						<a
+								@click="SetNewPassword">Set new password
+						</a>
+					</div>
+					<div>
+						<button
+								class="sign-up-button btn"
+								type="button"
+								@click="SignUp">Sign Up
+						</button>
+					</div>
 				</form>
 			</div>
 		</section>
 	</div>
 </template>
 <style scoped>
+	.set-new-password {
+		text-align: center;
+		color: blue;
+		margin: 5px;
+	}
+	.sign-up-button {
+		color : black !important;
+		border: #ada89d 1px solid !important;
+	}
 header {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -141,13 +162,13 @@ export default {
   data () {
     return {
       errors: {
-        username: "",
+        email: "",
         password: "",
         pleaseTickRecaptchaMessage: ""
       },
-      username: "",
+      email: "",
       password: "",
-      recaptchaVerified: false
+      recaptchaVerified: true
     }
   },
 	methods: {
@@ -158,8 +179,8 @@ export default {
 		login (e) {
       e.preventDefault();
 
-      if (this.username === "")
-        this.errors.username = '* Userame required!'
+      if (this.email === "")
+        this.errors.email = '* Userame required!'
 
       if (this.password === "")
         this.errors.password = '* Password required!'
@@ -167,22 +188,24 @@ export default {
       if(!this.recaptchaVerified)
         this.errors.pleaseTickRecaptchaMessage = '* Please tick recaptcha!'
 
-      if(this.username !== "" && this.password !== "" && this.recaptchaVerified){
-        axios.post("http://172.16.100.31/api/v1/user/login",{
-          username: this.username,
-          password: this.password,
-          only_token: true
-        })
-          .then(res => {
-            let user = {
-              token: res.data.data.api_token,
-              email: res.data.data.email,
-              employee: res.data.data.employee
-            };
-            localStorage.setItem("user", user);
-            this.$router.push({ path: "/" });
-          })
-      }
+      if(this.email !== "" && this.password !== "" && this.recaptchaVerified){
+        axios.post("http://172.16.218.254/api/v1/login",{
+				email: this.email,
+				password: this.password,
+				only_token: true
+			})
+					.then(res => {
+						let user = {
+							token: res.data.data.token,
+							user_id: res.data.data.id
+						};
+						localStorage.setItem("user", JSON.stringify(user));
+						this.$router.push({ path: "/" });
+					})
+		}
+		},
+		SignUp () {
+            this.$router.push({name: 'register'})
 		}
 	}
 };

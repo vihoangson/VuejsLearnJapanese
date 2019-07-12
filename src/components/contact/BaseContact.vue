@@ -1,24 +1,35 @@
 <template>
 	<div id="base-contact">
-		<header>
-			<img src="https://lampart-vn.com/wp-content/uploads/2019/02/logo.png" alt srcset />
-		</header>
+		<div>
+			Contacts
+		</div>
 		<div class="base-contact-content">
-			Base contact
+			<div>
+			    <span @click="selectedInvite">Invite by Email</span>
+			    <span @click="selectedSearch">User search</span>
+			</div>
+			<div>
+				<keep-alive>
+					<component :is="selectedComponent"></component>
+				</keep-alive>
+			</div>
 		</div>
 	</div>
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
+import Invite from './Invite.vue'
+import Search from './Search.vue'
 export default {
 	name: "BaseContact",
-	components: {},
+	components: {Invite,Search},
 	mixins: [],
 	props: {
 	},
 	data () {
 		return {
+            selectedComponent: ''
 		}
 	},
 	computed: {
@@ -28,7 +39,12 @@ export default {
 	created () {},
 	mounted () {},
 	methods: {
-
+        selectedInvite () {
+            this.selectedComponent =  Invite
+		},
+        selectedSearch () {
+            this.selectedComponent =  Search
+        }
 	}
 }
 </script>
