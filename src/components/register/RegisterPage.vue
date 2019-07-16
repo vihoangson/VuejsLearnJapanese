@@ -8,6 +8,15 @@
 				<h2>REGISTER</h2>
 				<form class="register">
 					<div class="form-group register-form-row">
+						<label>Name</label>
+						<input
+								v-model="name"
+								type="text"
+								name="name"
+								class="form-control register-input" >
+						<div class="error" v-if="errors.name !== ''">{{errors.name}}</div>
+					</div>
+					<div class="form-group register-form-row">
 						<label>Company</label>
 						<input
 								v-model="company"
@@ -33,6 +42,15 @@
 								name="password"
 								class="form-control register-input" >
 						<div class="error" v-if="errors.password !== ''">{{errors.password}}</div>
+					</div>
+					<div class="form-group register-form-row">
+						<label>Confirm password</label>
+						<input
+								v-model="confirmPassword"
+								type="password"
+								name="confirmPassword"
+								class="form-control register-input" >
+						<div class="error" v-if="errors.confirmPassword !== ''">{{errors.confirmPassword}}</div>
 					</div>
 					<div class="form-group register-form-row">
 						<vue-recaptcha @verify="markRecaptchaAsVerified" class="recapcha" sitekey="6LexDawUAAAAAP2dVouECeGm63c78bbwGtqJe-G1" :loadRecaptchaScript="true"></vue-recaptcha>
@@ -63,14 +81,18 @@ export default {
 	data () {
 		return {
 			errors: {
+                name: "",
                 company: "",
                 email: "",
                 password: "",
+                confirmPassword: "",
                 pleaseTickRecaptchaMessage: ""
 			},
+            name: "",
 			company: "",
 			email: "",
 			password: "",
+            confirmPassword: "",
             recaptchaVerified: false
 		}
 	},
@@ -87,10 +109,22 @@ export default {
         },
         checkValidateForm() {
             let isValid = false
+            this.errors.name = ""
             this.errors.company = ""
             this.errors.email = ""
             this.errors.password = ""
+            this.errors.confirmPassword = ""
             this.errors.pleaseTickRecaptchaMessage = ""
+
+            if (this.name === "") {
+                isValid = true
+                this.errors.name = "Name required !"
+            }
+
+            if (this.name.length > 55 && this.errors.name === "") {
+                isValid = true
+                this.errors.name = "Max length is 55 characteristics."
+            }
 
             if (this.company === "") {
                 isValid = true
@@ -122,6 +156,20 @@ export default {
                 this.errors.password = "Minimum of 8 characters including lower case letter, upper case letter and numbers"
             }
 
+            if (this.confirmPassword === "") {
+                isValid = true
+                this.errors.confirmPassword = "Confirm password required !"
+            }
+            if (!regexPassword.test(this.confirmPassword) && this.errors.confirmPassword === "") {
+                isValid = true
+                this.errors.confirmPassword = "Minimum of 8 characters including lower case letter, upper case letter and numbers"
+            }
+
+            if (this.password !== this.confirmPassword && this.errors.confirmPassword === '') {
+                isValid = true
+                this.errors.confirmPassword = "Password and confirm password are not the same."
+            }
+
             if (!this.recaptchaVerified) {
                 isValid = true
                 this.errors.pleaseTickRecaptchaMessage = "Please tick recaptcha!"
@@ -151,6 +199,7 @@ export default {
 	    save() {
 	        if (this.checkValidateForm()) return
 			let data = {
+	            name : this.name,
 	            company : this.company,
 				email   : this.email,
 				password   : this.password,
