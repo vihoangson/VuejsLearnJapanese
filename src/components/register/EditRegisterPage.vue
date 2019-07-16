@@ -7,13 +7,13 @@
 		</header>
 		<div class="content two">
 			<menu-edit-register-page></menu-edit-register-page>
-			<div class="register-content main" style="height: 507px;">
+			<div class="register-content main" style="min-height: 556px;">
 				<h1>Setting Login Credentials</h1>
 				<div class="register-inner">
 					<p>You can set your name and password here.
 						*Your name will not be made public.</p>
-					<form class="register">
-						<div class="form-group register-form-row">
+					<form class="register" style="min-height: 150px">
+						<div class="form-group register-form-row register-form-row-parent">
 							<label>Name</label>
 							<input
 									v-model="name"
@@ -30,29 +30,29 @@
 										v-model="chooseChangePassword"
 										name="chooseChangePassword">Make a new password
 								<div v-if="allowShow">
-									<div class="register-form-row">
+									<div class="register-form-row register-form-row-child">
 										<label class="label-child">Current password :</label>
 										<input
 											v-model="currentPassword"
-											type="text"
+											type="password"
 											name="currentPassword"
 											class="form-control register-input" >
 										<div class="error" v-if="errors.currentPassword !== ''">{{errors.currentPassword}}</div>
 									</div>
-									<div class="register-form-row">
+									<div class="register-form-row register-form-row-child">
 										<label class="label-child">New password :</label>
 										<input
 												v-model="newPassword"
-												type="text"
+												type="password"
 												name="newPassword"
 												class="form-control register-input" >
 										<div class="error" v-if="errors.newPassword !== ''">{{errors.newPassword}}</div>
 									</div>
-									<div class="register-form-row">
+									<div class="register-form-row register-form-row-child">
 										<label class="label-child">New password (verify) :</label>
 										<input
 												v-model="confirmPassword"
-												type="text"
+												type="password"
 												name="confirmPassword"
 												class="form-control register-input" >
 										<div class="error" v-if="errors.confirmPassword !== ''">{{errors.confirmPassword}}</div>
@@ -88,8 +88,7 @@ export default {
             default: function () {
                 return {
                     parentRouteName: null,
-                    modal: null,
-                    id: 0
+                    user: null
                 }
             }
         }
@@ -115,58 +114,95 @@ export default {
 	watch: {
         'chooseChangePassword': function (value) {
             this.allowShow = value
+			if (!value) {
+			    this.currentPassword = ''
+			    this.newPassword = ''
+			    this.confirmPassword = ''
+			    this.errors.currentPassword = ''
+			    this.errors.newPassword = ''
+			    this.errors.confirmPassword = ''
+			}
         }
 	},
 	created () {},
 	mounted () {},
 	methods: {
+	    validatePassword (password, errorPassword) {
+            let regexPassword =  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/
+            if (!regexPassword.test(password) && errorPassword === "") {
+                return {
+                    'isValid' : false,
+					'message' : "Minimum of 8 characters including lower case letter, upper case letter and numbers"
+				}
+            }
+
+            return {
+                'isValid' : true,
+                'message' : ""
+            }
+		},
         checkValidateForm() {
             let isValid = false
-            this.errors.company = ""
-            this.errors.email = ""
-            this.errors.password = ""
-            this.errors.pleaseTickRecaptchaMessage = ""
+            this.errors.name = ""
+            this.errors.currentPassword = ""
+            this.errors.newPassword = ""
+            this.errors.confirmPassword = ""
 
-            if (this.company === "") {
+            if (this.name === "") {
                 isValid = true
-                this.errors.company = "Company required !"
+                this.errors.name = "Name required !"
 			}
 
-			if (this.company.length > 55 && this.errors.company === "") {
+			if (this.name.length > 55 && this.errors.company === "") {
                 isValid = true
-                this.errors.company = "Max length is 55 characteristics."
+                this.errors.name = "Max length is 55 characteristics."
 			}
 
-			if (this.email === "") {
-                isValid = true
-                this.errors.email = "Email required !"
+			if (this.chooseChangePassword) {
+                if (this.currentPassword === "") {
+                    isValid = true
+                    this.errors.currentPassword = "Password required !"
+                }
+
+                let currentPassword = this.validatePassword(this.currentPassword,this.errors.currentPassword)
+                if (!currentPassword.isValid) {
+                    isValid = true
+                    this.errors.currentPassword = currentPassword.message
+				}
+
+                if (this.newPassword === "") {
+                    isValid = true
+                    this.errors.newPassword = "New password required !"
+                }
+
+                let newPassword = this.validatePassword(this.newPassword,this.errors.newPassword)
+                if (!newPassword.isValid) {
+                    isValid = true
+                    this.errors.newPassword = newPassword.message
+                }
+
+                if (this.confirmPassword === "") {
+                    isValid = true
+                    this.errors.confirmPassword = "Confirm password required !"
+                }
+
+                let confirmPassword = this.validatePassword(this.confirmPassword,this.errors.confirmPassword)
+                if (!confirmPassword.isValid) {
+                    isValid = true
+                    this.errors.confirmPassword = confirmPassword.message
+                }
+
+                if (this.newPassword !== this.confirmPassword && this.errors.confirmPassword === '') {
+                    isValid = true
+                    this.errors.confirmPassword = "New password and confirm password are not the same."
+				}
 			}
-			let regexEmail =  /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,10}/
-            if (!regexEmail.test(this.email) && this.errors.email === "") {
-                isValid = true
-                this.errors.email = "Email invalid."
-            }
-
-            if (this.password === "") {
-                isValid = true
-                this.errors.password = "Password required !"
-            }
-            let regexPassword =  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/
-            if (!regexPassword.test(this.password) && this.errors.password === "") {
-                isValid = true
-                this.errors.password = "Minimum of 8 characters including lower case letter, upper case letter and numbers"
-            }
-
-            if (!this.recaptchaVerified) {
-                isValid = true
-                this.errors.pleaseTickRecaptchaMessage = "Please tick recaptcha!"
-            }
 
             return isValid
 
-
 		},
 		updateData(data) {
+	        console.log(data)
             return new Promise((resolve, reject) => {
                 axios.post("http://sns.dev.com/api/v1/user/register",data, {
                     headers: {
@@ -185,14 +221,21 @@ export default {
 		},
 	    save() {
 	        if (this.checkValidateForm()) return
-			let data = {
-	            company : this.company,
-				email   : this.email,
-				password   : this.password,
+			let defaultData = {
+	            name : this.name
+
 			}
-			this.updateData(data)
+			if (this.chooseChangePassword) {
+			    defaultData = {...defaultData,
+					    currentPassword: this.currentPassword,
+                        newPassword: this.newPassword,
+                        confirmPassword: this.confirmPassword
+			    }
+
+			}
+			this.updateData(defaultData)
                 .then((data) => {
-                    this.$router.push({name: 'login'})
+                    this.$router.push({name: 'home'})
                 }).catch()
 
 		}
@@ -221,9 +264,6 @@ export default {
 		border-top-color: rgb(61, 64, 67);
 		border-bottom-color: rgb(61, 64, 67);
 		font-size: 20px;
-		/*color: #34362f;*/
-		padding: 0.3em 0;
-		margin-bottom: 20px;
 		font-weight: 700;
 	}
 	.main {
@@ -300,7 +340,6 @@ export default {
 		vertical-align: baseline;
 	}
 	.two {
-		/*background: #f5f5f5;*/
 		border-left: 1px solid #b8b9b6;
 		background-image: initial;
 		background-color: rgb(226, 222, 215);
@@ -315,10 +354,10 @@ export default {
 		padding-top: 20px;
 	}
 	.register-inner {
-		/*width: 760px;*/
 		margin: 0 auto;
 	}
 	.register-content {
+		min-height: 540px;
 	}
 	.register-inner h2 {
 		font-size: 2em;
@@ -332,7 +371,7 @@ export default {
 		border-left-color: initial;
 		outline-color: initial;
 		background-image: initial;
-		padding: 8px 36px 17px;
+		padding: 8px 36px 5px;
 		border-radius: 4px;
 		background-color: #f5f5f4;
 		border: 0;
@@ -341,6 +380,7 @@ export default {
 		vertical-align: baseline;
 		display: block;
 		margin-top: 12px;
+		min-height: 540px;
 	}
 	.register label {
 		box-sizing: border-box;
@@ -370,6 +410,7 @@ export default {
 	}
 	.error{
 		color: red;
+		flex-shrink: 0;
 	}
 	.register-input {
 		box-sizing: border-box;
@@ -380,8 +421,14 @@ export default {
 		margin-top: 8px;
 	}
 	.register-form-row {
-		margin-bottom: 24px;
+		margin-bottom: 6px;
 		display:flex;
+	}
+	.register-form-row-child {
+		flex-wrap: wrap;
+	}
+	.register-form-row-parent {
+		flex-wrap: wrap;
 	}
 	.register-form-row .label-child {
 		width: 42%;
