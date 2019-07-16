@@ -25,10 +25,10 @@ module.exports = {
         // allow debugger during development
 
         "no-debugger": process.env.NODE_ENV === "production" ? "error" : "off",
-        "indent": ["error", 4],
-        "quotes": [1, "single"],
+        indent: ["error", 4],
+        quotes: [1, "single"],
         "space-before-blocks": 1,
-        "eqeqeq": 1,
+        eqeqeq: 1,
         "no-multi-spaces": 2,
         "vue/html-indent": 0,
         "vue/singleline-html-element-content-newline": 0,
@@ -38,7 +38,7 @@ module.exports = {
         "valid-typeof": 1,
         "no-unused-vars": [1, { vars: "all", args: "all" }],
         "no-unreachable": 1,
-        "no-console": 1,
+        "no-console": 0,
         "no-cond-assign": 1,
         "no-constant-condition": 1
     }

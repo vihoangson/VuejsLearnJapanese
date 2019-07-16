@@ -154,7 +154,9 @@ header {
 </style>
 
 <script>
-import axios from 'axios';
+import { API } from '../../services/api';
+import { AppConst } from '../../common/AppConst';
+import { ApiConst } from '../../common/ApiConst';
 import VueRecaptcha from 'vue-recaptcha';
 
 export default {
@@ -175,7 +177,7 @@ export default {
         };
     },
     methods: {
-        markRecaptchaAsVerified(response) {
+        markRecaptchaAsVerified() {
             this.errors.pleaseTickRecaptchaMessage = '';
             this.recaptchaVerified = true;
         },
@@ -184,26 +186,35 @@ export default {
 
             if (this.email === '') this.errors.email = '* Userame required!';
 
-            if (this.password === '') this.errors.password = '* Password required!';
+            if (this.password === '')
+                this.errors.password = '* Password required!';
 
             if (!this.recaptchaVerified)
-                this.errors.pleaseTickRecaptchaMessage = '* Please tick recaptcha!';
+                this.errors.pleaseTickRecaptchaMessage =
+                    '* Please tick recaptcha!';
 
-            if (this.email !== '' && this.password !== '' && this.recaptchaVerified) {
-                axios
-                    .post(process.env.ROOT_API + '/api/v1/user/login', {
-                        email: this.email,
-                        password: this.password,
-                        only_token: true
-                    })
-                    .then(res => {
-                        let user = {
-                            token: res.data.data.token,
-                            user_id: res.data.data.id
-                        };
-                        localStorage.setItem('user', JSON.stringify(user));
-                        this.$router.push({ path: '/' });
-                    });
+            if (
+                this.email !== '' &&
+                this.password !== '' &&
+                this.recaptchaVerified
+            ) {
+                let data = {
+                    email: this.email,
+                    password: this.password,
+                    only_token: true
+                };
+
+                API.POST(ApiConst.LOGIN, data).then(res => {
+                    let user = {
+                        token: res.data.token,
+                        user_id: res.data.id
+                    };
+                    localStorage.setItem(
+                        AppConst.LOCAL_USER,
+                        JSON.stringify(user)
+                    );
+                    this.$router.push({ path: '/' });
+                });
             }
         },
         SetNewPassword() {},

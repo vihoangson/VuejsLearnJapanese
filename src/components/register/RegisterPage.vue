@@ -51,7 +51,10 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { API } from '../../services/api';
+import { AppConst } from '../../common/AppConst';
+import { ApiConst } from '../../common/ApiConst';
+
 import VueRecaptcha from 'vue-recaptcha';
 export default {
     name: 'Register',
@@ -77,7 +80,7 @@ export default {
     created() {},
     mounted() {},
     methods: {
-        markRecaptchaAsVerified(response) {
+        markRecaptchaAsVerified() {
             this.errors.pleaseTickRecaptchaMessage = '';
             this.recaptchaVerified = true;
         },
@@ -113,7 +116,10 @@ export default {
                 this.errors.password = 'Password required !';
             }
             let regexPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-            if (!regexPassword.test(this.password) && this.errors.password === '') {
+            if (
+                !regexPassword.test(this.password) &&
+                this.errors.password === ''
+            ) {
                 isValid = true;
                 this.errors.password =
                     'Minimum of 8 characters including lower case letter, upper case letter and numbers';
@@ -126,24 +132,6 @@ export default {
 
             return isValid;
         },
-        createData(data) {
-            return new Promise((resolve, reject) => {
-                axios
-                    .post(process.env.ROOT_API + '/api/v1/user/register', data, {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            accept: 'application/json',
-                            'Access-Control-Allow-Origin': '*'
-                        }
-                    })
-                    .then(res => {
-                        resolve(res);
-                    })
-                    .catch(function(e) {
-                        reject(e);
-                    });
-            });
-        },
         save() {
             if (this.checkValidateForm()) return;
             let data = {
@@ -151,11 +139,10 @@ export default {
                 email: this.email,
                 password: this.password
             };
-            this.createData(data)
-                .then(() => {
-                    this.$router.push({ name: 'login' });
-                })
-                .catch();
+
+            API.POST(ApiConst.REGISTER, data).then(res => {
+                this.$router.push({ name: 'login' });
+            });
         },
         back() {}
     }

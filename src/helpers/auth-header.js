@@ -1,10 +1,9 @@
+import { AppConst } from '../common/AppConst';
 export function authHeader() {
-    // return authorization header with jwt token
-    let user = JSON.parse(localStorage.getItem('user'));
-
+    let user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
     if (user && user.token) {
-        return { Authorization: 'Bearer ' + user.token };
+        return 'Bearer ' + user.token;
     } else {
-        return {};
+        return '';
     }
 }
