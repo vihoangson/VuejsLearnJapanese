@@ -181,6 +181,11 @@ export default {
                     this.errors.newPassword = newPassword.message
                 }
 
+                if (this.newPassword === this.currentPassword && this.errors.newPassword === '') {
+                    isValid = true
+                    this.errors.newPassword = "Current password and new password must be different."
+                }
+
                 if (this.confirmPassword === "") {
                     isValid = true
                     this.errors.confirmPassword = "Confirm password required !"
