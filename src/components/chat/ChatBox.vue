@@ -111,6 +111,77 @@
 		</div>
 	</div>
 </template>
+<script>
+import { Picker } from "emoji-mart-vue";
+import TextareaEmojiPicker from "../global/TextareaEmojiPicker";
+const EVENT_SEND = "send_message";
+// const EVENT_RESPONSE = "response_message";
+
+export default {
+	name: 'ChatBox',
+	components: {
+		Picker,
+		TextareaEmojiPicker
+	},
+	props: {
+		value: {
+			type: String,
+			default: ""
+		}
+	},
+	data() {
+		return {
+			height: 0,
+			message: "",
+			list_message: this.$store.getters.get_list_message,
+			showEmojiPicker: false
+		};
+	},
+	created() {
+		window.addEventListener("resize", this.handleResize);
+		this.handleResize();
+	},
+	methods: {
+		handleResize() {
+			this.height = window.innerHeight - 45;
+		},
+		sendMessage() {
+			let msg = {
+				image: "https://appdata.chatwork.com/avatar/3196/3196108.png",
+				name: "Hoang Sy Hung",
+				organization: "Lampart Co., Ltd",
+				content: this.message,
+				create_datetim: new Date()
+			};
+			this.$socket.emit(EVENT_SEND, msg);
+
+			this.message = "";
+		},
+		toggleEmojiPicker() {
+			this.showEmojiPicker = !this.showEmojiPicker;
+		},
+		addEmoji(emoji) {
+			const textarea = this.$refs.textarea;
+			const cursorPosition = textarea.selectionEnd;
+			const start = this.value.substring(0, textarea.selectionStart);
+			const end = this.value.substring(textarea.selectionStart);
+      const text = start + emoji.native + end;
+      this.$emit("input", text);
+      this.message += text;
+			textarea.focus();
+			this.$nextTick(() => {
+				textarea.selectionEnd = cursorPosition + emoji.native.length;
+      });
+      this.showEmojiPicker = false;
+		}
+	},
+	computed: {
+		myStyles() {
+			return this.height - 45;
+		}
+	}
+};
+</script>
 <style>
 #chat-box {
 	position: absolute;
@@ -364,75 +435,3 @@ textarea:focus:-webkit-placeholder {
 	fill: darken(#fec84a, 15%);
 }
 </style>
-
-<script>
-import { Picker } from "emoji-mart-vue";
-import TextareaEmojiPicker from "../global/TextareaEmojiPicker";
-const EVENT_SEND = "send_message";
-// const EVENT_RESPONSE = "response_message";
-
-export default {
-	name: 'ChatBox',
-	components: {
-		Picker,
-		TextareaEmojiPicker
-	},
-	props: {
-		value: {
-			type: String,
-			default: ""
-		}
-	},
-	data() {
-		return {
-			height: 0,
-			message: "",
-			list_message: this.$store.getters.get_list_message,
-			showEmojiPicker: false
-		};
-	},
-	created() {
-		window.addEventListener("resize", this.handleResize);
-		this.handleResize();
-	},
-	methods: {
-		handleResize() {
-			this.height = window.innerHeight - 45;
-		},
-		sendMessage() {
-			let msg = {
-				image: "https://appdata.chatwork.com/avatar/3196/3196108.png",
-				name: "Hoang Sy Hung",
-				organization: "Lampart Co., Ltd",
-				content: this.message,
-				create_datetim: new Date()
-			};
-			this.$socket.emit(EVENT_SEND, msg);
-
-			this.message = "";
-		},
-		toggleEmojiPicker() {
-			this.showEmojiPicker = !this.showEmojiPicker;
-		},
-		addEmoji(emoji) {
-			const textarea = this.$refs.textarea;
-			const cursorPosition = textarea.selectionEnd;
-			const start = this.value.substring(0, textarea.selectionStart);
-			const end = this.value.substring(textarea.selectionStart);
-      const text = start + emoji.native + end;
-      this.$emit("input", text);
-      this.message += text;
-			textarea.focus();
-			this.$nextTick(() => {
-				textarea.selectionEnd = cursorPosition + emoji.native.length;
-      });
-      this.showEmojiPicker = false;
-		}
-	},
-	computed: {
-		myStyles() {
-			return this.height - 45;
-		}
-	}
-};
-</script>
