@@ -207,7 +207,9 @@ export default {
                 API.POST(ApiConst.LOGIN, data).then(res => {
                     let user = {
                         token: res.data.token,
-                        user_id: res.data.id
+                        user_id: res.data.id,
+                        icon_img: res.data.icon_img,
+                        fullname: res.data.fullname
                     };
                     localStorage.setItem(
                         AppConst.LOCAL_USER,

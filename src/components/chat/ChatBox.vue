@@ -226,7 +226,7 @@ import TextareaEmojiPicker from '../global/TextareaEmojiPicker';
 // import ImportFile from "ImportFile";
 const EVENT_SEND = 'send_message';
 // const EVENT_RESPONSE = "response_message";
-
+import { AppConst } from '../../common/AppConst';
 export default {
     name: 'ChatBox',
     components: {
@@ -274,12 +274,11 @@ export default {
             this.height = window.innerHeight - 45;
         },
         sendMessage() {
+            let user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
             let msg = {
-                image: 'https://appdata.chatwork.com/avatar/3196/3196108.png',
-                name: 'Hoang Sy Hung',
-                organization: 'Lampart Co., Ltd',
-                content: this.message,
-                create_datetim: new Date()
+                user_id: user.user_id,
+                type: 0,
+                message: this.message
             };
             this.$socket.emit(EVENT_SEND, msg);
 
