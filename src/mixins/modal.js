@@ -5,50 +5,39 @@ export default {
         isModal: Boolean,
         isHotKey: Boolean
     },
-    created() {},
-    beforeDestroy() {},
     methods: {
-        confirmUnsaved(beforeDialogShow) {},
-        confirmDialog(props, yesCallback, noCallback) {},
-        showPageInModal(
-            pageComponent,
-            props,
-            properties,
-            events,
-            reloadData,
-            beforeOpen
-        ) {
+        // confirmUnsaved(beforeDialogShow) {},
+        // confirmDialog(props, yesCallback, noCallback) {},
+        showPageInModal(pageComponent, events) {
             this.$modal.show(
                 pageComponent,
-                {
-                    // Pass props to modal
-                    ...props
-                },
+                {},
                 {
                     // Modal properties - https://github.com/euvl/vue-js-modal#properties
                     name: pageComponent.name,
                     height: 'auto',
                     width: '70%',
                     scrollable: true,
-                    clickToClose: false,
-                    ...properties
+                    clickToClose: false
                 },
                 {
                     // Modal events: before-open, opened, before-close, closed
-                    'before-open'(event) {
-                        if (isFunction(beforeOpen)) {
-                            beforeOpen();
-                        }
-                    },
+                    // 'before-open': event => {
+                    //     if (isFunction(beforeOpen)) {
+                    //         beforeOpen();
+                    //     }
+                    // },
                     open: event => {
                         if (typeof events !== 'undefined') {
                             if (isFunction(events['open'])) {
                                 events['open'](event);
                             }
                         }
-                    },
-                    'before-close': event => {},
-                    closed: event => {}
+                    }
+                    // 'before-close': event => {},
+                    // closed: event => {
+                    //     console.log(event);
+                    // }
                 }
             );
         }

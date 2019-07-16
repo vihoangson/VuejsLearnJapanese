@@ -237,7 +237,9 @@
 <script>
 import BaseContact from '../contact/BaseContact.vue';
 import modalMixin from '@/mixins/modal';
-import axios from 'axios';
+import { AppConst } from '../../common/AppConst';
+import { ApiConst } from '../../common/ApiConst';
+import { API } from '../../services/api';
 export default {
     name: 'Navigation',
     mixins: [modalMixin],
@@ -248,21 +250,14 @@ export default {
     },
     methods: {
         logout() {
-            let token = JSON.parse(localStorage.getItem('user')).token;
-            axios.post(
-                process.env.ROOT_API + '/api/v1/user/logout',
-                {
-                    email: this.email,
-                    password: this.password,
-                    only_token: true
-                },
-                {
-                    headers: { Authorization: 'Bearer ' + token }
+            let token = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER))
+                .token;
+            API.POST(ApiConst.LOGOUT, null).then(res => {
+                if (res.error_code === 0) {
+                    localStorage.removeItem(AppConst.LOCAL_USER);
+                    this.$router.push({ path: '/login' });
                 }
-            );
-
-            localStorage.removeItem('user');
-            this.$router.push({ path: '/login' });
+            });
         },
         ShowPopUpModalContact() {
             this.showPageInModal(

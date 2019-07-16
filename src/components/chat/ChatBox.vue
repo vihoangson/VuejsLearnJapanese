@@ -1,5 +1,5 @@
 <template>
-    <div id="chat-box">
+    <div id="chat-box" @dragover="showDropzoneForm">
         <div class="chat-box-header">
             <div class="header-name">
                 <div class="room-logo">
@@ -75,6 +75,7 @@
                                         viewBox="0 0 10 10"
                                         id="icon_sendfile"
                                         xmlns="http://www.w3.org/2000/svg"
+                                        @click="showDropzoneForm"
                                     >
                                         <path
                                             d="M8.534 5.884l.001-.001a3.126 3.126 0 0 0-4.42-4.418L.816 4.764A2.21 2.21 0 0 0 3.942 7.89l3.299-3.299a1.367 1.367 0 0 0-1.932-1.932L2.342 5.626a.469.469 0 0 0 .663.663l2.968-2.967v-.001a.43.43 0 0 1 .606.606h-.001L3.28 7.226a1.273 1.273 0 0 1-1.8-1.799h.001l3.298-3.299a2.188 2.188 0 0 1 3.094 3.093L4.574 8.52a.469.469 0 0 0 .663.663l3.299-3.299z"
@@ -127,9 +128,243 @@
             </div>
             <div class="sideContentResizeCtrlArea cwResizeHandleCol"></div>
         </div>
+        <div
+            v-if="showDropzone"
+            @mouseleave="hideDropzoneCheck"
+            @mouseup="hideDropzoneCheck"
+            class="dropzone-main-chat"
+        >
+            <div class="box-chat-nd">
+                <div>
+                    <span>File Upload</span>
+                    <span class="icon-close" @click="hideDropzone">X</span>
+                </div>
+                <div>
+                    <vue-dropzone
+                        class="dropzone-main-chat-input"
+                        id="dropzone"
+                        ref="myVueDropzone"
+                        :options="dropzoneOptions"
+                        @vdropzone-file-added="getFile"
+                        @vdropzone-success="successImport"
+                        @vdropzone-error="showErrorMessage"
+                    ></vue-dropzone>
+                </div>
+                <div class="chat-tool">
+                    <picker
+                        v-show="showEmojiPicker"
+                        title="Pick your emoji..."
+                        emoji="point_up"
+                        @select="addEmoji"
+                    />
+                    <div>
+                        <ul class="send-tool">
+                            <li class="emoji" @click="toggleEmojiPicker">
+                                <span class="icon-container">
+                                    <svg
+                                        viewBox="0 0 10 10"
+                                        id="icon_emoticon"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M5 9.063A4.063 4.063 0 1 1 5 .937a4.063 4.063 0 0 1 0 8.126M5 0a5 5 0 1 0 .001 10.001A5 5 0 0 0 5 0m0 7.188a2.49 2.49 0 0 1-2.153-1.25h-.708a3.121 3.121 0 0 0 5.722 0h-.708A2.49 2.49 0 0 1 5 7.188M6.406 5c.431 0 .781-.357.781-.875s-.417-1.065-.906-1c-.428.057-.656.482-.656 1s.35.875.781.875m-2.813.003c.431 0 .781-.357.781-.875s-.228-.943-.656-1c-.489-.065-.906.482-.906 1s.35.875.781.875"
+                                        />
+                                    </svg>
+                                </span>
+                            </li>
+                            <li class="emoji">
+                                <span class="icon-container">
+                                    <svg
+                                        viewBox="0 0 10 10"
+                                        id="icon_mention"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M6.875 7.188c-1.329 0-2.188-.979-2.188-2.188 0-1.208.859-2.188 2.188-2.188 1.329 0 2.188.979 2.188 2.188 0 1.208-.859 2.188-2.188 2.188m0-5.313C4.977 1.875 3.75 3.274 3.75 5s1.227 3.125 3.125 3.125S10 6.726 10 5 8.773 1.875 6.875 1.875M0 1.875v.937h1.563v5.313h.938V2.812h1.563v-.937H.001z"
+                                        />
+                                    </svg>
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="chat-textarea">
+                    <textarea
+                        ref="textarea"
+                        rows="10"
+                        placeholder="Enter your message here"
+                        v-model="message"
+                        @input="$emit('input', $event.target.value)"
+                    ></textarea>
+                </div>
+                <div class="submit-container">
+                    <div
+                        class="chatInput__submit _cwBN button"
+                        role="button"
+                        tabindex="2"
+                        aria-disabled="false"
+                        @click="sendMessageFile"
+                    >Send</div>
+                    <div
+                        @click="hideDropzone"
+                        class="chatInput__submit _cwBN button"
+                        role="button"
+                        tabindex="2"
+                        aria-disabled="false"
+                    >Cancel</div>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
+
+<script>
+import vue2Dropzone from 'vue2-dropzone';
+import 'vue2-dropzone/dist/vue2Dropzone.min.css';
+import { Picker } from 'emoji-mart-vue';
+import TextareaEmojiPicker from '../global/TextareaEmojiPicker';
+// import ImportFile from "ImportFile";
+const EVENT_SEND = 'send_message';
+// const EVENT_RESPONSE = "response_message";
+
+export default {
+    name: 'ChatBox',
+    components: {
+        Picker,
+        TextareaEmojiPicker,
+        vueDropzone: vue2Dropzone
+    },
+    props: {
+        value: {
+            type: String,
+            default: ''
+        }
+    },
+    data() {
+        return {
+            showDropzone: false,
+            height: 0,
+            message: '',
+            list_message: this.$store.getters.get_list_message,
+            showEmojiPicker: false,
+            dropzoneOptions: {
+                url: 'http://sns.dev.com/api/v1/message-file',
+                // thumbnailWidth: 150,
+                maxFilesize: 1,
+                headers: 'gfgdfgdfgdfgdgfdg',
+                maxFiles: 10,
+                uploadMultiple: true,
+                parallelUploads: 10,
+                // acceptedFiles: 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,.xls,.xlsx',
+                autoProcessQueue: false,
+                addRemoveLinks: true,
+                dictDefaultMessage:
+                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' +
+                    'Kéo file vào đây</div>'
+            },
+            errors: null
+        };
+    },
+    created() {
+        window.addEventListener('resize', this.handleResize);
+        this.handleResize();
+    },
+    methods: {
+        handleResize() {
+            this.height = window.innerHeight - 45;
+        },
+        sendMessage() {
+            let msg = {
+                image: 'https://appdata.chatwork.com/avatar/3196/3196108.png',
+                name: 'Hoang Sy Hung',
+                organization: 'Lampart Co., Ltd',
+                content: this.message,
+                create_datetim: new Date()
+            };
+            this.$socket.emit(EVENT_SEND, msg);
+
+            this.message = '';
+        },
+        toggleEmojiPicker() {
+            this.showEmojiPicker = !this.showEmojiPicker;
+        },
+        addEmoji(emoji) {
+            const textarea = this.$refs.textarea;
+            const cursorPosition = textarea.selectionEnd;
+            const start = this.value.substring(0, textarea.selectionStart);
+            const end = this.value.substring(textarea.selectionStart);
+            const text = start + emoji.native + end;
+            this.$emit('input', text);
+            this.message += text;
+            textarea.focus();
+            this.$nextTick(() => {
+                textarea.selectionEnd = cursorPosition + emoji.native.length;
+            });
+            this.showEmojiPicker = false;
+        },
+        getFile(file) {
+            console.log(file);
+        },
+        successImport(file) {
+            console.log(file);
+        },
+        showErrorMessage(file) {
+            this.$refs['myVueDropzone'].removeFile(file);
+        },
+        showDropzoneForm() {
+            if (!this.showDropzone) {
+                this.showDropzone = true;
+            }
+        },
+        hideDropzoneCheck() {
+            if (this.$refs['myVueDropzone'].getAcceptedFiles().length === 0) {
+                this.hideDropzone();
+            }
+        },
+        hideDropzone() {
+            this.showDropzone = false;
+            this.$refs['myVueDropzone'].removeAllFiles();
+        },
+        sendMessageFile() {
+            this.$refs.myVueDropzone.processQueue();
+        }
+    },
+    computed: {
+        myStyles() {
+            return this.height - 45;
+        }
+    }
+};
+</script>
+
 <style>
+.icon-close {
+    float: right;
+}
+.box-chat-nd {
+    margin-left: 25%;
+    margin-top: 8%;
+    width: 50%;
+    background-color: white;
+    opacity: 1;
+    overflow: auto;
+}
+.dropzone-main-chat {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 1111;
+    top: 0px;
+    left: 0px;
+    display: block;
+    background-color: #393630;
+    opacity: 0.9;
+    overflow: visible;
+}
+.dropzone-main-chat-input {
+    overflow: scroll;
+    height: 280px;
+}
 #chat-box {
     position: absolute;
     top: 0;
@@ -382,75 +617,3 @@ textarea:focus:-webkit-placeholder {
     fill: darken(#fec84a, 15%);
 }
 </style>
-
-<script>
-import { Picker } from 'emoji-mart-vue';
-import TextareaEmojiPicker from '../global/TextareaEmojiPicker';
-const EVENT_SEND = 'send_message';
-// const EVENT_RESPONSE = "response_message";
-
-export default {
-    name: 'ChatBox',
-    components: {
-        Picker,
-        TextareaEmojiPicker
-    },
-    props: {
-        value: {
-            type: String,
-            default: ''
-        }
-    },
-    data() {
-        return {
-            height: 0,
-            message: '',
-            list_message: this.$store.getters.get_list_message,
-            showEmojiPicker: false
-        };
-    },
-    created() {
-        window.addEventListener('resize', this.handleResize);
-        this.handleResize();
-    },
-    methods: {
-        handleResize() {
-            this.height = window.innerHeight - 45;
-        },
-        sendMessage() {
-            let msg = {
-                image: 'https://appdata.chatwork.com/avatar/3196/3196108.png',
-                name: 'Hoang Sy Hung',
-                organization: 'Lampart Co., Ltd',
-                content: this.message,
-                create_datetim: new Date()
-            };
-            this.$socket.emit(EVENT_SEND, msg);
-
-            this.message = '';
-        },
-        toggleEmojiPicker() {
-            this.showEmojiPicker = !this.showEmojiPicker;
-        },
-        addEmoji(emoji) {
-            const textarea = this.$refs.textarea;
-            const cursorPosition = textarea.selectionEnd;
-            const start = this.value.substring(0, textarea.selectionStart);
-            const end = this.value.substring(textarea.selectionStart);
-            const text = start + emoji.native + end;
-            this.$emit('input', text);
-            this.message += text;
-            textarea.focus();
-            this.$nextTick(() => {
-                textarea.selectionEnd = cursorPosition + emoji.native.length;
-            });
-            this.showEmojiPicker = false;
-        }
-    },
-    computed: {
-        myStyles() {
-            return this.height - 45;
-        }
-    }
-};
-</script>
