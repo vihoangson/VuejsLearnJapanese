@@ -17,7 +17,7 @@ export default {
 		};
 	},
 	mounted() {
-    let user = localStorage.getItem('user');
+		let user = localStorage.getItem("user");
 
 		if (!user) {
 			this.$router.push({ path: "login" });
@@ -37,7 +37,7 @@ export default {
 <style>
 body {
 	margin: 0px;
-  font-family: Arial, Helvetica, sans-serif
+	font-family: Arial, Helvetica, sans-serif;
 }
 .content {
 	position: relative;

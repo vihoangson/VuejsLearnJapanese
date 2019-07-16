@@ -10,23 +10,28 @@
 					<div class="login-form-row">
 						<label for="email">Email Address</label>
 						<div class="login-email">
-							<input type="text" v-model="username"/>
+							<input type="text" v-model="username" />
 						</div>
-            <span class="error">{{errors.username}}</span>
+						<span class="error">{{errors.username}}</span>
 					</div>
 					<div class="login-form-row">
 						<label for="email">Password</label>
 						<div class="login-email">
 							<input type="password" v-model="password" />
 						</div>
-            <span class="error">{{errors.password}}</span>
+						<span class="error">{{errors.password}}</span>
 					</div>
 					<div class="login-form-row keep-login">
 						<input id="login-checkbox" type="checkbox" />
 						<label for="login-checkbox">Keep me logged in</label>
 					</div>
-          <vue-recaptcha @verify="markRecaptchaAsVerified" class="recapcha" sitekey="6LexDawUAAAAAP2dVouECeGm63c78bbwGtqJe-G1" :loadRecaptchaScript="true"></vue-recaptcha>
-          <span class="error">{{errors.pleaseTickRecaptchaMessage}}</span>
+					<vue-recaptcha
+						@verify="markRecaptchaAsVerified"
+						class="recapcha"
+						sitekey="6LexDawUAAAAAP2dVouECeGm63c78bbwGtqJe-G1"
+						:loadRecaptchaScript="true"
+					></vue-recaptcha>
+					<span class="error">{{errors.pleaseTickRecaptchaMessage}}</span>
 					<div class="login-form-row login-button">
 						<input type="submit" value="Login" class="btn btn-login" />
 					</div>
@@ -120,69 +125,72 @@ header {
 	cursor: pointer;
 	background-color: #fc271e;
 }
-.error{
-  color: red;
+.error {
+	color: red;
 }
-.recapcha div{
-  width: 100% !important;
-  text-align: center;
+.recapcha div {
+	width: 100% !important;
+	text-align: center;
 }
 </style>
 
 <script>
-import axios from 'axios'
-import VueRecaptcha from 'vue-recaptcha';
+import axios from "axios";
+import VueRecaptcha from "vue-recaptcha";
 
 export default {
-  name: "Login",
-  components: {
-    VueRecaptcha
-  },
-  data () {
-    return {
-      errors: {
-        username: "",
-        password: "",
-        pleaseTickRecaptchaMessage: ""
-      },
-      username: "",
-      password: "",
-      recaptchaVerified: false
-    }
-  },
+	name: "Login",
+	components: {
+		VueRecaptcha
+	},
+	data() {
+		return {
+			errors: {
+				username: "",
+				password: "",
+				pleaseTickRecaptchaMessage: ""
+			},
+			username: "",
+			password: "",
+			recaptchaVerified: false
+		};
+	},
 	methods: {
-    markRecaptchaAsVerified(response) {
-      this.errors.pleaseTickRecaptchaMessage = '';
-      this.recaptchaVerified = true;
-    },
-		login (e) {
-      e.preventDefault();
+		markRecaptchaAsVerified(response) {
+			this.errors.pleaseTickRecaptchaMessage = "";
+			this.recaptchaVerified = true;
+		},
+		login(e) {
+			e.preventDefault();
 
-      if (this.username === "")
-        this.errors.username = '* Userame required!'
+			if (this.username === "") this.errors.username = "* Userame required!";
 
-      if (this.password === "")
-        this.errors.password = '* Password required!'
+			if (this.password === "") this.errors.password = "* Password required!";
 
-      if(!this.recaptchaVerified)
-        this.errors.pleaseTickRecaptchaMessage = '* Please tick recaptcha!'
+			if (!this.recaptchaVerified)
+				this.errors.pleaseTickRecaptchaMessage = "* Please tick recaptcha!";
 
-      if(this.username !== "" && this.password !== "" && this.recaptchaVerified){
-        axios.post("http://172.16.100.31/api/v1/user/login",{
-          username: this.username,
-          password: this.password,
-          only_token: true
-        })
-          .then(res => {
-            let user = {
-              token: res.data.data.api_token,
-              email: res.data.data.email,
-              employee: res.data.data.employee
-            };
-            localStorage.setItem("user", user);
-            this.$router.push({ path: "/" });
-          })
-      }
+			if (
+				this.username !== "" &&
+				this.password !== "" &&
+				this.recaptchaVerified
+			) {
+				axios
+					.post("http://172.16.100.31/api/v1/user/login", {
+						username: this.username,
+						password: this.password,
+						only_token: true
+					})
+					.then(res => {
+						let user = {
+							token: res.data.data.api_token,
+							email: res.data.data.email,
+							employee: res.data.data.employee
+						};
+						localStorage.setItem("user", user);
+						this.$router.push({ path: "/" });
+					});
+			}
 		}
 	}
 };

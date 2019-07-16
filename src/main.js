@@ -11,24 +11,24 @@ Vue.config.productionTip = false;
 
 Vue.use(Moment);
 Vue.use(
-  new VueSocketIO({
-    debug: true,
-    connection: "http://172.16.218.252:3000"
-  })
+    new VueSocketIO({
+        debug: true,
+        connection: "http://172.16.218.252:3000"
+    })
 );
 
 /* eslint-disable no-new */
 new Vue({
-  el: "#app",
-  router,
-  store,
-  render: h => h(App),
-  sockets: {
-    connect: function() {
-      console.log("Connected..");
-    },
-    customEmit: function(e) {
-      this.$store.dispatch("addTask", e);
+    el: "#app",
+    router,
+    store,
+    render: h => h(App),
+    sockets: {
+        connect: function() {
+            console.log("Connected..");
+        },
+        customEmit: function(e) {
+            this.$store.dispatch("addTask", e);
+        }
     }
-  }
 });
