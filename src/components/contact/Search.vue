@@ -1,10 +1,8 @@
 <template>
-  <div class="header" style="background-color: red">
-    Search
-  </div>
+    <div class="header" style="background-color: red">Search</div>
 </template>
 <style>
-  .header {
+.header {
     box-sizing: border-box;
     position: absolute;
     top: 0;
@@ -13,14 +11,12 @@
     width: 50%;
     background-color: #13202f;
     z-index: 2;
-  }
+}
 </style>
 
 <script>
-
 export default {
-  name: 'Search',
-  components: {
-  }
-}
+    name: 'Search',
+    components: {}
+};
 </script>
