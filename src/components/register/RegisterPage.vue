@@ -106,7 +106,7 @@ export default {
                 isValid = true
                 this.errors.email = "Email required !"
 			}
-			let regexEmail =  /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,10}/
+			let regexEmail =  /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/
             if (!regexEmail.test(this.email) && this.errors.email === "") {
                 isValid = true
                 this.errors.email = "Email invalid."

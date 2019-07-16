@@ -205,7 +205,7 @@ export default {
 		}
 		},
 		SignUp () {
-            this.$router.push({name: 'register'})
+            this.$router.push({name: 'Register'})
 		}
 	}
 };
