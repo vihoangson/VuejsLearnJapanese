@@ -221,7 +221,7 @@ export default {
         },
         SetNewPassword() {},
         SignUp() {
-            this.$router.push({ name: 'register' });
+            this.$router.push({ name: 'Register' });
         }
     }
 };
