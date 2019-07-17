@@ -87,7 +87,7 @@
                     <a>Personal Settings</a>
                 </li>
                 <li class="menu-item" id="account">
-                    <a>Account Settings</a>
+                    <a @click="ShowFormEditRegister">Account Settings</a>
                 </li>
                 <li class="menu-item" id="api">
                     <a>API Setting</a>
@@ -250,8 +250,7 @@ export default {
     },
     methods: {
         logout() {
-            let token = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER))
-                .token;
+            let token = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER)).token;
             API.POST(ApiConst.LOGOUT, null).then(res => {
                 if (res.error_code === 0) {
                     localStorage.removeItem(AppConst.LOCAL_USER);
@@ -266,26 +265,30 @@ export default {
                 { pivotX: 0.5, width: '80%', resizable: true, adaptive: true },
                 {}
             );
+        },
+        ShowFormEditRegister() {
+            let routeToEditRegister = this.$router.resolve({ path: '/register/edit' });
+            window.open(routeToEditRegister.href, '_blank');
         }
     }
 };
 </script>
 <style>
-  .navigation{
+.navigation {
     display: flex;
     align-items: center;
     position: absolute;
     right: 0;
     top: 0;
-  }
-  .menu-admin{
+}
+.menu-admin {
     list-style: none;
     margin: 0;
     display: flex;
     align-items: center;
     height: 42px;
-  }
-  .menu-admin-item{
+}
+.menu-admin-item {
     position: relative;
     display: flex;
     align-items: center;
@@ -293,20 +296,20 @@ export default {
     height: 42px;
     margin: 0 8px;
     transition: background 0.2s linear 0s;
-  }
-  .menu-admin-item span{
+}
+.menu-admin-item span {
     box-sizing: border-box;
     width: 32px;
     height: 32px;
     padding: 4px;
     fill: #cccccc;
     cursor: pointer;
-  }
-  .menu-admin-item span svg{
+}
+.menu-admin-item span svg {
     width: 24px;
     height: 24px;
-  }
-  .my-account{
+}
+.my-account {
     display: flex;
     align-items: center;
     box-sizing: border-box;
@@ -322,32 +325,32 @@ export default {
     background-color: #13202f;
     user-select: none;
     cursor: pointer;
-  }
-  .my-account:hover{
+}
+.my-account:hover {
     color: #fff;
     fill: #fff;
     border-color: #33455b;
     background-color: #33455b;
-  }
-  .my-account.active{
+}
+.my-account.active {
     color: #fff;
     fill: #fff;
     border-radius: 21px 4px 0 0;
     border-color: #33455b;
     background-color: #33455b;
-  }
-  .avatar{
+}
+.avatar {
     height: 32px;
     margin-right: 5px;
     vertical-align: top;
     cursor: pointer;
-  }
-  .avatar img{
+}
+.avatar img {
     width: 32px;
     height: 32px;
     border-radius: 16px 16px 0 16px;
-  }
-  .my-account .status-name{
+}
+.my-account .status-name {
     vertical-align: middle;
     max-width: 120px;
     color: inherit;
@@ -356,19 +359,19 @@ export default {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-  }
-  .status-name .name{
+}
+.status-name .name {
     font-weight: 700;
     font-size: 1.1538em;
-  }
-  .status-name .menu-icon{
+}
+.status-name .menu-icon {
     position: absolute;
     right: 5px;
     top: 11px;
     width: 16px;
     height: 16px;
-  }
-  .account-menu{
+}
+.account-menu {
     z-index: 10;
     box-sizing: border-box;
     position: absolute;
@@ -380,29 +383,28 @@ export default {
     border-radius: 0 0 0 5px;
     user-select: none;
     list-style: none;
-  }
-  .account-menu .menu-item{
+}
+.account-menu .menu-item {
     height: 30px;
     margin: 0 5px;
     line-height: 30px;
-  }
-  .menu-item a{
+}
+.menu-item a {
     display: block;
     padding-left: 40px;
     color: #fff;
     border-radius: 3px;
     text-decoration: none;
     text-align: left;
-  }
-  .menu-item a:hover{
+}
+.menu-item a:hover {
     background: #13202f;
     text-decoration: none;
     cursor: pointer;
-  }
-  .menu-item.separate-top{
+}
+.menu-item.separate-top {
     border-top: solid 1px #13202f;
     padding-top: 8px;
     margin-top: 8px;
-  }
-
+}
 </style>

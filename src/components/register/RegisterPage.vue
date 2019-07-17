@@ -1,101 +1,112 @@
 <template>
-	<div id="register">
-		<header>
-			<img src="https://lampart-vn.com/wp-content/uploads/2019/02/logo.png" alt srcset />
-		</header>
-		<div class="register-content">
-			<div class="register-inner">
-				<h2>REGISTER</h2>
-				<form class="register">
-					<div class="form-group register-form-row">
-						<label>Name</label>
-						<input
-								v-model="name"
-								type="text"
-								name="name"
-								class="form-control register-input" >
-						<div class="error" v-if="errors.name !== ''">{{errors.name}}</div>
-					</div>
-					<div class="form-group register-form-row">
-						<label>Company</label>
-						<input
-								v-model="company"
-								type="text"
-								name="company"
-								class="form-control register-input" >
-						<div class="error" v-if="errors.company !== ''">{{errors.company}}</div>
-					</div>
-					<div class="form-group register-form-row">
-						<label>Email</label>
-						<input
-								v-model="email"
-								type="email"
-								name="email"
-								class="form-control register-input" >
-						<div class="error" v-if="errors.email !== ''">{{errors.email}}</div>
-					</div>
-					<div class="form-group register-form-row">
-						<label>Password</label>
-						<input
-								v-model="password"
-								type="password"
-								name="password"
-								class="form-control register-input" >
-						<div class="error" v-if="errors.password !== ''">{{errors.password}}</div>
-					</div>
-					<div class="form-group register-form-row">
-						<label>Confirm password</label>
-						<input
-								v-model="confirmPassword"
-								type="password"
-								name="confirmPassword"
-								class="form-control register-input" >
-						<div class="error" v-if="errors.confirmPassword !== ''">{{errors.confirmPassword}}</div>
-					</div>
-					<div class="form-group register-form-row">
-						<vue-recaptcha @verify="markRecaptchaAsVerified" class="recapcha" sitekey="6LexDawUAAAAAP2dVouECeGm63c78bbwGtqJe-G1" :loadRecaptchaScript="true"></vue-recaptcha>
-						<div class="error" v-if="errors.pleaseTickRecaptchaMessage !== ''">{{errors.pleaseTickRecaptchaMessage}}</div>
-					</div>
-					<div class="form-group register-button">
-						<button
-								class="btn btn-register"
-								type="button"
-								@click="save">Register
-						</button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+    <div id="register">
+        <header>
+            <img src="https://lampart-vn.com/wp-content/uploads/2019/02/logo.png" alt srcset />
+        </header>
+        <div class="register-content">
+            <div class="register-inner">
+                <h2>REGISTER</h2>
+                <form class="register">
+                    <div class="form-group register-form-row">
+                        <label>Name</label>
+                        <input
+                            v-model="name"
+                            type="text"
+                            name="name"
+                            class="form-control register-input"
+                        />
+                        <div class="error" v-if="errors.name !== ''">{{errors.name}}</div>
+                    </div>
+                    <div class="form-group register-form-row">
+                        <label>Company</label>
+                        <input
+                            v-model="company"
+                            type="text"
+                            name="company"
+                            class="form-control register-input"
+                        />
+                        <div class="error" v-if="errors.company !== ''">{{errors.company}}</div>
+                    </div>
+                    <div class="form-group register-form-row">
+                        <label>Email</label>
+                        <input
+                            v-model="email"
+                            type="email"
+                            name="email"
+                            class="form-control register-input"
+                        />
+                        <div class="error" v-if="errors.email !== ''">{{errors.email}}</div>
+                    </div>
+                    <div class="form-group register-form-row">
+                        <label>Password</label>
+                        <input
+                            v-model="password"
+                            type="password"
+                            name="password"
+                            class="form-control register-input"
+                        />
+                        <div class="error" v-if="errors.password !== ''">{{errors.password}}</div>
+                    </div>
+                    <div class="form-group register-form-row">
+                        <label>Confirm password</label>
+                        <input
+                            v-model="confirmPassword"
+                            type="password"
+                            name="confirmPassword"
+                            class="form-control register-input"
+                        />
+                        <div
+                            class="error"
+                            v-if="errors.confirmPassword !== ''"
+                        >{{errors.confirmPassword}}</div>
+                    </div>
+                    <div class="form-group register-form-row">
+                        <vue-recaptcha
+                            @verify="markRecaptchaAsVerified"
+                            class="recapcha"
+                            sitekey="6LexDawUAAAAAP2dVouECeGm63c78bbwGtqJe-G1"
+                            :loadRecaptchaScript="true"
+                        ></vue-recaptcha>
+                        <div
+                            class="error"
+                            v-if="errors.pleaseTickRecaptchaMessage !== ''"
+                        >{{errors.pleaseTickRecaptchaMessage}}</div>
+                    </div>
+                    <div class="form-group register-button">
+                        <button class="btn btn-register" type="button" @click="save">Register</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
+import axios from 'axios';
 import { API } from '../../services/api';
 import { AppConst } from '../../common/AppConst';
 import { ApiConst } from '../../common/ApiConst';
-
 import VueRecaptcha from 'vue-recaptcha';
 export default {
-	name: "Register",
-	components: {VueRecaptcha},
-	mixins: [],
-	props: {
-	},
-	data () {
-		return {
-			errors: {
-                name: "",
-                company: "",
-                email: "",
-                password: "",
-                confirmPassword: "",
-                pleaseTickRecaptchaMessage: ""
-			},
-            name: "",
-			company: "",
-			email: "",
-			password: "",
-            confirmPassword: "",
+    name: 'Register',
+    components: { VueRecaptcha },
+    mixins: [],
+    props: {},
+    data() {
+        return {
+            errors: {
+                name: '',
+                company: '',
+                email: '',
+                password: '',
+                confirmPassword: '',
+                pleaseTickRecaptchaMessage: ''
+            },
+            name: '',
+            company: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
             recaptchaVerified: false
         };
     },
@@ -104,120 +115,95 @@ export default {
     created() {},
     mounted() {},
     methods: {
-        markRecaptchaAsVerified() {
+        markRecaptchaAsVerified(response) {
             this.errors.pleaseTickRecaptchaMessage = '';
             this.recaptchaVerified = true;
         },
         checkValidateForm() {
-            let isValid = false
-            this.errors.name = ""
-            this.errors.company = ""
-            this.errors.email = ""
-            this.errors.password = ""
-            this.errors.confirmPassword = ""
-            this.errors.pleaseTickRecaptchaMessage = ""
+            let isValid = false;
+            this.errors.name = '';
+            this.errors.company = '';
+            this.errors.email = '';
+            this.errors.password = '';
+            this.errors.confirmPassword = '';
+            this.errors.pleaseTickRecaptchaMessage = '';
 
-            if (this.name === "") {
-                isValid = true
-                this.errors.name = "Name required !"
+            if (this.name === '') {
+                isValid = true;
+                this.errors.name = 'Name required !';
             }
 
-            if (this.name.length > 55 && this.errors.name === "") {
-                isValid = true
-                this.errors.name = "Max length is 55 characteristics."
+            if (this.name.length > 55 && this.errors.name === '') {
+                isValid = true;
+                this.errors.name = 'Max length is 55 characteristics.';
             }
-
-            if (this.company === "") {
-                isValid = true
-                this.errors.company = "Company required !"
 
             if (this.company === '') {
                 isValid = true;
                 this.errors.company = 'Company required !';
             }
 
-
-			if (this.company.length > 55 && this.errors.company === "") {
-                isValid = true
-                this.errors.company = "Max length is 55 characteristics."
-			}
-
-			if (this.email === "") {
-                isValid = true
-                this.errors.email = "Email required !"
-			}
-			let regexEmail =  /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/
-            if (!regexEmail.test(this.email) && this.errors.email === "") {
-                isValid = true
-                this.errors.email = "Email invalid."
+            if (this.company.length > 55 && this.errors.company === '') {
+                isValid = true;
+                this.errors.company = 'Max length is 55 characteristics.';
             }
 
-            // if (this.email === '') {
-            //     isValid = true;
-            //     this.errors.email = 'Email required !';
-            // }
-            // let regexEmail = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,3}/;
-            // if (!regexEmail.test(this.email) && this.errors.email === '') {
-            //     isValid = true;
-            //     this.errors.email = 'Email invalid.';
-            // }
-
-            if (this.confirmPassword === "") {
-                isValid = true
-                this.errors.confirmPassword = "Confirm password required !"
+            if (this.email === '') {
+                isValid = true;
+                this.errors.email = 'Email required !';
             }
-            if (!regexPassword.test(this.confirmPassword) && this.errors.confirmPassword === "") {
-                isValid = true
-                this.errors.confirmPassword = "Minimum of 8 characters including lower case letter, upper case letter and numbers"
+            let regexEmail = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
+            if (!regexEmail.test(this.email) && this.errors.email === '') {
+                isValid = true;
+                this.errors.email = 'Email invalid.';
+            }
+
+            if (this.password === '') {
+                isValid = true;
+                this.errors.password = 'Password required !';
+            }
+            let regexPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+            if (!regexPassword.test(this.password) && this.errors.password === '') {
+                isValid = true;
+                this.errors.password =
+                    'Minimum of 8 characters including lower case letter, upper case letter and numbers';
+            }
+
+            if (this.confirmPassword === '') {
+                isValid = true;
+                this.errors.confirmPassword = 'Confirm password required !';
+            }
+            if (!regexPassword.test(this.confirmPassword) && this.errors.confirmPassword === '') {
+                isValid = true;
+                this.errors.confirmPassword =
+                    'Minimum of 8 characters including lower case letter, upper case letter and numbers';
             }
 
             if (this.password !== this.confirmPassword && this.errors.confirmPassword === '') {
-                isValid = true
-                this.errors.confirmPassword = "Password and confirm password are not the same."
+                isValid = true;
+                this.errors.confirmPassword = 'Password and confirm password are not the same.';
             }
 
+            if (!this.recaptchaVerified) {
+                isValid = true;
+                this.errors.pleaseTickRecaptchaMessage = 'Please tick recaptcha!';
             }
 
-            // if (!this.recaptchaVerified) {
-            //     isValid = true
-            //     this.errors.pleaseTickRecaptchaMessage = "Please tick recaptcha!"
-            // }
-
-            return isValid
-
-
-		},
-		createData(data) {
-            return new Promise((resolve, reject) => {
-                axios.post("http://sns.dev.com/api/v1/user/register",data, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'accept': 'application/json',
-                        "Access-Control-Allow-Origin": "*",
-                    }
-                })
-                    .then((res) => {
-                        resolve(res)
-                    })
-                    .catch(function (e) {
-                        reject(e)
-                    })
-            })
-		},
-	    save() {
-	        if (this.checkValidateForm()) return
-			let data = {
-	            name : this.name,
-	            company : this.company,
-				email   : this.email,
-				password   : this.password,
-			}
-
+            return isValid;
+        },
+        save() {
+            if (this.checkValidateForm()) return;
+            let data = {
+                name: this.name,
+                company: this.company,
+                email: this.email,
+                password: this.password
+            };
             API.POST(ApiConst.REGISTER, data).then(res => {
+                console.log(res);
                 this.$router.push({ name: 'login' });
             });
-        },
-        back() {}
+        }
     }
 };
 </script>

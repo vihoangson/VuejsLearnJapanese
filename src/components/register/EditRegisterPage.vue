@@ -76,6 +76,9 @@
 
 <script>
 import axios from 'axios'
+import { API } from '../../services/api';
+import { AppConst } from '../../common/AppConst';
+import { ApiConst } from '../../common/ApiConst';
 import VueRecaptcha from 'vue-recaptcha';
 import MenuEditRegisterPage from './MenuEditRegisterPage.vue'
 export default {
@@ -124,7 +127,12 @@ export default {
 			}
         }
 	},
-	created () {},
+	created () {
+        API.GET(ApiConst.DETAIL_REGISTER).then(res => {
+                console.log(res.data.name);
+                this.name = res.data.name
+            });
+    },
 	mounted () {},
 	methods: {
 	    validatePassword (password, errorPassword) {
@@ -234,14 +242,18 @@ export default {
 			    defaultData = {...defaultData,
 					    currentPassword: this.currentPassword,
                         newPassword: this.newPassword,
-                        confirmPassword: this.confirmPassword
+                        chooseChangePassword: this.chooseChangePassword
 			    }
 
-			}
-			this.updateData(defaultData)
-                .then((data) => {
-                    this.$router.push({name: 'home'})
-                }).catch()
+            }
+            API.POST(ApiConst.EDIT_REGISTER,defaultData).then(res => {
+                console.log(res);
+                // this.name = res.data.name
+            });
+			// this.updateData(defaultData)
+            //     .then((data) => {
+            //         this.$router.push({name: 'home'})
+            //     }).catch()
 
 		}
 	}
