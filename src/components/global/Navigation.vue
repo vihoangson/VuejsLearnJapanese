@@ -99,6 +99,52 @@
         </div>
     </div>
 </template>
+    
+<script>
+import BaseContact from '../contact/BaseContact.vue';
+import modalMixin from '@/mixins/modal';
+import { AppConst } from '../../common/AppConst';
+import { ApiConst } from '../../common/ApiConst';
+import { API } from '../../services/api';
+export default {
+    name: 'Navigation',
+    mixins: [modalMixin],
+    data() {
+        return {
+            isHidden: true,
+            user: this.$store.getters.get_current_user
+        };
+    },
+    methods: {
+        logout() {
+            console.log(this.user);
+            let token = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER))
+                .token;
+
+            API.POST(ApiConst.LOGOUT, null).then(res => {
+                if (res.error_code === 0) {
+                    localStorage.removeItem(AppConst.LOCAL_USER);
+                    this.$router.push({ path: '/login' });
+                }
+            });
+        },
+        ShowPopUpModalContact() {
+            this.showPageInModal(
+                BaseContact,
+                {},
+                { pivotX: 0.5, width: '80%', resizable: true, adaptive: true },
+                {}
+            );
+        },
+        ShowFormEditRegister() {
+            let routeToEditRegister = this.$router.resolve({
+                path: '/register/edit'
+            });
+            window.open(routeToEditRegister.href, '_blank');
+        }
+    }
+};
+</script>
 <style>
 .navigation {
     display: flex;
@@ -234,41 +280,3 @@
     margin-top: 8px;
 }
 </style>
-<script>
-import BaseContact from '../contact/BaseContact.vue';
-import modalMixin from '@/mixins/modal';
-import { AppConst } from '../../common/AppConst';
-import { ApiConst } from '../../common/ApiConst';
-import { API } from '../../services/api';
-export default {
-    name: 'Navigation',
-    mixins: [modalMixin],
-    data() {
-        return {
-            isHidden: true,
-            user: this.$store.getters.get_current_user
-        };
-    },
-    methods: {
-        logout() {
-            console.log(this.user);
-            let token = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER)).token;
-
-            API.POST(ApiConst.LOGOUT, null).then(res => {
-                if (res.error_code === 0) {
-                    localStorage.removeItem(AppConst.LOCAL_USER);
-                    this.$router.push({ path: '/login' });
-                }
-            });
-        },
-        ShowPopUpModalContact() {
-            this.showPageInModal(
-                BaseContact,
-                {},
-                { pivotX: 0.5, width: '80%', resizable: true, adaptive: true },
-                {}
-            );
-        }
-    }
-};
-</script>
