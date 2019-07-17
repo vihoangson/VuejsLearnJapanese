@@ -240,3 +240,78 @@ header {
     text-align: center;
 }
 </style>
+
+
+<script>
+import { API } from '../../services/api';
+import { AppConst } from '../../common/AppConst';
+import { ApiConst } from '../../common/ApiConst';
+import VueRecaptcha from 'vue-recaptcha';
+
+export default {
+    name: 'Login',
+    components: {
+        VueRecaptcha
+    },
+    data() {
+        return {
+            errors: {
+                email: '',
+                password: '',
+                pleaseTickRecaptchaMessage: ''
+            },
+            email: '',
+            password: '',
+            recaptchaVerified: true
+        };
+    },
+    methods: {
+        markRecaptchaAsVerified() {
+            this.errors.pleaseTickRecaptchaMessage = '';
+            this.recaptchaVerified = true;
+        },
+        login(e) {
+            e.preventDefault();
+
+            if (this.email === '') this.errors.email = '* Userame required!';
+
+            if (this.password === '')
+                this.errors.password = '* Password required!';
+
+            if (!this.recaptchaVerified)
+                this.errors.pleaseTickRecaptchaMessage =
+                    '* Please tick recaptcha!';
+
+            if (
+                this.email !== '' &&
+                this.password !== '' &&
+                this.recaptchaVerified
+            ) {
+                let data = {
+                    email: this.email,
+                    password: this.password,
+                    only_token: true
+                };
+
+                API.POST(ApiConst.LOGIN, data).then(res => {
+                    let user = {
+                        token: res.data.token,
+                        user_id: res.data.id,
+                        icon_img: res.data.icon_img,
+                        fullname: res.data.fullname
+                    };
+                    localStorage.setItem(
+                        AppConst.LOCAL_USER,
+                        JSON.stringify(user)
+                    );
+                    this.$router.push({ path: '/' });
+                });
+            }
+        },
+        SetNewPassword() {},
+        SignUp() {
+            this.$router.push({ name: 'register' });
+        }
+    }
+};
+</script>

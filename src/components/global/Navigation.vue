@@ -87,7 +87,7 @@
                     <a>Personal Settings</a>
                 </li>
                 <li class="menu-item" id="account">
-                    <a>Account Settings</a>
+                    <a @click="ShowFormEditRegister">Account Settings</a>
                 </li>
                 <li class="menu-item" id="api">
                     <a>API Setting</a>
