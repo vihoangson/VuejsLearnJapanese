@@ -27,7 +27,7 @@ export default new Router({
             children: [
                 {
                     path: '',
-                    name: 'Register',
+                    name: 'register',
                     component: () =>
                         import('@/components/register/RegisterPage')
                 },
