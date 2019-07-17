@@ -103,8 +103,8 @@
 <script>
 import BaseContact from '../contact/BaseContact.vue';
 import modalMixin from '@/mixins/modal';
-import { AppConst } from '../../common/AppConst';
 import { ApiConst } from '../../common/ApiConst';
+import { AppConst } from '../../common/AppConst';
 import { API } from '../../services/api';
 export default {
     name: 'Navigation',
@@ -117,9 +117,6 @@ export default {
     },
     methods: {
         logout() {
-            console.log(this.user);
-            let token = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER))
-                .token;
 
             API.POST(ApiConst.LOGOUT, null).then(res => {
                 if (res.error_code === 0) {

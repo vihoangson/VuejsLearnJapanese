@@ -82,9 +82,7 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { API } from '../../services/api';
-import { AppConst } from '../../common/AppConst';
 import { ApiConst } from '../../common/ApiConst';
 import VueRecaptcha from 'vue-recaptcha';
 export default {
