@@ -3,8 +3,9 @@
          v-bind:style="{display: this.$store.state.openProfileDisplay, height: floatWindowHeight}">
         <div id="_contactWindow" class="contactWindow _cwFWInner" v-bind:style="{left: marginPopup, right: marginPopup}" role="dialog"
              aria-label="Contacts">
+
             <div class="_floatWindowHeader floatWindow__header">
-                <h1 class="_floatWindowTitle floatWindow__title"><span class="autotrim">ssContacts</span></h1>
+                <h1 class="_floatWindowTitle floatWindow__title"><span class="autotrim">Profile name</span></h1>
                 <div class="floatWindow__closeButtonContainer">
                   <span class="_cwFWButton floatWindow__closeButton" data-cwui-fw-idx="-1" @click="closeProfilePopup">
                     <svg viewBox="0 0 10 10" class="floatWindow__closeButtonIcon" width="16" height="16">
@@ -15,22 +16,29 @@
                 </div>
             </div>
 
-            <div class="_cwFWHeader">
-                <div class="floatHeaderTab clearfix">
-                    <ul id="_contactWindowTab">
-                        <li id="_contactWindowTabInviteEmail" data-type="invitemail" class="floatTabSelect" style="">
-                            Invite by Email
+            <div class="profileShowDialog__dialogHeader">
+               <!--<image></image>-->
+
+            </div>
+
+            <div class="profileShowDialog__bodyContainer">
+                <div class="profileShowDialog__profileHeader">
+
+
+                </div>
+                <div class="profileShowDialog__profileBody">
+                    <ul class="profileShowDialog__profileBodyItemList">
+                        <li class="profileShowDialog__profileBodyItem">
+                            <span class="profileShowDialog__profileBodyItemLabel">
+
+                            </span>
+
+                            <span class="_profileDepartment profileShowDialog__profileBodyItemContent">
+
+                            </span>
                         </li>
-                        <li id="_contactWindowTabContact" data-type="addcontact">User Search</li>
-                        <li id="_contactWindowTabMyContact" data-type="contact">Contacts<span
-                                id="_contactWindowListNum">(114)</span></li>
-                        <li id="_contactWindowTabMyRequest" data-type="myrequest" style="display: none;">Sent
-                            Requests<span id="_contactWindowMyRequestNum"></span></li>
-                        <li id="_contactWindowTabRequest" data-type="request" style="display: none;">Incoming
-                            Requests<span id="_contactWindowRequestNum"></span></li>
-                        <li id="_contactWindowTabNoRequest" data-type="norequest">Not in Contacts<span
-                                id="_contactWindowNoRequestNum">(15)</span></li>
                     </ul>
+
                 </div>
 
             </div>
