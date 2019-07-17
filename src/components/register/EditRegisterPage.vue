@@ -247,14 +247,8 @@ export default {
 
             }
             API.POST(ApiConst.EDIT_REGISTER,defaultData).then(res => {
-                console.log(res);
-                // this.name = res.data.name
+                this.$router.push({name: 'home'})
             });
-			// this.updateData(defaultData)
-            //     .then((data) => {
-            //         this.$router.push({name: 'home'})
-            //     }).catch()
-
 		}
 	}
 }
