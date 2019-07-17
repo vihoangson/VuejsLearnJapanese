@@ -4,5 +4,8 @@ export default {
     },
     removeTask({ commit }, task) {
         commit('remove_message', task);
+    },
+    setCurrentUser({ commit }, obj) {
+        commit('set_current_user', obj);
     }
 };

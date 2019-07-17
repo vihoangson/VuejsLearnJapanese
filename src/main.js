@@ -3,7 +3,7 @@
 import Vue from 'vue';
 import App from './App';
 import Moment from 'vue-moment';
-// import VueSocketIO from 'vue-socket.io';
+import VueSocketIO from 'vue-socket.io';
 import VModal from 'vue-js-modal';
 
 import router from './router';
@@ -13,12 +13,12 @@ Vue.config.productionTip = false;
 
 Vue.use(Moment);
 
-// Vue.use(
-//     new VueSocketIO({
-//         debug: true,
-//         connection: 'http://172.16.218.252:3000'
-//     })
-// );
+Vue.use(
+    new VueSocketIO({
+        debug: true,
+        connection: 'http://127.0.0.1:3000'
+    })
+);
 
 Vue.use(VModal, { dynamic: true, dialog: true });
 
@@ -32,7 +32,7 @@ new Vue({
         connect: function() {
             console.log('Connected..');
         },
-        customEmit: function(e) {
+        broadcast: function(e) {
             this.$store.dispatch('addTask', e);
         }
     }

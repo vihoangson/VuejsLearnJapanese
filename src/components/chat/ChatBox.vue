@@ -223,6 +223,8 @@ import vue2Dropzone from 'vue2-dropzone';
 import 'vue2-dropzone/dist/vue2Dropzone.min.css';
 import { Picker } from 'emoji-mart-vue';
 import TextareaEmojiPicker from '../global/TextareaEmojiPicker';
+import { AppConst } from '../../common/AppConst';
+
 // import ImportFile from "ImportFile";
 const EVENT_SEND = 'send_message';
 // const EVENT_RESPONSE = "response_message";
@@ -274,12 +276,15 @@ export default {
             this.height = window.innerHeight - 45;
         },
         sendMessage() {
+            console.log(localStorage.getItem(AppConst.LOCAL_USER));
+
+            let user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
             let msg = {
-                image: 'https://appdata.chatwork.com/avatar/3196/3196108.png',
-                name: 'Hoang Sy Hung',
-                organization: 'Lampart Co., Ltd',
-                content: this.message,
-                create_datetim: new Date()
+                user_id: user.user_id,
+                room_id: 1,
+                type: 0,
+                message: this.message,
+                token: user.token
             };
             this.$socket.emit(EVENT_SEND, msg);
 
