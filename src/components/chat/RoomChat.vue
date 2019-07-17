@@ -15,7 +15,8 @@
         <span>
           <svg viewBox="0 0 10 10" id="icon_plus" xmlns="http://www.w3.org/2000/svg"><path d="M4.375.625v3.75H.625v1.25h3.75v3.75h1.25v-3.75h3.75v-1.25h-3.75V.625z"></path></svg>
           <div class="add-option">
-              <b-button v-b-modal.modal-prevent-closing>Add Group</b-button>
+              <b-button v-b-modal.modal-prevent-rooms>Add Rooms</b-button>
+              <b-button v-b-modal.modal-prevent-group>Add Group</b-button>
           </div>
         </span>
       </div>

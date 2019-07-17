@@ -5,6 +5,7 @@
       <Room></Room>
       <Chat></Chat>
     </div>
+    <Rooms></Rooms>
     <Group></Group>
   </div>
 </template>
@@ -22,13 +23,15 @@
 import Header from '../global/Header'
 import Room from '../chat/RoomChat'
 import Chat from '../chat/ChatBox'
-import Group from '../group/Group'
+import Rooms from '../room/rooms'
+import Group from '../group/group'
 export default {
   name: "Home",
   components: {
     Header,
     Room,
     Chat,
+    Rooms,
     Group
   }
 };
