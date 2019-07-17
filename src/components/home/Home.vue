@@ -5,6 +5,7 @@
             <Room></Room>
             <Chat></Chat>
             <Contact></Contact>
+            <PersonalInfo></PersonalInfo>
         </div>
     </div>
 </template>
@@ -23,6 +24,7 @@
     import Room from '../chat/RoomChat'
     import Chat from '../chat/ChatBox'
     import Contact from '../contact/Contact'
+    import PersonalInfo from '../personal_info/PersonalInfo'
 
     export default {
         name: "Home",
@@ -30,7 +32,8 @@
             Header,
             Room,
             Chat,
-            Contact
+            Contact,
+            PersonalInfo
         }
     };
 </script>

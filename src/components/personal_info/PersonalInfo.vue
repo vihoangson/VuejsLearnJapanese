@@ -1,12 +1,12 @@
 <template>
-    <div class="_cwFWBase floatWindow" ref="floatWindow" @click.self="closeContactPopup" style="z-index: 1002;"
-         v-bind:style="{display: this.$store.state.openContactDisplay, height: floatWindowHeight}">
+    <div class="_cwFWBase floatWindow" ref="floatWindow" @click.self="closeProfilePopup" style="z-index: 1002;"
+         v-bind:style="{display: this.$store.state.openProfileDisplay, height: floatWindowHeight}">
         <div id="_contactWindow" class="contactWindow _cwFWInner" v-bind:style="{left: marginPopup, right: marginPopup}" role="dialog"
              aria-label="Contacts">
             <div class="_floatWindowHeader floatWindow__header">
-                <h1 class="_floatWindowTitle floatWindow__title"><span class="autotrim">Contacts</span></h1>
+                <h1 class="_floatWindowTitle floatWindow__title"><span class="autotrim">ssContacts</span></h1>
                 <div class="floatWindow__closeButtonContainer">
-                  <span class="_cwFWButton floatWindow__closeButton" data-cwui-fw-idx="-1" @click="closeContactPopup">
+                  <span class="_cwFWButton floatWindow__closeButton" data-cwui-fw-idx="-1" @click="closeProfilePopup">
                     <svg viewBox="0 0 10 10" class="floatWindow__closeButtonIcon" width="16" height="16">
                       <use fill-rule="evenodd" xlink:href="#icon_cancel"></use>
                     </svg>
@@ -34,188 +34,9 @@
                 </div>
 
             </div>
-            <div class="_cwFWContent" style="height: 600px; width: 908px">
-                <div class="adminWindowAllList">
-                    <div id="_contactInviteMailArea" class="contactInviteMailArea">
-                        <div id="_contentInviteMailNew" class="contactInviteMailContent" style="">
-                            <div id="_contactInviteMailIndividual" class="contactInviteMailSection"
-                                 v-bind:style="{display: individualAdd}">
-                                <div class="contactInviteErrorMessage alert alertDanger" style="display: none"></div>
-                                <label class="contactInviteMailLabel">Email Address</label>
 
-                                <div class="formControlArea clear">
-                                    <a href="#" id="_contactInviteMailAddAddress" class="addForm">
-                                        <p class="AddFormIcon addForm__iconContainer" aria-hidden="true">
-                                            <svg viewBox="0 0 10 10" class="addForm__icon" width="16" height="16">
-                                                <use fill-rule="evenodd" xlink:href="#icon_plus"></use>
-                                            </svg>
-                                        </p>
-                                        <p @click="addMore">Add email address to invite</p>
-                                    </a>
-                                    <a href="#" class="changeFormBulk" @click="toggleMailInvite">Bulk-add</a>
-                                </div>
-                            </div>
-                            <div id="_contactInviteMailBulk" class="contactInviteMailSection"
-                                 v-bind:style="{display: bulkAdd}">
-                                <div class="contactInviteErrorMessage alert alertDanger" style="display: none;"></div>
-                                <label class="contactInviteMailLabel">Enter an e-mail address per line.</label>
-                                <textarea id="_addFromEmailContentEmails" name="emails"
-                                          placeholder="Enter an e-mail address per line."></textarea>
-                                <a href="#" class="changeFormIndividual" @click="toggleMailInvite">Add members
-                                    individually</a>
-                            </div>
-                            <div class="contactInviteMailSection">
-                                <label class="contactInviteMailLabel">Message (optional)</label>
-                                <textarea id="_addFromEmailContent" name="message"
-                                          placeholder="Type a message"></textarea>
-                            </div>
-                        </div>
-                        <div id="_contentInviteMailFinished" class="contactInviteMailContent" style="display: none;">
-                            <div class="contactInviteMailSection">
-                                <p class="alert alertSuccess">Invitation was sent successfully.</p>
-                                <p class="alert alertDanger">Invitation wasn't sent due to the following reasons.</p>
-                            </div>
-                            <div id="_contactInviteMailSentEmails" class="contactInviteMailResult">
-                                <p class="contactInviteMailResultTitle mailResultTitleSuccess">Invitation sent</p>
-                                <ul class="contactInviteMailResultList">
-                                </ul>
-                            </div>
-                            <div id="_contactInviteMailUnreachableEmailAddresses" class="contactInviteMailResult">
-                                <p class="contactInviteMailResultTitle mailResultTitleFailed">Invalid email address.</p>
-                                <ul class="contactInviteMailResultList">
-                                </ul>
-                            </div>
-                            <div id="_contactInviteMailAlreadyRequested" class="contactInviteMailResult">
-                                <p class="contactInviteMailResultTitle mailResultTitleFailed">Already sent contact
-                                    request.</p>
-                                <ul class="contactInviteMailResultList">
-                                </ul>
-                            </div>
-                            <div id="_contactInviteMailAlreadyConnected" class="contactInviteMailResult">
-                                <p class="contactInviteMailResultTitle mailResultTitleFailed">This person is already in
-                                    your contacts.</p>
-                                <ul class="contactInviteMailResultList">
-                                </ul>
-                            </div>
-                            <div id="_contactInviteMailRequestAlreadyReceived" class="contactInviteMailResult">
-                                <p class="contactInviteMailResultTitle mailResultTitleFailed">Already received contact
-                                    request.</p>
-                                <ul class="contactInviteMailResultList">
-                                </ul>
-                            </div>
-                            <div id="_contactInviteMailNotAllowedConnecting" class="contactInviteMailResult">
-                                <p class="contactInviteMailResultTitle mailResultTitleFailed">This person is restricted
-                                    to connect with members outside the orgaization.</p>
-                                <ul class="contactInviteMailResultList">
-                                </ul>
-                            </div>
-                            <div id="_contactInviteMailContactRequestLimitExceeded" class="contactInviteMailResult">
-                                <p class="contactInviteMailResultTitle mailResultTitleFailed">Reached maximum number of
-                                    contact requests.</p>
-                                <ul class="contactInviteMailResultList">
-                                </ul>
-                            </div>
-                            <div id="_contactInviteMailContactYourEmailAddress" class="contactInviteMailResult">
-                                <p class="contactInviteMailResultTitle mailResultTitleFailed">Unable to send invitation
-                                    to your account.</p>
-                                <ul class="contactInviteMailResultList">
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div id="_contactWindowBox" class="adminAllListArea" style="display: none;">
-                        <ul id="_contactWindowList" class="contactList">
-                            <div class="adminAllListArea__emptyContainer">
-                                <img src="https://assets.chatwork.com/images/empty/img_contact_empty.png"
-                                     class="adminAllListArea__emptyImage" alt="">
-                                <p class="adminAllListArea__emptyDescription">
 
-                                </p>
-                            </div>
-                        </ul>
-                    </div>
-
-                    <div id="_contactDetailAreaWrapper" class="contactDetailInfo" style="display: none;">
-                        <div id="_contactDetailArea" class="contactDetailInfo__container" data-aid=""
-                             style="display: none;">
-                            <div class="contactDetailInfo__header">
-                                <div class="_profileName contactDetailInfo__headerText"></div>
-                                <div class="contactDetailInfo__closeIconContainer">
-                                    <span id="_contactDetailClose" role="button">
-                                      <svg viewBox="0 0 10 10" class="contactDetailInfo__closeIcon" width="16"
-                                           height="16">
-                                        <use fill-rule="evenodd" xlink:href="#icon_cancel"></use>
-                                      </svg>
-                                    </span>
-                                    <span class="icoTextHide">Close</span>
-                                </div>
-                            </div>
-
-                            <div class="_profileContactDetailCover contactDetailInfo__cover"></div>
-
-                            <div class="contactDetailInfo__infoTable">
-                                <div class="contactDetailInfo__infoTableRow">
-                                    <label class="contactDetailInfo__infoTableLabel">Bio:</label>
-                                    <div class="_profileNameDescription contactDetailInfo__infoTableContent"></div>
-                                </div>
-                                <div class="contactDetailInfo__infoTableRow">
-                                    <label class="contactDetailInfo__infoTableLabel">Organization name:</label>
-                                    <div class="_profileOrgName contactDetailInfo__infoTableContent"></div>
-                                </div>
-                                <div class="contactDetailInfo__infoTableRow">
-                                    <label class="contactDetailInfo__infoTableLabel">Department / Division:</label>
-                                    <div class="_profileDepartment contactDetailInfo__infoTableContent"></div>
-                                </div>
-                                <div class="contactDetailInfo__infoTableRow">
-                                    <label class="contactDetailInfo__infoTableLabel">Title:</label>
-                                    <div class="_profileTitle contactDetailInfo__infoTableContent"></div>
-                                </div>
-                                <div class="contactDetailInfo__infoTableRow">
-                                    <label class="contactDetailInfo__infoTableLabel">Address:</label>
-                                    <div class="_profileAddress contactDetailInfo__infoTableContent"></div>
-                                </div>
-                                <div class="contactDetailInfo__infoTableRow">
-                                    <label class="contactDetailInfo__infoTableLabel">URL:</label>
-                                    <div class="_profileUrl contactDetailInfo__infoTableContent"></div>
-                                </div>
-                                <div class="contactDetailInfo__infoTableRow">
-                                    <label class="contactDetailInfo__infoTableLabel">e-mail:</label>
-                                    <div class="_profileEmail contactDetailInfo__infoTableContent"></div>
-                                </div>
-                                <div class="contactDetailInfo__infoTableRow">
-                                    <label class="contactDetailInfo__infoTableLabel">Phone (work):</label>
-                                    <div class="_profileOrgTel contactDetailInfo__infoTableContent"></div>
-                                </div>
-                                <div class="contactDetailInfo__infoTableRow">
-                                    <label class="contactDetailInfo__infoTableLabel">Ext. number:</label>
-                                    <div class="_profileExtensionTel contactDetailInfo__infoTableContent"></div>
-                                </div>
-                                <div class="contactDetailInfo__infoTableRow">
-                                    <label class="contactDetailInfo__infoTableLabel">Mobile:</label>
-                                    <div class="_profileMobileTel contactDetailInfo__infoTableContent"></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div id="_contactDetailBlankArea" class="contactDetailInfo__container--blank">
-                            <p class="contactDetailInfo__blankText">
-                                Select contact for details
-                            </p>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <div class="_cwFWFooter contactInviteMailFooter" style="">
-                <div id="_contactInviteMail" class="_button btnPrimary btnLarge _cwBN button" role="button"
-                     @click="postInviteByEmail">Send
-                </div>
-                <div id="_contactOtherInviteMail" class="_button btnLarge _cwBN button" role="button"
-                     style="display: none;">Invite more
-                </div>
-            </div>
             <div style="display:none" class="_cwFWButtonFooter floatWindow__footer"></div>
         </div>
     </div>
@@ -224,7 +45,7 @@
 
 <script>
     export default {
-        name: "Contact",
+        name: "PersonalInfo",
         data() {
             return {
                 isHidden: true,
@@ -269,8 +90,8 @@
                 this.itemEmails[0].displayCloseIcon = 'block';
                 this.itemEmails.push({id: 'itemEmail' + this.itemEmails.count + 1, text: '', displayCloseIcon: 'block'})
             },
-            closeContactPopup() {
-                this.$store.dispatch("setContactDisplay", 'none');
+            closeProfilePopup() {
+                this.$store.dispatch('setProfileDisplay', 'none');
             },
             toggleMailInvite() {
                 if (this.individualAdd === 'block') {
@@ -281,23 +102,7 @@
                     this.individualAdd = 'block';
                 }
             },
-            postInviteByEmail() {
-                // axios.post("API invite by email", {
-                //     username: this.username,
-                //     password: this.password,
-                //     only_token: true
-                // })
-                //     .then(res => {
-                //         let user = {
-                //             token: res.data.data.api_token,
-                //             email: res.data.data.email,
-                //             employee: res.data.data.employee
-                //         };
-                //         localStorage.setItem("user", user);
-                //         this.$router.push({path: "/"});
-                //     })
-                console.log("Send data to server");
-            },
+
             floatWindowSetsize() {
                 this.marginPopup = (this.$refs.floatWindow.clientWidth - 908) / 2 + 'px';
             }

@@ -7,5 +7,9 @@ export default {
     },
     setContactDisplay({commit}, style) {
         commit('setContactDisplay', style)
-    }
+    },
+
+    setProfileDisplay({commit}, style) {
+        commit('setProfileDisplay', style)
+    },
 }

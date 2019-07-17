@@ -4,6 +4,9 @@ export default {
   },
   getContactDisplay: state => {
     return state.openContactDisplay
+  },
+  getProfileDisplay: state => {
+    return state.openProfiletDisplay
   }
 
 }

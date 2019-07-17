@@ -9,5 +9,9 @@ export default {
     },
     setContactDisplay(state, style) {
         state.openContactDisplay = style;
-    }
+    },
+
+    setProfileDisplay(state, style) {
+      state.openProfileDisplay = style;
+  },
 }

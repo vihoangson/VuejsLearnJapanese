@@ -44,7 +44,7 @@
         <div class="menu" role="menu" v-if="!isHidden">
             <ul class="account-menu">
                 <li class="menu-item" id="profile">
-                    <a>Profile</a>
+                    <a  @click="openProfile">Profile</a>
                 </li>
                 <li class="menu-item" id="personal">
                     <a>Personal Settings</a>
@@ -229,7 +229,10 @@
                 this.$router.push({path: "/login"});
             },
             openContact() {
-                this.$store.dispatch("setContactDisplay", 'block');
+                this.$store.dispatch('setContactDisplay', 'block');
+            },
+            openProfile(){
+              this.$store.dispatch('setProfileDisplay', 'block');
             }
         }
     }
