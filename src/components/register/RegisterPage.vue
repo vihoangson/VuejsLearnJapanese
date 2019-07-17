@@ -70,7 +70,10 @@
 </template>
 
 <script>
-import axios from 'axios'
+import { API } from '../../services/api';
+import { AppConst } from '../../common/AppConst';
+import { ApiConst } from '../../common/ApiConst';
+
 import VueRecaptcha from 'vue-recaptcha';
 export default {
 	name: "Register",
@@ -94,16 +97,14 @@ export default {
 			password: "",
             confirmPassword: "",
             recaptchaVerified: false
-		}
-	},
-	computed: {
-	},
-	watch: {
-	},
-	created () {},
-	mounted () {},
-	methods: {
-        markRecaptchaAsVerified(response) {
+        };
+    },
+    computed: {},
+    watch: {},
+    created() {},
+    mounted() {},
+    methods: {
+        markRecaptchaAsVerified() {
             this.errors.pleaseTickRecaptchaMessage = '';
             this.recaptchaVerified = true;
         },
@@ -129,7 +130,12 @@ export default {
             if (this.company === "") {
                 isValid = true
                 this.errors.company = "Company required !"
-			}
+
+            if (this.company === '') {
+                isValid = true;
+                this.errors.company = 'Company required !';
+            }
+
 
 			if (this.company.length > 55 && this.errors.company === "") {
                 isValid = true
@@ -146,14 +152,14 @@ export default {
                 this.errors.email = "Email invalid."
             }
 
-            if (this.password === "") {
-                isValid = true
-                this.errors.password = "Password required !"
+            if (this.email === '') {
+                isValid = true;
+                this.errors.email = 'Email required !';
             }
-            let regexPassword =  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/
-            if (!regexPassword.test(this.password) && this.errors.password === "") {
-                isValid = true
-                this.errors.password = "Minimum of 8 characters including lower case letter, upper case letter and numbers"
+            let regexEmail = /[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,3}/;
+            if (!regexEmail.test(this.email) && this.errors.email === '') {
+                isValid = true;
+                this.errors.email = 'Email invalid.';
             }
 
             if (this.confirmPassword === "") {
@@ -170,10 +176,12 @@ export default {
                 this.errors.confirmPassword = "Password and confirm password are not the same."
             }
 
-            if (!this.recaptchaVerified) {
-                isValid = true
-                this.errors.pleaseTickRecaptchaMessage = "Please tick recaptcha!"
             }
+
+            // if (!this.recaptchaVerified) {
+            //     isValid = true
+            //     this.errors.pleaseTickRecaptchaMessage = "Please tick recaptcha!"
+            // }
 
             return isValid
 
@@ -204,88 +212,88 @@ export default {
 				email   : this.email,
 				password   : this.password,
 			}
-			this.createData(data)
-                .then((data) => {
-                    this.$router.push({name: 'login'})
-                }).catch()
 
-		}
-	}
-}
+            API.POST(ApiConst.REGISTER, data).then(res => {
+                this.$router.push({ name: 'login' });
+            });
+        },
+        back() {}
+    }
+};
 </script>
 
 <style scoped>
-	header {
-		-webkit-box-sizing: border-box;
-		-moz-box-sizing: border-box;
-		box-sizing: border-box;
-		width: 960px;
-		margin: 0 auto;
-		padding-top: 20px;
-	}
-	.register-inner {
-		width: 760px;
-		margin: 0 auto;
-	}
-	.register-content {
-		padding: 50px 0 50px 0;
-		background-color: #fff;
-	}
-	.register-inner h2 {
-		font-size: 2em;
-		font-weight: 300;
-		line-height: 1.4;
-	}
-	.register {
-		padding: 25px 70px 30px;
-		margin-bottom: 30px;
-		border-radius: 4px;
-		background-color: #f5f5f4;
-	}
-	.register label {
-		box-sizing: border-box;
-		color: #34362f;
-		font-size: 0.875em;
-		font-weight: 700;
-		line-height: 1;
-	}
-	.register-button {
-		text-align: center;
-	}
-	.btn {
-		color: #fff;
-		border: 0;
-		border-radius: 7px;
-		padding: 20px 20px;
-		-webkit-box-shadow: none;
-		box-shadow: none;
-	}
-	.btn-register {
-		background-color: #f9423a;
-		width: 200px;
-		font-size: 16px;
-	}
-	.error{
-		color: red;
-	}
-	.register-input {
-		box-sizing: border-box;
-		padding: 8px 5px;
-		border: solid 1px #b8b9b6;
-		border-radius: 3px;
-		background-color: #fff;
-		margin-top: 8px;
-	}
-	.register-form-row {
-		margin-bottom: 24px;
-	}
-	.register input[type="text"],
-	.register input[type="email"],
-	.register input[type="password"] {
-		outline: none;
-		border: none;
-		width: 100%;
-		padding: 7px;
-		font-size: 18px;
-	}
+header {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 960px;
+    margin: 0 auto;
+    padding-top: 20px;
+}
+.register-inner {
+    width: 760px;
+    margin: 0 auto;
+}
+.register-content {
+    padding: 50px 0 50px 0;
+    background-color: #fff;
+}
+.register-inner h2 {
+    font-size: 2em;
+    font-weight: 300;
+    line-height: 1.4;
+}
+.register {
+    padding: 25px 70px 30px;
+    margin-bottom: 30px;
+    border-radius: 4px;
+    background-color: #f5f5f4;
+}
+.register label {
+    box-sizing: border-box;
+    color: #34362f;
+    font-size: 0.875em;
+    font-weight: 700;
+    line-height: 1;
+}
+.register-button {
+    text-align: center;
+}
+.btn {
+    color: #fff;
+    border: 0;
+    border-radius: 7px;
+    padding: 20px 20px;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+}
+.btn-register {
+    background-color: #f9423a;
+    width: 200px;
+    font-size: 16px;
+}
+.error {
+    color: red;
+}
+.register-input {
+    box-sizing: border-box;
+    padding: 8px 5px;
+    border: solid 1px #b8b9b6;
+    border-radius: 3px;
+    background-color: #fff;
+    margin-top: 8px;
+}
+.register-form-row {
+    margin-bottom: 24px;
+}
+.register input[type='text'],
+.register input[type='email'],
+.register input[type='password'] {
+    outline: none;
+    border: none;
+    width: 100%;
+    padding: 7px;
+    font-size: 18px;
+}
 </style>
