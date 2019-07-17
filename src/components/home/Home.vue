@@ -27,6 +27,10 @@ export default {
         Header,
         Room,
         Chat
+    },
+    created() {
+        let user = localStorage.getItem('user');
+        this.$store.dispatch('setCurrentUser', JSON.parse(user));
     }
 };
 </script>

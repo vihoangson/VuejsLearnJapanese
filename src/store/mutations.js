@@ -5,5 +5,8 @@ export default {
     remove_message(state, message) {
         let idx = state.list_message.indexOf(message);
         if (idx > -1) return state.list_message.splice(idx, 1);
+    },
+    set_current_user(state, obj) {
+        return (state.current_user = obj);
     }
 };

@@ -63,10 +63,10 @@
             v-bind:class="{active: !isHidden}"
         >
             <div class="avatar">
-                <img src="https://appdata.chatwork.com/avatar/3196/3196108.png" alt />
+                <img :src="this.user.icon_img" alt />
             </div>
             <p class="status-name">
-                <span class="name">Hoang Sy Hung [PG]</span>
+                <span class="name">{{this.$store.getters.get_current_user.email}}</span>
                 <span class="menu-icon">
                     <svg
                         viewBox="0 0 10 10"
@@ -245,13 +245,15 @@ export default {
     mixins: [modalMixin],
     data() {
         return {
-            isHidden: true
+            isHidden: true,
+            user: this.$store.getters.get_current_user
         };
     },
     methods: {
         logout() {
-            let token = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER))
-                .token;
+            console.log(this.user);
+            let token = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER)).token;
+
             API.POST(ApiConst.LOGOUT, null).then(res => {
                 if (res.error_code === 0) {
                     localStorage.removeItem(AppConst.LOCAL_USER);

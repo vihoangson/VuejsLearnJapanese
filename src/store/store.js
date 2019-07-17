@@ -9,6 +9,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
+        current_user: {},
         list_message: []
     },
     getters,

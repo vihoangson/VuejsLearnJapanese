@@ -16,7 +16,7 @@ Vue.use(Moment);
 Vue.use(
     new VueSocketIO({
         debug: true,
-        connection: 'http://172.16.218.252:3000'
+        connection: 'http://127.0.0.1:3000'
     })
 );
 
@@ -32,7 +32,7 @@ new Vue({
         connect: function() {
             console.log('Connected..');
         },
-        customEmit: function(e) {
+        broadcast: function(e) {
             this.$store.dispatch('addTask', e);
         }
     }
