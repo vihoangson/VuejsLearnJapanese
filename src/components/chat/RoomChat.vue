@@ -382,7 +382,8 @@ export default {
       });
     },
     iconEdit(id){
-      this.$bvModal.show('modal-prevent-group')
+      this.$root.$emit('modal-prevent-id', id)
+      this.$bvModal.show('modal-prevent-group');
     },
     iconDelete(id){
       this.deleteGroup(id).then(data => {
