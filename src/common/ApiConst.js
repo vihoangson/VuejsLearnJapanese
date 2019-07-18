@@ -3,5 +3,6 @@ export const ApiConst = {
     LOGOUT: '/api/v1/user/logout',
     REGISTER: '/api/v1/user/register',
     DETAIL_REGISTER: '/api/v1/user/details',
-    EDIT_REGISTER: '/api/v1/user/register/edit'
+    EDIT_REGISTER: '/api/v1/user/register/edit',
+    RECEIVE_MESSAGE: '/api/v1/message/receive'
 };

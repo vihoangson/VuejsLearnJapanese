@@ -1,4 +1,7 @@
 export default {
+    setListMessage({ commit }, list){
+        commit('set_list_message', list);
+    },
     addTask({ commit }, message) {
         commit('add_message', message);
     },

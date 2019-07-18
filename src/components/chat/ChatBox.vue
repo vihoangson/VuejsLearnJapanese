@@ -12,23 +12,27 @@
         </div>
         <div class="chat-box-content" id="chat-box-content" :style="{'height': `${myStyles}px`}">
             <div class="timeline">
-                <div class="timeline-message">
+                <div
+                    class="timeline-message"
+                    :style="{'height': `${timelineMessage}px`, 'overflow': 'hidden', 'overflow-y': 'scroll'}"
+                >
                     <div
                         class="timeline-message-body"
-                        v-for="(item, index) in list_message"
+                        v-for="(item, index) in this.$store.getters.get_list_message"
                         :key="`item-${index}`"
                     >
                         <div class="timeline-avatar">
-                            <img :src="item.image" alt class="avatar" />
+                            <img :src="item.user_info.icon_img" alt class="avatar" />
                         </div>
                         <div class="timeline-content">
                             <div class="timeline-content-header">
-                                <p class="timeline-content-header-username">{{item.name}}</p>
+                                <p class="timeline-content-header-username">{{item.user_info.name}}</p>
                                 <p
                                     class="timeline-content-header-organization"
                                 >{{item.organization}}</p>
                             </div>
-                            <div class="timeline-content-message">{{item.content}}</div>
+                            <div class="timeline-content-message">{{item.message}}</div>
+                            <ChatAction></ChatAction>
                         </div>
                     </div>
                 </div>
@@ -100,7 +104,7 @@
                     </div>
                     <div class="submit-container">
                         <span class="enter-action">
-                            <input type="checkbox" name id="chkenter" />
+                            <input type="checkbox" id="chkenter" v-model="enterToSendMessage" />
                         </span>
                         <label for="chkenter">
                             <span class="txt-enter-action">Press Enter to send</span>
@@ -119,10 +123,11 @@
                     <textarea
                         ref="textarea"
                         cols="30"
-                        rows="10"
+                        rows="8"
                         placeholder="Enter your message here"
                         v-model="message"
                         @input="$emit('input', $event.target.value)"
+                        @keyup.enter.exact="pressEnterToSendMessage($event)"
                     ></textarea>
                 </div>
             </div>
@@ -224,6 +229,9 @@ import 'vue2-dropzone/dist/vue2Dropzone.min.css';
 import { Picker } from 'emoji-mart-vue';
 import TextareaEmojiPicker from '../global/TextareaEmojiPicker';
 import { AppConst } from '../../common/AppConst';
+import { ApiConst } from '../../common/ApiConst';
+import { API } from '../../services/api';
+import ChatAction from './ChatAction';
 
 // import ImportFile from "ImportFile";
 const EVENT_SEND = 'send_message';
@@ -234,7 +242,8 @@ export default {
     components: {
         Picker,
         TextareaEmojiPicker,
-        vueDropzone: vue2Dropzone
+        vueDropzone: vue2Dropzone,
+        ChatAction
     },
     props: {
         value: {
@@ -244,6 +253,7 @@ export default {
     },
     data() {
         return {
+            enterToSendMessage: true,
             showDropzone: false,
             height: 0,
             message: '',
@@ -264,27 +274,34 @@ export default {
                     '<i class="fa fa-5x fa-cloud-upload"></i><div>' +
                     'Kéo file vào đây</div>'
             },
-            errors: null
+            errors: null,
+            user: this.$store.getters.get_current_user
         };
     },
     created() {
         window.addEventListener('resize', this.handleResize);
         this.handleResize();
+        let obj = {
+            page: 1,
+            room_id: 1
+        };
+        API.POST(ApiConst.RECEIVE_MESSAGE, obj).then(res => {
+            console.log(res);
+            if (res.error_code === 0)
+                this.$store.dispatch('setListMessage', res.data);
+        });
     },
     methods: {
         handleResize() {
             this.height = window.innerHeight - 45;
         },
         sendMessage() {
-            console.log(localStorage.getItem(AppConst.LOCAL_USER));
-
-            let user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
             let msg = {
-                user_id: user.user_id,
+                user_id: this.user.user_id,
                 room_id: 1,
                 type: 0,
                 message: this.message,
-                token: user.token
+                token: this.user.token
             };
             this.$socket.emit(EVENT_SEND, msg);
 
@@ -332,11 +349,20 @@ export default {
         },
         sendMessageFile() {
             this.$refs.myVueDropzone.processQueue();
+        },
+        pressEnterToSendMessage() {
+            if (this.enterToSendMessage) this.sendMessage();
+        },
+        check: function(e) {
+            this.enterToSendMessage = e.target.value;
         }
     },
     computed: {
         myStyles() {
             return this.height - 45;
+        },
+        timelineMessage() {
+            return this.height - 45 - 200;
         }
     }
 };
@@ -450,8 +476,17 @@ export default {
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;
 }
+.timeline-message-body:hover {
+    border-top: 1px solid #b1d6ed;
+    border-bottom: 1px solid #b1d6ed;
+    background-color: #f8fbff;
+}
+.timeline-message-body:hover .actionArea {
+    display: block;
+}
 .timeline-message-body {
     padding: 8px 16px;
+    position: relative;
 }
 .timeline-avatar {
     float: left;
