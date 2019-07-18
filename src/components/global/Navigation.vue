@@ -66,7 +66,7 @@
                 <img :src="this.user.icon_img" alt />
             </div>
             <p class="status-name">
-                <span class="name">{{this.$store.getters.get_current_user.email}}</span>
+                <span class="name">{{user.name}}</span>
                 <span class="menu-icon">
                     <svg
                         viewBox="0 0 10 10"
@@ -87,7 +87,7 @@
                     <a>Personal Settings</a>
                 </li>
                 <li class="menu-item" id="account">
-                    <a>Account Settings</a>
+                    <a @click="ShowFormEditRegister">Account Settings</a>
                 </li>
                 <li class="menu-item" id="api">
                     <a>API Setting</a>
@@ -103,8 +103,8 @@
 <script>
 import BaseContact from '../contact/BaseContact.vue';
 import modalMixin from '@/mixins/modal';
-import { AppConst } from '../../common/AppConst';
 import { ApiConst } from '../../common/ApiConst';
+import { AppConst } from '../../common/AppConst';
 import { API } from '../../services/api';
 export default {
     name: 'Navigation',
@@ -117,9 +117,6 @@ export default {
     },
     methods: {
         logout() {
-            console.log(this.user);
-            let token = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER))
-                .token;
 
             API.POST(ApiConst.LOGOUT, null).then(res => {
                 if (res.error_code === 0) {

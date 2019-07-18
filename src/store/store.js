@@ -8,11 +8,11 @@ import actions from './actions';
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-    state: {
-        current_user: {},
-        list_message: []
-    },
-    getters,
-    mutations,
-    actions
+  state: {
+    current_user: {},
+    list_message: []
+  },
+  getters,
+  mutations,
+  actions
 });
