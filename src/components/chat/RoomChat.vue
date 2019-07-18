@@ -37,7 +37,7 @@
                         </div>
                     </div>
                 </li>
-                <li>
+                <li style="display:none">
                     <div class="name">
                         <div class="room-image">
                             <img src="https://appdata.chatwork.com/icon/736/736137.rsz.jpg" alt />
