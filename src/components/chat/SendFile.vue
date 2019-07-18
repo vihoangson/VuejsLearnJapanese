@@ -12,7 +12,7 @@
                     ref="myVueDropzone"
                     :options="dropzoneOptions"
                     @vdropzone-file-added="getFile"
-                    @vdropzone-success="successImport"
+                    @vdropzone-success="catchResponse"
                     @vdropzone-error="showErrorMessage"
                 ></vue-dropzone>
             </div>
@@ -122,7 +122,13 @@ export default {
             console.log(file);
         },
         showErrorMessage(file) {
-            this.$refs['myVueDropzone'].removeFile(file);
+            // this.$refs['myVueDropzone'].removeFile(file);
+        },
+        catchResponse(file, response) {
+            console.log(response);
+            if (response.success) {
+                this.$refs['myVueDropzone'].removeFile(file);
+            }
         },
         showDropzoneForm() {
             this.showPageInModal(
