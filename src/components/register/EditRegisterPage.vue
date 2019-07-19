@@ -64,7 +64,7 @@
 							<button
 									class="btn btn-register"
 									type="button"
-									@click="save">Register
+									@click="save">Save
 							</button>
 						</div>
 					</form>
@@ -135,20 +135,6 @@ export default {
     },
 	mounted () {},
 	methods: {
-	    validatePassword (password, errorPassword) {
-            let regexPassword =  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/
-            if (!regexPassword.test(password) && errorPassword === "") {
-                return {
-                    'isValid' : false,
-					'message' : "Minimum of 8 characters including lower case letter, upper case letter and numbers"
-				}
-            }
-
-            return {
-                'isValid' : true,
-                'message' : ""
-            }
-		},
         checkValidateForm() {
             let isValid = false
             this.errors.name = ""
@@ -172,21 +158,9 @@ export default {
                     this.errors.currentPassword = "Password required !"
                 }
 
-                let currentPassword = this.validatePassword(this.currentPassword,this.errors.currentPassword)
-                if (!currentPassword.isValid) {
-                    isValid = true
-                    this.errors.currentPassword = currentPassword.message
-				}
-
                 if (this.newPassword === "") {
                     isValid = true
                     this.errors.newPassword = "New password required !"
-                }
-
-                let newPassword = this.validatePassword(this.newPassword,this.errors.newPassword)
-                if (!newPassword.isValid) {
-                    isValid = true
-                    this.errors.newPassword = newPassword.message
                 }
 
                 if (this.newPassword === this.currentPassword && this.errors.newPassword === '') {
@@ -199,12 +173,6 @@ export default {
                     this.errors.confirmPassword = "Confirm password required !"
                 }
 
-                let confirmPassword = this.validatePassword(this.confirmPassword,this.errors.confirmPassword)
-                if (!confirmPassword.isValid) {
-                    isValid = true
-                    this.errors.confirmPassword = confirmPassword.message
-                }
-
                 if (this.newPassword !== this.confirmPassword && this.errors.confirmPassword === '') {
                     isValid = true
                     this.errors.confirmPassword = "New password and confirm password are not the same."
@@ -213,24 +181,6 @@ export default {
 
             return isValid
 
-		},
-		updateData(data) {
-	        console.log(data)
-            return new Promise((resolve, reject) => {
-                axios.post("http://sns.dev.com/api/v1/user/register",data, {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'accept': 'application/json',
-                        "Access-Control-Allow-Origin": "*",
-                    }
-                })
-                    .then((res) => {
-                        resolve(res)
-                    })
-                    .catch(function (e) {
-                        reject(e)
-                    })
-            })
 		},
 	    save() {
 	        if (this.checkValidateForm()) return
@@ -247,7 +197,9 @@ export default {
 
             }
             API.POST(ApiConst.EDIT_REGISTER,defaultData).then(res => {
-                this.$router.push({name: 'home'})
+                if (res.error_code === 0) {
+                    this.$router.push({name: 'home'})
+                }
             });
 		}
 	}

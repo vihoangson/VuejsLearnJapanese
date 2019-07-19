@@ -162,21 +162,10 @@ export default {
                 isValid = true;
                 this.errors.password = 'Password required !';
             }
-            let regexPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
-            if (!regexPassword.test(this.password) && this.errors.password === '') {
-                isValid = true;
-                this.errors.password =
-                    'Minimum of 8 characters including lower case letter, upper case letter and numbers';
-            }
 
             if (this.confirmPassword === '') {
                 isValid = true;
                 this.errors.confirmPassword = 'Confirm password required !';
-            }
-            if (!regexPassword.test(this.confirmPassword) && this.errors.confirmPassword === '') {
-                isValid = true;
-                this.errors.confirmPassword =
-                    'Minimum of 8 characters including lower case letter, upper case letter and numbers';
             }
 
             if (this.password !== this.confirmPassword && this.errors.confirmPassword === '') {
@@ -200,8 +189,9 @@ export default {
                 password: this.password
             };
             API.POST(ApiConst.REGISTER, data).then(res => {
-                console.log(res);
-                this.$router.push({ name: 'login' });
+                if (res.error_code === 0) {
+                    this.$router.push({ name: 'login' });
+                }
             });
         }
     }
