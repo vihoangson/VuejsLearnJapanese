@@ -11,7 +11,8 @@ export default new Vuex.Store({
     state: {
         list_message: [],
         openContactDisplay: 'none',
-        openProfileDisplay: 'none'
+        openProfileDisplay: 'none',
+        openProfileEdit: 'none'
     },
     getters,
     mutations,

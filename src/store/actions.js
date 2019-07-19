@@ -12,4 +12,8 @@ export default {
     setProfileDisplay({commit}, style) {
         commit('setProfileDisplay', style)
     },
+
+    setProfileEdit({commit}, style) {
+        commit('setProfileEdit', style)
+    },
 }

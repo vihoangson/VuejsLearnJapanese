@@ -1,6 +1,6 @@
 <template>
-    <div class="_cwFWBase floatWindow" ref="floatWindow" @click.self="closeProfilePopup" style="z-index: 1002;"
-         v-bind:style="{display: this.$store.state.openProfileDisplay, height: floatWindowHeight}">
+    <div class="_cwFWBase floatWindow" ref="floatWindow" @click.self="closeProfileEdit" style="z-index: 1002;"
+         v-bind:style="{display: this.$store.state.openProfileEdit, height: floatWindowHeight}">
         <div id="_contactWindow" class="contactWindow _cwFWInner" v-bind:style="{left: marginPopup, right: marginPopup}" role="dialog"
              aria-label="Contacts">
 
@@ -9,7 +9,7 @@
             <div class="dialogContainer__header">
                 <h1 class="_floatWindowTitle floatWindow__title"><span class="autotrim">Profile name</span></h1>
                 <div class="floatWindow__closeButtonContainer">
-                  <span class="_cwFWButton floatWindow__closeButton" data-cwui-fw-idx="-1" @click="closeProfilePopup">
+                  <span class="_cwFWButton floatWindow__closeButton" data-cwui-fw-idx="-1" @click="closeProfileEdit">
                     <svg viewBox="0 0 10 10" class="floatWindow__closeButtonIcon" width="16" height="16">
                       <use fill-rule="evenodd" xlink:href="#icon_cancel"></use>
                     </svg>
@@ -24,34 +24,21 @@
 
                     <div class="_profileCover profileShowDialog__coverContainer">
                         <img class=" _coverImage _coverAid2571977 coverImage" data-aid="2571977" src="https://appdata.chatwork.com/cover/1345/1345682.jpg">
+                        <div id="_profileEditCoverControl" class="_profilePhotoEditBar profileEditDialog__editCoverButton" style="display: block;">
+                            Edit cover photo
+                        </div>
+
                     </div>
                     <div class="_profileAvatar profileShowDialog__avatarContainer">
                         <img class=" avatarHuge _avatar _avatarAid2571977" data-aid="2571977" src="https://appdata.chatwork.com/avatar/3431/3431235.gif">
+                        <div id="_profileEditAvatarControl" class="_profilePhotoEditBar profileEditDialog__editAvatarButton" style="display: block;">
+                            Edit
+                        </div>
                     </div>
 
                 </div>
 
                 <div class="profileShowDialog__bodyContainer">
-
-                    <div class="profileShowDialog__profileHeader">
-                        <div class="profileShowDialog__titleContainer">
-
-                            <div class="_profileName profileShowDialog__userName">
-                                <span class="_nameAid2571977">Le Gia Le [PG]</span>
-                            </div>
-
-                            <div class="_profileButton profileShowDialog__buttonContainer">
-                                <div class="_profileEdit profileShowDialog__editProfileButton" @click="openProfileEditDisplay" >Edit profiles</div>
-                                <div class="_roomLink _moveButton profileShowDialog__directRoomButton" data-rid="80736120">My Chat</div>
-                            </div>
-                        </div>
-                        <ul class="profileShowDialog__profileHeaderItemList">
-                            <li class="_profileOrgName profileShowDialog__profileHeaderItem">
-                                <span class="cw_onm2571977">LAMPART Co., Ltd.</span>
-                            </li>
-
-                        </ul>
-                    </div>
 
                     <div class="profileShowDialog__profileBody">
                         <ul class="profileShowDialog__profileBodyItemList">
@@ -62,16 +49,28 @@
                                 </span>
 
                                 <span class="_profileDepartment profileShowDialog__profileBodyItemContent">
+                                    <input  class="profileShowDialog__profileBodyInput" v-bind:name="item.input_name" type="text" >
                                 </span>
 
                             </li>
                         </ul>
                     </div>
+
                 </div>
             </div>
 
 
-            <div style="display:none" class="_cwFWButtonFooter floatWindow__footer"></div>
+            <div style="" class="_cwDGFooter dialogContainer__footer">
+                <div role="button" aria-label="Save" class="_cwDGButton  btnPrimary" data-idx="0" tabindex="200">
+                    Save
+                </div>
+                <div role="button" aria-label="Cancel" class="_cwDGButton  _cwDGButtonCancel button buttonGray" data-idx="1" tabindex="201">
+                    Cancel
+                </div>
+            </div>
+
+
+
         </div>
     </div>
 </template>
@@ -79,26 +78,20 @@
 
 <script>
     export default {
-        name: "PersonalInfo",
+        name: "EditPersonalInfo",
         data() {
             return {
                 isHidden: true,
-                displayCloseIcon: 'none',
-                individualAdd: 'block',
+                displayCloseIcon: 'block',
+
                 floatWindowHeight: '0px',
-                bulkAdd: 'none',
+
                 marginPopup: '0px',
 
                 itemProfile: [
-                    { content: 'Organization name:' },
-                    { content: 'Department / Division:' },
-                    { content: 'Title:' },
-                    { content: 'Address:' },
-                    { content: 'URL:' },
-                    { content: 'E-mail:' },
-                    { content: 'Phone (work):' },
-                    { content: 'Ext. number:' },
-                    { content: 'Mobile:' }
+                    { content: 'Display name:', input_name:'name' },
+                    { content: 'Organization name:', input_name:'company' },
+                    { content: 'E-mail:', input_name:'email' }
                 ]
             }
         },
@@ -112,33 +105,8 @@
                 this.floatWindowHeight = window.innerHeight + 'px';
             },
 
-            // onChangeEmail(object, index) {
-            //     if (index === 0 && object.text.length === 0) {
-            //         object.displayCloseIcon = 'none'
-            //     } else {
-            //         object.displayCloseIcon = 'block'
-            //     }
-            // },
-            // cancelEmailInput(object, index) {
-            //     if (this.itemEmails.length > 1) {
-            //         this.itemEmails.splice(index, 1);
-            //     } else {
-            //         object.text = '';
-            //     }
-            //     if (this.itemEmails.length === 1 && this.itemEmails[0].text.length === 0) {
-            //         this.itemEmails[0].displayCloseIcon = 'none';
-            //     }
-            // },
-            // addMore() {
-            //     this.itemEmails[0].displayCloseIcon = 'block';
-            //     this.itemEmails.push({id: 'itemEmail' + this.itemEmails.count + 1, text: '', displayCloseIcon: 'block'})
-            // },
-
-            closeProfilePopup() {
-                this.$store.dispatch('setProfileDisplay', 'none');
-            },
-            openProfileEditDisplay(){
-                this.$store.dispatch('setProfileEdit', 'block');
+            closeProfileEdit() {
+                this.$store.dispatch('setProfileEdit', 'none');
             },
 
             toggleMailInvite() {
@@ -159,6 +127,117 @@
 </script>
 
 <style>
+
+    .profileShowDialog__profileBodyInput{
+
+    }
+
+    .dialogContainer__footer .button:first-child {
+        margin-left: 0;
+    }
+
+    .dialogContainer__footer .button {
+        opacity: 1;
+        margin-left: 10px;
+    }
+
+    .btnPrimary:hover {
+        border-color: #0074b7;
+        color: #fff;
+        fill: #fff;
+        background-color: #0074b7;
+        text-decoration: none;
+    }
+    .btnPrimary {
+        border-radius: 2px;
+        display: inline-block;
+        position: relative;
+        box-sizing: border-box;
+        padding: 0 12px;
+        min-width: 26px;
+        min-height: 26px;
+        border: 1px solid #006a9c;
+        color: #fff;
+        fill: #34362f;
+        background-color: #006a9c;
+        vertical-align: middle;
+        text-align: center;
+        text-decoration: none;
+        line-height: 26px;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .button:hover {
+        border-color: #cccccc;
+        color: #676863;
+        fill: #676863;
+        background-color: #fff;
+        text-decoration: none;
+    }
+    .button {
+        border-radius: 2px;
+        display: inline-block;
+        position: relative;
+        box-sizing: border-box;
+        padding: 0 12px;
+        min-width: 26px;
+        min-height: 26px;
+        border: 1px solid #b3b3b3;
+        color: #34362f;
+        fill: #34362f;
+        background-color: #f5f5f4;
+        vertical-align: middle;
+        text-align: center;
+        text-decoration: none;
+        line-height: 26px;
+        cursor: pointer;
+        user-select: none;
+    }
+
+    .dialogContainer__footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 40px;
+        border-top: 1px solid #b3b3b3;
+        background: #e6e6e6;
+        border-radius: 0 0 4px 4px;
+    }
+
+
+    .profileEditDialog__editCoverButton {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 800px;
+        height: 30px;
+        line-height: 30px;
+        text-align: center;
+        background: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
+    .profileEditDialog__editAvatarButton {
+        position: absolute;
+        left: -5px;
+        bottom: -5px;
+        height: 30px;
+        width: 140px;
+        line-height: 30px;
+        background: rgba(0, 0, 0, 0.8);
+        text-align: center;
+        color: #fff;
+        font-weight: 700;
+        cursor: pointer;
+    }
+
 
     .profileShowDialog__profileBodyItemLabel {
         display: block;
@@ -296,7 +375,7 @@
         border-radius: 4px 4px 0 0;
     }
 
-/*==========*/
+    /*==========*/
 
     .floatWindow {
         position: absolute;

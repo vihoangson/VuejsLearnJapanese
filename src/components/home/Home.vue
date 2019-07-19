@@ -6,6 +6,7 @@
             <Chat></Chat>
             <Contact></Contact>
             <PersonalInfo></PersonalInfo>
+            <EditPersonalInfo></EditPersonalInfo>
         </div>
     </div>
 </template>
@@ -25,6 +26,7 @@
     import Chat from '../chat/ChatBox'
     import Contact from '../contact/Contact'
     import PersonalInfo from '../personal_info/PersonalInfo'
+    import EditPersonalInfo from '../personal_info/EditPersonalInfo'
 
     export default {
         name: "Home",
@@ -33,7 +35,8 @@
             Room,
             Chat,
             Contact,
-            PersonalInfo
+            PersonalInfo,
+            EditPersonalInfo
         }
     };
 </script>

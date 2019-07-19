@@ -12,6 +12,11 @@ export default {
     },
 
     setProfileDisplay(state, style) {
-      state.openProfileDisplay = style;
-  },
+        state.openProfileDisplay = style;
+    },
+    setProfileEdit(state, style) {
+        state.openProfileEdit = style;
+    },
+
+
 }

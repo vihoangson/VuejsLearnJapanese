@@ -6,7 +6,10 @@ export default {
     return state.openContactDisplay
   },
   getProfileDisplay: state => {
-    return state.openProfiletDisplay
+    return state.openProfileDisplay
+  },
+  getProfileEdit: state => {
+      return state.openProfileEdit
   }
 
 }
