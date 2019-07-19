@@ -64,7 +64,7 @@
                 <div role="button" aria-label="Save" class="_cwDGButton  btnPrimary" data-idx="0" tabindex="200">
                     Save
                 </div>
-                <div role="button" aria-label="Cancel" class="_cwDGButton  _cwDGButtonCancel button buttonGray" data-idx="1" tabindex="201">
+                <div  @click="closeProfileEdit" role="button" aria-label="Cancel" class="_cwDGButton  _cwDGButtonCancel button buttonGray" data-idx="1" tabindex="201">
                     Cancel
                 </div>
             </div>
