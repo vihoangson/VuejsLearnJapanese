@@ -129,7 +129,15 @@
 <style>
 
     .profileShowDialog__profileBodyInput{
-
+        width: 500px;
+        border: 1px solid #999999;
+        border-radius: 2px;
+        background: #fff;
+        transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
+        box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15) inset;
+        height: 18px;
+        line-height: 1.4em;
+        padding: 3px;
     }
 
     .dialogContainer__footer .button:first-child {
