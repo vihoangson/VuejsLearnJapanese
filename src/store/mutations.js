@@ -1,15 +1,23 @@
 export default {
-  add_message(state, message) {
-    return state.list_message.push(message);
-  },
-  remove_message(state, message) {
-    let idx = state.list_message.indexOf(message);
-    if (idx > -1) return state.list_message.splice(idx, 1);
-  },
-  set_current_user(state, obj) {
-    return (state.current_user = obj);
-  },
-  set_list_message(state, list) {
-    return (state.list_message = list);
-  }
+    add_message(state, message) {
+        return state.current_room.list_message.push(message);
+    },
+    set_current_user(state, obj) {
+        return (state.current_user = obj);
+    },
+    set_current_room(state, obj) {
+        return (state.current_room = obj);
+    },
+    set_list_room(state, obj) {
+        return (state.list_room = obj);
+    },
+    not_read_message(state, obj) {
+        console.log(obj);
+        state.list_room.forEach(element => {
+            if (obj.room_id === element.id) {
+                element.list_message.push(obj);
+                element.not_read += 1;
+            }
+        });
+    }
 };

@@ -3,10 +3,10 @@
         <div class="chat-box-header">
             <div class="header-name">
                 <div class="room-logo">
-                    <img src="https://appdata.chatwork.com/icon/736/736137.rsz.jpg" alt />
+                    <img :src="this.$store.getters.get_current_room.image" alt />
                 </div>
                 <h1 class="title">
-                    <span>SNS TOOL</span>
+                    <span>{{this.$store.getters.get_current_room.name}}</span>
                 </h1>
             </div>
         </div>
@@ -18,7 +18,7 @@
                 >
                     <div
                         class="timeline-message-body"
-                        v-for="(item, index) in this.$store.getters.get_list_message"
+                        v-for="(item, index) in this.$store.getters.get_current_room.list_message"
                         :key="`item-${index}`"
                     >
                         <div class="timeline-avatar">
@@ -228,7 +228,6 @@ import vue2Dropzone from 'vue2-dropzone';
 import 'vue2-dropzone/dist/vue2Dropzone.min.css';
 import { Picker } from 'emoji-mart-vue';
 import TextareaEmojiPicker from '../global/TextareaEmojiPicker';
-import { AppConst } from '../../common/AppConst';
 import { ApiConst } from '../../common/ApiConst';
 import { API } from '../../services/api';
 import ChatAction from './ChatAction';
@@ -271,8 +270,7 @@ export default {
                 autoProcessQueue: false,
                 addRemoveLinks: true,
                 dictDefaultMessage:
-                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' +
-                    'Kéo file vào đây</div>'
+                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' + 'Kéo file vào đây</div>'
             },
             errors: null,
             user: this.$store.getters.get_current_user
@@ -287,8 +285,7 @@ export default {
         };
         API.POST(ApiConst.RECEIVE_MESSAGE, obj).then(res => {
             console.log(res);
-            if (res.error_code === 0)
-                this.$store.dispatch('setListMessage', res.data);
+            if (res.error_code === 0) this.$store.dispatch('setListMessage', res.data);
         });
     },
     methods: {
@@ -297,11 +294,11 @@ export default {
         },
         sendMessage() {
             let msg = {
-                user_id: this.user.user_id,
-                room_id: 1,
+                user_id: 1,
+                room_id: this.$store.getters.get_current_room.id,
                 type: 0,
                 message: this.message,
-                token: this.user.token
+                token: ''
             };
             this.$socket.emit(EVENT_SEND, msg);
 

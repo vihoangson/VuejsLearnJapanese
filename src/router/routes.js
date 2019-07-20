@@ -5,6 +5,11 @@ export default [
         component: () => import('@/components/home/Home.vue')
     },
     {
+        path: "/:room_id",
+        name: "home",
+        component: () => import('@/components/home/Home.vue')
+    },
+    {
         path: "/login",
         name: "login",
         component: () => import('@/components/login/LoginPage.vue')

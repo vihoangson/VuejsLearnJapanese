@@ -27,23 +27,18 @@
         </div>
         <div class="room-body">
             <ul>
-                <li>
+                <li
+                    v-for="(item, index) in this.list_rooms"
+                    :key="`room-${index}`"
+                    @click="changeRoom(item)"
+                >
                     <div class="name">
                         <div class="room-image">
-                            <img src="https://appdata.chatwork.com/icon/736/736137.rsz.jpg" alt />
+                            <img :src="item.image" :alt="item.name" />
                         </div>
                         <div class="room-name">
-                            <span>SNS TOOL</span>
-                        </div>
-                    </div>
-                </li>
-                <li>
-                    <div class="name">
-                        <div class="room-image">
-                            <img src="https://appdata.chatwork.com/icon/736/736137.rsz.jpg" alt />
-                        </div>
-                        <div class="room-name">
-                            <span>SNS TOOL</span>
+                            <span>{{item.name}}</span>
+                            <span v-if="item.not_read > 0" class="not-read-number">{{item.not_read}}</span>
                         </div>
                     </div>
                 </li>
@@ -51,6 +46,62 @@
         </div>
     </div>
 </template>
+
+<script>
+const EVENT_JOIN = 'join';
+export default {
+    name: 'Room',
+    data() {
+        return {
+            list_rooms: [
+                {
+                    id: 0,
+                    name: 'My Chat',
+                    image: 'https://appdata.chatwork.com/icon/140/140292.rsz.jpg',
+                    list_message: [],
+                    not_read: 0
+                },
+                {
+                    id: 1,
+                    name: 'Thông Tin Liên Lạc',
+                    image: 'https://appdata.chatwork.com/icon/140/140292.rsz.jpg',
+                    list_message: [],
+                    not_read: 0
+                },
+                {
+                    id: 2,
+                    name: 'Trà Chanh Chém Gió',
+                    image: 'https://appdata.chatwork.com/icon/743/743896.rsz.png',
+                    list_message: [],
+                    not_read: 0
+                },
+                {
+                    id: 3,
+                    name: 'Thảo Luận Kỹ Thuật',
+                    image: 'https://appdata.chatwork.com/icon/ico_group.png',
+                    list_message: [],
+                    not_read: 0
+                }
+            ]
+        };
+    },
+    created() {
+        this.$store.dispatch('setListRoom', this.list_rooms);
+        this.$store.dispatch('setCurrentRoom', this.list_rooms[0]);
+        var rooms = [];
+        this.list_rooms.forEach(x => {
+            rooms.push(x.id);
+        });
+        this.$socket.emit(EVENT_JOIN, rooms);
+    },
+    methods: {
+        changeRoom(room) {
+            this.$store.dispatch('setCurrentRoom', room);
+        }
+    }
+};
+</script>
+
 <style>
 .room {
     position: absolute;
@@ -175,9 +226,11 @@
 .room-name {
     width: calc((100% - 32px) - 8px);
 }
+.not-read-number {
+    float: right;
+    background-color: #b3b3b3;
+    padding: 2px 6px;
+    font-size: 12px;
+    border-radius: 15px;
+}
 </style>
-<script>
-export default {
-    name: 'Room'
-};
-</script>
