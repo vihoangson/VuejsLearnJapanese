@@ -224,7 +224,7 @@ export default {
         },
         createObjMessage() {
             let msg = {
-                room_id: this.$store.getters.get_current_room.id,
+                room_id: this.$store.getters.get_current_room.room_id,
                 message: this.message.content,
                 type: this.message.type,
                 token: this.user.token

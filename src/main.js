@@ -15,19 +15,19 @@ Vue.config.productionTip = false;
 Vue.use(Moment);
 
 Vue.use(
-  new VueSocketIO({
-    debug: true,
-    connection: 'http://127.0.0.1:3000'
-  })
+    new VueSocketIO({
+        debug: true,
+        connection: 'http://172.16.218.252:3001'
+    })
 );
 
 Vue.use(VModal, { dynamic: true, dialog: true });
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  store,
-  render: h => h(App),
-  sockets: SocketService
+    el: '#app',
+    router,
+    store,
+    render: h => h(App),
+    sockets: SocketService
 });

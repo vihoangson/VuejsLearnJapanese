@@ -65,20 +65,18 @@ export default {
                     list_message: [],
                     not_read: 0
                 }
-            ]
+            ],
+            rooms: []
         };
     },
     created() {
         this.getListRoom();
-        var rooms = [];
-        this.list_rooms.forEach(x => {
-            rooms.push(x.room_id);
-        });
-        this.$socket.emit(EVENT_JOIN, rooms);
+
         this.getListMessage();
     },
     methods: {
         changeRoom(room) {
+            console.log(room);
             this.$store.dispatch('setCurrentRoom', room);
             this.getListMessage();
         },
@@ -88,6 +86,10 @@ export default {
                     res.data.forEach(x => {
                         this.list_rooms.push(x);
                     });
+                    this.list_rooms.forEach(x => {
+                        this.rooms.push(x.room_id);
+                    });
+                    this.$socket.emit(EVENT_JOIN, this.rooms);
                     this.$store.dispatch('setListRoom', this.list_rooms);
                     this.$store.dispatch('setCurrentRoom', this.list_rooms[0]);
                 }
