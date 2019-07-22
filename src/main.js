@@ -8,32 +8,26 @@ import VModal from 'vue-js-modal';
 
 import router from './router';
 import store from './store/store';
+import { SocketService } from './services/socket';
 
 Vue.config.productionTip = false;
 
 Vue.use(Moment);
 
 Vue.use(
-    new VueSocketIO({
-        debug: true,
-        connection: 'http://127.0.0.1:3000'
-    })
+  new VueSocketIO({
+    debug: true,
+    connection: 'http://127.0.0.1:3000'
+  })
 );
 
 Vue.use(VModal, { dynamic: true, dialog: true });
 
 /* eslint-disable no-new */
 new Vue({
-    el: '#app',
-    router,
-    store,
-    render: h => h(App),
-    sockets: {
-        connect: function() {
-            console.log('Connected..');
-        },
-        broadcast: function(e) {
-            this.$store.dispatch('addTask', e);
-        }
-    }
+  el: '#app',
+  router,
+  store,
+  render: h => h(App),
+  sockets: SocketService
 });

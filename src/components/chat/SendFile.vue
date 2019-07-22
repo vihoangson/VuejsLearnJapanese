@@ -106,7 +106,8 @@ export default {
                 autoProcessQueue: false,
                 addRemoveLinks: true,
                 dictDefaultMessage:
-                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' + 'Kéo file vào đây</div>'
+                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' +
+                    'Kéo file vào đây</div>'
             }
         };
     },
@@ -129,14 +130,6 @@ export default {
             if (response.success) {
                 this.$refs['myVueDropzone'].removeFile(file);
             }
-        },
-        showDropzoneForm() {
-            this.showPageInModal(
-                SendFile,
-                {},
-                { pivotX: 0.5, width: '80%', resizable: true, adaptive: true },
-                {}
-            );
         },
         hideDropzoneCheck() {
             if (this.$refs['myVueDropzone'].getAcceptedFiles().length === 0) {

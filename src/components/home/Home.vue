@@ -30,7 +30,13 @@ export default {
     },
     created() {
         let user = localStorage.getItem('user');
+
         this.$store.dispatch('setCurrentUser', JSON.parse(user));
+    },
+    beforeRouteUpdate(to, from, next) {
+        console.log(to);
+        console.log(from);
+        console.log(next);
     }
 };
 </script>

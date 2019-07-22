@@ -1,18 +1,19 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
+import Vue from "vue";
+import Vuex from "vuex";
 
-import getters from './getters';
-import mutations from './mutations';
-import actions from './actions';
+import getters from "./getters";
+import mutations from "./mutations";
+import actions from "./actions";
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
-  state: {
-    current_user: {},
-    list_message: []
-  },
-  getters,
-  mutations,
-  actions
+    state: {
+        current_room: {},
+        current_user: {},
+        list_room: []
+    },
+    getters,
+    mutations,
+    actions
 });
