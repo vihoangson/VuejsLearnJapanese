@@ -5,6 +5,9 @@ export default {
     get_current_user: state => {
         return state.current_user;
     },
+    get_current_user_info: state => {
+        return state.current_user_info;
+    },
     getContactDisplay: state => {
      	return state.openContactDisplay
     },

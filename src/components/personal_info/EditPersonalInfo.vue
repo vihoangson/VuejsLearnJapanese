@@ -92,7 +92,9 @@
                     { content: 'Display name:', input_name:'name' },
                     { content: 'Organization name:', input_name:'company' },
                     { content: 'E-mail:', input_name:'email' }
-                ]
+                ],
+
+
             }
         },
         created() {
@@ -107,16 +109,6 @@
 
             closeProfileEdit() {
                 this.$store.dispatch('setProfileEdit', 'none');
-            },
-
-            toggleMailInvite() {
-                if (this.individualAdd === 'block') {
-                    this.bulkAdd = 'block';
-                    this.individualAdd = 'none';
-                } else {
-                    this.bulkAdd = 'none';
-                    this.individualAdd = 'block';
-                }
             },
 
             floatWindowSetsize() {

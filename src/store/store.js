@@ -10,6 +10,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
     state: {
     	current_user: {},
+        current_user_info: {},
         list_message: [],
         openContactDisplay: 'none',
         openProfileDisplay: 'none',

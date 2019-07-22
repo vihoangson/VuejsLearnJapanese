@@ -7,7 +7,7 @@
 
 
             <div class="dialogContainer__header">
-                <h1 class="_floatWindowTitle floatWindow__title"><span class="autotrim">Profile name</span></h1>
+                <h1 class="_floatWindowTitle floatWindow__title"><span class="autotrim">{{user_info.name}}</span></h1>
                 <div class="floatWindow__closeButtonContainer">
                   <span class="_cwFWButton floatWindow__closeButton" data-cwui-fw-idx="-1" @click="closeProfilePopup">
                     <svg viewBox="0 0 10 10" class="floatWindow__closeButtonIcon" width="16" height="16">
@@ -37,7 +37,7 @@
                         <div class="profileShowDialog__titleContainer">
 
                             <div class="_profileName profileShowDialog__userName">
-                                <span class="_nameAid2571977">Le Gia Le [PG]</span>
+                                <span class="_nameAid2571977">{{user_info.name}}</span>
                             </div>
 
                             <div class="_profileButton profileShowDialog__buttonContainer">
@@ -47,7 +47,7 @@
                         </div>
                         <ul class="profileShowDialog__profileHeaderItemList">
                             <li class="_profileOrgName profileShowDialog__profileHeaderItem">
-                                <span class="cw_onm2571977">LAMPART Co., Ltd.</span>
+                                <span class="cw_onm2571977">{{user_info.company}}</span>
                             </li>
 
                         </ul>
@@ -62,6 +62,7 @@
                                 </span>
 
                                 <span class="_profileDepartment profileShowDialog__profileBodyItemContent">
+                                     {{item.key_value}}
                                 </span>
 
                             </li>
@@ -90,16 +91,17 @@
                 marginPopup: '0px',
 
                 itemProfile: [
-                    { content: 'Organization name:' },
-                    { content: 'Department / Division:' },
-                    { content: 'Title:' },
-                    { content: 'Address:' },
-                    { content: 'URL:' },
-                    { content: 'E-mail:' },
-                    { content: 'Phone (work):' },
-                    { content: 'Ext. number:' },
-                    { content: 'Mobile:' }
-                ]
+                    { content: 'Organization name:' , key_value: "company" },
+                    { content: 'E-mail:' , key_value: "email" },
+                    { content: 'Department / Division:',key_value: "" },
+                    { content: 'Title:' , key_value: "" },
+                    { content: 'Address:', key_value: "" },
+                    { content: 'URL:' , key_value: "" },
+                    { content: 'Phone (work):' ,key_value: "" },
+                    { content: 'Ext. number:' ,key_value: "" },
+                    { content: 'Mobile:' ,key_value: "" }
+                ],
+                user_info: this.$store.getters.get_current_user_info
             }
         },
         created() {
@@ -112,43 +114,12 @@
                 this.floatWindowHeight = window.innerHeight + 'px';
             },
 
-            // onChangeEmail(object, index) {
-            //     if (index === 0 && object.text.length === 0) {
-            //         object.displayCloseIcon = 'none'
-            //     } else {
-            //         object.displayCloseIcon = 'block'
-            //     }
-            // },
-            // cancelEmailInput(object, index) {
-            //     if (this.itemEmails.length > 1) {
-            //         this.itemEmails.splice(index, 1);
-            //     } else {
-            //         object.text = '';
-            //     }
-            //     if (this.itemEmails.length === 1 && this.itemEmails[0].text.length === 0) {
-            //         this.itemEmails[0].displayCloseIcon = 'none';
-            //     }
-            // },
-            // addMore() {
-            //     this.itemEmails[0].displayCloseIcon = 'block';
-            //     this.itemEmails.push({id: 'itemEmail' + this.itemEmails.count + 1, text: '', displayCloseIcon: 'block'})
-            // },
-
             closeProfilePopup() {
                 this.$store.dispatch('setProfileDisplay', 'none');
             },
+
             openProfileEditDisplay(){
                 this.$store.dispatch('setProfileEdit', 'block');
-            },
-
-            toggleMailInvite() {
-                if (this.individualAdd === 'block') {
-                    this.bulkAdd = 'block';
-                    this.individualAdd = 'none';
-                } else {
-                    this.bulkAdd = 'none';
-                    this.individualAdd = 'block';
-                }
             },
 
             floatWindowSetsize() {

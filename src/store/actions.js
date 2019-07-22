@@ -11,6 +11,9 @@ export default {
     setCurrentUser({ commit }, obj) {
         commit('set_current_user', obj);
     },
+    setCurrentUserInfo({ commit }, obj) {
+        commit('set_current_user_info', obj);
+    },
     setContactDisplay({commit}, style) {
         commit('setContactDisplay', style);
     },

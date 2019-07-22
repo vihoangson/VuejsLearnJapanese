@@ -29,7 +29,7 @@
                     </span>
                 </li>
                 <li class="menu-admin-item">
-                    <span @click="ShowPopUpModalContact">
+                    <span @click="openContact">
                         <svg
                             viewBox="0 0 10 10"
                             id="icon_menuContact"
@@ -101,7 +101,7 @@
 </template>
     
 <script>
-import BaseContact from '../contact/BaseContact.vue';
+// import BaseContact from '../contact/BaseContact.vue';
 import modalMixin from '@/mixins/modal';
 import { ApiConst } from '../../common/ApiConst';
 import { AppConst } from '../../common/AppConst';
@@ -125,14 +125,14 @@ export default {
                 }
             });
         },
-        ShowPopUpModalContact() {
-            this.showPageInModal(
-                BaseContact,
-                {},
-                { pivotX: 0.5, width: '80%', resizable: true, adaptive: true },
-                {}
-            );
-        },
+        // ShowPopUpModalContact() {
+        //     this.showPageInModal(
+        //         BaseContact,
+        //         {},
+        //         { pivotX: 0.5, width: '80%', resizable: true, adaptive: true },
+        //         {}
+        //     );
+        // },
         ShowFormEditRegister() {
             let routeToEditRegister = this.$router.resolve({
                 path: '/register/edit'
