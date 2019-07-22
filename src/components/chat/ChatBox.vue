@@ -3,10 +3,10 @@
         <div class="chat-box-header">
             <div class="header-name">
                 <div class="room-logo">
-                    <img :src="this.$store.getters.get_current_room.image" alt />
+                    <img :src="this.$store.getters.get_current_room.icon_img" alt />
                 </div>
                 <h1 class="title">
-                    <span>{{this.$store.getters.get_current_room.name}}</span>
+                    <span>{{this.$store.getters.get_current_room.room_name}}</span>
                 </h1>
             </div>
         </div>
