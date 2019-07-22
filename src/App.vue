@@ -20,9 +20,9 @@ export default {
     mounted() {
         let user = localStorage.getItem('user');
 
-        // if (!user) {
-        //     this.$router.push({ path: 'login' });
-        // }
+        if (user === null) {
+            this.$router.push({ path: 'login' });
+        }
     },
     methods: {
         setAuthenticated(status) {

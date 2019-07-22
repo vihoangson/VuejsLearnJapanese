@@ -32,7 +32,12 @@
                                 >{{item.organization}}</p>
                             </div>
                             <div class="timeline-content-message">{{item.message}}</div>
-                            <ChatAction></ChatAction>
+                            <ChatAction
+                                :message="item"
+                                @reply="onReply"
+                                @edit="onEdit"
+                                @delete="onDelete"
+                            ></ChatAction>
                         </div>
                     </div>
                 </div>
@@ -120,12 +125,14 @@
                     </div>
                 </div>
                 <div class="chat-textarea">
+                    <ChatEdit v-if="this.editMessage" @cancelEdit="onCanCelEdit"></ChatEdit>
                     <textarea
+                        id="chat-text"
                         ref="textarea"
                         cols="30"
                         rows="8"
                         placeholder="Enter your message here"
-                        v-model="message"
+                        v-model="message.content"
                         @input="$emit('input', $event.target.value)"
                         @keyup.enter.exact="pressEnterToSendMessage($event)"
                     ></textarea>
@@ -139,9 +146,11 @@
 <script>
 import { Picker } from 'emoji-mart-vue';
 import TextareaEmojiPicker from '../global/TextareaEmojiPicker';
-import { ApiConst } from '../../common/ApiConst';
 import { API } from '../../services/api';
-import ChatAction from './ChatAction';
+import { AppConst } from '../../common/AppConst';
+import { ApiConst } from '../../common/ApiConst';
+import ChatAction from './partials/ChatAction';
+import ChatEdit from './partials/ChatEdit';
 import modalMixin from '@/mixins/modal';
 import SendFile from './SendFile';
 
@@ -155,7 +164,8 @@ export default {
     components: {
         Picker,
         TextareaEmojiPicker,
-        ChatAction
+        ChatAction,
+        ChatEdit
     },
     props: {
         value: {
@@ -168,8 +178,12 @@ export default {
             enterToSendMessage: true,
             showDropzone: false,
             height: 0,
-            message: '',
-            list_message: this.$store.getters.get_list_message,
+            message: {
+                id: 0,
+                content: '',
+                type: AppConst.MESSAGE_TYPE.CREATE
+            },
+            message_id: 0,
             showEmojiPicker: false,
             dropzoneOptions: {
                 url: 'http://sns.dev.com/api/v1/message-file',
@@ -183,10 +197,12 @@ export default {
                 autoProcessQueue: false,
                 addRemoveLinks: true,
                 dictDefaultMessage:
-                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' + 'Kéo file vào đây</div>'
+                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' +
+                    'Kéo file vào đây</div>'
             },
             errors: null,
-            user: this.$store.getters.get_current_user
+            user: this.$store.getters.get_current_user,
+            editMessage: false
         };
     },
     created() {
@@ -198,24 +214,37 @@ export default {
         };
         API.POST(ApiConst.RECEIVE_MESSAGE, obj).then(res => {
             console.log(res);
-            if (res.error_code === 0) this.$store.dispatch('setListMessage', res.data);
+            if (res.error_code === 0)
+                this.$store.dispatch('setListMessage', res.data);
         });
     },
     methods: {
         handleResize() {
             this.height = window.innerHeight - 45;
         },
-        sendMessage() {
+        createObjMessage() {
             let msg = {
-                user_id: 1,
                 room_id: this.$store.getters.get_current_room.id,
-                type: 0,
-                message: this.message,
-                token: ''
+                message: this.message.content,
+                type: this.message.type,
+                token: this.user.token
             };
+            if (msg.type === AppConst.MESSAGE_TYPE.CREATE) {
+                msg.user_id = this.user.user_id;
+            } else if (
+                msg.type === AppConst.MESSAGE_TYPE.EDIT ||
+                msg.type === AppConst.MESSAGE_TYPE.DELETE
+            ) {
+                msg.message_id = this.message.id;
+            }
+            return msg;
+        },
+        sendMessage() {
+            let msg = this.createObjMessage();
             this.$socket.emit(EVENT_SEND, msg);
 
-            this.message = '';
+            this.message.content = '';
+            this.message.id = 0;
         },
         toggleEmojiPicker() {
             this.showEmojiPicker = !this.showEmojiPicker;
@@ -239,7 +268,12 @@ export default {
                 this.showPageInModal(
                     SendFile,
                     {},
-                    { pivotX: 0.5, width: '80%', resizable: true, adaptive: true },
+                    {
+                        pivotX: 0.5,
+                        width: '80%',
+                        resizable: true,
+                        adaptive: true
+                    },
                     {}
                 );
             }
@@ -253,6 +287,33 @@ export default {
         },
         check: function(e) {
             this.enterToSendMessage = e.target.value;
+        },
+        onReply(value) {
+            this.message = value.message;
+        },
+        onEdit(value) {
+            this.message.id = value.message_id;
+            this.message.content = value.message;
+            this.message.type = AppConst.MESSAGE_TYPE.EDIT;
+
+            this.editMessage = true;
+            this.$refs.textarea.focus();
+        },
+        onDelete(value) {
+            let con = confirm('Do you want to delete it!?');
+            if (con) {
+                this.message.id = value.message_id;
+                this.message.content = value.message;
+                this.message.type = AppConst.MESSAGE_TYPE.DELETE;
+                this.sendMessage();
+            }
+        },
+        onCanCelEdit() {
+            this.message.content = '';
+            this.message.id = 0;
+            this.message.type = AppConst.MESSAGE_TYPE.CREATE;
+
+            this.editMessage = false;
         }
     },
     computed: {
@@ -385,6 +446,7 @@ export default {
 .timeline-message-body {
     padding: 8px 16px;
     position: relative;
+    border: 1px solid transparent;
 }
 .timeline-avatar {
     float: left;

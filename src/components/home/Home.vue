@@ -29,14 +29,9 @@ export default {
         Chat
     },
     created() {
-        // let user = localStorage.getItem('user');
-        let user = {
-            user_id: 1,
-            icon_img: '',
-            name: 'Hoàng Sỹ Hùng',
-            token: 'gfgfdcdasdsad'
-        };
-        this.$store.dispatch('setCurrentUser', user);
+        let user = localStorage.getItem('user');
+
+        this.$store.dispatch('setCurrentUser', JSON.parse(user));
     },
     beforeRouteUpdate(to, from, next) {
         console.log(to);

@@ -47,8 +47,8 @@
 
 <script>
 import { API } from '../../services/api';
-import { AppConst } from '../../common/AppConst';
 import { ApiConst } from '../../common/ApiConst';
+import { AppConst } from '../../common/AppConst';
 import VueRecaptcha from 'vue-recaptcha';
 
 export default {
@@ -240,86 +240,3 @@ header {
     text-align: center;
 }
 </style>
-
-
-<script>
-import { API } from '../../services/api';
-import { AppConst } from '../../common/AppConst';
-import { ApiConst } from '../../common/ApiConst';
-import VueRecaptcha from 'vue-recaptcha';
-
-export default {
-    name: 'Login',
-    components: {
-        VueRecaptcha
-    },
-    data() {
-        return {
-            errors: {
-                email: '',
-                password: '',
-                pleaseTickRecaptchaMessage: '',
-                login_fail: ''
-            },
-            email: '',
-            password: '',
-            recaptchaVerified: true
-        };
-    },
-    methods: {
-        markRecaptchaAsVerified() {
-            this.errors.pleaseTickRecaptchaMessage = '';
-            this.recaptchaVerified = true;
-        },
-        login(e) {
-            e.preventDefault();
-
-            if (this.email === '') this.errors.email = '* Userame required!';
-
-            if (this.password === '')
-                this.errors.password = '* Password required!';
-
-            if (!this.recaptchaVerified)
-                this.errors.pleaseTickRecaptchaMessage =
-                    '* Please tick recaptcha!';
-
-            if (
-                this.email !== '' &&
-                this.password !== '' &&
-                this.recaptchaVerified
-            ) {
-                let data = {
-                    email: this.email,
-                    password: this.password,
-                    only_token: true
-                };
-
-                API.POST(ApiConst.LOGIN, data).then(res => {
-                    if (res.error_code === 0) {
-                        let user = {
-                            token: res.data.token,
-                            user_id: res.data.id,
-                            icon_img: '',
-                            name: res.data.name
-                        };
-                        if (res.data.icon_img !== null)
-                            user.icon_img = res.data.icon_img;
-                        else
-                            user.icon_img =
-                                'https://britz.mcmaster.ca/images/nouserimage.gif/image';
-                        localStorage.setItem(
-                            AppConst.LOCAL_USER,
-                            JSON.stringify(user)
-                        );
-                        this.$router.push({ path: '/' });
-                    } else this.errors.login_fail = res.error_msg;
-                });
-            }
-        },
-        SetNewPassword() {},
-        SignUp() {
-            this.$router.push({ name: 'Register' });
-        }
-    }
-};
-</script>

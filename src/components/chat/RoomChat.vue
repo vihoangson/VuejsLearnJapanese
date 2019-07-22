@@ -34,10 +34,10 @@
                 >
                     <div class="name">
                         <div class="room-image">
-                            <img :src="item.image" :alt="item.name" />
+                            <img :src="item.icon_img" :alt="item.room_name" />
                         </div>
                         <div class="room-name">
-                            <span>{{item.name}}</span>
+                            <span>{{item.room_name}}</span>
                             <span v-if="item.not_read > 0" class="not-read-number">{{item.not_read}}</span>
                         </div>
                     </div>
@@ -48,37 +48,20 @@
 </template>
 
 <script>
+import { API } from '../../services/api';
+import { ApiConst } from '../../common/ApiConst';
+
 const EVENT_JOIN = 'join';
+
 export default {
     name: 'Room',
     data() {
         return {
             list_rooms: [
                 {
-                    id: 0,
-                    name: 'My Chat',
-                    image: 'https://appdata.chatwork.com/icon/140/140292.rsz.jpg',
-                    list_message: [],
-                    not_read: 0
-                },
-                {
-                    id: 1,
-                    name: 'Thông Tin Liên Lạc',
-                    image: 'https://appdata.chatwork.com/icon/140/140292.rsz.jpg',
-                    list_message: [],
-                    not_read: 0
-                },
-                {
-                    id: 2,
-                    name: 'Trà Chanh Chém Gió',
-                    image: 'https://appdata.chatwork.com/icon/743/743896.rsz.png',
-                    list_message: [],
-                    not_read: 0
-                },
-                {
-                    id: 3,
-                    name: 'Thảo Luận Kỹ Thuật',
-                    image: 'https://appdata.chatwork.com/icon/ico_group.png',
+                    room_id: 0,
+                    room_name: 'My Chat',
+                    icon_img: this.$store.getters.get_current_user.icon_img,
                     list_message: [],
                     not_read: 0
                 }
@@ -86,17 +69,38 @@ export default {
         };
     },
     created() {
-        this.$store.dispatch('setListRoom', this.list_rooms);
-        this.$store.dispatch('setCurrentRoom', this.list_rooms[0]);
+        this.getListRoom();
         var rooms = [];
         this.list_rooms.forEach(x => {
-            rooms.push(x.id);
+            rooms.push(x.room_id);
         });
         this.$socket.emit(EVENT_JOIN, rooms);
+        this.getListMessage();
     },
     methods: {
         changeRoom(room) {
             this.$store.dispatch('setCurrentRoom', room);
+            this.getListMessage();
+        },
+        getListRoom() {
+            API.GET(ApiConst.ALL_ROOM).then(res => {
+                if (res.error_code === 0) {
+                    res.data.forEach(x => {
+                        this.list_rooms.push(x);
+                    });
+                    this.$store.dispatch('setListRoom', this.list_rooms);
+                    this.$store.dispatch('setCurrentRoom', this.list_rooms[0]);
+                }
+            });
+        },
+        getListMessage() {
+            let room = this.$store.getters.get_current_room;
+            API.POST(ApiConst.RECEIVE_MESSAGE, {
+                page: 0,
+                room_id: room.room_id
+            }).then(res => {
+                if (res.error_code === 0) room.list_message = res.data;
+            });
         }
     }
 };

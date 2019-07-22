@@ -1,43 +1,42 @@
 export default [
     {
-        path: "/",
-        name: "home",
+        path: '/',
+        name: 'home',
         component: () => import('@/components/home/Home.vue')
     },
     {
-        path: "/:room_id",
-        name: "home",
-        component: () => import('@/components/home/Home.vue')
-    },
-    {
-        path: "/login",
-        name: "login",
+        path: '/login',
+        name: 'login',
         component: () => import('@/components/login/LoginPage.vue')
     },
-    { path: "*", redirect: "/" },
-    { path: '/register',
-        component: {template: `
+    { path: '*', redirect: '/' },
+    {
+        path: '/register',
+        component: {
+            template: `
       <div>
         <router-view></router-view>
       </div>
     `
         },
         children: [
-            { path: '',
+            {
+                path: '',
                 name: 'Register',
-                component: () => import('@/components/register/RegisterPage'),
+                component: () => import('@/components/register/RegisterPage')
             },
             {
                 path: 'edit',
                 name: 'EditRegister',
-                component: () => import('@/components/register/EditRegisterPage'),
-                props: (route) => ({
+                component: () =>
+                    import('@/components/register/EditRegisterPage'),
+                props: route => ({
                     params: {
                         parentRouteName: 'home',
                         user: localStorage.getItem('user')
                     }
-                }),
+                })
             }
         ]
-    },
-]
+    }
+];
