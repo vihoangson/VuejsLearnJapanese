@@ -139,7 +139,6 @@
 <script>
 import { Picker } from 'emoji-mart-vue';
 import TextareaEmojiPicker from '../global/TextareaEmojiPicker';
-import { AppConst } from '../../common/AppConst';
 import { ApiConst } from '../../common/ApiConst';
 import { API } from '../../services/api';
 import ChatAction from './ChatAction';

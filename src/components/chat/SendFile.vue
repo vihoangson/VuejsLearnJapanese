@@ -130,14 +130,14 @@ export default {
                 this.$refs['myVueDropzone'].removeFile(file);
             }
         },
-        showDropzoneForm() {
-            this.showPageInModal(
-                SendFile,
-                {},
-                { pivotX: 0.5, width: '80%', resizable: true, adaptive: true },
-                {}
-            );
-        },
+        // showDropzoneForm() {
+        //     this.showPageInModal(
+        //         SendFile,
+        //         {},
+        //         { pivotX: 0.5, width: '80%', resizable: true, adaptive: true },
+        //         {}
+        //     );
+        // },
         hideDropzoneCheck() {
             if (this.$refs['myVueDropzone'].getAcceptedFiles().length === 0) {
                 this.hideDropzone();

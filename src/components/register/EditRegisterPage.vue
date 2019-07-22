@@ -95,6 +95,8 @@
 import axios from 'axios';
 import VueRecaptcha from 'vue-recaptcha';
 import MenuEditRegisterPage from './MenuEditRegisterPage.vue';
+import {API} from "../../services/api";
+import {ApiConst} from "../../common/ApiConst";
 export default {
     name: 'EditRegister',
     components: { VueRecaptcha, MenuEditRegisterPage },
