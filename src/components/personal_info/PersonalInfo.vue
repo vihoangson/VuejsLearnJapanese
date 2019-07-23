@@ -37,7 +37,7 @@
                         <div class="profileShowDialog__titleContainer">
 
                             <div class="_profileName profileShowDialog__userName">
-                                <span class="_nameAid2571977">{{user_info.name}}</span>
+                                <span class="_nameAid2571977">{{this.$store.getters.get_current_user_info.name}}</span>
                             </div>
 
                             <div class="_profileButton profileShowDialog__buttonContainer">
@@ -47,7 +47,7 @@
                         </div>
                         <ul class="profileShowDialog__profileHeaderItemList">
                             <li class="_profileOrgName profileShowDialog__profileHeaderItem">
-                                <span class="cw_onm2571977">{{user_info.company}}</span>
+                                <span class="cw_onm2571977">{{this.$store.getters.get_current_user_info.company}}</span>
                             </li>
 
                         </ul>
@@ -55,17 +55,33 @@
 
                     <div class="profileShowDialog__profileBody">
                         <ul class="profileShowDialog__profileBodyItemList">
-                            <li class="profileShowDialog__profileBodyItem" v-for="item in itemProfile" :key="item">
 
-                                <span class="profileShowDialog__profileBodyItemLabel">
-                                    {{item.content}}
+                            <!--<li class="profileShowDialog__profileBodyItem" v-for="item in itemProfile" :key="item">-->
+                            <li class="profileShowDialog__profileBodyItem" >
+                                <span class="profileShowDialog__profileBodyItemLabel" style="width: 200px">
+                                    Organization name:
                                 </span>
-
-                                <span class="_profileDepartment profileShowDialog__profileBodyItemContent">
-                                     {{item.key_value}}
+                                <span class="_profileDepartment profileShowDialog__profileBodyItemContent" style="width: 400px; overflow-wrap: break-word; ">
+                                     {{this.$store.getters.get_current_user_info.company}}
                                 </span>
-
                             </li>
+                            <li class="profileShowDialog__profileBodyItem" >
+                                <span class="profileShowDialog__profileBodyItemLabel" style="width: 200px">
+                                    E-mail:
+                                </span>
+                                <span class="_profileDepartment profileShowDialog__profileBodyItemContent" style="width: 400px; overflow-wrap: break-word; ">
+                                     {{this.$store.getters.get_current_user_info.email}}
+                                </span>
+                            </li>
+                            <li class="profileShowDialog__profileBodyItem" >
+                                <span class="profileShowDialog__profileBodyItemLabel" style="width: 200px">
+                                    URL:
+                                </span>
+                                <span class="_profileDepartment profileShowDialog__profileBodyItemContent" style="width: 400px; overflow-wrap: break-word; ">
+                                     {{this.$store.getters.get_current_user_info.icon_img}}
+                                </span>
+                            </li>
+
                         </ul>
                     </div>
                 </div>

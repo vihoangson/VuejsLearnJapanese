@@ -126,6 +126,7 @@ export default {
                         API.POST(ApiConst.GET_USER_INFO, targetUser).then(res => {
                             if (res.error_code === 0) {
                                 let userInfo = {
+                                    id : res.data.id,
                                     email: res.data.email,
                                     name: res.data.name,
                                     company: res.data.company,

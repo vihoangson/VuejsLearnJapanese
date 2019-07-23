@@ -40,28 +40,69 @@
 
                 <div class="profileShowDialog__bodyContainer">
 
-                    <div class="profileShowDialog__profileBody">
-                        <ul class="profileShowDialog__profileBodyItemList">
-                            <li class="profileShowDialog__profileBodyItem" v-for="item in itemProfile" :key="item">
 
-                                <span class="profileShowDialog__profileBodyItemLabel">
-                                    {{item.content}}
-                                </span>
+                    <!--<form name="update_info" method="post" @submit="update_info">-->
+                        <div class="profileShowDialog__profileBody">
 
-                                <span class="_profileDepartment profileShowDialog__profileBodyItemContent">
-                                    <input  class="profileShowDialog__profileBodyInput" v-bind:name="item.input_name" type="text" >
-                                </span>
 
-                            </li>
-                        </ul>
-                    </div>
+                            <ul class="profileShowDialog__profileBodyItemList">
+
+                                <!--<li class="profileShowDialog__profileBodyItem" v-for="item in itemProfile" :key="item">-->
+
+                                    <!--<span class="profileShowDialog__profileBodyItemLabel">-->
+                                        <!--{{item.content}}-->
+                                    <!--</span>-->
+
+                                    <!--<span class="_profileDepartment profileShowDialog__profileBodyItemContent">-->
+                                        <!--<input  class="profileShowDialog__profileBodyInput" v-bind:name="item.input_name" type="text" v-model="item.input_name">-->
+                                    <!--</span>-->
+
+                                <!--</li>-->
+
+                                <li class="profileShowDialog__profileBodyItem" >
+
+                                    <span class="profileShowDialog__profileBodyItemLabel">
+                                        Display name:
+                                    </span>
+                                    <span class="_profileDepartment profileShowDialog__profileBodyItemContent">
+                                        <input class="profileShowDialog__profileBodyInput" type="text" v-model="name" />
+                                    </span>
+
+                                </li>
+
+                                <li class="profileShowDialog__profileBodyItem" >
+
+                                    <span class="profileShowDialog__profileBodyItemLabel">
+                                        Organization name:
+                                    </span>
+                                    <span class="_profileDepartment profileShowDialog__profileBodyItemContent">
+                                        <input  class="profileShowDialog__profileBodyInput" type="text" v-model="company" />
+                                    </span>
+
+                                </li>
+
+                                <li class="profileShowDialog__profileBodyItem" >
+
+                                    <span class="profileShowDialog__profileBodyItemLabel">
+                                        E-mail:
+                                    </span>
+                                    <span class="_profileDepartment profileShowDialog__profileBodyItemContent">
+                                        <input class="profileShowDialog__profileBodyInput" type="text" v-model="email" />
+                                    </span>
+
+                                </li>
+
+                            </ul>
+                        </div>
+                    <!--</form>-->
+
 
                 </div>
             </div>
 
 
             <div style="" class="_cwDGFooter dialogContainer__footer">
-                <div role="button" aria-label="Save" class="_cwDGButton  btnPrimary" data-idx="0" tabindex="200">
+                <div @click="submit_update_info" role="button" aria-label="Save" class="_cwDGButton  btnPrimary" data-idx="0" tabindex="200" >
                     Save
                 </div>
                 <div  @click="closeProfileEdit" role="button" aria-label="Cancel" class="_cwDGButton  _cwDGButtonCancel button buttonGray" data-idx="1" tabindex="201">
@@ -77,10 +118,18 @@
 
 
 <script>
+    import {ApiConst} from "../../common/ApiConst";
+    import {API} from "../../services/api";
+    import {AppConst} from "../../common/AppConst";
+
     export default {
         name: "EditPersonalInfo",
         data() {
             return {
+                email: this.$store.getters.get_current_user_info.email,
+                name: this.$store.getters.get_current_user_info.name,
+                company: this.$store.getters.get_current_user_info.company,
+
                 isHidden: true,
                 displayCloseIcon: 'block',
 
@@ -94,6 +143,7 @@
                     { content: 'E-mail:', input_name:'email' }
                 ],
 
+                user_info: this.$store.getters.get_current_user_info
 
             }
         },
@@ -113,7 +163,39 @@
 
             floatWindowSetsize() {
                 this.marginPopup = (this.$refs.floatWindow.clientWidth - 908) / 2 + 'px';
-            }
+            },
+
+            submit_update_info(e) {
+
+                let data = {
+                    id: this.$store.getters.get_current_user_info.id,
+                    email: this.email,
+                    name: this.name,
+                    company: this.company,
+                };
+
+                API.POST(ApiConst.UPDATE_USER_INFO, data).then(res => {
+
+                    if (res.error_code === 0) {
+                        alert("ssss");
+                        let userInfo = {
+                            id : res.data.id,
+                            email: res.data.email,
+                            name: res.data.name,
+                            company: res.data.company,
+                            icon_img: res.data.icon_img,
+                        };
+                        localStorage.setItem(
+                            AppConst.LOCAL_USER_INFO,
+                            JSON.stringify(userInfo)
+                        );
+                    }
+
+                    let newUserInfo = localStorage.getItem('user_info');
+                    this.$store.dispatch('setCurrentUserInfo', JSON.parse(newUserInfo));
+                    this.$store.dispatch('setProfileEdit', 'none');
+                });
+            },
         }
     };
 </script>

@@ -66,7 +66,8 @@
                 <img :src="this.user.icon_img" alt />
             </div>
             <p class="status-name">
-                <span class="name">{{user.name}}</span>
+                <!--<span class="name">{{user.name}}</span>-->
+                <span class="name">{{this.$store.getters.get_current_user_info.name}}</span>
                 <span class="menu-icon">
                     <svg
                         viewBox="0 0 10 10"
@@ -121,6 +122,7 @@ export default {
             API.POST(ApiConst.LOGOUT, null).then(res => {
                 if (res.error_code === 0) {
                     localStorage.removeItem(AppConst.LOCAL_USER);
+                    localStorage.removeItem(AppConst.LOCAL_USER_INFO);
                     this.$router.push({ path: '/login' });
                 }
             });
