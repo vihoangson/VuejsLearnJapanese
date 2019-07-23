@@ -341,11 +341,21 @@ export default {
       activeIndex: undefined,
     }
   },
+  mounted() {
+    this.$root.$on('category-insert-group', data => {
+      if(data = "reload"){
+        this.getAllGroup().then(response => {
+          this.datascript = response;
+        });
+      }
+    })
+  },
   created: function(){
       this.getAllGroup().then(response => {
           this.datascript = response;
       });
   },
+
   methods: {
     toggleOption: function(){
       // Check value
@@ -356,21 +366,21 @@ export default {
       }
       this.isActiveSelect = false;
     },
+
     selectBoxClicks(){
       if(this.isActiveSelect){
           this.isActiveSelect = false;
       }else{
           this.isActiveSelect = true;
       }
-      this.getAllGroup().then(response => {
-        this.datascript = response;
-      });
       this.isActive = false;
     },
+
     setActive(index, criptions) {
         this.activeIndex = index;
         this.selectItems = criptions;
     },
+
     getAllGroup(){
       return axios.get("http://sns-api.local.vn:81/api/v1/group/getAllGroup", {
       },{
@@ -381,10 +391,12 @@ export default {
          return null;
       });
     },
+
     iconEdit(id){
       this.$root.$emit('modal-prevent-id', id)
       this.$bvModal.show('modal-prevent-group');
     },
+
     iconDelete(id){
       this.deleteGroup(id).then(data => {
         this.getAllGroup().then(response => {
@@ -392,6 +404,7 @@ export default {
         });
       });
     },
+
     deleteGroup(id){
       return axios.post("http://sns-api.local.vn:81/api/v1/group/delete", {
           id: id,
@@ -403,6 +416,7 @@ export default {
           return error;
       });
     },
+
     editGroup(id){
       return axios.post("http://sns-api.local.vn:81/api/v1/group/edit", {
           id: id,
