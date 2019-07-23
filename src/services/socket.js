@@ -5,6 +5,8 @@ export const SocketService = {
     },
     broadcast: function(e) {
         console.log(e);
+        var container = this.$el.querySelector(".timeline-message");
+        container.scrollTop = container.scrollHeight;
         var room = this.$store.getters.get_current_room;
         if (room.room_id === e.room_id) {
             if (e.type === AppConst.MESSAGE_TYPE.CREATE)
