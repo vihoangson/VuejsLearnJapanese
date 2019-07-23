@@ -29,7 +29,7 @@
                     </span>
                 </li>
                 <li class="menu-admin-item">
-                    <span @click="ShowPopUpModalContact">
+                    <span @click="openContact">
                         <svg
                             viewBox="0 0 10 10"
                             id="icon_menuContact"
@@ -140,7 +140,6 @@ export default {
             window.open(routeToEditRegister.href, '_blank');
         },
         openContact() {
-        //<li id="openContact" class="menu-admin-item" @click="openContact">
             this.$store.dispatch("setContactDisplay", 'block');
         }
     }
