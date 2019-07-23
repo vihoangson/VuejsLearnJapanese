@@ -242,6 +242,8 @@ export default {
         sendMessage() {
             let msg = this.createObjMessage();
             this.$socket.emit(EVENT_SEND, msg);
+            var container = this.$el.querySelector(".timeline-message");
+            container.scrollTop = container.scrollHeight;
 
             this.message.content = '';
             this.message.id = 0;
