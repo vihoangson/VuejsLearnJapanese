@@ -300,6 +300,11 @@ export default {
 
             this.editMessage = true;
             this.$refs.textarea.focus();
+            let roomId = this.$store.getters.get_current_room['room_id'];
+            localStorage.setItem('id', value.message_id)
+            localStorage.setItem('content', value.message)
+            localStorage.setItem('type', AppConst.MESSAGE_TYPE.EDIT)
+            localStorage.setItem('roomId', roomId)
         },
         onDelete(value) {
             let con = confirm('Do you want to delete it!?');

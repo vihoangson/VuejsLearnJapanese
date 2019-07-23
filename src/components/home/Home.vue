@@ -2,8 +2,8 @@
     <div id="home">
         <Header></Header>
         <div class="content">
-            <Room @auto-scroll-bottom="autoScrollBottom"></Room>
-            <Chat></Chat>
+            <Room @changeRoomEvent="changeRoomEvent"></Room>
+            <Chat ref="chat"></Chat>
         </div>
     </div>
 </template>
@@ -21,6 +21,7 @@
 import Header from '../global/Header';
 import Room from '../chat/RoomChat';
 import Chat from '../chat/ChatBox';
+import { AppConst } from '../../common/AppConst';
 export default {
     name: 'Home',
     components: {
@@ -39,7 +40,12 @@ export default {
         console.log(next);
     },
     methods: {
-        autoScrollBottom () {
+        changeRoomEvent () {
+            let chatBox = this.$refs.chat;
+            chatBox.editMessage = false;
+            chatBox.message.content = '';
+            chatBox.message.id = 0;
+            chatBox.message.type = AppConst.MESSAGE_TYPE.CREATE;
             var container = this.$el.querySelector(".timeline-message");
             container.scrollTop = container.scrollHeight;
         }
