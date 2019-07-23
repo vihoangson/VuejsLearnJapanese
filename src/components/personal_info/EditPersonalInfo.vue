@@ -65,7 +65,7 @@
                                         Display name:
                                     </span>
                                     <span class="_profileDepartment profileShowDialog__profileBodyItemContent">
-                                        <input class="profileShowDialog__profileBodyInput" type="text" v-model="name" />
+                                        <input class="profileShowDialog__profileBodyInput" v-text="user_info.name" type="text" />
                                     </span>
 
                                 </li>
@@ -76,7 +76,7 @@
                                         Organization name:
                                     </span>
                                     <span class="_profileDepartment profileShowDialog__profileBodyItemContent">
-                                        <input  class="profileShowDialog__profileBodyInput" type="text" v-model="company" />
+                                        <input  class="profileShowDialog__profileBodyInput"  v-text="user_info.company" type="text" />
                                     </span>
 
                                 </li>
@@ -87,7 +87,8 @@
                                         E-mail:
                                     </span>
                                     <span class="_profileDepartment profileShowDialog__profileBodyItemContent">
-                                        <input class="profileShowDialog__profileBodyInput" type="text" v-model="email" />
+                                        <!--<input class="profileShowDialog__profileBodyInput" type="text" v-model="email" />-->
+                                        <input class="profileShowDialog__profileBodyInput" v-text="user_info.email" type="text" />
                                     </span>
 
                                 </li>
@@ -126,9 +127,10 @@
         name: "EditPersonalInfo",
         data() {
             return {
-                email: this.$store.getters.get_current_user_info.email,
-                name: this.$store.getters.get_current_user_info.name,
-                company: this.$store.getters.get_current_user_info.company,
+                // email: this.$store.getters.get_current_user_info.email,
+                // name: this.$store.getters.get_current_user_info.name,
+                // company: this.$store.getters.get_current_user_info.company,
+
 
                 isHidden: true,
                 displayCloseIcon: 'block',

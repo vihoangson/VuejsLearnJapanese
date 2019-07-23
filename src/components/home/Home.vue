@@ -38,11 +38,12 @@ export default {
         EditPersonalInfo
     },
     created() {
-        let user = localStorage.getItem('user');
-        this.$store.dispatch('setCurrentUser', JSON.parse(user));
+        // let user = localStorage.getItem('user');
+        // this.$store.dispatch('setCurrentUser', JSON.parse(user));
+        //
+        // let userInfo = localStorage.getItem('user_info');
+        // this.$store.dispatch('setCurrentUserInfo', JSON.parse(userInfo));
+    },
 
-        let userInfo = localStorage.getItem('user_info');
-        this.$store.dispatch('setCurrentUserInfo', JSON.parse(userInfo));
-    }
 };
 </script>
