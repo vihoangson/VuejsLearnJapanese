@@ -105,7 +105,7 @@ export default {
             email: '',
             password: '',
             confirmPassword: '',
-            recaptchaVerified: false
+            recaptchaVerified: true
         };
     },
     computed: {},
@@ -160,11 +160,11 @@ export default {
                 isValid = true;
                 this.errors.password = 'Password required !';
             }
-            let regexPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+            let regexPassword = /^.{8,}$/;
             if (!regexPassword.test(this.password) && this.errors.password === '') {
                 isValid = true;
                 this.errors.password =
-                    'Minimum of 8 characters including lower case letter, upper case letter and numbers';
+                    'Minimum of 8 characters ';
             }
 
             if (this.confirmPassword === '') {
@@ -174,7 +174,7 @@ export default {
             if (!regexPassword.test(this.confirmPassword) && this.errors.confirmPassword === '') {
                 isValid = true;
                 this.errors.confirmPassword =
-                    'Minimum of 8 characters including lower case letter, upper case letter and numbers';
+                    'Minimum of 8 characters ';
             }
 
             if (this.password !== this.confirmPassword && this.errors.confirmPassword === '') {
