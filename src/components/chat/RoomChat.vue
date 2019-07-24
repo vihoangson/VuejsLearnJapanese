@@ -249,4 +249,7 @@ export default {
     font-size: 12px;
     border-radius: 15px;
 }
+.room-body li:hover {
+    background: #d6d6d6;
+}
 </style>
