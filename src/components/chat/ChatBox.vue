@@ -133,8 +133,10 @@
                         rows="8"
                         placeholder="Enter your message here"
                         v-model="message.content"
+                        @keydown.enter.exact.prevent
                         @input="$emit('input', $event.target.value)"
                         @keyup.enter.exact="pressEnterToSendMessage($event)"
+                        @keydown.enter.shift.exact="newline"
                     ></textarea>
                 </div>
             </div>
@@ -285,7 +287,9 @@ export default {
             this.$emit('close');
         },
         pressEnterToSendMessage() {
-            if (this.enterToSendMessage) this.sendMessage();
+            if (this.message.content.length > 0) {
+                if (this.enterToSendMessage) this.sendMessage();
+            }
         },
         check: function(e) {
             this.enterToSendMessage = e.target.value;
@@ -321,7 +325,10 @@ export default {
             this.message.type = AppConst.MESSAGE_TYPE.CREATE;
 
             this.editMessage = false;
-        }
+        },
+        newline() {
+            this.message.content = `${this.message.content}\n`;
+        },
     },
     computed: {
         myStyles() {
