@@ -34,19 +34,19 @@ export default {
 
         this.$store.dispatch('setCurrentUser', JSON.parse(user));
     },
-    beforeRouteUpdate(to, from, next) {
-        console.log(to);
-        console.log(from);
-        console.log(next);
-    },
+    // beforeRouteUpdate(to, from, next) {
+    //     let room = this.$route.params.room_id;
+    //     console.log(room);
+    //     next();
+    // },
     methods: {
-        changeRoomEvent () {
+        changeRoomEvent() {
             let chatBox = this.$refs.chat;
             chatBox.editMessage = false;
             chatBox.message.content = '';
             chatBox.message.id = 0;
             chatBox.message.type = AppConst.MESSAGE_TYPE.CREATE;
-            var container = this.$el.querySelector(".timeline-message");
+            var container = this.$el.querySelector('.timeline-message');
             container.scrollTop = container.scrollHeight;
         }
     }

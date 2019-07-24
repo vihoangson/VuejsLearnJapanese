@@ -22,6 +22,8 @@ export default {
 
         if (user === null) {
             this.$router.push({ path: 'login' });
+        } else {
+            // this.$router.push({ path: '/rid1' });
         }
     },
     methods: {
