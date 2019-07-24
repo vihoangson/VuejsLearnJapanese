@@ -102,7 +102,7 @@ export default {
                 room_id: room.room_id
             }).then(res => {
                 if (res.error_code === 0) room.list_message = res.data;
-                setTimeout(() => {this.$emit('auto-scroll-bottom');}, 1);
+                setTimeout(() => {this.$emit('changeRoomEvent');}, 1);
             });
         }
     }
