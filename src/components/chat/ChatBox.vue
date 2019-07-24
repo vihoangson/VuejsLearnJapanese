@@ -31,7 +31,9 @@
                                     class="timeline-content-header-organization"
                                 >{{item.organization}}</p>
                             </div>
-                            <div class="timeline-content-message">{{item.message}}</div>
+                            <div class="timeline-content-message">
+                                <pre>{{item.message}}</pre>
+                            </div>
                             <ChatAction
                                 :message="item"
                                 @reply="onReply"
@@ -120,7 +122,7 @@
                             role="button"
                             tabindex="2"
                             aria-disabled="false"
-                            @click="this.onSend()"
+                            @click="onSend()"
                         >Send</div>
                     </div>
                 </div>
@@ -291,6 +293,7 @@ export default {
         pressEnterToSendMessage() {
             if (this.message.content.length > 0) {
                 if (this.enterToSendMessage) this.sendMessage();
+                else this.message.content += '\n';
             }
         },
         check: function(e) {
@@ -639,5 +642,11 @@ textarea:focus:-webkit-placeholder {
 
 .emoji-trigger.triggered path {
     fill: darken(#fec84a, 15%);
+}
+.timeline-content-message pre {
+    font-size: 14px;
+    font-family: initial;
+    margin-top: 3px;
+    margin-bottom: 0px;
 }
 </style>
