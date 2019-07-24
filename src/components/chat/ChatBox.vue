@@ -133,11 +133,22 @@
                         ref="textarea"
                         cols="30"
                         rows="8"
-                        placeholder="Enter your message here"
+                        placeholder="Enter your message here(Press Shift + Enter to add breakline)"
                         v-model="message.content"
-                        @input="$emit('input', $event.target.value)"
+                        v-if="this.enterToSendMessage"
+                        @keydown.enter.exact.prevent
                         @keyup.enter.exact="pressEnterToSendMessage($event)"
-                        @keydown.enter.shift.exact="pressShifEnter($event)"
+                    ></textarea>
+                    <textarea
+                        id="chat-text2"
+                        ref="textarea"
+                        cols="30"
+                        rows="8"
+                        placeholder="Enter your message here(Press Shift + Enter to send message)"
+                        v-model="message.content"
+                        v-if="!this.enterToSendMessage"
+                        @keydown.enter.shift.prevent
+                        @keydown.enter.shift.exact="sendMessage()"
                     ></textarea>
                 </div>
             </div>
@@ -244,7 +255,7 @@ export default {
         },
         sendMessage() {
             let msg = this.createObjMessage();
-            this.$socket.emit(EVENT_SEND, msg);
+            if (msg.message !== '') this.$socket.emit(EVENT_SEND, msg);
             var container = this.$el.querySelector('.timeline-message');
             container.scrollTop = container.scrollHeight;
 
@@ -293,13 +304,10 @@ export default {
             this.$emit('close');
         },
         pressEnterToSendMessage() {
-            if (this.message.content.length > 0) {
-                if (this.enterToSendMessage) this.sendMessage();
-            }
-        },
-        pressShifEnter() {
-            if (this.message.content.length > 0) {
-                if (!this.enterToSendMessage) this.sendMessage();
+            if (this.message.content !== '') {
+                if (this.enterToSendMessage) {
+                    this.sendMessage();
+                }
             }
         },
         check: function(e) {
@@ -343,7 +351,8 @@ export default {
             this.editMessage = false;
         },
         newline() {
-            this.message.content = `${this.message.content}\n`;
+            //alert();
+            //this.message.content = `${this.message.content}\n`;
         }
     },
     computed: {
