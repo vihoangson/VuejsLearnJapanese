@@ -31,6 +31,7 @@
                     v-for="(item, index) in this.list_rooms"
                     :key="`room-${index}`"
                     @click="changeRoom(item)"
+                    :style="{backgroundColor: item.color}"
                 >
                     <div class="name">
                         <div class="room-image">
@@ -63,7 +64,8 @@ export default {
                     room_name: 'My Chat',
                     icon_img: this.$store.getters.get_current_user.icon_img,
                     list_message: [],
-                    not_read: 0
+                    not_read: 0,
+                    color: ''
                 }
             ],
             rooms: []
@@ -79,11 +81,18 @@ export default {
             console.log(room);
             this.$store.dispatch('setCurrentRoom', room);
             this.getListMessage();
+            room.color = '#bfbab0';
+            this.list_rooms.forEach(x => {
+                if (room.room_id !== x.room_id) {
+                    x.color = '';
+                }
+            })
         },
         getListRoom() {
             API.GET(ApiConst.ALL_ROOM).then(res => {
                 if (res.error_code === 0) {
                     res.data.forEach(x => {
+                        x.color = '';
                         this.list_rooms.push(x);
                     });
                     this.list_rooms.forEach(x => {
