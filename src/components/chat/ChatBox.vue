@@ -250,6 +250,7 @@ export default {
             this.message.content = '';
             this.message.id = 0;
             this.message.type = AppConst.MESSAGE_TYPE.CREATE;
+            this.editMessage = false;
         },
         toggleEmojiPicker() {
             this.showEmojiPicker = !this.showEmojiPicker;
