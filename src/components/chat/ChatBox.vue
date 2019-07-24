@@ -133,7 +133,8 @@
                         ref="textarea"
                         cols="30"
                         rows="8"
-                        placeholder="Enter your message here(Press Shift + Enter to add breakline)"
+                        placeholder="Enter your message here
+(Press Shift + Enter for line break)"
                         v-model="message.content"
                         v-if="this.enterToSendMessage"
                         @keydown.enter.exact.prevent
@@ -144,7 +145,8 @@
                         ref="textarea"
                         cols="30"
                         rows="8"
-                        placeholder="Enter your message here(Press Shift + Enter to send message)"
+                        placeholder="Enter your message here
+(Press Shift + Enter for send)"
                         v-model="message.content"
                         v-if="!this.enterToSendMessage"
                         @keydown.enter.shift.prevent
@@ -349,10 +351,6 @@ export default {
             this.message.type = AppConst.MESSAGE_TYPE.CREATE;
 
             this.editMessage = false;
-        },
-        newline() {
-            //alert();
-            //this.message.content = `${this.message.content}\n`;
         }
     },
     computed: {
