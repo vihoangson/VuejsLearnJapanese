@@ -198,8 +198,13 @@ export default {
                 password: this.password
             };
             API.POST(ApiConst.REGISTER, data).then(res => {
-                console.log(res);
-                this.$router.push({ name: 'login' });
+                if(res.error_code !== 0){
+                    alert(res.error_msg);
+                }else{
+                    alert('Create user successful !');
+
+                    this.$router.push({ name: 'login' });
+                }                
             });
         }
     }

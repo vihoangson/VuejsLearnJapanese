@@ -9,8 +9,13 @@ export const SocketService = {
         if (room.room_id === e.room_id) {
             if (e.type === AppConst.MESSAGE_TYPE.CREATE) {
                 this.$store.dispatch('addMessage', e);
-                var container = this.$el.querySelector(".timeline-message");
-                container.scrollTop = container.scrollHeight;
+                setTimeout( () =>{
+                    var container = this.$el.querySelector(".timeline-message");
+                    container.scrollTop = container.scrollHeight;
+                }
+
+                ,1)
+
             }
             else if (e.type === AppConst.MESSAGE_TYPE.EDIT) {
                 this.$store.dispatch('editMessage', e);
