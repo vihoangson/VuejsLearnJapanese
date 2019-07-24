@@ -22,7 +22,7 @@ export default {
     },
     not_read_message(state, obj) {
         state.list_room.forEach(element => {
-            if (obj.room_id === element.id) {
+            if (obj.room_id === element.room_id) {
                 element.list_message.push(obj);
                 element.not_read += 1;
             }

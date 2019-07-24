@@ -3,10 +3,10 @@
         <div class="chat-box-header">
             <div class="header-name">
                 <div class="room-logo">
-                    <img :src="this.$store.getters.get_current_room.image" alt />
+                    <img :src="this.$store.getters.get_current_room.icon_img" alt />
                 </div>
                 <h1 class="title">
-                    <span>{{this.$store.getters.get_current_room.name}}</span>
+                    <span>{{this.$store.getters.get_current_room.room_name}}</span>
                 </h1>
             </div>
         </div>
@@ -224,7 +224,7 @@ export default {
         },
         createObjMessage() {
             let msg = {
-                room_id: this.$store.getters.get_current_room.id,
+                room_id: this.$store.getters.get_current_room.room_id,
                 message: this.message.content,
                 type: this.message.type,
                 token: this.user.token
@@ -242,6 +242,8 @@ export default {
         sendMessage() {
             let msg = this.createObjMessage();
             this.$socket.emit(EVENT_SEND, msg);
+            var container = this.$el.querySelector(".timeline-message");
+            container.scrollTop = container.scrollHeight;
 
             this.message.content = '';
             this.message.id = 0;
@@ -298,6 +300,11 @@ export default {
 
             this.editMessage = true;
             this.$refs.textarea.focus();
+            let roomId = this.$store.getters.get_current_room['room_id'];
+            localStorage.setItem('id', value.message_id)
+            localStorage.setItem('content', value.message)
+            localStorage.setItem('type', AppConst.MESSAGE_TYPE.EDIT)
+            localStorage.setItem('roomId', roomId)
         },
         onDelete(value) {
             let con = confirm('Do you want to delete it!?');

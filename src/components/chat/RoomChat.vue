@@ -31,6 +31,7 @@
                     v-for="(item, index) in this.list_rooms"
                     :key="`room-${index}`"
                     @click="changeRoom(item)"
+                    :style="{backgroundColor: item.color}"
                 >
                     <div class="name">
                         <div class="room-image">
@@ -63,31 +64,41 @@ export default {
                     room_name: 'My Chat',
                     icon_img: this.$store.getters.get_current_user.icon_img,
                     list_message: [],
-                    not_read: 0
+                    not_read: 0,
+                    color: ''
                 }
-            ]
+            ],
+            rooms: []
         };
     },
     created() {
         this.getListRoom();
-        var rooms = [];
-        this.list_rooms.forEach(x => {
-            rooms.push(x.room_id);
-        });
-        this.$socket.emit(EVENT_JOIN, rooms);
+
         this.getListMessage();
     },
     methods: {
         changeRoom(room) {
+            console.log(room);
             this.$store.dispatch('setCurrentRoom', room);
             this.getListMessage();
+            room.color = '#bfbab0';
+            this.list_rooms.forEach(x => {
+                if (room.room_id !== x.room_id) {
+                    x.color = '';
+                }
+            })
         },
         getListRoom() {
             API.GET(ApiConst.ALL_ROOM).then(res => {
                 if (res.error_code === 0) {
                     res.data.forEach(x => {
+                        x.color = '';
                         this.list_rooms.push(x);
                     });
+                    this.list_rooms.forEach(x => {
+                        this.rooms.push(x.room_id);
+                    });
+                    this.$socket.emit(EVENT_JOIN, this.rooms);
                     this.$store.dispatch('setListRoom', this.list_rooms);
                     this.$store.dispatch('setCurrentRoom', this.list_rooms[0]);
                 }
@@ -100,6 +111,7 @@ export default {
                 room_id: room.room_id
             }).then(res => {
                 if (res.error_code === 0) room.list_message = res.data;
+                setTimeout(() => {this.$emit('changeRoomEvent');}, 1);
             });
         }
     }
@@ -236,5 +248,8 @@ export default {
     padding: 2px 6px;
     font-size: 12px;
     border-radius: 15px;
+}
+.room-body li:hover {
+    background: #d6d6d6;
 }
 </style>
