@@ -2,7 +2,7 @@
     <div id="home">
         <Header></Header>
         <div class="content">
-            <Room></Room>
+            <Room @auto-scroll-bottom="autoScrollBottom"></Room>
             <Chat></Chat>
         </div>
     </div>
@@ -37,6 +37,12 @@ export default {
         console.log(to);
         console.log(from);
         console.log(next);
+    },
+    methods: {
+        autoScrollBottom () {
+            var container = this.$el.querySelector(".timeline-message");
+            container.scrollTop = container.scrollHeight;
+        }
     }
 };
 </script>

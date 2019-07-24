@@ -7,8 +7,11 @@ export const SocketService = {
         console.log(e);
         var room = this.$store.getters.get_current_room;
         if (room.room_id === e.room_id) {
-            if (e.type === AppConst.MESSAGE_TYPE.CREATE)
+            if (e.type === AppConst.MESSAGE_TYPE.CREATE) {
                 this.$store.dispatch('addMessage', e);
+                var container = this.$el.querySelector(".timeline-message");
+                container.scrollTop = container.scrollHeight;
+            }
             else if (e.type === AppConst.MESSAGE_TYPE.EDIT) {
                 this.$store.dispatch('editMessage', e);
             } else if (e.type === AppConst.MESSAGE_TYPE.DELETE) {

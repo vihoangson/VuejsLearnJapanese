@@ -22,6 +22,7 @@ Vue.use(
 );
 
 Vue.use(VModal, { dynamic: true, dialog: true });
+Vue.config.devtools = true;
 
 /* eslint-disable no-new */
 new Vue({
