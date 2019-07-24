@@ -651,7 +651,7 @@ textarea:focus:-webkit-placeholder {
 }
 .timeline-content-message pre {
     font-size: 14px;
-    font-family: initial;
+    font-family: arial;
     margin-top: 3px;
     margin-bottom: 0px;
 }
