@@ -135,10 +135,9 @@
                         rows="8"
                         placeholder="Enter your message here"
                         v-model="message.content"
-                        @keydown.enter.exact.prevent
                         @input="$emit('input', $event.target.value)"
                         @keyup.enter.exact="pressEnterToSendMessage($event)"
-                        @keydown.enter.shift.exact="newline"
+                        @keydown.enter.shift.exact="pressShifEnter($event)"
                     ></textarea>
                 </div>
             </div>
@@ -229,7 +228,7 @@ export default {
         createObjMessage() {
             let msg = {
                 room_id: this.$store.getters.get_current_room.room_id,
-                message: this.message.content,
+                message: this.message.content.trim(),
                 type: this.message.type,
                 token: this.user.token
             };
@@ -260,8 +259,11 @@ export default {
         addEmoji(emoji) {
             const textarea = this.$refs.textarea;
             const cursorPosition = textarea.selectionEnd;
-            const start = this.value.substring(0, textarea.selectionStart);
-            const end = this.value.substring(textarea.selectionStart);
+            const start = this.message.content.substring(
+                0,
+                textarea.selectionStart
+            );
+            const end = this.message.content.substring(textarea.selectionEnd);
             const text = start + emoji.native + end;
             this.$emit('input', text);
             this.message += text;
@@ -293,7 +295,11 @@ export default {
         pressEnterToSendMessage() {
             if (this.message.content.length > 0) {
                 if (this.enterToSendMessage) this.sendMessage();
-                else this.message.content += '\n';
+            }
+        },
+        pressShifEnter() {
+            if (this.message.content.length > 0) {
+                if (!this.enterToSendMessage) this.sendMessage();
             }
         },
         check: function(e) {
