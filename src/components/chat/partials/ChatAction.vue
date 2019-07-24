@@ -100,7 +100,7 @@ export default {
         onEdit() {
             this.$emit('edit', this.message);
         },
-        onDelete(){
+        onDelete() {
             this.$emit('delete', this.message);
         }
     }
@@ -111,7 +111,7 @@ export default {
     display: none;
     position: absolute;
     right: 40px;
-    bottom: -20px;
+    bottom: -15px;
     text-align: right;
     z-index: 3;
 }
@@ -131,6 +131,8 @@ export default {
     border-radius: 0 0 3px 3px;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
     cursor: pointer;
+    margin-top: 0px;
+    margin-bottom: 0px;
 }
 .actionNav__item {
     display: inline-flex;

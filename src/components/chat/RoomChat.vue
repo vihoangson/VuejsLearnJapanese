@@ -78,7 +78,9 @@ export default {
     },
     methods: {
         changeRoom(room) {
-            console.log(room);
+            // let x = '/rid' + room.room_id;
+            // this.$router.push({ path: x });
+            // console.log(this.$route.params.room_id);
             this.$store.dispatch('setCurrentRoom', room);
             this.getListMessage();
             room.color = '#bfbab0';
@@ -86,7 +88,7 @@ export default {
                 if (room.room_id !== x.room_id) {
                     x.color = '';
                 }
-            })
+            });
         },
         getListRoom() {
             API.GET(ApiConst.ALL_ROOM).then(res => {
@@ -111,7 +113,9 @@ export default {
                 room_id: room.room_id
             }).then(res => {
                 if (res.error_code === 0) room.list_message = res.data;
-                setTimeout(() => {this.$emit('changeRoomEvent');}, 1);
+                setTimeout(() => {
+                    this.$emit('changeRoomEvent');
+                }, 1);
             });
         }
     }

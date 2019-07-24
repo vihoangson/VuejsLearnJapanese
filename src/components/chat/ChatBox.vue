@@ -120,7 +120,7 @@
                             role="button"
                             tabindex="2"
                             aria-disabled="false"
-                            @click="sendMessage"
+                            @click="this.onSend()"
                         >Send</div>
                     </div>
                 </div>
@@ -242,11 +242,12 @@ export default {
         sendMessage() {
             let msg = this.createObjMessage();
             this.$socket.emit(EVENT_SEND, msg);
-            var container = this.$el.querySelector(".timeline-message");
+            var container = this.$el.querySelector('.timeline-message');
             container.scrollTop = container.scrollHeight;
 
             this.message.content = '';
             this.message.id = 0;
+            this.message.type = AppConst.MESSAGE_TYPE.CREATE;
         },
         toggleEmojiPicker() {
             this.showEmojiPicker = !this.showEmojiPicker;
@@ -285,13 +286,19 @@ export default {
             this.$emit('close');
         },
         pressEnterToSendMessage() {
-            if (this.enterToSendMessage) this.sendMessage();
+            if (this.enterToSendMessage) {
+                this.sendMessage();
+            }
         },
         check: function(e) {
             this.enterToSendMessage = e.target.value;
         },
         onReply(value) {
             this.message = value.message;
+        },
+        onSend() {
+            this.message.type = AppConst.MESSAGE_TYPE.CREATE;
+            this.sendMessage();
         },
         onEdit(value) {
             this.message.id = value.message_id;
@@ -300,11 +307,12 @@ export default {
 
             this.editMessage = true;
             this.$refs.textarea.focus();
-            let roomId = this.$store.getters.get_current_room['room_id'];
-            localStorage.setItem('id', value.message_id)
-            localStorage.setItem('content', value.message)
-            localStorage.setItem('type', AppConst.MESSAGE_TYPE.EDIT)
-            localStorage.setItem('roomId', roomId)
+
+            let roomId = this.$store.getters.get_current_room.room_id;
+            localStorage.setItem('id', value.message_id);
+            localStorage.setItem('content', value.message);
+            localStorage.setItem('type', AppConst.MESSAGE_TYPE.EDIT);
+            localStorage.setItem('roomId', roomId);
         },
         onDelete(value) {
             let con = confirm('Do you want to delete it!?');
@@ -328,7 +336,7 @@ export default {
             return this.height - 45;
         },
         timelineMessage() {
-            return this.height - 45 - 200;
+            return this.height - 245;
         }
     }
 };
@@ -441,6 +449,7 @@ export default {
     zoom: 1;
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;
+    margin-bottom: 10px;
 }
 .timeline-message-body:hover {
     border-top: 1px solid #b1d6ed;
@@ -454,7 +463,9 @@ export default {
     padding: 8px 16px;
     position: relative;
     border: 1px solid transparent;
+    margin: 15px 0px;
 }
+
 .timeline-avatar {
     float: left;
 }

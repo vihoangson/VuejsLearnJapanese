@@ -4,6 +4,11 @@ export default [
         name: 'home',
         component: () => import('@/components/home/Home.vue')
     },
+    // {
+    //     path: '/rid:room_id',
+    //     name: 'home',
+    //     component: () => import('@/components/home/Home.vue')
+    // },
     {
         path: '/login',
         name: 'login',
