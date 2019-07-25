@@ -49,7 +49,7 @@
         <span>
           <svg viewBox="0 0 10 10" id="icon_plus" xmlns="http://www.w3.org/2000/svg"><path d="M4.375.625v3.75H.625v1.25h3.75v3.75h1.25v-3.75h3.75v-1.25h-3.75V.625z"></path></svg>
           <div class="add-option">
-              <b-button v-b-modal.modal-prevent-rooms>Add Rooms</b-button>
+              <span @click="addRooms"> Add Rooms </span>
           </div>
         </span>
       </div>
@@ -323,8 +323,18 @@
   .create-room.active .add-option{
     display: block;
   }
-  .create-room .add-option button{
-
+  .create-room .add-option span{
+    font-size: 12px;
+    background: #f8f9fa;
+    padding: 8px 10px;
+    border-radius: 4px;
+    color: #13202f;
+    position: relative;
+    top: 5px;
+    border: 1px #ccc solid;
+    width: 120px;
+    display: inline-block;
+    text-align: center;
   }
 </style>
 <script>
@@ -389,14 +399,17 @@ export default {
          return null;
       });
     },
-
+    addRooms(){
+      this.$root.$emit('open-modal-room', 0)
+      this.$bvModal.show('modal-prevent-rooms');
+    },
     iconCreate(){
-      this.$root.$emit('modal-prevent-id', 0)
+      this.$root.$emit('open-modal-group', 0)
       this.$bvModal.show('modal-prevent-group');
     },
 
     iconEdit(id){
-      this.$root.$emit('modal-prevent-id', id)
+      this.$root.$emit('open-modal-group', id)
       this.$bvModal.show('modal-prevent-group');
     },
 
