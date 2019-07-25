@@ -17,7 +17,7 @@ Vue.use(Moment);
 Vue.use(
     new VueSocketIO({
         debug: true,
-        connection: 'http://172.16.218.252:3001'
+        connection: 'http://172.16.100.35:3001'
     })
 );
 
