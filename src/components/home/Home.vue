@@ -1,5 +1,6 @@
 <template>
   <div id="home">
+    <Notice></Notice>
     <Header></Header>
     <div class="content">
       <Room></Room>
@@ -20,6 +21,7 @@
 </style>
 
 <script>
+import Notice from '../global/Notice'
 import Header from '../global/Header'
 import Room from '../chat/RoomChat'
 import Chat from '../chat/ChatBox'
@@ -28,6 +30,7 @@ import Group from '../group/group'
 export default {
   name: "Home",
   components: {
+    Notice,
     Header,
     Room,
     Chat,

@@ -19,11 +19,11 @@
             </div>
             <ul role="list" class="selectboxContent">
               <li class="category"> Category
-                 <b-button v-b-modal.modal-prevent-group>
+                 <span @click="iconCreate">
                     <svg class="sc-bwzfXH jhCIfQ" viewBox="0 0 10 10" width="16" height="16">
                       <use fill-rule="evenodd" xlink:href="#icon_plus"></use>
                     </svg>
-                 </b-button>
+                 </span>
               </li>
               <li v-for="(s, index) in datascript" :class="{ 'active': activeIndex === index}" :key="s.id" @click="setActive(index, s.name)">
                   {{ s.name }}
@@ -81,28 +81,135 @@
   </div>
 </template>
 <style>
-.option-icon{
-  position: absolute;
-  z-index: 1000;
-  right: -5px;
-  top: 7px;
-  width: 50px;
-}
-.option-icon svg{
-  width: 20px;
-  padding: 0 2px;
-  color: #fff;
-}
-.option-icon span{
-  float: left;
-}
-.room-header{
-  position: relative;
-}
-.room-header .selectboxDefault{
+  .option-icon{
     position: absolute;
-    left: 40px;
+    z-index: 1000;
+    right: -5px;
     top: 7px;
+    width: 50px;
+  }
+  .option-icon svg{
+    width: 20px;
+    padding: 0 2px;
+    color: #fff;
+  }
+  .option-icon span{
+    float: left;
+  }
+  .room-header{
+    position: relative;
+  }
+  .room-header .selectboxDefault{
+      position: absolute;
+      left: 40px;
+      top: 7px;
+      align-items: center;
+      justify-content: center;
+      border-style: solid;
+      border-width: 1px;
+      border-radius: 2px;
+      text-decoration: none;
+      cursor: pointer;
+      user-select: none;
+      padding: 0px 12px;
+      line-height: 26px;
+      font-size: 13px;
+      border-color: #b3b3b3;
+      background-color: #fff;
+      width: 180px;
+      z-index: 10;
+  }
+  .room-header .selectboxDefault .icon {
+      top: 0;
+      width: 10px;
+      display: inline-block;
+      position: absolute;
+      right: 15px;
+  }
+  .room-header .selectboxContent{
+      display: none;
+      position: absolute;
+      left: 40px;
+      top: 32px;
+      z-index: 10;
+      right: 10px;
+      font-size: 13px;
+      width: 180px;
+      list-style: none;
+      border: 1px #b6b6b6 solid;
+      padding: 0;
+      background: #fff;
+      -webkit-box-shadow: 1px 2px 5px -3px rgba(0,0,0,0.75);
+      -moz-box-shadow: 1px 2px 5px -3px rgba(0,0,0,0.75);
+      box-shadow: 1px 2px 5px -3px rgba(0,0,0,0.75);
+      cursor: pointer;
+      position: absolute;
+      z-index: 1;
+  }
+  .selectboxContent button svg{
+      padding: 0;
+      position: relative;
+      top: -10px;
+      left: -6px;
+  }
+  .selectboxContent button{
+      height: 20px;
+      width: 20px;
+      float: right;
+      background: unset !important;
+      border: 0;
+  }
+  .selectboxContent button:hover, 
+  .selectboxContent button:focus{
+      height: 20px;
+      width: 20px;
+      float: right;
+      background: unset;
+      border: 0;
+      color: #fff;
+  }
+  .room-header .active .selectboxContent{
+          display: inline-block;
+    position: absolute;
+    z-index: 1;
+  }
+  .room-header .selectboxContent li:hover{
+      background: #0a8abd;
+      color: #fff;
+      transition: .5s;
+  }
+  .room-header .selectboxContent li{
+      padding: 8px 5px;
+      padding-left: 12px;
+      position: relative;
+  }
+
+  .room-header .selectboxContent li>span{
+      float: right;
+  }
+  .room{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 256px;
+    height: 100%;
+    background-color: #f2f2f2;
+    z-index: 2;
+  }
+  .room-header{
+    display: flex;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 8px;
+    height: 41px;
+    background-color: #fff;
+    border-bottom: 1px solid #cccccc;
+  }
+
+  .room-header .my-chat{
+    box-sizing: border-box;
+    display: inline-flex;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
     border-style: solid;
@@ -111,221 +218,114 @@
     text-decoration: none;
     cursor: pointer;
     user-select: none;
-    padding: 0px 12px;
-    line-height: 26px;
-    font-size: 13px;
-    border-color: #b3b3b3;
-    background-color: #fff;
-    width: 180px;
-    z-index: 10;
-}
-.room-header .selectboxDefault .icon {
-    top: 0;
-    width: 10px;
-    display: inline-block;
-    position: absolute;
-    right: 15px;
-}
-.room-header .selectboxContent{
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border-color: transparent;
+    background-color: transparent;
+    color: #1a1a1a;
+    fill: #1a1a1a;
+    margin-right: 4px;
+  }
+  .room-header .create-room{
+    box-sizing: border-box;
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 2px;
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border-color: transparent;
+    background-color: transparent;
+    color: #1a1a1a;
+    fill: #1a1a1a;
+  }
+  .create-room:hover,
+  .my-chat:hover{
+    background-color: rgba(0, 0, 0, 0.1);
+    border-color: transparent;
+    color: #1a1a1a;
+    fill: #1a1a1a;
+  }
+  .create-room svg,
+  .my-chat svg{
+    width: 16px;
+    height: 16px;
+  }
+  .filter-list{
+    margin-right: auto;
+    width: calc( 100% - 24px * 2 - 4px * 2);
+    flex-grow: 0;
+    flex-shrink: 1;
+  }
+  .filter-list select{
+    width: 100%;
+  }
+  .room-body{
+    height: calc(100% - 41px);
+  }
+  .room-body ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .room-body ul li{
+    box-sizing: border-box;
+    position: relative;
+    cursor: pointer;
+    fill-opacity: 0;
+    background-color: rgb(242, 242, 242);
+    padding: 8px calc(28px) 8px 8px;
+    transition: background 0.2s linear 0s;
+    border-width: 1px;
+    border-style: solid;
+    border-color: transparent;
+    border-image: initial;
+  }
+  .room-body ul li .name{
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    width: 100%;
+  }
+  .room-image{
+    margin-right: 8px;
+    width: 32px;
+    height: 32px;
+    flex-shrink: 0;
+  }
+  .room-image img{
+    box-sizing: border-box;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+  }
+  .room-name{
+    width: calc((100% - 32px) - 8px);
+  }
+
+  .create-room .add-option{
     display: none;
     position: absolute;
-    left: 40px;
-    top: 32px;
-    z-index: 10;
-    right: 10px;
-    font-size: 13px;
-    width: 180px;
-    list-style: none;
-    border: 1px #b6b6b6 solid;
-    padding: 0;
-    background: #fff;
-    -webkit-box-shadow: 1px 2px 5px -3px rgba(0,0,0,0.75);
-    -moz-box-shadow: 1px 2px 5px -3px rgba(0,0,0,0.75);
-    box-shadow: 1px 2px 5px -3px rgba(0,0,0,0.75);
-    cursor: pointer;
-    position: absolute;
-    z-index: 1;
-}
-.selectboxContent button svg{
-    padding: 0;
-    position: relative;
-    top: -10px;
-    left: -6px;
-}
-.selectboxContent button{
-    height: 20px;
-    width: 20px;
-    float: right;
-    background: unset !important;
-    border: 0;
-}
-.selectboxContent button:hover, 
-.selectboxContent button:focus{
-    height: 20px;
-    width: 20px;
-    float: right;
-    background: unset;
-    border: 0;
-    color: #fff;
-}
-.room-header .active .selectboxContent{
-        display: inline-block;
-  position: absolute;
-  z-index: 1;
-}
-.room-header .selectboxContent li:hover{
-    background: #0a8abd;
-    color: #fff;
-    transition: .5s;
-}
-.room-header .selectboxContent li{
-    padding: 8px 5px;
-    padding-left: 12px;
-    position: relative;
-}
+    top: 30px;
+    right: -263px;
+    width: 300px;
+    z-index: 20;
+  }
 
-.room-header .selectboxContent li>span{
-    float: right;
-}
-.room{
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 256px;
-  height: 100%;
-  background-color: #f2f2f2;
-  z-index: 2;
-}
-.room-header{
-  display: flex;
-  align-items: center;
-  box-sizing: border-box;
-  padding: 8px;
-  height: 41px;
-  background-color: #fff;
-  border-bottom: 1px solid #cccccc;
-}
+  .create-room.active .add-option{
+    display: block;
+  }
+  .create-room .add-option button{
 
-.room-header .my-chat{
-  box-sizing: border-box;
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 2px;
-  text-decoration: none;
-  cursor: pointer;
-  user-select: none;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border-color: transparent;
-  background-color: transparent;
-  color: #1a1a1a;
-  fill: #1a1a1a;
-  margin-right: 4px;
-}
-.room-header .create-room{
-  box-sizing: border-box;
-  display: inline-flex;
-  flex-shrink: 0;
-  align-items: center;
-  justify-content: center;
-  border-style: solid;
-  border-width: 1px;
-  border-radius: 2px;
-  text-decoration: none;
-  cursor: pointer;
-  user-select: none;
-  width: 24px;
-  height: 24px;
-  padding: 0;
-  border-color: transparent;
-  background-color: transparent;
-  color: #1a1a1a;
-  fill: #1a1a1a;
-}
-.create-room:hover,
-.my-chat:hover{
-  background-color: rgba(0, 0, 0, 0.1);
-  border-color: transparent;
-  color: #1a1a1a;
-  fill: #1a1a1a;
-}
-.create-room svg,
-.my-chat svg{
-  width: 16px;
-  height: 16px;
-}
-.filter-list{
-  margin-right: auto;
-  width: calc( 100% - 24px * 2 - 4px * 2);
-  flex-grow: 0;
-  flex-shrink: 1;
-}
-.filter-list select{
-  width: 100%;
-}
-.room-body{
-  height: calc(100% - 41px);
-}
-.room-body ul{
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-.room-body ul li{
-  box-sizing: border-box;
-  position: relative;
-  cursor: pointer;
-  fill-opacity: 0;
-  background-color: rgb(242, 242, 242);
-  padding: 8px calc(28px) 8px 8px;
-  transition: background 0.2s linear 0s;
-  border-width: 1px;
-  border-style: solid;
-  border-color: transparent;
-  border-image: initial;
-}
-.room-body ul li .name{
-  display: flex;
-  -webkit-box-align: center;
-  align-items: center;
-  width: 100%;
-}
-.room-image{
-  margin-right: 8px;
-  width: 32px;
-  height: 32px;
-  flex-shrink: 0;
-}
-.room-image img{
-  box-sizing: border-box;
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-}
-.room-name{
-  width: calc((100% - 32px) - 8px);
-}
-
-.create-room .add-option{
-  display: none;
-  position: absolute;
-  top: 30px;
-  right: -263px;
-  width: 300px;
-  z-index: 20;
-}
-
-.create-room.active .add-option{
-  display: block;
-}
-.create-room .add-option button{
-
-}
+  }
 </style>
 <script>
 import modalMixin from '@/mixins/modal'
@@ -342,12 +342,10 @@ export default {
     }
   },
   mounted() {
-    this.$root.$on('category-insert-group', data => {
-      if(data = "reload"){
+    this.$root.$on('push-notice', data => {
         this.getAllGroup().then(response => {
           this.datascript = response;
         });
-      }
     })
   },
   created: function(){
@@ -392,6 +390,11 @@ export default {
       });
     },
 
+    iconCreate(){
+      this.$root.$emit('modal-prevent-id', 0)
+      this.$bvModal.show('modal-prevent-group');
+    },
+
     iconEdit(id){
       this.$root.$emit('modal-prevent-id', id)
       this.$bvModal.show('modal-prevent-group');
@@ -400,6 +403,7 @@ export default {
     iconDelete(id){
       this.deleteGroup(id).then(data => {
         this.getAllGroup().then(response => {
+          this.$root.$emit('push-notice', {message:'Delete success', alert: 'alert-success'});
           this.datascript = response;
         });
       });
