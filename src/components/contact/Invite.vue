@@ -1,10 +1,8 @@
 <template>
-  <div class="header">
-    Invite
-  </div>
+    <div class="header">Invite</div>
 </template>
 <style>
-  .header {
+.header {
     box-sizing: border-box;
     position: absolute;
     top: 0;
@@ -13,14 +11,12 @@
     width: 50%;
     background-color: #13202f;
     z-index: 2;
-  }
+}
 </style>
 
 <script>
-
 export default {
-  name: 'Invite',
-  components: {
-  }
-}
+    name: 'Invite',
+    components: {}
+};
 </script>

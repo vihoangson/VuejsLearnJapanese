@@ -55,28 +55,23 @@
       </div>
     </div>
     <div class="room-body">
-      <ul>
-        <li>
-          <div class="name">
-            <div class="room-image">
-              <img src="https://appdata.chatwork.com/icon/736/736137.rsz.jpg" alt="">
-            </div>
-            <div class="room-name">
-              <span>SNS TOOL</span>
-            </div>
-          </div>
-        </li>
-        <li>
-          <div class="name">
-            <div class="room-image">
-              <img src="https://appdata.chatwork.com/icon/736/736137.rsz.jpg" alt="">
-            </div>
-            <div class="room-name">
-              <span>SNS TOOL</span>
-            </div>
-          </div>
-        </li>
-      </ul>
+        <ul>
+            <li
+                v-for="(item, index) in this.list_rooms"
+                :key="`room-${index}`"
+                @click="changeRoom(item)"
+                :style="{backgroundColor: item.color}">
+                <div class="name">
+                    <div class="room-image">
+                        <img :src="item.icon_img" :alt="item.room_name" />
+                    </div>
+                    <div class="room-name">
+                        <span>{{item.room_name}}</span>
+                        <span v-if="item.not_read > 0" class="not-read-number">{{item.not_read}}</span>
+                    </div>
+                </div>
+            </li>
+        </ul>
     </div>
   </div>
 </template>
@@ -338,8 +333,11 @@
   }
 </style>
 <script>
+import { API } from '../../services/api';
+import { ApiConst } from '../../common/ApiConst';
 import modalMixin from '@/mixins/modal'
 import axios from 'axios'
+const EVENT_JOIN = 'join';
 export default {
   name: 'Room',
   data () {
@@ -349,16 +347,30 @@ export default {
       selectItems: "All Chat",
       datascript: [],
       activeIndex: undefined,
+      list_rooms: [
+          {
+              room_id: 0,
+              room_name: 'My Chat',
+              icon_img: this.$store.getters.get_current_user.icon_img,
+              list_message: [],
+              not_read: 0,
+              color: ''
+          }
+      ],
+      rooms: []
     }
   },
   mounted() {
     this.$root.$on('push-notice', data => {
         this.getAllGroup().then(response => {
+          console.log(response);
           this.datascript = response;
         });
     })
   },
   created: function(){
+      this.getListRoom();
+      this.getListMessage();
       this.getAllGroup().then(response => {
           this.datascript = response;
       });
@@ -444,6 +456,48 @@ export default {
       }).catch(function (error) {
           return error;
       });
+    },
+    changeRoom(room) {
+        // let x = '/rid' + room.room_id;
+        // this.$router.push({ path: x });
+        // console.log(this.$route.params.room_id);
+        this.$store.dispatch('setCurrentRoom', room);
+        this.getListMessage();
+        room.color = '#bfbab0';
+        room.not_read = 0;
+        this.list_rooms.forEach(x => {
+            if (room.room_id !== x.room_id) {
+                x.color = '';
+            }
+        });
+    },
+    getListRoom() {
+        API.GET(ApiConst.ALL_ROOM).then(res => {
+            if (res.error_code === 0) {
+                res.data.forEach(x => {
+                    x.color = '';
+                    this.list_rooms.push(x);
+                });
+                this.list_rooms.forEach(x => {
+                    this.rooms.push(x.room_id);
+                });
+                this.$socket.emit(EVENT_JOIN, this.rooms);
+                this.$store.dispatch('setListRoom', this.list_rooms);
+                this.$store.dispatch('setCurrentRoom', this.list_rooms[0]);
+            }
+        });
+    },
+    getListMessage() {
+        let room = this.$store.getters.get_current_room;
+        API.POST(ApiConst.RECEIVE_MESSAGE, {
+            page: 0,
+            room_id: room.room_id
+        }).then(res => {
+            if (res.error_code === 0) room.list_message = res.data;
+            setTimeout(() => {
+                this.$emit('changeRoomEvent');
+            }, 1);
+        });
     }
   }
 }

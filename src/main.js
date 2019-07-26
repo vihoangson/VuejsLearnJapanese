@@ -10,30 +10,27 @@ import BootstrapVue from 'bootstrap-vue';
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import VModal from 'vue-js-modal'
+import { SocketService } from './services/socket';
 
 Vue.config.productionTip = false;
 Vue.use(BootstrapVue)
 Vue.use(Moment);
+
 Vue.use(
-  new VueSocketIO({
-    debug: true,
-    connection: "http://172.16.218.252:3000"
-  })
+    new VueSocketIO({
+        debug: true,
+        connection: 'http://172.16.100.35:3001'
+    })
 );
-Vue.use(VModal, { dynamic: true, dialog: true })
+
+Vue.use(VModal, { dynamic: true, dialog: true });
+Vue.config.devtools = true;
 
 /* eslint-disable no-new */
 new Vue({
-  el: "#app",
-  router,
-  store,
-  render: h => h(App),
-  sockets: {
-    connect: function() {
-      console.log("Connected..");
-    },
-    customEmit: function(e) {
-      this.$store.dispatch("addTask", e);
-    }
-  }
+    el: '#app',
+    router,
+    store,
+    render: h => h(App),
+    sockets: SocketService
 });
