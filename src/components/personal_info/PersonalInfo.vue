@@ -7,7 +7,10 @@
 
 
             <div class="dialogContainer__header">
-                <h1 class="_floatWindowTitle floatWindow__title"><span class="autotrim">{{user_info.name}}</span></h1>
+                <h1 class="_floatWindowTitle floatWindow__title">
+                    <!--<span class="autotrim">{{user_info.name}}</span>-->
+                    <span class="autotrim">{{this.$store.getters.get_current_user_info.name}}</span>
+                </h1>
                 <div class="floatWindow__closeButtonContainer">
                   <span class="_cwFWButton floatWindow__closeButton" data-cwui-fw-idx="-1" @click="closeProfilePopup">
                     <svg viewBox="0 0 10 10" class="floatWindow__closeButtonIcon" width="16" height="16">
@@ -79,6 +82,7 @@
                                 </span>
                                 <span class="_profileDepartment profileShowDialog__profileBodyItemContent" style="width: 400px; overflow-wrap: break-word; ">
                                      {{this.$store.getters.get_current_user_info.icon_img}}
+
                                 </span>
                             </li>
 
@@ -97,6 +101,7 @@
 <script>
     export default {
         name: "PersonalInfo",
+        waitForData: true,
         data() {
             return {
                 isHidden: true,
@@ -106,18 +111,20 @@
                 bulkAdd: 'none',
                 marginPopup: '0px',
 
-                itemProfile: [
-                    { content: 'Organization name:' , key_value: "company" },
-                    { content: 'E-mail:' , key_value: "email" },
-                    { content: 'Department / Division:',key_value: "" },
-                    { content: 'Title:' , key_value: "" },
-                    { content: 'Address:', key_value: "" },
-                    { content: 'URL:' , key_value: "" },
-                    { content: 'Phone (work):' ,key_value: "" },
-                    { content: 'Ext. number:' ,key_value: "" },
-                    { content: 'Mobile:' ,key_value: "" }
-                ],
-                user_info: this.$store.getters.get_current_user_info
+                user_info: this.$store.getters.get_current_user_info,
+
+                // itemProfile: [
+                //     { content: 'Organization name:' , key_value: "company" },
+                //     { content: 'E-mail:' , key_value: "email" },
+                //     { content: 'Department / Division:',key_value: "" },
+                //     { content: 'Title:' , key_value: "" },
+                //     { content: 'Address:', key_value: "" },
+                //     { content: 'URL:' , key_value: "" },
+                //     { content: 'Phone (work):' ,key_value: "" },
+                //     { content: 'Ext. number:' ,key_value: "" },
+                //     { content: 'Mobile:' ,key_value: "" }
+                // ],
+
             }
         },
         created() {
@@ -135,6 +142,7 @@
             },
 
             openProfileEditDisplay(){
+
                 this.$store.dispatch('setProfileEdit', 'block');
             },
 

@@ -125,7 +125,7 @@ export default {
                         };
                         API.POST(ApiConst.GET_USER_INFO, targetUser).then(res => {
                             if (res.error_code === 0) {
-                                alert("aaaa");
+
                                 let userInfo = {
                                     id : res.data.id,
                                     email: res.data.email,
@@ -137,17 +137,19 @@ export default {
                                     AppConst.LOCAL_USER_INFO,
                                     JSON.stringify(userInfo)
                                 );
+
+                                // let dataUserInfo = localStorage.getItem(AppConst.LOCAL_USER_INFO);
+                                //
+                                // this.$store.dispatch('setCurrentUserInfo', JSON.parse(dataUserInfo));
+
+                                this.$router.push({ path: '/' });
+
+                            }
+                            else {
+                                this.errors.login_fail = '* ' + res.error_msg;
                             }
                         });
 
-                        let userr = localStorage.getItem('user');
-                        this.$store.dispatch('setCurrentUser', JSON.parse(userr));
-
-                        let userInfo = localStorage.getItem('user_info');
-                        this.$store.dispatch('setCurrentUserInfo', JSON.parse(userInfo));
-
-
-                        this.$router.push({ path: '/' });
                     } else {
                         this.errors.login_fail = '* ' + res.error_msg;
                     }

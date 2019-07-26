@@ -66,8 +66,8 @@
                 <img :src="this.user.icon_img" alt />
             </div>
             <p class="status-name">
-                <span class="name">{{user.name}}</span>
-                <!--<span class="name">{{this.$store.getters.get_current_user_info.name}}</span>-->
+                <!--<span class="name">{{user_info.name}}</span>-->
+                <span class="name">{{this.$store.getters.get_current_user_info.name}}</span>
                 <span class="menu-icon">
                     <svg
                         viewBox="0 0 10 10"
@@ -113,7 +113,8 @@ export default {
     data() {
         return {
             isHidden: true,
-            user: this.$store.getters.get_current_user
+            user: this.$store.getters.get_current_user,
+            user_info: this.$store.getters.get_current_user_info
         };
     },
     methods: {

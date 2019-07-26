@@ -65,9 +65,11 @@
                                         Display name:
                                     </span>
                                     <span class="_profileDepartment profileShowDialog__profileBodyItemContent">
-                                        <input class="profileShowDialog__profileBodyInput" v-text="user_info.name" type="text" />
+                                         <input class="profileShowDialog__profileBodyInput" type="text" v-model="input_values.name" />
+                                          <!--<input class="profileShowDialog__profileBodyInput" v-text="user_info.name" type="text" />-->
                                     </span>
 
+                                    <span  v-if="errors.required_name.length" style="color: red"> {{errors.required_name}}</span>
                                 </li>
 
                                 <li class="profileShowDialog__profileBodyItem" >
@@ -76,22 +78,23 @@
                                         Organization name:
                                     </span>
                                     <span class="_profileDepartment profileShowDialog__profileBodyItemContent">
-                                        <input  class="profileShowDialog__profileBodyInput"  v-text="user_info.company" type="text" />
+                                         <input class="profileShowDialog__profileBodyInput" type="text" v-model="input_values.company" />
+                                         <!--<input class="profileShowDialog__profileBodyInput" v-text="user_info.company" type="text" />-->
                                     </span>
 
                                 </li>
 
-                                <li class="profileShowDialog__profileBodyItem" >
+                                <!--<li class="profileShowDialog__profileBodyItem" >-->
 
-                                    <span class="profileShowDialog__profileBodyItemLabel">
-                                        E-mail:
-                                    </span>
-                                    <span class="_profileDepartment profileShowDialog__profileBodyItemContent">
-                                        <!--<input class="profileShowDialog__profileBodyInput" type="text" v-model="email" />-->
-                                        <input class="profileShowDialog__profileBodyInput" v-text="user_info.email" type="text" />
-                                    </span>
+                                    <!--<span class="profileShowDialog__profileBodyItemLabel">-->
+                                        <!--E-mail:-->
+                                    <!--</span>-->
+                                    <!--<span class="_profileDepartment profileShowDialog__profileBodyItemContent">-->
+                                        <!--<input class="profileShowDialog__profileBodyInput" type="text" v-model="input_values.email"/>-->
+                                        <!--&lt;!&ndash;<input class="profileShowDialog__profileBodyInput" v-text="user_info.email" type="text" />&ndash;&gt;-->
+                                    <!--</span>-->
 
-                                </li>
+                                <!--</li>-->
 
                             </ul>
                         </div>
@@ -125,12 +128,20 @@
 
     export default {
         name: "EditPersonalInfo",
+        waitForData: true,
         data() {
             return {
-                // email: this.$store.getters.get_current_user_info.email,
-                // name: this.$store.getters.get_current_user_info.name,
-                // company: this.$store.getters.get_current_user_info.company,
+                errors: {
+                    required_name: '',
+                    update_fail: ''
+                },
 
+                input_values:{
+                    // email: this.$store.getters.get_current_user_info.email,
+                    name: this.$store.getters.get_current_user_info.name,
+                    company: this.$store.getters.get_current_user_info.company
+
+                },
 
                 isHidden: true,
                 displayCloseIcon: 'block',
@@ -138,12 +149,6 @@
                 floatWindowHeight: '0px',
 
                 marginPopup: '0px',
-
-                itemProfile: [
-                    { content: 'Display name:', input_name:'name' },
-                    { content: 'Organization name:', input_name:'company' },
-                    { content: 'E-mail:', input_name:'email' }
-                ],
 
                 user_info: this.$store.getters.get_current_user_info
 
@@ -153,6 +158,7 @@
             window.addEventListener('resize', this.handleResize)
             this.handleResizePopup();
         },
+
         methods: {
             handleResizePopup() {
                 this.marginPopup = (window.innerWidth - 908)/2 + 'px';
@@ -169,34 +175,41 @@
 
             submit_update_info(e) {
 
-                let data = {
-                    id: this.$store.getters.get_current_user_info.id,
-                    email: this.email,
-                    name: this.name,
-                    company: this.company,
-                };
+                if (this.input_values.name.trim() !== ""){
+                    let data = {
+                        id: this.$store.getters.get_current_user_info.id,
+                        name: this.input_values.name,
+                        company: this.input_values.company,
+                    };
+                    API.POST(ApiConst.UPDATE_USER_INFO, data).then(res => {
 
-                API.POST(ApiConst.UPDATE_USER_INFO, data).then(res => {
+                        if (res.error_code === 0) {
 
-                    if (res.error_code === 0) {
-                        alert("ssss");
-                        let userInfo = {
-                            id : res.data.id,
-                            email: res.data.email,
-                            name: res.data.name,
-                            company: res.data.company,
-                            icon_img: res.data.icon_img,
-                        };
-                        localStorage.setItem(
-                            AppConst.LOCAL_USER_INFO,
-                            JSON.stringify(userInfo)
-                        );
-                    }
+                            let userInfo = {
+                                id : res.data.id,
+                                email: res.data.email,
+                                name: res.data.name,
+                                company: res.data.company,
+                                icon_img: res.data.icon_img,
+                            };
+                            localStorage.setItem(
+                                AppConst.LOCAL_USER_INFO,
+                                JSON.stringify(userInfo)
+                            );
 
-                    let newUserInfo = localStorage.getItem('user_info');
-                    this.$store.dispatch('setCurrentUserInfo', JSON.parse(newUserInfo));
-                    this.$store.dispatch('setProfileEdit', 'none');
-                });
+                            let newUserInfo = localStorage.getItem(AppConst.LOCAL_USER_INFO,);
+                            this.$store.dispatch('setCurrentUserInfo', JSON.parse(newUserInfo));
+                            this.$store.dispatch('setProfileEdit', 'none');
+                        }
+                        else {
+                            this.errors.update_fail = '* ' + res.error_msg;
+                        }
+                    });
+                }
+                else {
+                    this.errors.required_name = '* Name must not be empty';
+                }
+
             },
         }
     };
@@ -205,7 +218,7 @@
 <style>
 
     .profileShowDialog__profileBodyInput{
-        width: 500px;
+        width: 300px;
         border: 1px solid #999999;
         border-radius: 2px;
         background: #fff;

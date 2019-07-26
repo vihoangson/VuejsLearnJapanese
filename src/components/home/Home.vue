@@ -27,6 +27,8 @@ import Chat from '../chat/ChatBox';
 import Contact from '../contact/Contact';
 import PersonalInfo from '../personal_info/PersonalInfo';
 import EditPersonalInfo from '../personal_info/EditPersonalInfo';
+import {AppConst} from "../../common/AppConst";
+
 export default {
     name: 'Home',
     components: {
@@ -38,11 +40,14 @@ export default {
         EditPersonalInfo
     },
     created() {
-        // let user = localStorage.getItem('user');
-        // this.$store.dispatch('setCurrentUser', JSON.parse(user));
-        //
-        // let userInfo = localStorage.getItem('user_info');
-        // this.$store.dispatch('setCurrentUserInfo', JSON.parse(userInfo));
+
+        let user = localStorage.getItem('user');
+        this.$store.dispatch('setCurrentUser', JSON.parse(user));
+
+        let userInfo = localStorage.getItem(AppConst.LOCAL_USER_INFO);
+
+        this.$store.dispatch('setCurrentUserInfo', JSON.parse(userInfo));
+
     },
 
 };

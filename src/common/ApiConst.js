@@ -7,5 +7,5 @@ export const ApiConst = {
     RECEIVE_MESSAGE: '/api/v1/message/receive',
 
     GET_USER_INFO: '/api/v1/user/detail',
-    UPDATE_USER_INFO: '/api/v1/user/update_user',
+    UPDATE_USER_INFO: '/api/v1/user/update-user',
 };
