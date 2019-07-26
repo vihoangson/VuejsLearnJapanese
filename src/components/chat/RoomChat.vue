@@ -331,6 +331,11 @@
     display: inline-block;
     text-align: center;
   }
+  .create-room .add-option span:hover {
+    background: #6c757d;
+    color: #fff;
+    transition: .5s;
+  }
 </style>
 <script>
 import { API } from '../../services/api';
