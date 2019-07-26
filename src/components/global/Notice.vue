@@ -43,7 +43,7 @@ export default {
         this.message = data.message;
         this.alertStatus = data.alert;
         this.isActive = true;
-        setTimeout(()=>{ this.isActive = false; console.log("data");}, 3000);
+        setTimeout(()=>{ this.isActive = false;}, 3000);
     });
   }
 }

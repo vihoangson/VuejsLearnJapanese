@@ -363,7 +363,6 @@ export default {
   mounted() {
     this.$root.$on('push-notice', data => {
         this.getAllGroup().then(response => {
-          console.log(response);
           this.datascript = response;
         });
     })
