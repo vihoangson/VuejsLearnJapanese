@@ -49,7 +49,9 @@
         <span>
           <svg viewBox="0 0 10 10" id="icon_plus" xmlns="http://www.w3.org/2000/svg"><path d="M4.375.625v3.75H.625v1.25h3.75v3.75h1.25v-3.75h3.75v-1.25h-3.75V.625z"></path></svg>
           <div class="add-option">
-              <span @click="addRooms"> Add Rooms </span>
+              <span @click="addRooms"> Create a new Group Chat </span>
+              <span @click="settingRooms"> Group Chat Setting </span>
+              <span @click="deleteRooms"> Leave this group chat </span>
           </div>
         </span>
       </div>
@@ -327,8 +329,8 @@
     position: relative;
     top: 5px;
     border: 1px #ccc solid;
-    width: 120px;
-    display: inline-block;
+    width: 200px;;
+    display: block;
     text-align: center;
   }
   .create-room .add-option span:hover {
@@ -415,10 +417,12 @@ export default {
          return null;
       });
     },
+
     addRooms(){
       this.$root.$emit('open-modal-room', 0)
       this.$bvModal.show('modal-prevent-rooms');
     },
+
     iconCreate(){
       this.$root.$emit('open-modal-group', 0)
       this.$bvModal.show('modal-prevent-group');
@@ -430,11 +434,18 @@ export default {
     },
 
     iconDelete(id){
-      this.deleteGroup(id).then(data => {
-        this.getAllGroup().then(response => {
-          this.$root.$emit('push-notice', {message:'Delete success', alert: 'alert-success'});
-          this.datascript = response;
-        });
+      this.deleteGroup(id).then(response => {
+        switch(parseInt(response.data.error_code)){
+          case 0:
+              this.$root.$emit('push-notice', {message:'Delete success', alert: 'alert-success'});
+              this.getAllGroup().then(response => {
+                this.datascript = response;
+              });
+          break;
+          default:
+            this.$root.$emit('push-notice', {message:'Delete success', alert: 'alert-danger'});
+          break
+        }
       });
     },
 
@@ -461,6 +472,56 @@ export default {
           return error;
       });
     },
+
+    deleteRooms(){
+      this.boxOne = ''
+      this.$bvModal.msgBoxConfirm('If you leave the group chat, your tasks will be deleted, and there is a case where your files will be deleted.  (About file retention)',{
+          size: 'sm',
+          buttonSize: 'sm',
+          okVariant: 'success',
+          centered: true
+        }).
+        then(value => {
+          var res = axios.post("http://sns-api.local.vn:81/api/v1/room/delete", {
+              id: this.$store.getters.get_current_room.room_id,
+          },{
+              //headers: {Authorization: "Bearer " + token}
+          }).then(function (response) {
+            return response;
+          }).catch(function (error) {
+            return error;
+          });
+
+          res.then(response => {
+            console.log(response);
+            switch(parseInt(response.data.error_code)){
+              case 0:
+                this.$root.$emit('push-notice', {message:'Delete success', alert: 'alert-success'});
+              break;
+              default:
+                this.$root.$emit('push-notice', {message:'Delete Error', alert: 'alert-danger'});
+              break
+            }
+          })
+        })
+        .catch(err => {
+          // An error occurred
+        })
+    },
+
+    settingRooms(){
+      console.log(this.$store.getters.get_current_room.room_id)
+      return axios.post("http://sns-api.local.vn:81/api/v1/room/setting", {
+          id: this.$store.getters.get_current_room.room_id,
+      },{
+          //headers: {Authorization: "Bearer " + token}
+      }).then(function (response) {
+          return response;
+      }).catch(function (error) {
+          return error;
+      });
+    },
+
     changeRoom(room) {
         // let x = '/rid' + room.room_id;
         // this.$router.push({ path: x });
@@ -475,6 +536,7 @@ export default {
             }
         });
     },
+
     getListRoom() {
         API.GET(ApiConst.ALL_ROOM).then(res => {
             if (res.error_code === 0) {
@@ -491,6 +553,7 @@ export default {
             }
         });
     },
+
     getListMessage() {
         let room = this.$store.getters.get_current_room;
         API.POST(ApiConst.RECEIVE_MESSAGE, {
