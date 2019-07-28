@@ -31,7 +31,9 @@
                                     class="timeline-content-header-organization"
                                 >{{item.organization}}</p>
                             </div>
-                            <div class="timeline-content-message">{{item.message}}</div>
+                            <div class="timeline-content-message">
+                                <ChatMessage :message-object="item"></ChatMessage>
+                            </div>
                             <ChatAction
                                 :message="item"
                                 @reply="onReply"
@@ -120,7 +122,7 @@
                             role="button"
                             tabindex="2"
                             aria-disabled="false"
-                            @click="this.onSend()"
+                            @click="onSend()"
                         >Send</div>
                     </div>
                 </div>
@@ -153,6 +155,7 @@ import ChatAction from './partials/ChatAction';
 import ChatEdit from './partials/ChatEdit';
 import modalMixin from '@/mixins/modal';
 import SendFile from './SendFile';
+import ChatMessage from './partials/ChatMessage';
 
 // import ImportFile from "ImportFile";
 const EVENT_SEND = 'send_message';
@@ -165,7 +168,8 @@ export default {
         Picker,
         TextareaEmojiPicker,
         ChatAction,
-        ChatEdit
+        ChatEdit,
+        ChatMessage
     },
     props: {
         value: {
@@ -197,8 +201,7 @@ export default {
                 autoProcessQueue: false,
                 addRemoveLinks: true,
                 dictDefaultMessage:
-                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' +
-                    'Kéo file vào đây</div>'
+                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' + 'Kéo file vào đây</div>'
             },
             errors: null,
             user: this.$store.getters.get_current_user,
@@ -213,9 +216,7 @@ export default {
             room_id: 1
         };
         API.POST(ApiConst.RECEIVE_MESSAGE, obj).then(res => {
-            console.log(res);
-            if (res.error_code === 0)
-                this.$store.dispatch('setListMessage', res.data);
+            if (res.error_code === 0) this.$store.dispatch('setListMessage', res.data);
         });
     },
     methods: {
@@ -294,7 +295,10 @@ export default {
             this.enterToSendMessage = e.target.value;
         },
         onReply(value) {
-            this.message = value.message;
+            this.message.content =
+                '[Reply id:' + value.user_info.user_id + '] ' + value.user_info.name;
+            this.message.content += '\n';
+            this.$refs.textarea.focus();
         },
         onSend() {
             this.message.type = AppConst.MESSAGE_TYPE.CREATE;

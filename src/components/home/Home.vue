@@ -30,9 +30,15 @@ export default {
         Chat
     },
     created() {
-        let user = localStorage.getItem('user');
+        // let user = localStorage.getItem('user');
 
-        this.$store.dispatch('setCurrentUser', JSON.parse(user));
+        // this.$store.dispatch('setCurrentUser', JSON.parse(user));
+        let user = {
+            user_id: 1,
+            icon_img: '',
+            name: 'hoàng Sỹ Hùng'
+        }
+        this.$store.dispatch('setCurrentUser', user);
     },
     // beforeRouteUpdate(to, from, next) {
     //     let room = this.$route.params.room_id;
