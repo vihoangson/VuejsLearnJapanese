@@ -15,6 +15,25 @@ export default [
         component: () => import('@/components/login/LoginPage.vue')
     },
     { path: '*', redirect: '/' },
+
+    {
+        path: '/forgot-password',
+        component: {
+            template: `
+      <div>
+        <router-view></router-view>
+      </div>
+    `
+        },
+        children: [
+            {
+                path: '',
+                name: 'ForgotPassword',
+                component: () => import('@/components/forgotpass/EnterEmailPage')
+            }
+        ]
+    },
+
     {
         path: '/register',
         component: {

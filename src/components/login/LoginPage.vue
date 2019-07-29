@@ -33,12 +33,10 @@
                         <input type="submit" value="Login" class="btn btn-login" />
                     </div>
 
-                    <div class="set-new-password">
-                        <a class="hidden" @click="SetNewPassword">Set new password</a>
+                    <div class="text-center box-button-bottom">
+                        <button class="forget-password-button btn" @click="SetNewPassword">Reset password</button> <button class="sign-up-button btn" type="button" @click="SignUp">Register</button>
                     </div>
-                    <div class="text-center">
-                        <button class="sign-up-button btn" type="button" @click="SignUp">Register</button>
-                    </div>
+
                 </form>
             </div>
         </section>
@@ -124,7 +122,9 @@ export default {
                 });
             }
         },
-        SetNewPassword() {},
+        SetNewPassword() {
+            this.$router.push({ name: 'ForgotPassword' });
+        },
         SignUp() {
             this.$router.push({ name: 'Register' });
         }
@@ -144,7 +144,7 @@ export default {
     color: blue;
     margin: 5px;
 }
-.sign-up-button {
+.box-button-bottom button {
     color: black !important;
     border: #ada89d 1px solid !important;
 }
