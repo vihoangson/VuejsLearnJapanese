@@ -51,7 +51,8 @@
           <div class="add-option">
               <span @click="addRooms"> Create a new Group Chat </span>
               <span @click="settingRooms"> Group Chat Setting </span>
-              <span @click="deleteRooms"> Leave this group chat </span>
+              <span @click="leaveRooms"> Leave this group chat </span>
+              <span @click="deleteRooms"> Delete this group chat </span>
           </div>
         </span>
       </div>
@@ -347,6 +348,7 @@ import axios from 'axios'
 const EVENT_JOIN = 'join';
 export default {
   name: 'Room',
+
   data () {
     return {
       isActive : false,
@@ -367,24 +369,29 @@ export default {
       rooms: []
     }
   },
+
   mounted() {
-    this.$root.$on('push-notice', data => {
-        this.getAllGroup().then(response => {
-          this.datascript = response;
-        });
+    this.$root.$on('changed-list-group', data => {
+      this.getAllGroup().then(response => {
+        if(response.error_code === 0){
+          this.datascript = response.data;
+        }
+      });
     })
   },
+
   created: function(){
       this.getListRoom();
       this.getListMessage();
       this.getAllGroup().then(response => {
-          this.datascript = response;
+        if(response.error_code === 0){
+          this.datascript = response.data;
+        };
       });
   },
 
   methods: {
     toggleOption: function(){
-      // Check value
       if(this.isActive){
         this.isActive = false;
       }else{
@@ -408,14 +415,9 @@ export default {
     },
 
     getAllGroup(){
-      return axios.get("http://sns-api.local.vn:81/api/v1/group/getAllGroup", {
-      },{
-          headers: {Accept: "application/json"}
-      }).then(function (response) {
-          return response.data;
-      }).catch(function (error) {
-         return null;
-      });
+      return API.GET(ApiConst.GROUP_GET_ALL).then(response => {
+        return response;
+      })
     },
 
     addRooms(){
@@ -435,42 +437,31 @@ export default {
 
     iconDelete(id){
       this.deleteGroup(id).then(response => {
-        switch(parseInt(response.data.error_code)){
+        switch(parseInt(response.error_code)){
           case 0:
               this.$root.$emit('push-notice', {message:'Delete success', alert: 'alert-success'});
-              this.getAllGroup().then(response => {
-                this.datascript = response;
-              });
+              this.$root.$emit('changed-list-group');
           break;
           default:
-            this.$root.$emit('push-notice', {message:'Delete success', alert: 'alert-danger'});
+            this.$root.$emit('push-notice', {message:'Delete error', alert: 'alert-danger'});
           break
         }
       });
     },
 
     deleteGroup(id){
-      return axios.post("http://sns-api.local.vn:81/api/v1/group/delete", {
-          id: id,
-      },{
-          //headers: {Authorization: "Bearer " + token}
-      }).then(function (response) {
-          return response;
-      }).catch(function (error) {
-          return error;
-      });
+      return API.POST(ApiConst.GROUP_DELETE, {id: id}).then(response => {
+        return response;
+      })
     },
 
     editGroup(id){
-      return axios.post("http://sns-api.local.vn:81/api/v1/group/edit", {
-          id: id,
-      },{
-          //headers: {Authorization: "Bearer " + token}
-      }).then(function (response) {
-          return response;
-      }).catch(function (error) {
-          return error;
-      });
+      return API.POST(ApiConst.GROUP_EDIT, {id: id}).then(response => {
+        return response;
+      })
+    },
+    leaveRooms(){
+
     },
 
     deleteRooms(){
@@ -482,19 +473,14 @@ export default {
           centered: true
         }).
         then(value => {
-          var res = axios.post("http://sns-api.local.vn:81/api/v1/room/delete", {
-              id: this.$store.getters.get_current_room.room_id,
-          },{
-              //headers: {Authorization: "Bearer " + token}
-          }).then(function (response) {
-            return response;
-          }).catch(function (error) {
-            return error;
-          });
+          var res =
+            API.POST(ApiConst.ROOM_DELETE,
+            {id: this.$store.getters.get_current_room.room_id}).then(response => {
+              return response;
+            });
 
           res.then(response => {
-            console.log(response);
-            switch(parseInt(response.data.error_code)){
+            switch(parseInt(response.error_code)){
               case 0:
                 this.$root.$emit('push-notice', {message:'Delete success', alert: 'alert-success'});
               break;
@@ -505,21 +491,17 @@ export default {
           })
         })
         .catch(err => {
-          // An error occurred
+          this.$root.$emit('push-notice', {message:'Open model error', alert: 'alert-danger'});
         })
     },
 
     settingRooms(){
-      console.log(this.$store.getters.get_current_room.room_id)
-      return axios.post("http://sns-api.local.vn:81/api/v1/room/setting", {
-          id: this.$store.getters.get_current_room.room_id,
-      },{
-          //headers: {Authorization: "Bearer " + token}
-      }).then(function (response) {
+      var res = 
+        API.POST(ApiConst.ROOM_SETTING,
+          {id: this.$store.getters.get_current_room.room_id}
+        ).then(response => {
           return response;
-      }).catch(function (error) {
-          return error;
-      });
+        });
     },
 
     changeRoom(room) {
