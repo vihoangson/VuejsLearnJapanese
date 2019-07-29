@@ -13,6 +13,9 @@
 					<p>You can set your name and password here.
 						*Your name will not be made public.</p>
 					<form class="register" style="min-height: 150px">
+						<div v-if="msg !== ''">
+							<label class="show-error">{{ msg }}</label>
+						</div>
 						<div class="form-group register-form-row register-form-row-parent">
 							<label>Name</label>
 							<input
@@ -109,7 +112,8 @@ export default {
             currentPassword : "",
             newPassword : "",
             confirmPassword : "",
-            allowShow : false
+            allowShow : false,
+            msg : ""
 		}
 	},
 	computed: {
@@ -199,7 +203,11 @@ export default {
             API.POST(ApiConst.EDIT_REGISTER,defaultData).then(res => {
                 if (res.error_code === 0) {
                     this.$router.push({name: 'home'})
-                }
+                } else {
+					for (var item in res.data) {
+					    this.msg = res.data[item].join()
+					}
+				}
             });
 		}
 	}
@@ -382,6 +390,10 @@ export default {
 		border-radius: 3px;
 		background-color: #fff;
 		margin-top: 8px;
+	}
+	.register .show-error {
+		color: red !important;
+		width: 100% !important;
 	}
 	.register-form-row {
 		margin-bottom: 6px;

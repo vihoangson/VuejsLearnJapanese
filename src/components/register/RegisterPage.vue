@@ -7,6 +7,9 @@
             <div class="register-inner">
                 <h2>REGISTER</h2>
                 <form class="register">
+                    <div v-if="msg !== ''">
+                        <label class="show-error">{{ msg }}</label>
+                    </div>
                     <div class="form-group register-form-row">
                         <label>Name</label>
                         <input
@@ -107,7 +110,8 @@ export default {
             email: '',
             password: '',
             confirmPassword: '',
-            recaptchaVerified: false
+            recaptchaVerified: false,
+            msg : ""
         };
     },
     computed: {},
@@ -191,6 +195,8 @@ export default {
             API.POST(ApiConst.REGISTER, data).then(res => {
                 if (res.error_code === 0) {
                     this.$router.push({ name: 'login' });
+                } else {
+                    this.msg = 'Duplicate email.'
                 }
             });
         }
@@ -259,6 +265,10 @@ header {
     border-radius: 3px;
     background-color: #fff;
     margin-top: 8px;
+}
+.register .show-error {
+    color: red !important;
+    width: 100% !important;
 }
 .register-form-row {
     margin-bottom: 24px;
