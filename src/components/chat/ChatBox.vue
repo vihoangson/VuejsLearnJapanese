@@ -201,7 +201,8 @@ export default {
                 autoProcessQueue: false,
                 addRemoveLinks: true,
                 dictDefaultMessage:
-                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' + 'Kéo file vào đây</div>'
+                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' +
+                    'Kéo file vào đây</div>'
             },
             errors: null,
             user: this.$store.getters.get_current_user,
@@ -216,7 +217,8 @@ export default {
             room_id: 1
         };
         API.POST(ApiConst.RECEIVE_MESSAGE, obj).then(res => {
-            if (res.error_code === 0) this.$store.dispatch('setListMessage', res.data);
+            if (res.error_code === 0)
+                this.$store.dispatch('setListMessage', res.data);
         });
     },
     methods: {
@@ -296,7 +298,12 @@ export default {
         },
         onReply(value) {
             this.message.content =
-                '[Reply id:' + value.user_info.user_id + '] ' + value.user_info.name;
+                '[Reply aid:' +
+                value.message_id +
+                ' to:' +
+                value.user_info.id +
+                '] ' +
+                value.user_info.name;
             this.message.content += '\n';
             this.$refs.textarea.focus();
         },

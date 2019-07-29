@@ -7,7 +7,7 @@
                 <img class="message-badge-avatar" :src="this.messageObject.user_info.icon_img" />
             </div>
         </div>
-        <span v-html="this.content"></span>
+        <pre>{{this.content}}</pre>
     </div>
 </template>
 <script>
@@ -27,13 +27,15 @@ export default {
         };
     },
     created() {
+        console.log(this.messageObject);
         this.content = this.messageObject.message;
-        this.content = this.content.replace(/(\[Reply\s+)/g, '<Reply></Reply>');
-        this.content = this.content.replace(/(\[To\s+)/g, '<template><Reply></Reply></template>');
-        console.log(this.content);
-        // if (this.content.match(/(\[Reply\s+)/g)) this.type = 2;
-        // else if (this.content.match(/(\[To\s+)/g)) this.type = 1;
-        // this.content = this.content.split('\n')[1];
+        if (this.content.match(/(\[To\s+)/g)) {
+            this.type = 1;
+            this.content = this.content.replace(/(\[To\s+)/g, '');
+        } else if (this.content.match(/(\[Reply\s+)/g)) {
+            this.type = 2;
+            this.content = this.content.replace(/(\[Reply\s+)/g, '');
+        }
     }
 };
 </script>
