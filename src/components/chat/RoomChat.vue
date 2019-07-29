@@ -27,23 +27,19 @@
         </div>
         <div class="room-body">
             <ul>
-                <li>
+                <li
+                    v-for="(item, index) in this.list_rooms"
+                    :key="`room-${index}`"
+                    @click="changeRoom(item)"
+                    :style="{backgroundColor: item.color}"
+                >
                     <div class="name">
                         <div class="room-image">
-                            <img src="https://appdata.chatwork.com/icon/736/736137.rsz.jpg" alt />
+                            <img :src="item.icon_img" :alt="item.room_name" />
                         </div>
                         <div class="room-name">
-                            <span>SNS TOOL</span>
-                        </div>
-                    </div>
-                </li>
-                <li style="display:none">
-                    <div class="name">
-                        <div class="room-image">
-                            <img src="https://appdata.chatwork.com/icon/736/736137.rsz.jpg" alt />
-                        </div>
-                        <div class="room-name">
-                            <span>SNS TOOL</span>
+                            <span>{{item.room_name}}</span>
+                            <span v-if="item.not_read > 0" class="not-read-number">{{item.not_read}}</span>
                         </div>
                     </div>
                 </li>
@@ -51,6 +47,82 @@
         </div>
     </div>
 </template>
+
+<script>
+import { API } from '../../services/api';
+import { ApiConst } from '../../common/ApiConst';
+
+const EVENT_JOIN = 'join';
+
+export default {
+    name: 'Room',
+    data() {
+        return {
+            list_rooms: [
+                {
+                    room_id: 0,
+                    room_name: 'My Chat',
+                    icon_img: this.$store.getters.get_current_user.icon_img,
+                    list_message: [],
+                    not_read: 0,
+                    color: ''
+                }
+            ],
+            rooms: []
+        };
+    },
+    created() {
+        this.getListRoom();
+
+        this.getListMessage();
+    },
+    methods: {
+        changeRoom(room) {
+            // let x = '/rid' + room.room_id;
+            // this.$router.push({ path: x });
+            // console.log(this.$route.params.room_id);
+            this.$store.dispatch('setCurrentRoom', room);
+            this.getListMessage();
+            room.color = '#bfbab0';
+            room.not_read = 0;
+            this.list_rooms.forEach(x => {
+                if (room.room_id !== x.room_id) {
+                    x.color = '';
+                }
+            });
+        },
+        getListRoom() {
+            API.GET(ApiConst.ALL_ROOM).then(res => {
+                if (res.error_code === 0) {
+                    res.data.forEach(x => {
+                        x.color = '';
+                        this.list_rooms.push(x);
+                    });
+                    this.list_rooms.forEach(x => {
+                        this.rooms.push(x.room_id);
+                    });
+                    this.$socket.emit(EVENT_JOIN, this.rooms);
+                    this.$store.dispatch('setListRoom', this.list_rooms);
+                    this.$store.dispatch('setCurrentRoom', this.list_rooms[0]);
+                }
+            });
+        },
+        getListMessage() {
+            let room = this.$store.getters.get_current_room;
+            API.POST(ApiConst.RECEIVE_MESSAGE, {
+                page: 0,
+                room_id: room.room_id
+            }).then(res => {
+                if (res.error_code === 0) room.list_message = res.data;
+                setTimeout(() => {
+                    this.$emit('changeRoomEvent');
+                }, 1);
+            });
+        }
+    }
+};
+</script>
+
 <style>
 .room {
     position: absolute;
@@ -175,9 +247,14 @@
 .room-name {
     width: calc((100% - 32px) - 8px);
 }
+.not-read-number {
+    float: right;
+    background-color: #b3b3b3;
+    padding: 2px 6px;
+    font-size: 12px;
+    border-radius: 15px;
+}
+.room-body li:hover {
+    background: #d6d6d6;
+}
 </style>
-<script>
-export default {
-    name: 'Room'
-};
-</script>

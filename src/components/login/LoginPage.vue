@@ -47,8 +47,8 @@
 
 <script>
 import { API } from '../../services/api';
-import { AppConst } from '../../common/AppConst';
 import { ApiConst } from '../../common/ApiConst';
+import { AppConst } from '../../common/AppConst';
 import VueRecaptcha from 'vue-recaptcha';
 
 export default {
@@ -158,7 +158,7 @@ export default {
         },
         SetNewPassword() {},
         SignUp() {
-            this.$router.push({ name: 'register' });
+            this.$router.push({ name: 'Register' });
         }
     }
 };
