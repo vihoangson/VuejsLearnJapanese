@@ -8,7 +8,8 @@
 
 <script>
 export default {
-    name: 'To'
+    name: 'To',
+    props: ['msg']
 };
 </script>
 
