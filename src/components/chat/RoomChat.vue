@@ -91,21 +91,21 @@ export default {
             });
         },
         getListRoom() {
-            // API.GET(ApiConst.ALL_ROOM).then(res => {
-            //     if (res.error_code === 0) {
-            //         res.data.forEach(x => {
-            //             x.color = '';
-            //             this.list_rooms.push(x);
-            //         });
+            API.GET(ApiConst.ALL_ROOM).then(res => {
+                if (res.error_code === 0) {
+                    res.data.forEach(x => {
+                        x.color = '';
+                        this.list_rooms.push(x);
+                    });
                     this.list_rooms.forEach(x => {
                         this.rooms.push(x.room_id);
                     });
-                    
+
                     this.$socket.emit(EVENT_JOIN, this.rooms);
                     this.$store.dispatch('setListRoom', this.list_rooms);
                     this.$store.dispatch('setCurrentRoom', this.list_rooms[0]);
-            //     }
-            // });
+                }
+            });
         },
         getListMessage() {
             let room = this.$store.getters.get_current_room;
