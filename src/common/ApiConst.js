@@ -5,5 +5,6 @@ export const ApiConst = {
     DETAIL_REGISTER: '/api/v1/user/details',
     EDIT_REGISTER: '/api/v1/user/register/edit',
     RECEIVE_MESSAGE: '/api/v1/message/receive',
-    ALL_ROOM: '/api/v1/message/get-all-rooms'
+    ALL_ROOM: '/api/v1/message/get-all-rooms',
+    MY_LIST_FILE: '/api/v1/file/get-my-list-file'
 };

@@ -81,6 +81,7 @@ export default {
             this.$store.dispatch('setCurrentRoom', room);
             this.getListMessage();
             room.color = '#bfbab0';
+            room.not_read = 0;
             this.list_rooms.forEach(x => {
                 if (room.room_id !== x.room_id) {
                     x.color = '';
