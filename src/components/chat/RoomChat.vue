@@ -95,7 +95,7 @@
                 </span>
             </div>
         </div>
-        <div class="room-body">
+        <div class="room-body" :style="{'height': `${myStyles}px`}">
             <ul>
                 <li
                     v-for="(item, index) in this.list_rooms"
@@ -136,6 +136,7 @@ export default {
             datascript: [],
             activeIndex: undefined,
             userId: 0,
+            height: 0,
             list_rooms: [
                 {
                     room_id: 0,
@@ -170,6 +171,8 @@ export default {
                 this.datascript = response.data;
             }
         });
+        window.addEventListener('resize', this.handleResize);
+        this.handleResize();
     },
 
     methods: {
@@ -336,6 +339,7 @@ export default {
                     this.$socket.emit(EVENT_JOIN, this.rooms);
                     this.$store.dispatch('setListRoom', this.list_rooms);
                     this.$store.dispatch('setCurrentRoom', this.list_rooms[0]);
+                    this.handleResize();
                 }
             });
         },
@@ -351,6 +355,13 @@ export default {
                     this.$emit('changeRoomEvent');
                 }, 1);
             });
+        },
+        handleResize() {
+            this.height = window.innerHeight - 45;
+            console.log(this.height);
+        },
+        myStyles() {
+            return this.height - 45;
         }
     }
 };
@@ -544,7 +555,8 @@ export default {
     width: 100%;
 }
 .room-body {
-    height: calc(100% - 41px);
+    overflow: hidden;
+    overflow-y: scroll;
 }
 .room-body ul {
     list-style: none;

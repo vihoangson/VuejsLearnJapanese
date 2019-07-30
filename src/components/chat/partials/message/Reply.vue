@@ -21,7 +21,7 @@
 export default {
     name: 'Reply',
     props: ['msg'],
-    created(){
+    created() {
         console.log(this.msg);
     }
 };
@@ -50,10 +50,11 @@ export default {
 }
 svg:not(:root) {
     overflow: hidden;
+    margin-top: -5px;
 }
 .reply-message-txticon {
     color: #ffffff;
     font-weight: 750;
-    font-size: 11px;
+    font-size: 12px;
 }
 </style>
