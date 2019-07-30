@@ -1,5 +1,5 @@
 <template>
-    <div class="room">
+    <div id="room" class="room">
         <div class="room-header">
             <div class="my-chat">
                 <span>
@@ -11,17 +11,87 @@
                 </span>
             </div>
             <div class="filter-list">
-                <select name id>
-                    <option value>All Chats</option>
-                </select>
+                <div id="roomInfoSelectRole" class="selectCommonRole">
+                    <div v-bind:class="{active: isActiveSelect}" @click="selectBoxClicks">
+                        <div class="selectboxDefault">
+                            <span class="selectbox">{{ selectItems }}</span>
+                            <span class="icon">
+                                <svg viewBox="0 0 10 10" width="16" height="16">
+                                    <use fill-rule="evenodd" xlink:href="#icon_triangleDown" />
+                                </svg>
+                            </span>
+                        </div>
+                        <ul role="list" class="selectboxContent">
+                            <li class="category">
+                                Category
+                                <span @click="iconCreate">
+                                    <svg
+                                        class="sc-bwzfXH jhCIfQ"
+                                        viewBox="0 0 10 10"
+                                        width="16"
+                                        height="16"
+                                    >
+                                        <use fill-rule="evenodd" xlink:href="#icon_plus" />
+                                    </svg>
+                                </span>
+                            </li>
+                            <li
+                                v-for="(s, index) in datascript"
+                                :class="{ 'active': activeIndex === index}"
+                                :key="s.id"
+                                @click="setActive(index, s.name)"
+                            >
+                                {{ s.name }}
+                                <div class="option-icon">
+                                    <span class="edit" aria-label="Edit" @click="iconEdit(s.id)">
+                                        <svg
+                                            viewBox="0 0 10 10"
+                                            id="icon_edit"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path
+                                                d="M4.33 7.432L2.566 5.661 7.322.917a.469.469 0 0 1 .663.001l1.103 1.107a.47.47 0 0 1-.001.663L4.331 7.432zM1.462 8.537l.554-2.097L3.56 7.989l-2.098.548z"
+                                            />
+                                        </svg>
+                                    </span>
+                                    <span
+                                        class="delete"
+                                        aria-label="Delete"
+                                        @click="iconDelete(s.id)"
+                                    >
+                                        <svg
+                                            viewBox="0 0 10 10"
+                                            id="icon_delete"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                        >
+                                            <path
+                                                d="M6.88 1.25V.63H3.13v.63H1.25V2.5h.63v6.88h6.25V2.5h.63V1.25zm.31 7.19H2.81V2.5h4.38zM3.75 3.12h.63V7.5h-.63zm1.88 0h.63V7.5h-.63z"
+                                            />
+                                        </svg>
+                                    </span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="create-room">
+            <div
+                id="create-room"
+                v-bind:class="{ active: isActive, 'create-room': true }"
+                @click="toggleOption"
+            >
                 <span>
                     <svg viewBox="0 0 10 10" id="icon_plus" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M4.375.625v3.75H.625v1.25h3.75v3.75h1.25v-3.75h3.75v-1.25h-3.75V.625z"
                         />
                     </svg>
+                    <div class="add-option">
+                        <span @click="addRooms">Create a new Group Chat</span>
+                        <span @click="settingRooms">Group Chat Setting</span>
+                        <span @click="leaveRooms">Leave this group chat</span>
+                        <span @click="deleteRooms">Delete this group chat</span>
+                    </div>
                 </span>
             </div>
         </div>
@@ -51,13 +121,21 @@
 <script>
 import { API } from '../../services/api';
 import { ApiConst } from '../../common/ApiConst';
-
+import { AppConst } from '../../common/AppConst';
+import modalMixin from '@/mixins/modal';
+import axios from 'axios';
 const EVENT_JOIN = 'join';
-
 export default {
     name: 'Room',
+
     data() {
         return {
+            isActive: false,
+            isActiveSelect: false,
+            selectItems: 'All Chat',
+            datascript: [],
+            activeIndex: undefined,
+            userId: 0,
             list_rooms: [
                 {
                     room_id: 0,
@@ -71,12 +149,167 @@ export default {
             rooms: []
         };
     },
-    created() {
-        this.getListRoom();
 
-        this.getListMessage();
+    mounted() {
+        this.$root.$on('changed-list-group', data => {
+            this.getAllGroup(this.userId).then(response => {
+                if (response != undefined && response.error_code == 0) {
+                    this.datascript = response.data;
+                }
+            });
+        });
     },
+
+    created: function() {
+        let user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
+        this.userId = user.user_id;
+        this.getListRoom();
+        this.getListMessage();
+        this.getAllGroup(this.userId).then(response => {
+            if (response != undefined && response.error_code == 0) {
+                this.datascript = response.data;
+            }
+        });
+    },
+
     methods: {
+        toggleOption: function() {
+            if (this.isActive) {
+                this.isActive = false;
+            } else {
+                this.isActive = true;
+            }
+            this.isActiveSelect = false;
+        },
+
+        selectBoxClicks() {
+            if (this.isActiveSelect) {
+                this.isActiveSelect = false;
+            } else {
+                this.isActiveSelect = true;
+            }
+            this.isActive = false;
+        },
+
+        setActive(index, criptions) {
+            this.activeIndex = index;
+            this.selectItems = criptions;
+        },
+
+        getAllGroup(id) {
+            return API.GET(ApiConst.GROUP_GET_BY_USER_ID + '/' + id).then(
+                response => {
+                    return response;
+                }
+            );
+        },
+
+        addRooms() {
+            this.$root.$emit('open-modal-room', 0);
+            this.$bvModal.show('modal-prevent-rooms');
+        },
+
+        iconCreate() {
+            this.$root.$emit('open-modal-group', 0);
+            this.$bvModal.show('modal-prevent-group');
+        },
+
+        iconEdit(id) {
+            this.$root.$emit('open-modal-group', id);
+            this.$bvModal.show('modal-prevent-group');
+        },
+
+        iconDelete(id) {
+            this.deleteGroup(id).then(response => {
+                if (response != undefined) {
+                    switch (parseInt(response.error_code)) {
+                        case 0:
+                            this.$root.$emit('push-notice', {
+                                message: 'Delete success',
+                                alert: 'alert-success'
+                            });
+                            this.$root.$emit('changed-list-group');
+                            break;
+                        default:
+                            this.$root.$emit('push-notice', {
+                                message: 'Delete error',
+                                alert: 'alert-danger'
+                            });
+                            break;
+                    }
+                }
+            });
+        },
+
+        deleteGroup(id) {
+            return API.POST(ApiConst.GROUP_DELETE, { id: id }).then(
+                response => {
+                    return response;
+                }
+            );
+        },
+
+        editGroup(id) {
+            return API.POST(ApiConst.GROUP_EDIT, { id: id }).then(response => {
+                return response;
+            });
+        },
+        leaveRooms() {},
+
+        deleteRooms() {
+            this.boxOne = '';
+            this.$bvModal
+                .msgBoxConfirm(
+                    'If you leave the group chat, your tasks will be deleted, and there is a case where your files will be deleted.  (About file retention)',
+                    {
+                        size: 'sm',
+                        buttonSize: 'sm',
+                        okVariant: 'success',
+                        centered: true
+                    }
+                )
+                .then(value => {
+                    var res = API.POST(ApiConst.ROOM_DELETE, {
+                        id: this.$store.getters.get_current_room.room_id
+                    }).then(response => {
+                        return response;
+                    });
+
+                    res.then(response => {
+                        if (response != undefined) {
+                            switch (parseInt(response.error_code)) {
+                                case 0:
+                                    this.$root.$emit('push-notice', {
+                                        message: 'Delete success',
+                                        alert: 'alert-success'
+                                    });
+                                    break;
+                                default:
+                                    this.$root.$emit('push-notice', {
+                                        message: 'Delete Error',
+                                        alert: 'alert-danger'
+                                    });
+                                    break;
+                            }
+                        }
+                    });
+                })
+                .catch(err => {
+                    this.$root.$emit('push-notice', {
+                        message: 'Open model error',
+                        alert: 'alert-danger'
+                    });
+                });
+        },
+
+        settingRooms() {
+            var res = API.POST(ApiConst.ROOM_SETTING, {
+                id: this.$store.getters.get_current_room.room_id
+            }).then(response => {
+                return response;
+            });
+        },
+
         changeRoom(room) {
             this.$store.dispatch('setCurrentRoom', room);
             this.getListMessage();
@@ -88,6 +321,7 @@ export default {
                 }
             });
         },
+
         getListRoom() {
             API.GET(ApiConst.ALL_ROOM).then(res => {
                 if (res.error_code === 0) {
@@ -105,6 +339,7 @@ export default {
                 }
             });
         },
+
         getListMessage() {
             let room = this.$store.getters.get_current_room;
             API.POST(ApiConst.RECEIVE_MESSAGE, {
@@ -122,6 +357,111 @@ export default {
 </script>
 
 <style>
+.option-icon {
+    position: absolute;
+    z-index: 1000;
+    right: -5px;
+    top: 7px;
+    width: 50px;
+}
+.option-icon svg {
+    width: 20px;
+    padding: 0 2px;
+    color: #fff;
+}
+.option-icon span {
+    float: left;
+}
+.room-header {
+    position: relative;
+}
+.room-header .selectboxDefault {
+    position: absolute;
+    left: 40px;
+    top: 7px;
+    align-items: center;
+    justify-content: center;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 2px;
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
+    padding: 0px 12px;
+    line-height: 26px;
+    font-size: 13px;
+    border-color: #b3b3b3;
+    background-color: #fff;
+    width: 180px;
+    z-index: 10;
+}
+.room-header .selectboxDefault .icon {
+    top: 0;
+    width: 10px;
+    display: inline-block;
+    position: absolute;
+    right: 15px;
+}
+.room-header .selectboxContent {
+    display: none;
+    position: absolute;
+    left: 40px;
+    top: 32px;
+    z-index: 10;
+    right: 10px;
+    font-size: 13px;
+    width: 180px;
+    list-style: none;
+    border: 1px #b6b6b6 solid;
+    padding: 0;
+    background: #fff;
+    -webkit-box-shadow: 1px 2px 5px -3px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 1px 2px 5px -3px rgba(0, 0, 0, 0.75);
+    box-shadow: 1px 2px 5px -3px rgba(0, 0, 0, 0.75);
+    cursor: pointer;
+    position: absolute;
+    z-index: 1;
+}
+.selectboxContent button svg {
+    padding: 0;
+    position: relative;
+    top: -10px;
+    left: -6px;
+}
+.selectboxContent button {
+    height: 20px;
+    width: 20px;
+    float: right;
+    background: unset !important;
+    border: 0;
+}
+.selectboxContent button:hover,
+.selectboxContent button:focus {
+    height: 20px;
+    width: 20px;
+    float: right;
+    background: unset;
+    border: 0;
+    color: #fff;
+}
+.room-header .active .selectboxContent {
+    display: inline-block;
+    position: absolute;
+    z-index: 1;
+}
+.room-header .selectboxContent li:hover {
+    background: #0a8abd;
+    color: #fff;
+    transition: 0.5s;
+}
+.room-header .selectboxContent li {
+    padding: 8px;
+    position: relative;
+}
+
+.room-header .selectboxContent li > span {
+    float: right;
+}
 .room {
     position: absolute;
     left: 0;
@@ -245,14 +585,35 @@ export default {
 .room-name {
     width: calc((100% - 32px) - 8px);
 }
-.not-read-number {
-    float: right;
-    background-color: #b3b3b3;
-    padding: 2px 6px;
-    font-size: 12px;
-    border-radius: 15px;
+
+.create-room .add-option {
+    display: none;
+    position: absolute;
+    top: 30px;
+    right: -263px;
+    width: 300px;
+    z-index: 20;
 }
-.room-body li:hover {
-    background: #d6d6d6;
+
+.create-room.active .add-option {
+    display: block;
+}
+.create-room .add-option span {
+    font-size: 12px;
+    background: #f8f9fa;
+    padding: 8px 10px;
+    border-radius: 4px;
+    color: #13202f;
+    position: relative;
+    top: 5px;
+    border: 1px #ccc solid;
+    width: 200px;
+    display: block;
+    text-align: center;
+}
+.create-room .add-option span:hover {
+    background: #6c757d;
+    color: #fff;
+    transition: 0.5s;
 }
 </style>

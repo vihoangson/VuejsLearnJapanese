@@ -1,10 +1,14 @@
 <template>
+
     <div id="home">
+    	<Notice></Notice>
         <Header></Header>
         <div class="content">
             <Room @changeRoomEvent="changeRoomEvent"></Room>
             <Chat ref="chat"></Chat>
         </div>
+        <Rooms></Rooms>
+    	<Group></Group>
     </div>
 </template>
 <style>
@@ -18,16 +22,22 @@
 </style>
 
 <script>
-import Header from '../global/Header';
-import Room from '../chat/RoomChat';
-import Chat from '../chat/ChatBox';
+import Notice from '../global/Notice'
+import Header from '../global/Header'
+import Room from '../chat/RoomChat'
+import Chat from '../chat/ChatBox'
+import Rooms from '../room/rooms'
+import Group from '../group/group'
 import { AppConst } from '../../common/AppConst';
 export default {
     name: 'Home',
     components: {
         Header,
         Room,
-        Chat
+        Chat,
+        Rooms,
+    	Group,
+        Notice
     },
     created() {
         let user = localStorage.getItem('user');
