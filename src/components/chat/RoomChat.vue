@@ -158,6 +158,10 @@ export default {
                 }
             });
         });
+        this.$root.$on('changed-list-room', data => {
+            this.list_rooms = [];
+            this.getListRoom();
+        });
     },
 
     created: function() {
@@ -283,6 +287,7 @@ export default {
                                         message: 'Delete success',
                                         alert: 'alert-success'
                                     });
+                                    this.$root.$emit('changed-list-room');
                                     break;
                                 default:
                                     this.$root.$emit('push-notice', {
