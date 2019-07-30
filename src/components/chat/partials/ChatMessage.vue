@@ -2,7 +2,7 @@
     <div>
         <div v-if="this.type !== ''" class="message">
             <div class="message-badge">
-                <component :is="this.type" :msg="this.content"></component>
+                <component :is="this.type" :msg="this.content" :to="this.to"></component>
                 <img class="message-badge-avatar" :src="this.messageObject.user_info.icon_img" />
             </div>
             {{this.to_name}}
@@ -25,11 +25,19 @@ export default {
             type: '',
             to_name: '',
             content: '',
-            msg: 'To'
+            msg: '',
+            to: ''
         };
     },
     created() {
         this.content = this.messageObject.message;
+        let messageType = this.content.match(
+            /(\[Reply mid:([0-9]+) to:([0-9]+)\])/g
+        );
+
+        if (messageType.length > 0) {
+            
+        }
         if (this.content.match(/(\[To:([0-9])+])/g)) {
             this.type = 'To';
         } else if (
@@ -38,7 +46,6 @@ export default {
             this.type = 'Reply';
         }
         let messagePath = this.content.split('\n');
-        console.log(messagePath);
         if (messagePath.length > 1) {
             this.to_name = messagePath[0];
             this.to_name = this.to_name.replace(

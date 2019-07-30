@@ -331,7 +331,7 @@ export default {
         },
         onReply(value) {
             this.message.content =
-                '[Reply aid:' +
+                '[Reply mid:' +
                 value.message_id +
                 ' to:' +
                 value.user_info.id +

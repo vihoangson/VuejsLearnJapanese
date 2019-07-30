@@ -9,7 +9,7 @@
 <script>
 export default {
     name: 'To',
-    props: ['msg']
+    props: ['msg', 'to']
 };
 </script>
 
