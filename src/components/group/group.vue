@@ -80,7 +80,7 @@
                                 </div>
                                 <div class="table-scroll">
                                     <table class="table table-group">
-                                        <tr v-for="item in filteredItems">
+                                        <tr v-for="(item, index) in filteredItems" :key="index">
                                             <td width="5%">
                                                 <input
                                                     type="checkbox"

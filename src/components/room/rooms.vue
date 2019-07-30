@@ -85,7 +85,7 @@
                             </div>
                             <div class="table-scroll" >
                                 <table class="table table-group">
-                                    <tr v-for='item in filteredItems'>
+                                    <tr v-for="(item, index) in filteredItems" :key="index">
                                         <td><input type="checkbox" v-model="selected[item.id]" @change="updateCheck(item.id)"></td>
                                         <td class="avatar">
                                             <img width="10" v-bind:src="item.icon_img">
@@ -355,7 +355,7 @@
     .selectRole{
         float: right;
         position: relative;
-        display: inline-block;
+        display: block;
         width: 150px;
     }
     .selectRole .selectDefault{
