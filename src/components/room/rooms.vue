@@ -316,18 +316,16 @@
                     this.disableButton = false;
                     return
                 }
-                var res = API.POST(ApiConst.ROOM_ADD,{
+                let data = {
                     room_name: this.roomName,
                     room_image: this.roomImage,
                     description: this.description,
                     selected: this.selected,
                     only_token: true,
-                }).then(response => {
-                    return response;
-                })
-
-                res.then(response => {
-                    if(response != undefined){
+                }
+                
+                API.POST(ApiConst.ROOM_ADD,data).then(response => {
+                    if(response.error_code === 0){
                         switch(response.error_code){
                             case 0:
                                 this.$refs.modal.hide();

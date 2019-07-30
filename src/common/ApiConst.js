@@ -6,6 +6,7 @@ export const ApiConst = {
     EDIT_REGISTER: '/api/v1/user/register/edit',
     RECEIVE_MESSAGE: '/api/v1/message/receive',
     ALL_ROOM: '/api/v1/message/get-all-rooms',
+    GET_USER_INFO: 'api/v1/user/detail',
 
     GROUP_GET_BY_USER_ID: '/api/v1/group/get-group-by-user-id',
     GROUP_ADD: '/api/v1/group/add',
