@@ -85,7 +85,7 @@
                             </div>
                             <div class="table-scroll" >
                                 <table class="table table-group">
-                                    <tr v-for="(item, index) in filteredItems" :key="index" v-if="!item.hide">
+                                    <tr v-for="(item, index) in filteredItems" :key="index">
                                         <td><input type="checkbox" v-model="selected[item.id]" @change="updateCheck(item.id)"></td>
                                         <td class="avatar">
                                             <img width="10" v-bind:src="item.icon_img">
