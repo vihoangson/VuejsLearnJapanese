@@ -175,6 +175,8 @@
 
             submit_update_info(e) {
 
+                this.errors.required_name = '';
+
                 if (this.input_values.name.trim() !== ""){
                     let data = {
                         id: this.$store.getters.get_current_user_info.id,
@@ -216,6 +218,22 @@
 </script>
 
 <style>
+
+    .loader {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        background-color: #ffffffcf;
+    }
+    .loader img{
+        position: relative;
+        left: 40%;
+        top: 40%;
+    }
+
 
     .profileShowDialog__profileBodyInput{
         width: 300px;

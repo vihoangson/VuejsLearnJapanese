@@ -14,7 +14,7 @@ export default new Vuex.Store({
         list_message: [],
         openContactDisplay: 'none',
         openProfileDisplay: 'none',
-        openProfileEdit: 'none'
+        openProfileEdit: 'none',
         current_room: {},
         list_room: []
     },

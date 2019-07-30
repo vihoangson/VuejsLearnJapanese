@@ -41,15 +41,22 @@
                     </div>
                 </form>
             </div>
+
+            <div class="loader"  v-bind:style="{visibility: this.showLoader}">
+                <img src="https://appdata.chatwork.com/avatar/3431/3431235.gif">
+            </div>
         </section>
     </div>
+
 </template>
+
 
 <script>
 import { API } from '../../services/api';
 import { ApiConst } from '../../common/ApiConst';
 import { AppConst } from '../../common/AppConst';
 import VueRecaptcha from 'vue-recaptcha';
+
 
 export default {
     name: 'Login',
@@ -58,6 +65,7 @@ export default {
     },
     data() {
         return {
+            showLoader: 'hidden',
             errors: {
                 email: '',
                 password: '',
@@ -70,13 +78,14 @@ export default {
         };
     },
     methods: {
+
         markRecaptchaAsVerified() {
             this.errors.pleaseTickRecaptchaMessage = '';
             this.recaptchaVerified = true;
         },
         login(e) {
             e.preventDefault();
-
+            this.showLoader = 'visible';
             if (this.email === '') this.errors.email = '* Userame required!';
 
             if (this.password === '')
@@ -153,7 +162,9 @@ export default {
                     } else {
                         this.errors.login_fail = '* ' + res.error_msg;
                     }
+                    this.showLoader = 'hidden';
                 });
+
             }
         },
         SetNewPassword() {},
@@ -165,6 +176,24 @@ export default {
 </script>
 
 <style scoped>
+    .loader {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        background-color: #ffffffcf;
+    }
+    .loader img{
+        position: relative;
+        left: 40%;
+        top: 40%;
+    }
+
+
+
+
 .hidden {
     display: none;
 }
