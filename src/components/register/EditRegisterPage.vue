@@ -194,9 +194,9 @@ export default {
 			}
 			if (this.chooseChangePassword) {
 			    defaultData = {...defaultData,
-					    currentPassword: this.currentPassword,
-                        newPassword: this.newPassword,
-                        chooseChangePassword: this.chooseChangePassword
+					    current_password: this.currentPassword,
+                        new_password: this.newPassword,
+                        choose_change_password: this.chooseChangePassword
 			    }
 
             }

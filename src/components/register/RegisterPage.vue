@@ -111,7 +111,7 @@ export default {
             password: '',
             confirmPassword: '',
             recaptchaVerified: false,
-            msg : ""
+            msg: ''
         };
     },
     computed: {},
@@ -196,7 +196,7 @@ export default {
                 if (res.error_code === 0) {
                     this.$router.push({ name: 'login' });
                 } else {
-                    this.msg = 'Duplicate email.'
+                    this.msg = 'Duplicate email.';
                 }
             });
         }
