@@ -20,7 +20,10 @@
 <script>
 export default {
     name: 'Reply',
-    props: ['msg']
+    props: ['msg'],
+    created(){
+        console.log(this.msg);
+    }
 };
 </script>
 

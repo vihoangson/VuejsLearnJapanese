@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-bind:class="getClass()">
         <div v-if="this.type !== ''" class="message">
             <div class="message-badge">
                 <component :is="this.type" :msg="this.content" :to="this.to"></component>
@@ -13,6 +13,8 @@
 <script>
 import Reply from './message/Reply';
 import To from './message/To';
+import {API} from '../../../common/ApiConst';
+import {ApiConst} from '../../../common/ApiConst';
 export default {
     name: 'ChatMessage',
     components: {
@@ -22,6 +24,7 @@ export default {
     props: ['messageObject'],
     data() {
         return {
+            user: this.$store.getters.get_current_user,
             type: '',
             to_name: '',
             content: '',
@@ -31,13 +34,7 @@ export default {
     },
     created() {
         this.content = this.messageObject.message;
-        let messageType = this.content.match(
-            /(\[Reply mid:([0-9]+) to:([0-9]+)\])/g
-        );
 
-        if (messageType.length > 0) {
-            
-        }
         if (this.content.match(/(\[To:([0-9])+])/g)) {
             this.type = 'To';
         } else if (
@@ -45,14 +42,26 @@ export default {
         ) {
             this.type = 'Reply';
         }
+
         let messagePath = this.content.split('\n');
         if (messagePath.length > 1) {
             this.to_name = messagePath[0];
+            this.getToId(this.to_name);
             this.to_name = this.to_name.replace(
                 /(\[To:([0-9])+])|(\[Reply mid:([0-9]+) to:([0-9]+)\])/g,
                 ''
             );
+
             this.content = messagePath[1];
+        }
+    },
+    methods: {
+        getClass(to) {
+            if (to === this.user.id) return 'mention';
+        },
+        getToId(to) {
+            let id = to.match(/(\d+)/g);
+            API.POST(ApiConst.)
         }
     }
 };
@@ -72,5 +81,8 @@ export default {
     border-radius: 0 2px 2px 0;
     cursor: pointer;
     vertical-align: middle;
+}
+.mention {
+    background-color: read;
 }
 </style>
