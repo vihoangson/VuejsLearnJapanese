@@ -32,16 +32,19 @@ export default {
         this.content = this.messageObject.message;
         if (this.content.match(/(\[To:([0-9])+])/g)) {
             this.type = 'To';
-        } else if (this.content.match(/(\[Reply).*\]/g)) {
+        } else if (
+            this.content.match(/(\[Reply mid:([0-9]+) to:([0-9]+)\])/g)
+        ) {
             this.type = 'Reply';
         }
         let messagePath = this.content.split('\n');
         console.log(messagePath);
-        if (messagePath.length > 2) {
+        if (messagePath.length > 1) {
             this.to_name = messagePath[0];
-            console.log(this.to_name);
-            this.to_name = this.to_name.replace(/(\[To:([0-9])+])|((\[Reply).*\])/g, '');
-            console.log(this.to_name);
+            this.to_name = this.to_name.replace(
+                /(\[To:([0-9])+])|(\[Reply mid:([0-9]+) to:([0-9]+)\])/g,
+                ''
+            );
             this.content = messagePath[1];
         }
     }

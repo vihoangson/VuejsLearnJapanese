@@ -78,9 +78,6 @@ export default {
     },
     methods: {
         changeRoom(room) {
-            // let x = '/rid' + room.room_id;
-            // this.$router.push({ path: x });
-            // console.log(this.$route.params.room_id);
             this.$store.dispatch('setCurrentRoom', room);
             this.getListMessage();
             room.color = '#bfbab0';

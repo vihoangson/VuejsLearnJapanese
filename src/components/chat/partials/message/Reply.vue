@@ -19,7 +19,8 @@
 
 <script>
 export default {
-    name: 'Reply'
+    name: 'Reply',
+    props: ['msg']
 };
 </script>
 
