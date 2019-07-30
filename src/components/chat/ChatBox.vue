@@ -160,7 +160,7 @@
                         id="chat-text"
                         ref="textarea"
                         cols="30"
-                        rows="8"
+                        rows="7"
                         placeholder="Enter your message here
 (Press Shift + Enter for line break)"
                         v-model="message.content"
@@ -172,7 +172,7 @@
                         id="chat-text2"
                         ref="textarea"
                         cols="30"
-                        rows="8"
+                        rows="7"
                         placeholder="Enter your message here
 (Press Shift + Enter for send)"
                         v-model="message.content"
@@ -384,7 +384,14 @@ export default {
         },
         downloadFile(id) {
             API.GET('/api/v1/file/download-file/' + id).then(res => {
-                window.open('http://api.sns-tool.vn/api/v1/download-file/' + id + '/' + res.token_file + '/' + res.user_id);
+                window.open(
+                    'http://api.sns-tool.vn/api/v1/download-file/' +
+                        id +
+                        '/' +
+                        res.token_file +
+                        '/' +
+                        res.user_id
+                );
             });
         }
     },

@@ -13,8 +13,8 @@
 <script>
 import Reply from './message/Reply';
 import To from './message/To';
-import {API} from '../../../common/ApiConst';
-import {ApiConst} from '../../../common/ApiConst';
+import { API } from '../../../services/api';
+import { ApiConst } from '../../../common/ApiConst';
 export default {
     name: 'ChatMessage',
     components: {
@@ -60,8 +60,12 @@ export default {
             if (to === this.user.id) return 'mention';
         },
         getToId(to) {
-            let id = to.match(/(\d+)/g);
-            API.POST(ApiConst.)
+            let _id = to.match(/(\d+)/g);
+            API.POST(ApiConst.GET_USER_INFO, { id: _id }).then(res => {
+                if (res.error_code === 0) {
+                    console.log(res);
+                }
+            });
         }
     }
 };
