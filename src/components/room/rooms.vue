@@ -148,6 +148,7 @@
 <script>
     import { API } from '../../services/api';
     import { ApiConst } from '../../common/ApiConst';
+    import { AppConst } from '../../common/AppConst';
     import modalMixin from '@/mixins/modal'
     import axios from 'axios'
     export default {
@@ -173,7 +174,8 @@
                 disableButton: false,
                 roomDescriptionError: "",
                 roomNameError: "",
-                roomselectedError: ""
+                roomselectedError: "",
+                userId: 0,
             }
         },
         mounted() {
@@ -184,7 +186,7 @@
                 if(id != 0){
                     this.buttonName = "Update";
                     this.selected = [];
-                    this.items = this.getAllUser().then(data => {
+                    this.getAllUser().then(data => {
                         this.items = data;
                     });
                 }else{
@@ -193,13 +195,15 @@
                     this.roomImage = 'https://appdata.chatwork.com/icon/ico_group.png';
                     this.selected = [];
                     this.buttonName = "Create";
-                    this.items = this.getAllUser().then(data => {
+                    this.getAllUser().then(data => {
                         this.items = data;
                     });
                 }
             });
         },
         created: function(){
+            let user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
+            this.userId = user.user_id;
         },
         computed: {
             filteredItems() {
@@ -290,7 +294,7 @@
                 this.handleSubmit()
             },
             getAllUser(){
-                return API.GET(ApiConst.ROOM_GET_ALL_USER).then(response => {
+                return API.GET(ApiConst.ROOM_GET_ALL_USER + '/' + this.userId).then(response => {
                     return response;
                 })
             },
@@ -303,6 +307,11 @@
                 this.roomselectedError= "";
                 this.disableButton = true;
                 this.selectAll = false;
+
+                var selectRole = {id: this.userId, index : 1, name : this.subscriptions[0].name}
+                var i = this.selected.length;
+                this.selected[i] = selectRole;
+
                 if (!this.checkFormValidity()) {
                     this.disableButton = false;
                     return
@@ -321,7 +330,7 @@
                             case 0:
                                 this.$refs.modal.hide();
                                 this.$root.$emit('push-notice', {message:'insert success', alert: 'alert-success'});
-                                this.$root.$emit('changed-list-room');
+                                this.$root.$emit('changed-list-room', response.data);
                             break;
                             case 1:
                                 this.roomNameError = response.data;
