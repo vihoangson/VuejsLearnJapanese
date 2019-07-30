@@ -177,8 +177,7 @@
       transition: .5s;
   }
   .room-header .selectboxContent li{
-      padding: 8px 5px;
-      padding-left: 12px;
+      padding: 8px;
       position: relative;
   }
 
@@ -343,6 +342,7 @@
 <script>
 import { API } from '../../services/api';
 import { ApiConst } from '../../common/ApiConst';
+import { AppConst } from '../../common/AppConst';
 import modalMixin from '@/mixins/modal'
 import axios from 'axios'
 const EVENT_JOIN = 'join';
@@ -356,6 +356,7 @@ export default {
       selectItems: "All Chat",
       datascript: [],
       activeIndex: undefined,
+      userId: 0,
       list_rooms: [
           {
               room_id: 0,
@@ -372,7 +373,7 @@ export default {
 
   mounted() {
     this.$root.$on('changed-list-group', data => {
-      this.getAllGroup().then(response => {
+      this.getAllGroup(this.userId).then(response => {
         if(response != undefined && response.error_code == 0){
           this.datascript = response.data;
         }
@@ -381,9 +382,11 @@ export default {
   },
 
   created: function(){
+      let user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
+      this.userId = user.user_id;
       this.getListRoom();
       this.getListMessage();
-      this.getAllGroup().then(response => {
+      this.getAllGroup(this.userId).then(response => {
         if(response != undefined && response.error_code == 0){
           this.datascript = response.data;
         };
@@ -414,8 +417,8 @@ export default {
         this.selectItems = criptions;
     },
 
-    getAllGroup(){
-      return API.GET(ApiConst.GROUP_GET_ALL).then(response => {
+    getAllGroup(id){
+      return API.GET(ApiConst.GROUP_GET_BY_USER_ID + "/" + id).then(response => {
         return response;
       })
     },
