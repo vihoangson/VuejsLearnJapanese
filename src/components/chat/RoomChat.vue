@@ -373,7 +373,7 @@ export default {
   mounted() {
     this.$root.$on('changed-list-group', data => {
       this.getAllGroup().then(response => {
-        if(response.error_code === 0){
+        if(response != undefined && response.error_code == 0){
           this.datascript = response.data;
         }
       });
@@ -384,7 +384,7 @@ export default {
       this.getListRoom();
       this.getListMessage();
       this.getAllGroup().then(response => {
-        if(response.error_code === 0){
+        if(response != undefined && response.error_code == 0){
           this.datascript = response.data;
         };
       });
@@ -437,14 +437,16 @@ export default {
 
     iconDelete(id){
       this.deleteGroup(id).then(response => {
-        switch(parseInt(response.error_code)){
-          case 0:
-              this.$root.$emit('push-notice', {message:'Delete success', alert: 'alert-success'});
-              this.$root.$emit('changed-list-group');
-          break;
-          default:
-            this.$root.$emit('push-notice', {message:'Delete error', alert: 'alert-danger'});
-          break
+        if(response != undefined){
+          switch(parseInt(response.error_code)){
+            case 0:
+                this.$root.$emit('push-notice', {message:'Delete success', alert: 'alert-success'});
+                this.$root.$emit('changed-list-group');
+            break;
+            default:
+              this.$root.$emit('push-notice', {message:'Delete error', alert: 'alert-danger'});
+            break
+          }
         }
       });
     },
@@ -480,13 +482,15 @@ export default {
             });
 
           res.then(response => {
-            switch(parseInt(response.error_code)){
-              case 0:
-                this.$root.$emit('push-notice', {message:'Delete success', alert: 'alert-success'});
-              break;
-              default:
-                this.$root.$emit('push-notice', {message:'Delete Error', alert: 'alert-danger'});
-              break
+            if(response != undefined){
+              switch(parseInt(response.error_code)){
+                case 0:
+                  this.$root.$emit('push-notice', {message:'Delete success', alert: 'alert-success'});
+                break;
+                default:
+                  this.$root.$emit('push-notice', {message:'Delete Error', alert: 'alert-danger'});
+                break
+              }
             }
           })
         })
