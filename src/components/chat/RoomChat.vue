@@ -363,7 +363,6 @@ export default {
         },
         handleResize() {
             this.height = window.innerHeight - 45;
-            console.log(this.height);
         },
         myStyles() {
             return this.height - 45;
