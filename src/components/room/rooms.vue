@@ -327,7 +327,6 @@
                 })
 
                 res.then(response => {
-                    console.log(response);
                     if(response != undefined){
                         switch(response.error_code){
                             case 0:
