@@ -272,8 +272,8 @@ export default {
     cursor: pointer;
 }
 .menu-item.separate-top {
-    border-top: solid 1px #13202f;
-    padding-top: 8px;
-    margin-top: 8px;
+    /*border-top: solid 1px #13202f;*/
+    /*padding-top: 8px;*/
+    /*margin-top: 8px;*/
 }
 </style>

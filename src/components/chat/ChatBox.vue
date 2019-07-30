@@ -9,6 +9,34 @@
                     <span>{{this.$store.getters.get_current_room.room_name}}</span>
                 </h1>
             </div>
+            <div class="dropdown">
+                <div class="emoji" @click="showMyListFile">
+                    <span class="icon-container">
+                        <svg
+                            viewBox="0 0 10 10"
+                            id="icon_menuFile"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M.417.417v2.5h9.167v-1.25H4.167L2.917.417h-2.5zM0 3.75l.417 5.833h9.167l.417-5.833h-10zm.781.73h8.438l-.313 4.375H1.093L.78 4.48z"
+                            />
+                        </svg>
+                    </span>
+                </div>
+                <div class="dropdown-content" v-if="showListFile">
+                    <div
+                        v-for="(file, index) in listMyFile"
+                        :key="`file-${index}`"
+                        class="item-file"
+                    >
+                        {{ file.file_name }}
+                        <div class="action-file"></div>
+                        <div class="action-icon" @click="downloadFile(file.id)">
+                            <span>download</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="chat-box-content" id="chat-box-content" :style="{'height': `${myStyles}px`}">
             <div class="timeline">
@@ -192,7 +220,7 @@ export default {
     data() {
         return {
             enterToSendMessage: true,
-            showDropzone: false,
+            showListFile: false,
             height: 0,
             message: {
                 id: 0,
@@ -200,25 +228,10 @@ export default {
                 type: AppConst.MESSAGE_TYPE.CREATE
             },
             message_id: 0,
-            showEmojiPicker: false,
-            dropzoneOptions: {
-                url: 'http://sns.dev.com/api/v1/message-file',
-                // thumbnailWidth: 150,
-                maxFilesize: 1,
-                headers: 'gfgdfgdfgdfgdgfdg',
-                maxFiles: 10,
-                uploadMultiple: true,
-                parallelUploads: 10,
-                // acceptedFiles: 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,.xls,.xlsx',
-                autoProcessQueue: false,
-                addRemoveLinks: true,
-                dictDefaultMessage:
-                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' +
-                    'Kéo file vào đây</div>'
-            },
             errors: null,
             user: this.$store.getters.get_current_user,
-            editMessage: false
+            editMessage: false,
+            listMyFile: []
         };
     },
     created() {
@@ -351,6 +364,19 @@ export default {
             this.message.type = AppConst.MESSAGE_TYPE.CREATE;
 
             this.editMessage = false;
+        },
+        showMyListFile() {
+            this.showListFile = !this.showListFile;
+            if (this.showListFile) {
+                API.GET(ApiConst.MY_LIST_FILE).then(res => {
+                    this.listMyFile = res.data;
+                });
+            }
+        },
+        downloadFile(id) {
+            API.GET('/api/v1/file/download-file/' + id).then(res => {
+                window.open('http://api.sns-tool.vn/api/v1/download-file/' + id + '/' + res.token_file + '/' + res.user_id);
+            });
         }
     },
     computed: {
@@ -365,6 +391,64 @@ export default {
 </script>
 
 <style>
+.action-icon {
+    text-align: center;
+    width: 30%;
+    height: 70%;
+    opacity: 1;
+    position: absolute;
+    padding-top: 12px;
+    z-index: 4;
+    top: 0;
+    right: 0;
+    background-color: greenyellow;
+    display: none;
+}
+.item-file {
+    position: relative;
+}
+.item-file:hover .action-file {
+    display: block;
+}
+.item-file:hover .action-icon {
+    display: block;
+}
+.action-file {
+    height: 100%;
+    width: 60vh;
+    top: 0;
+    left: 0;
+    position: absolute;
+    background-color: greenyellow;
+    z-index: 2;
+    opacity: 0.5;
+    display: none;
+}
+.dropdown {
+    float: right;
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    max-height: 80vh;
+    min-height: 30vh;
+    width: 60vh;
+    overflow: scroll;
+    right: 0px;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-content div.item-file {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
 .icon-close {
     float: right;
 }

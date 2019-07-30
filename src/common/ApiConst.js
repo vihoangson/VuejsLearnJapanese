@@ -19,4 +19,5 @@ export const ApiConst = {
     ROOM_DELETE: '/api/v1/room/delete',
     ROOM_SETTING: '/api/v1/room/setting',
     ROOM_GET_ALL_USER: '/api/v1/user/get-all-user',
+    MY_LIST_FILE: '/api/v1/file/get-my-list-file'
 };
