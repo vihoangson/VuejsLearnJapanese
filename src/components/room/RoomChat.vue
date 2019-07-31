@@ -141,6 +141,7 @@ export default {
 
     mounted() {
         this.$root.$on('changed-list-group', data => {
+            this.selectItems = 'All Chat';
             this.getAllGroup(this.userId);
         });
         this.$root.$on('changed-list-room', room => {
@@ -185,6 +186,7 @@ export default {
         },
 
         getAllGroup(id) {
+            this.datascript = [];
             API.GET(ApiConst.GROUP_GET_BY_USER_ID + '/' + id).then(response => {
                 if (response !== undefined && response.error_code === 0) {
                     this.datascript = response.data;
