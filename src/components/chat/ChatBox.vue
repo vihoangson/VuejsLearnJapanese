@@ -1,5 +1,6 @@
 <template>
     <div id="chat-box" @dragover="showDropzoneForm">
+        <UpdateRoom></UpdateRoom>
         <div class="chat-box-header">
             <div class="header-name">
                 <div class="room-logo">
@@ -8,6 +9,13 @@
                 <h1 class="title">
                     <span>{{this.$store.getters.get_current_room.room_name}}</span>
                 </h1>
+                <div >
+                    <span @click="updateGroupChat">
+                        <svg viewBox="0 0 10 10" class="chatRoomHeaderMemberList__editIcon" width="16" height="16">
+                            <use fill-rule="evenodd" xlink:href="#icon_plus"></use>
+                        </svg>
+                    </span>
+                </div>
             </div>
             <div class="dropdown">
                 <div class="emoji" @click="showMyListFile">
@@ -60,7 +68,7 @@
                                 >{{item.organization}}</p>
                             </div>
                             <div class="timeline-content-message">
-                                <pre>{{item.message}}</pre>
+                                <ChatMessage :message-object="item"></ChatMessage>
                             </div>
                             <ChatAction
                                 :message="item"
@@ -160,7 +168,7 @@
                         id="chat-text"
                         ref="textarea"
                         cols="30"
-                        rows="8"
+                        rows="7"
                         placeholder="Enter your message here
 (Press Shift + Enter for line break)"
                         v-model="message.content"
@@ -172,7 +180,7 @@
                         id="chat-text2"
                         ref="textarea"
                         cols="30"
-                        rows="8"
+                        rows="7"
                         placeholder="Enter your message here
 (Press Shift + Enter for send)"
                         v-model="message.content"
@@ -197,6 +205,8 @@ import ChatAction from './partials/ChatAction';
 import ChatEdit from './partials/ChatEdit';
 import modalMixin from '@/mixins/modal';
 import SendFile from './SendFile';
+import ChatMessage from './partials/ChatMessage';
+import UpdateRoom from '../room/UpdateRoom';
 
 // import ImportFile from "ImportFile";
 const EVENT_SEND = 'send_message';
@@ -209,7 +219,9 @@ export default {
         Picker,
         TextareaEmojiPicker,
         ChatAction,
-        ChatEdit
+        ChatEdit,
+        ChatMessage,
+        UpdateRoom
     },
     props: {
         value: {
@@ -242,7 +254,6 @@ export default {
             room_id: 1
         };
         API.POST(ApiConst.RECEIVE_MESSAGE, obj).then(res => {
-            console.log(res);
             if (res.error_code === 0)
                 this.$store.dispatch('setListMessage', res.data);
         });
@@ -329,7 +340,15 @@ export default {
             this.enterToSendMessage = e.target.value;
         },
         onReply(value) {
-            this.message = value.message;
+            this.message.content =
+                '[Reply mid:' +
+                value.message_id +
+                ' to:' +
+                value.user_info.id +
+                '] ' +
+                value.user_info.name;
+            this.message.content += '\n';
+            this.$refs.textarea.focus();
         },
         onSend() {
             this.message.type = AppConst.MESSAGE_TYPE.CREATE;
@@ -375,8 +394,19 @@ export default {
         },
         downloadFile(id) {
             API.GET('/api/v1/file/download-file/' + id).then(res => {
-                window.open('http://api.sns-tool.vn/api/v1/download-file/' + id + '/' + res.token_file + '/' + res.user_id);
+                window.open(
+                    'http://api.sns-tool.vn/api/v1/download-file/' +
+                        id +
+                        '/' +
+                        res.token_file +
+                        '/' +
+                        res.user_id
+                );
             });
+        },
+        updateGroupChat(){
+            this.$root.$emit('open-modal-update-room', 0);
+            this.$bvModal.show('modal-prevent-update-rooms');
         }
     },
     computed: {

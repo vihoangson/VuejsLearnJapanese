@@ -95,7 +95,8 @@ export default {
     },
     methods: {
         onReply() {
-            // this.$emit('reply', this.message);
+            console.log(this.message);
+            this.$emit('reply', this.message);
         },
         onEdit() {
             this.$emit('edit', this.message);

@@ -36,5 +36,23 @@ export default {
     },
     set_list_room(state, obj) {
         return (state.list_room = obj);
+    },
+    set_notification(state, obj) {
+        if (state.current_user.user_id !== obj.user_info.id) {
+            var notify = new Notification(
+                obj.user_info.name + ' vừa nhắn tin cho bạn!',
+                {
+                    body: obj.message,
+                    icon:
+                        'https://cdn.iconscout.com/icon/free/png-256/office-mail-email-letter-message-receive-inbox-3-12654.png',
+                    tag: 'https://www.chatwork.com/#!rid18156824',
+                    renotify: true
+                }
+            );
+
+            notify.onclick = function() {
+                window.location.href = this.tag;
+            };
+        }
     }
 };

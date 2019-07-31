@@ -19,5 +19,8 @@ export default {
     },
     setListRoom({ commit }, obj) {
         commit('set_list_room', obj);
+    },
+    setNotification({ commit }, obj) {
+        commit('set_notification', obj);
     }
 };

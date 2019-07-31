@@ -182,23 +182,14 @@
             this.$root.$on('open-modal-room', id => {
                 this.roomId = id;
                 this.items = [];
-
-                if(id != 0){
-                    this.buttonName = "Update";
-                    this.selected = [];
-                    this.getAllUser().then(data => {
-                        this.items = data;
-                    });
-                }else{
-                    this.roomName = '';
-                    this.description = '';
-                    this.roomImage = 'https://appdata.chatwork.com/icon/ico_group.png';
-                    this.selected = [];
-                    this.buttonName = "Create";
-                    this.getAllUser().then(data => {
-                        this.items = data;
-                    });
-                }
+                this.roomName = '';
+                this.description = '';
+                this.roomImage = 'https://appdata.chatwork.com/icon/ico_group.png';
+                this.selected = [];
+                this.buttonName = "Create";
+                this.getAllUser().then(response => {
+                    this.items = response.data;
+                });
             });
         },
         created: function(){
@@ -312,18 +303,16 @@
                     this.disableButton = false;
                     return
                 }
-                var res = API.POST(ApiConst.ROOM_ADD,{
+                let data = {
                     room_name: this.roomName,
                     room_image: this.roomImage,
                     description: this.description,
                     selected: this.selected,
                     only_token: true,
-                }).then(response => {
-                    return response;
-                })
-
-                res.then(response => {
-                    if(response != undefined){
+                }
+                
+                API.POST(ApiConst.ROOM_ADD,data).then(response => {
+                    if(response.error_code === 0){
                         switch(response.error_code){
                             case 0:
                                 this.$refs.modal.hide();

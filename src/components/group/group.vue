@@ -123,7 +123,6 @@ import { API } from '../../services/api';
 import { ApiConst } from '../../common/ApiConst';
 import { AppConst } from '../../common/AppConst';
 import modalMixin from '@/mixins/modal';
-import axios from 'axios';
 export default {
     name: 'Group',
     mounted() {
@@ -353,7 +352,6 @@ export default {
                             this.selectedError = response.data.error_msg;
                             break;
                         case 3:
-                            break;
                             break;
                         default:
                             break;
