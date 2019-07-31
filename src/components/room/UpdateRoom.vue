@@ -188,7 +188,7 @@
                 if (!this.selectAll) {
                     for (let i in this.items) {
                         var id = this.items[i].id;
-                        var selectRole = {id: id, index : 0, name : this.subscriptions[1].name}
+                        var selectRole = {id: id, permision : 0, name : this.subscriptions[1].name}
                         this.selected[id] = selectRole;
                     }
                 }
@@ -211,7 +211,7 @@
 
                 for (let i in tamp) {
                     var id = tamp[i].id;
-                    var selectRole = {id: id, index : index, name : criptions}
+                    var selectRole = {id: id, permision : index, name : criptions}
                     this.selected[id] = selectRole;
                 }
             },
@@ -221,7 +221,7 @@
             setActiveItem(id, index, name){
                 var tamp = this.selected;
                 this.selected = [];
-                var selectRole = {id: id, index : index, name : name}
+                var selectRole = {id: id, permision : index, name : name}
                 tamp[id] = selectRole;
                 this.selected = tamp;
             },
@@ -230,7 +230,7 @@
                 this.selected = [];
                 for (let i in tamp) {
                     if(tamp[i] === true){
-                        var selectRole = {id: id, index : 0, name : this.subscriptions[1].name}
+                        var selectRole = {id: id, permision : 0, name : this.subscriptions[1].name}
                         tamp[i] = selectRole;
                     }
                 }
