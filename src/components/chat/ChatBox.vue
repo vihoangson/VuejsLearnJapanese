@@ -48,7 +48,7 @@
                         <div class="file-name">- File name: {{fileDetailInfo.name}}</div>
                         <div>- Owner: {{fileDetailInfo.owner}}</div>
                         <div>- Upload date: {{fileDetailInfo.uploadDate}}</div>
-                        <div>- Size: {{fileDetailInfo.size}}</div>
+                        <div>- Size: {{fileDetailInfo.size}} B</div>
                     </div>
                 </div>
             </div>
@@ -434,7 +434,7 @@ export default {
                     this.codeReviewPhoto = 'data:image/png;base64, ' + res.data.base_64;
                     this.fileDetailInfo.content = res.data.content;
                     this.fileDetailInfo.name = res.data[0].file_name;
-                    this.fileDetailInfo.size = res.data[0].file_size;
+                    this.fileDetailInfo.size = (res.data[0].file_size).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     this.fileDetailInfo.owner = res.data[0].user_id;
                     this.fileDetailInfo.uploadDate = res.data[0].created_at;
                     this.reviewPhotoStore[id] = res.data;
@@ -444,7 +444,7 @@ export default {
                     'data:image/png;base64, ' + this.reviewPhotoStore[id].base_64;
                 this.fileDetailInfo.content = this.reviewPhotoStore[id].content;
                 this.fileDetailInfo.name = this.reviewPhotoStore[id][0].file_name;
-                this.fileDetailInfo.size = this.reviewPhotoStore[id][0].file_size;
+                this.fileDetailInfo.size = (this.reviewPhotoStore[id][0].file_size).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 this.fileDetailInfo.owner = this.reviewPhotoStore[id][0].user_id;
                 this.fileDetailInfo.uploadDate = this.reviewPhotoStore[id][0].created_at;
             }
