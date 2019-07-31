@@ -4,7 +4,7 @@
             id="modal-prevent-update-rooms"
             ref="modal"
             size= "lg"
-            title="Create a new Group Chat"
+            title="Add user to room"
             @show="resetModal"
             @hidden="resetModal"
             @ok="handleOk">
