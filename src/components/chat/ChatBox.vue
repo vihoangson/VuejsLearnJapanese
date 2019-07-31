@@ -30,10 +30,20 @@
                         class="item-file"
                     >
                         {{ file.file_name }}
-                        <div class="action-file"></div>
-                        <div class="action-icon" @click="downloadFile(file.id)">
-                            <span>download</span>
+                        <div class="action-file" @mouseover="getReviewPhoto(file.id)"></div>
+                        <div class="action-icon">
+                            <span @click="downloadFile(file.id)">down</span>
+                            <span @click="deleteFile(file.id)">delete</span>
                         </div>
+                    </div>
+                </div>
+                <div class="file-detail" v-show="showListFile">
+                    <img :src="codeReviewPhoto" alt />
+                    <div class="detail-info-file">
+                        <div>- File name: {{fileDetailInfo.name}}</div>
+                        <div>- Owner: {{fileDetailInfo.owner}}</div>
+                        <div>- Upload date: {{fileDetailInfo.uploadDate}}</div>
+                        <div>- Size: {{fileDetailInfo.size}}</div>
                     </div>
                 </div>
             </div>
@@ -205,6 +215,15 @@ export default {
         return {
             enterToSendMessage: true,
             showListFile: false,
+            showFileDetail: true,
+            codeReviewPhoto: '',
+            fileDetailInfo: {
+                name: '',
+                size: '',
+                uploadDate: '',
+                owner: ''
+            },
+            reviewPhotoStore: [],
             height: 0,
             message: {
                 id: 0,
@@ -227,8 +246,7 @@ export default {
         };
         API.POST(ApiConst.RECEIVE_MESSAGE, obj).then(res => {
             console.log(res);
-            if (res.error_code === 0)
-                this.$store.dispatch('setListMessage', res.data);
+            if (res.error_code === 0) this.$store.dispatch('setListMessage', res.data);
         });
     },
     methods: {
@@ -255,7 +273,7 @@ export default {
         sendMessage() {
             let msg = this.createObjMessage();
             this.$socket.emit(EVENT_SEND, msg);
-            var container = this.$el.querySelector(".timeline-message");
+            var container = this.$el.querySelector('.timeline-message');
             container.scrollTop = container.scrollHeight;
 
             this.message.content = '';
@@ -340,8 +358,43 @@ export default {
         },
         downloadFile(id) {
             API.GET('/api/v1/file/download-file/' + id).then(res => {
-                window.open('http://api.sns-tool.vn/api/v1/download-file/' + id + '/' + res.token_file + '/' + res.user_id);
+                window.open(
+                    'http://api.sns-tool.vn/api/v1/download-file/' +
+                        id +
+                        '/' +
+                        res.token_file +
+                        '/' +
+                        res.user_id
+                );
             });
+        },
+        deleteFile(id) {
+            let obj = {
+                delete_id: id
+            };
+            API.POST('/api/v1/file/delete-file', obj).then(res => {
+                this.showListFile = !this.showListFile;
+                this.showMyListFile();
+            });
+        },
+        getReviewPhoto(id) {
+            if (typeof this.reviewPhotoStore[id] === 'undefined') {
+                API.GET('/api/v1/file/review-photo/mid/' + id).then(res => {
+                    this.codeReviewPhoto = 'data:image/png;base64, ' + res.data.base_64;
+                    this.fileDetailInfo.name = res.data[0].file_name;
+                    this.fileDetailInfo.size = res.data[0].file_size;
+                    this.fileDetailInfo.owner = res.data[0].user_id;
+                    this.fileDetailInfo.uploadDate = res.data[0].created_at;
+                    this.reviewPhotoStore[id] = res.data;
+                });
+            } else {
+                this.codeReviewPhoto =
+                    'data:image/png;base64, ' + this.reviewPhotoStore[id].base_64;
+                this.fileDetailInfo.name = this.reviewPhotoStore[id][0].file_name;
+                this.fileDetailInfo.size = this.reviewPhotoStore[id][0].file_size;
+                this.fileDetailInfo.owner = this.reviewPhotoStore[id][0].user_id;
+                this.fileDetailInfo.uploadDate = this.reviewPhotoStore[id][0].created_at;
+            }
         }
     },
     computed: {
@@ -356,6 +409,23 @@ export default {
 </script>
 
 <style>
+.detail-info-file {
+}
+.file-detail {
+    height: 60vh;
+    width: 60vh;
+    opacity: 1;
+    position: absolute;
+    /*padding-top: 12px;*/
+    z-index: 5;
+    top: 23px;
+    right: 60vh;
+    background-color: whitesmoke;
+}
+.file-detail img {
+    max-width: 100%;
+    max-height: 80%;
+}
 .action-icon {
     text-align: center;
     width: 30%;
@@ -371,6 +441,8 @@ export default {
 }
 .item-file {
     position: relative;
+    white-space: nowrap;
+    overflow: hidden;
 }
 .item-file:hover .action-file {
     display: block;
