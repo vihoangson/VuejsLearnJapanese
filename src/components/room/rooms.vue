@@ -182,23 +182,14 @@
             this.$root.$on('open-modal-room', id => {
                 this.roomId = id;
                 this.items = [];
-
-                if(id != 0){
-                    this.buttonName = "Update";
-                    this.selected = [];
-                    this.getAllUser().then(data => {
-                        this.items = data;
-                    });
-                }else{
-                    this.roomName = '';
-                    this.description = '';
-                    this.roomImage = 'https://appdata.chatwork.com/icon/ico_group.png';
-                    this.selected = [];
-                    this.buttonName = "Create";
-                    this.getAllUser().then(data => {
-                        this.items = data;
-                    });
-                }
+                this.roomName = '';
+                this.description = '';
+                this.roomImage = 'https://appdata.chatwork.com/icon/ico_group.png';
+                this.selected = [];
+                this.buttonName = "Create";
+                this.getAllUser().then(response => {
+                    this.items = response.data;
+                });
             });
         },
         created: function(){
