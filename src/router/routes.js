@@ -31,6 +31,18 @@ export default [
                 name: 'ForgotPassword',
                 component: () => import('@/components/forgotpass/EnterEmailPage')
             }
+            ,
+            {
+                path: 'verify_token/:token',
+                name: 'ForgotPasswordVerifyToken',
+                component: () => import('@/components/forgotpass/VerifyToken')
+            },
+            {
+                path: 'changepass',
+                name: 'forgotpasschange',
+                component: () => import('@/components/forgotpass/ChangePassword')
+            }
+
         ]
     },
 

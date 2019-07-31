@@ -21,7 +21,7 @@ export default {
         let user = localStorage.getItem('user');
 
         if (user === null) {
-            this.$router.push({ path: 'login' });
+            //this.$router.push({ path: 'login' });
         } else {
             // this.$router.push({ path: '/rid1' });
         }

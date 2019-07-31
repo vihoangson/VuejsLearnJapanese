@@ -9,9 +9,16 @@
                 <form name="login" class="login" method="post" @submit="sentemail">
                     <span class="error">{{errors.login_fail}}</span>
                     <div class="login-form-row">
-                        <label for="email">Email Address</label>
+                        <label for="email">Password</label>
                         <div class="login-email">
-                            <input type="text" v-model="email" />
+                            <input type="password" v-model="email" />
+                        </div>
+                        <span class="error">{{errors.email}}</span>
+                    </div>
+                    <div class="login-form-row">
+                        <label for="email">Confirm password</label>
+                        <div class="login-email">
+                            <input type="password" v-model="email" />
                         </div>
                         <span class="error">{{errors.email}}</span>
                     </div>
@@ -56,7 +63,7 @@
         },
         methods: {
 
-            sentemail(e) {
+            sentemail1(e) {
                 e.preventDefault();
                 if (this.email === '') this.errors.email = '* Userame required!';
 
@@ -117,16 +124,7 @@
 
         },
         mounted(){
-            console.log('123')
-            console.log(this.$route.params.token)
-            let data = {'token':this.$route.params.token}
-            API.POST(ApiConst.FORGOT_PASS_CHECK_TOKEN,data).then(res=>{
-                if(res.error_code === 0){
-                    this.$router.push({ name: 'forgotpasschange' });
-                }else{
-                    this.$router.push({ name: 'home' });
-                }
-            });
+
         }
 
     };
