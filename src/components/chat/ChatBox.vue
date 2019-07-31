@@ -38,9 +38,14 @@
                     </div>
                 </div>
                 <div class="file-detail" v-show="showListFile">
-                    <img :src="codeReviewPhoto" alt />
+                    <div class="content-image" v-show="fileDetailInfo.content === ''">
+                        <img :src="codeReviewPhoto" alt />
+                    </div>
+                    <div class="content-file" v-show="fileDetailInfo.content !== ''">
+                        <pre>{{fileDetailInfo.content}}</pre>
+                    </div>
                     <div class="detail-info-file">
-                        <div>- File name: {{fileDetailInfo.name}}</div>
+                        <div class="file-name">- File name: {{fileDetailInfo.name}}</div>
                         <div>- Owner: {{fileDetailInfo.owner}}</div>
                         <div>- Upload date: {{fileDetailInfo.uploadDate}}</div>
                         <div>- Size: {{fileDetailInfo.size}}</div>
@@ -239,7 +244,8 @@ export default {
                 name: '',
                 size: '',
                 uploadDate: '',
-                owner: ''
+                owner: '',
+                content: ''
             },
             reviewPhotoStore: [],
             height: 0,
@@ -426,6 +432,7 @@ export default {
             if (typeof this.reviewPhotoStore[id] === 'undefined') {
                 API.GET('/api/v1/file/review-photo/mid/' + id).then(res => {
                     this.codeReviewPhoto = 'data:image/png;base64, ' + res.data.base_64;
+                    this.fileDetailInfo.content = res.data.content;
                     this.fileDetailInfo.name = res.data[0].file_name;
                     this.fileDetailInfo.size = res.data[0].file_size;
                     this.fileDetailInfo.owner = res.data[0].user_id;
@@ -435,6 +442,7 @@ export default {
             } else {
                 this.codeReviewPhoto =
                     'data:image/png;base64, ' + this.reviewPhotoStore[id].base_64;
+                this.fileDetailInfo.content = this.reviewPhotoStore[id].content;
                 this.fileDetailInfo.name = this.reviewPhotoStore[id][0].file_name;
                 this.fileDetailInfo.size = this.reviewPhotoStore[id][0].file_size;
                 this.fileDetailInfo.owner = this.reviewPhotoStore[id][0].user_id;
@@ -455,9 +463,22 @@ export default {
 
 <style>
 .detail-info-file {
+    background-color: #cccccc;
 }
+.content-file {
+    height: 80%;
+    overflow-y: scroll;
+}
+.content-image {
+    height: 80%;
+}
+.file-name {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
 .file-detail {
-    height: 60vh;
+    height: 70vh;
     width: 60vh;
     opacity: 1;
     position: absolute;
@@ -465,9 +486,12 @@ export default {
     z-index: 5;
     top: 23px;
     right: 60vh;
-    background-color: whitesmoke;
+    background-color: darkgrey;
 }
-.file-detail img {
+.content-image img {
+    display: block;
+    margin: auto;
+    vertical-align: center;
     max-width: 100%;
     max-height: 80%;
 }
@@ -516,7 +540,7 @@ export default {
     max-height: 80vh;
     min-height: 30vh;
     width: 60vh;
-    overflow: scroll;
+    overflow-y: scroll;
     right: 0px;
     position: absolute;
     background-color: #f9f9f9;

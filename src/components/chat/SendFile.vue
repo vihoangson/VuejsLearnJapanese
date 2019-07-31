@@ -58,7 +58,7 @@
             <div class="chat-textarea">
                 <textarea
                     ref="textarea"
-                    rows="10"
+                    rows="5"
                     placeholder="Enter your message here"
                     v-model="message"
                     @input="$emit('input', $event.target.value)"
@@ -107,7 +107,8 @@ export default {
                 maxFiles: 10,
                 uploadMultiple: true,
                 parallelUploads: 1,
-                // acceptedFiles: 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,.xls,.xlsx',
+                acceptedFiles:
+                    'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,.xls,.xlsx,.jpg,.gif,.png,.jpeg,.txt,.xml,.php,.js,.vue,.rar,.zip,.sql,.gz',
                 autoProcessQueue: false,
                 addRemoveLinks: true,
                 dictDefaultMessage:
@@ -153,7 +154,8 @@ export default {
         },
         addSending(file, xhr, formData) {
             formData.append('message', this.message ? this.message : '');
-            formData.append('room_id', this.$store.getters.get_current_room.room_id);
+            formData.append('room_id', 4494);
+            // formData.append('room_id', this.$store.getters.get_current_room.room_id);
         }
     }
 };
