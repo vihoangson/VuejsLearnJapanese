@@ -4,7 +4,7 @@
             id="modal-prevent-rooms"
             ref="modal"
             size= "lg"
-            title="Create a new Group Chat"
+            title="Create a new Room Chat"
             @show="resetModal"
             @hidden="resetModal"
             @ok="handleOk">
