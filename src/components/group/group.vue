@@ -122,38 +122,37 @@
 import { API } from '../../services/api';
 import { ApiConst } from '../../common/ApiConst';
 import { AppConst } from '../../common/AppConst';
-import modalMixin from '@/mixins/modal';
 export default {
     name: 'Group',
     mounted() {
-        this.$root.$on('open-modal-group', group_id => {
-            this.groupId = group_id;
+        this.$root.$on('open-modal-group', groupId => {
+            this.groupId = groupId;
             this.items = [];
             this.groupName = '';
             this.selected = [];
-            if (group_id != 0) {
+            if (groupId !== 0) {
                 this.buttonName = 'Update';
                 this.getAllRooms().then(response => {
-                    if (response != undefined && response.error_code == 0) {
+                    if (response !== undefined && response.error_code === 0) {
                         this.items = response.data;
-                        this.getGroupById(group_id).then(response => {
+                        this.getGroupById(groupId).then(response => {
                             if (
-                                response != undefined &&
-                                response.error_code == 0
+                                response !== undefined &&
+                                response.error_code === 0
                             ) {
                                 this.groupName = response.data.name;
                             }
                         });
-                        this.getRoomByGroupId(group_id).then(response => {
+                        this.getRoomByGroupId(groupId).then(response => {
                             if (
-                                response != undefined &&
-                                response.error_code == 0
+                                response !== undefined &&
+                                response.error_code === 0
                             ) {
                                 var items = this.items;
                                 for (var i = 0; i < items.length; i++) {
                                     var groupItem = response.data;
                                     for (var j = 0; j < groupItem.length; j++) {
-                                        if (items[i].id == groupItem[j].id) {
+                                        if (items[i].id === groupItem[j].id) {
                                             this.selected.push(items[i].id);
                                             break;
                                         }
@@ -161,7 +160,7 @@ export default {
                                 }
                             }
                             this.selectAll =
-                                this.selected.length == this.items.length;
+                                this.selected.length === this.items.length;
                         });
                     }
                 });
@@ -260,12 +259,12 @@ export default {
         },
 
         checkFormValidity() {
-            if (this.groupName == '' || this.groupName.length >= 50) {
+            if (this.groupName === '' || this.groupName.length >= 50) {
                 this.groupNameError =
                     'The group name may not be greater than 50 characters';
                 return false;
             }
-            if (this.selected.length == 0) {
+            if (this.selected.length === 0) {
                 this.selectedError = 'The selected field is required';
                 return false;
             }
@@ -277,24 +276,20 @@ export default {
             this.disableButton = true;
             this.groupNameError = '';
             this.selectedError = '';
-            if (this.groupId == 0) {
+            if (this.groupId === 0) {
                 this.selectAll = false;
                 if (!this.checkFormValidity()) {
                     this.disableButton = false;
                     return;
                 }
 
-                var res = API.POST(ApiConst.GROUP_ADD, {
+                API.POST(ApiConst.GROUP_ADD, {
                     group_name: this.groupName,
                     user_id: this.userId,
                     selected: this.selected,
                     only_token: true
                 }).then(response => {
-                    return response;
-                });
-
-                res.then(response => {
-                    if (response != undefined) {
+                    if (response !== undefined) {
                         switch (parseInt(response.error_code)) {
                             case 0:
                                 this.$refs.modal.hide();
@@ -312,7 +307,6 @@ export default {
                                 break;
                             case 3:
                                 break;
-                                break;
                             default:
                                 break;
                         }
@@ -325,17 +319,13 @@ export default {
                     return;
                 }
 
-                var res = API.POST(ApiConst.GROUP_UPDATE, {
+                API.POST(ApiConst.GROUP_UPDATE, {
                     id: this.groupId,
                     group_name: this.groupName,
                     user_id: this.userId,
                     selected: this.selected,
                     only_token: true
                 }).then(response => {
-                    return response;
-                });
-
-                res.then(response => {
                     switch (parseInt(response.error_code)) {
                         case 0:
                             this.$refs.modal.hide();

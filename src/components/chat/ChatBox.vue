@@ -199,10 +199,6 @@ import modalMixin from '@/mixins/modal';
 import SendFile from './SendFile';
 import ChatMessage from './partials/ChatMessage';
 
-// import ImportFile from "ImportFile";
-const EVENT_SEND = 'send_message';
-// const EVENT_RESPONSE = "response_message";
-
 export default {
     name: 'ChatBox',
     mixins: [modalMixin],
@@ -271,7 +267,7 @@ export default {
         },
         sendMessage() {
             let msg = this.createObjMessage();
-            if (msg.message !== '') this.$socket.emit(EVENT_SEND, msg);
+            if (msg.message !== '') this.$socket.emit(AppConst.EVENT_MESSAGE.SEND, msg);
             var container = this.$el.querySelector('.timeline-message');
             container.scrollTop = container.scrollHeight;
 

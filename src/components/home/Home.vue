@@ -23,7 +23,7 @@
 <script>
 import Notice from '../global/Notice';
 import Header from '../global/Header';
-import Room from '../chat/RoomChat';
+import Room from '../room/RoomChat';
 import Chat from '../chat/ChatBox';
 import Rooms from '../room/rooms';
 import Group from '../group/group';
@@ -39,9 +39,10 @@ export default {
         Notice
     },
     created() {
-        let user = localStorage.getItem('user');
+        let user = JSON.parse(localStorage.getItem('user'));
 
-        this.$store.dispatch('setCurrentUser', JSON.parse(user));
+        this.$store.dispatch('setCurrentUser', user);
+        this.$socket.emit(AppConst.EVENT_MESSAGE.CHANNEL_NEW_ROOM, user.user_id);
         this.setNotification();
     },
     // beforeRouteUpdate(to, from, next) {
@@ -60,13 +61,10 @@ export default {
             container.scrollTop = container.scrollHeight;
         },
         setNotification() {
-            // Nếu trình duyệt không hỗ trợ thông báo
             if (!window.Notification) {
                 alert('Trình duyệt của bạn không hỗ trợ chức năng này.');
             }
-            // Ngược lại trình duyệt có hỗ trợ thông báo
             else {
-                // Gửi lời mời cho phép thông báo
                 Notification.requestPermission(function(p) {
                     console.log(p);
                 });

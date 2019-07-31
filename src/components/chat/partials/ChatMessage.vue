@@ -46,7 +46,7 @@ export default {
         let messagePath = this.content.split('\n');
         if (messagePath.length > 1) {
             this.to_name = messagePath[0];
-            this.getToId(this.to_name);
+            // this.getToId(this.to_name);
             this.to_name = this.to_name.replace(
                 /(\[To:([0-9])+])|(\[Reply mid:([0-9]+) to:([0-9]+)\])/g,
                 ''
