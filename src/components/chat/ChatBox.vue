@@ -1,5 +1,6 @@
 <template>
     <div id="chat-box" @dragover="showDropzoneForm">
+        <UpdateRoom></UpdateRoom>
         <div class="chat-box-header">
             <div class="header-name">
                 <div class="room-logo">
@@ -8,6 +9,13 @@
                 <h1 class="title">
                     <span>{{this.$store.getters.get_current_room.room_name}}</span>
                 </h1>
+                <div >
+                    <span @click="updateGroupChat">
+                        <svg viewBox="0 0 10 10" class="chatRoomHeaderMemberList__editIcon" width="16" height="16">
+                            <use fill-rule="evenodd" xlink:href="#icon_plus"></use>
+                        </svg>
+                    </span>
+                </div>
             </div>
             <div class="dropdown">
                 <div class="emoji" @click="showMyListFile">
@@ -198,6 +206,7 @@ import ChatEdit from './partials/ChatEdit';
 import modalMixin from '@/mixins/modal';
 import SendFile from './SendFile';
 import ChatMessage from './partials/ChatMessage';
+import UpdateRoom from '../room/UpdateRoom';
 
 // import ImportFile from "ImportFile";
 const EVENT_SEND = 'send_message';
@@ -211,7 +220,8 @@ export default {
         TextareaEmojiPicker,
         ChatAction,
         ChatEdit,
-        ChatMessage
+        ChatMessage,
+        UpdateRoom
     },
     props: {
         value: {
@@ -393,6 +403,10 @@ export default {
                         res.user_id
                 );
             });
+        },
+        updateGroupChat(){
+            this.$root.$emit('open-modal-update-room', 0);
+            this.$bvModal.show('modal-prevent-update-rooms');
         }
     },
     computed: {
