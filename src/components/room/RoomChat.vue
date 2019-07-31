@@ -98,7 +98,7 @@
         <div class="room-body">
             <ul>
                 <li
-                    v-for="(item, index) in this.list_rooms"
+                    v-for="(item, index) in this.$store.getters.get_list_room"
                     :key="`room-${index}`"
                     @click="changeRoom(item)"
                     :style="{backgroundColor: item.color}"
@@ -146,7 +146,6 @@ export default {
         });
         this.$root.$on('changed-list-room', room => {
             this.pushNewRoom(room);
-            console.log(room);
             this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, room);
         });
         this.$root.$on('add-new-room-from-socket', data => {
@@ -241,7 +240,10 @@ export default {
                 .then(value => {
                     this.deleteGroup(id);
                 })
-                .catch(err => {
+                .catch(error => {
+                    if (error) {
+                        console.log(error);
+                    }
                     this.$root.$emit('push-notice', {
                         message: 'Open model error',
                         alert: 'alert-danger'
@@ -323,7 +325,8 @@ export default {
             this.getListMessage(room);
             room.color = '#bfbab0';
             room.not_read = 0;
-            this.list_rooms.forEach(x => {
+            let rooms = this.$store.getters.get_list_room;
+            rooms.forEach(x => {
                 if (room.room_id !== x.room_id) {
                     x.color = '';
                 }
@@ -333,14 +336,12 @@ export default {
         getListRoom() {
             API.GET(ApiConst.ALL_ROOM).then(res => {
                 if (res.error_code === 0) {
-                    res.data.forEach(x => {
+                    let rooms = res.data;
+                    rooms.forEach(x => {
                         x.color = '';
-                        this.list_rooms.push(x);
-                    });
-                    this.list_rooms.forEach(x => {
                         this.rooms.push(x.room_id);
                     });
-                    this.list_rooms.sort((a, b) => {
+                    rooms.sort((a, b) => {
                         return b.is_mychat - a.is_mychat;
                     });
 
@@ -348,9 +349,9 @@ export default {
                         AppConst.EVENT_MESSAGE.JOIN_BY_LIST_ROOM,
                         this.rooms
                     );
-                    this.$store.dispatch('setListRoom', this.list_rooms);
-                    this.changeRoom(this.list_rooms[0]);
-                    this.getListMessage(this.list_rooms[0]);
+                    this.$store.dispatch('setListRoom', rooms);
+                    this.changeRoom(rooms[0]);
+                    this.getListMessage(rooms[0]);
                 }
             });
         },
@@ -368,13 +369,14 @@ export default {
         },
 
         pushNewRoom(room) {
-            this.list_rooms.push(room);
-            this.list_rooms.forEach(x => {
-                this.rooms.push(x.room_id);
-            });
-            this.list_rooms.sort((a, b) => {
-                return b.is_mychat - a.is_mychat;
-            });
+            this.$store.dispatch('addNewRoom', room);
+            // this.list_rooms.push(room);
+            // this.list_rooms.forEach(x => {
+            //     this.rooms.push(x.room_id);
+            // });
+            // this.list_rooms.sort((a, b) => {
+            //     return b.is_mychat - a.is_mychat;
+            // });
             this.changeRoom(room);
 
             this.$socket.emit(

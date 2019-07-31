@@ -194,9 +194,7 @@
                     this.roomImage = 'https://appdata.chatwork.com/icon/ico_group.png';
                     this.selected = [];
                     this.buttonName = "Create";
-                    this.getAllUser().then(data => {
-                        this.items = data;
-                    });
+                    this.getAllUser();
                 }
             });
         },
@@ -293,8 +291,9 @@
                 this.handleSubmit()
             },
             getAllUser(){
-                return API.GET(ApiConst.ROOM_GET_ALL_USER).then(response => {
-                    return response;
+                API.GET(ApiConst.ROOM_GET_ALL_USER).then(response => {
+                    console.log(response);
+                    this.items = response.data;
                 });
             },
             btnCancel(){
@@ -321,6 +320,11 @@
                     not_read: 0,
                     list_message: []
                 }
+
+                this.selected.forEach(x=>{
+                    if(x !== null)
+                    data.member_list.push(x);
+                })
                 
                 API.POST(ApiConst.ROOM_ADD,data).then(response => {
                     if(response.error_code === 0){
