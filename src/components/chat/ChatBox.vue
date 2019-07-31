@@ -69,7 +69,9 @@
                                     class="timeline-content-header-organization"
                                 >{{item.organization}}</p>
                             </div>
-                            <div class="timeline-content-message">{{item.message}}</div>
+                            <div class="timeline-content-message">
+                                <ChatMessage :message-object="item"></ChatMessage>
+                            </div>
                             <ChatAction
                                 :message="item"
                                 @reply="onReply"
@@ -158,7 +160,7 @@
                             role="button"
                             tabindex="2"
                             aria-disabled="false"
-                            @click="sendMessage"
+                            @click="onSend()"
                         >Send</div>
                     </div>
                 </div>
@@ -168,11 +170,25 @@
                         id="chat-text"
                         ref="textarea"
                         cols="30"
-                        rows="8"
-                        placeholder="Enter your message here"
+                        rows="7"
+                        placeholder="Enter your message here
+(Press Shift + Enter for line break)"
                         v-model="message.content"
-                        @input="$emit('input', $event.target.value)"
+                        v-if="this.enterToSendMessage"
+                        @keydown.enter.exact.prevent
                         @keyup.enter.exact="pressEnterToSendMessage($event)"
+                    ></textarea>
+                    <textarea
+                        id="chat-text2"
+                        ref="textarea"
+                        cols="30"
+                        rows="7"
+                        placeholder="Enter your message here
+(Press Shift + Enter for send)"
+                        v-model="message.content"
+                        v-if="!this.enterToSendMessage"
+                        @keydown.enter.shift.prevent
+                        @keydown.enter.shift.exact="sendMessage()"
                     ></textarea>
                 </div>
             </div>
@@ -191,6 +207,7 @@ import ChatAction from './partials/ChatAction';
 import ChatEdit from './partials/ChatEdit';
 import modalMixin from '@/mixins/modal';
 import SendFile from './SendFile';
+import ChatMessage from './partials/ChatMessage';
 
 // import ImportFile from "ImportFile";
 const EVENT_SEND = 'send_message';
@@ -203,7 +220,8 @@ export default {
         Picker,
         TextareaEmojiPicker,
         ChatAction,
-        ChatEdit
+        ChatEdit,
+        ChatMessage
     },
     props: {
         value: {
@@ -245,8 +263,8 @@ export default {
             room_id: 1
         };
         API.POST(ApiConst.RECEIVE_MESSAGE, obj).then(res => {
-            console.log(res);
-            if (res.error_code === 0) this.$store.dispatch('setListMessage', res.data);
+            if (res.error_code === 0)
+                this.$store.dispatch('setListMessage', res.data);
         });
     },
     methods: {
@@ -256,7 +274,7 @@ export default {
         createObjMessage() {
             let msg = {
                 room_id: this.$store.getters.get_current_room.room_id,
-                message: this.message.content,
+                message: this.message.content.trim(),
                 type: this.message.type,
                 token: this.user.token
             };
@@ -272,12 +290,14 @@ export default {
         },
         sendMessage() {
             let msg = this.createObjMessage();
-            this.$socket.emit(EVENT_SEND, msg);
+            if (msg.message !== '') this.$socket.emit(EVENT_SEND, msg);
             var container = this.$el.querySelector('.timeline-message');
             container.scrollTop = container.scrollHeight;
 
             this.message.content = '';
             this.message.id = 0;
+            this.message.type = AppConst.MESSAGE_TYPE.CREATE;
+            this.editMessage = false;
         },
         toggleEmojiPicker() {
             this.showEmojiPicker = !this.showEmojiPicker;
@@ -285,8 +305,11 @@ export default {
         addEmoji(emoji) {
             const textarea = this.$refs.textarea;
             const cursorPosition = textarea.selectionEnd;
-            const start = this.value.substring(0, textarea.selectionStart);
-            const end = this.value.substring(textarea.selectionStart);
+            const start = this.message.content.substring(
+                0,
+                textarea.selectionStart
+            );
+            const end = this.message.content.substring(textarea.selectionEnd);
             const text = start + emoji.native + end;
             this.$emit('input', text);
             this.message += text;
@@ -316,13 +339,29 @@ export default {
             this.$emit('close');
         },
         pressEnterToSendMessage() {
-            if (this.enterToSendMessage) this.sendMessage();
+            if (this.message.content !== '') {
+                if (this.enterToSendMessage) {
+                    this.sendMessage();
+                }
+            }
         },
         check: function(e) {
             this.enterToSendMessage = e.target.value;
         },
         onReply(value) {
-            this.message = value.message;
+            this.message.content =
+                '[Reply mid:' +
+                value.message_id +
+                ' to:' +
+                value.user_info.id +
+                '] ' +
+                value.user_info.name;
+            this.message.content += '\n';
+            this.$refs.textarea.focus();
+        },
+        onSend() {
+            this.message.type = AppConst.MESSAGE_TYPE.CREATE;
+            this.sendMessage();
         },
         onEdit(value) {
             this.message.id = value.message_id;
@@ -331,6 +370,12 @@ export default {
 
             this.editMessage = true;
             this.$refs.textarea.focus();
+
+            let roomId = this.$store.getters.get_current_room.room_id;
+            localStorage.setItem('id', value.message_id);
+            localStorage.setItem('content', value.message);
+            localStorage.setItem('type', AppConst.MESSAGE_TYPE.EDIT);
+            localStorage.setItem('roomId', roomId);
         },
         onDelete(value) {
             let con = confirm('Do you want to delete it!?');
@@ -402,7 +447,7 @@ export default {
             return this.height - 45;
         },
         timelineMessage() {
-            return this.height - 45 - 200;
+            return this.height - 245;
         }
     }
 };
@@ -592,6 +637,7 @@ export default {
     zoom: 1;
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;
+    margin-bottom: 10px;
 }
 .timeline-message-body:hover {
     border-top: 1px solid #b1d6ed;
@@ -605,7 +651,9 @@ export default {
     padding: 8px 16px;
     position: relative;
     border: 1px solid transparent;
+    margin: 15px 0px;
 }
+
 .timeline-avatar {
     float: left;
 }
@@ -773,5 +821,11 @@ textarea:focus:-webkit-placeholder {
 
 .emoji-trigger.triggered path {
     fill: darken(#fec84a, 15%);
+}
+.timeline-content-message pre {
+    font-size: 14px;
+    font-family: arial;
+    margin-top: 3px;
+    margin-bottom: 0px;
 }
 </style>
