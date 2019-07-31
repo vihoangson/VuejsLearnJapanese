@@ -43,7 +43,7 @@
                             >
                                 {{ s.name }}
                                 <div class="option-icon">
-                                    <span class="edit" aria-label="Edit" @click="iconEdit(s.id)">
+                                    <span class="edit" aria-label="Edit" @click.stop="iconEdit(s.id)">
                                         <svg
                                             viewBox="0 0 10 10"
                                             id="icon_edit"
@@ -57,7 +57,7 @@
                                     <span
                                         class="delete"
                                         aria-label="Delete"
-                                        @click="iconDelete(s.id)"
+                                        @click.stop="iconDelete(s.id)"
                                     >
                                         <svg
                                             viewBox="0 0 10 10"
@@ -222,11 +222,13 @@ export default {
         },
 
         iconEdit(id) {
+            this.isActiveSelect = false;
             this.$root.$emit('open-modal-group', id);
             this.$bvModal.show('modal-prevent-group');
         },
 
         iconDelete(id) {
+            this.isActiveSelect = false;
             this.$bvModal.msgBoxConfirm(
                 'Do you really want to delete room ?',
                 {
@@ -237,25 +239,27 @@ export default {
                 }
             )
             .then(value => {
-                this.deleteGroup(id).then(response => {
-                    if (response != undefined) {
-                        switch (parseInt(response.error_code)) {
-                            case 0:
-                                this.$root.$emit('push-notice', {
-                                    message: 'Delete success',
-                                    alert: 'alert-success'
-                                });
-                                this.$root.$emit('changed-list-group');
-                                break;
-                            default:
-                                this.$root.$emit('push-notice', {
-                                    message: 'Delete error',
-                                    alert: 'alert-danger'
-                                });
-                                break;
+                if(value){
+                    this.deleteGroup(id).then(response => {
+                        if (response != undefined) {
+                            switch (parseInt(response.error_code)) {
+                                case 0:
+                                    this.$root.$emit('push-notice', {
+                                        message: 'Delete success',
+                                        alert: 'alert-success'
+                                    });
+                                    this.$root.$emit('changed-list-group');
+                                    break;
+                                default:
+                                    this.$root.$emit('push-notice', {
+                                        message: 'Delete error',
+                                        alert: 'alert-danger'
+                                    });
+                                    break;
+                            }
                         }
-                    }
-                });
+                    });
+                }
             })
             .catch(err => {
                 this.$root.$emit('push-notice', {
@@ -292,31 +296,33 @@ export default {
                     }
                 )
                 .then(value => {
-                    var res = API.POST(ApiConst.ROOM_DELETE, {
-                        id: this.$store.getters.get_current_room.room_id
-                    }).then(response => {
-                        return response;
-                    });
+                    if(value){
+                        var res = API.POST(ApiConst.ROOM_DELETE, {
+                            id: this.$store.getters.get_current_room.room_id
+                        }).then(response => {
+                            return response;
+                        });
 
-                    res.then(response => {
-                        if (response != undefined) {
-                            switch (parseInt(response.error_code)) {
-                                case 0:
-                                    this.$root.$emit('push-notice', {
-                                        message: 'Delete success',
-                                        alert: 'alert-success'
-                                    });
-                                    this.$root.$emit('changed-list-room');
-                                    break;
-                                default:
-                                    this.$root.$emit('push-notice', {
-                                        message: 'Delete Error',
-                                        alert: 'alert-danger'
-                                    });
-                                    break;
+                        res.then(response => {
+                            if (response != undefined) {
+                                switch (parseInt(response.error_code)) {
+                                    case 0:
+                                        this.$root.$emit('push-notice', {
+                                            message: 'Delete success',
+                                            alert: 'alert-success'
+                                        });
+                                        this.$root.$emit('changed-list-room');
+                                        break;
+                                    default:
+                                        this.$root.$emit('push-notice', {
+                                            message: 'Delete Error',
+                                            alert: 'alert-danger'
+                                        });
+                                        break;
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 })
                 .catch(err => {
                     this.$root.$emit('push-notice', {
