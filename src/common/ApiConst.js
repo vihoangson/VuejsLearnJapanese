@@ -6,5 +6,23 @@ export const ApiConst = {
     EDIT_REGISTER: '/api/v1/user/register/edit',
     RECEIVE_MESSAGE: '/api/v1/message/receive',
     ALL_ROOM: '/api/v1/message/get-all-rooms',
-    MY_LIST_FILE: '/api/v1/file/get-my-list-file'
+    GET_USER_INFO: 'api/v1/user/detail',
+
+    GROUP_GET_BY_USER_ID: '/api/v1/group/get-group-by-user-id',
+    GROUP_ADD: '/api/v1/group/add',
+    GROUP_UPDATE: '/api/v1/group/update',
+    GROUP_DELETE: '/api/v1/group/delete',
+    GROUP_GET_BY_ID: '/api/v1/group/get-group-by-id',
+    GROUP_GET_ROOM_BY_GROUP_ID: '/api/v1/group/get-room-by-group-id',
+    GROUP_GET_ALL_ROOM: '/api/v1/room/get-all-rooms',
+
+    ROOM_ADD: '/api/v1/room/add',
+    ROOM_UPDATE: '/api/v1/room/update',
+    ROOM_DELETE: '/api/v1/room/delete',
+    ROOM_SETTING: '/api/v1/room/setting',
+    ROOM_GET_ALL_USER: '/api/v1/user/get-all-user',
+    ROOM_GET_ALL_USER_BY_ROOM: '/api/v1/user/get-all-user-by-room',
+    ROOM_ADD_USER_TO_ROOM: '/api/v1/room/add-user-to-room',
+    MY_LIST_FILE: '/api/v1/file/get-my-list-file',
+
 };
