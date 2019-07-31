@@ -228,6 +228,24 @@ export default {
                 }
             });
         },
+        iconDelete(id) {
+            this.$bvModal
+                .msgBoxConfirm('Do you really want to delete room ?', {
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'success',
+                    centered: true
+                })
+                .then(value => {
+                    this.deleteGroup(id);
+                })
+                .catch(err => {
+                    this.$root.$emit('push-notice', {
+                        message: 'Open model error',
+                        alert: 'alert-danger'
+                    });
+                });
+        },
 
         editGroup(id) {
             API.POST(ApiConst.GROUP_EDIT, { id: id }).then(response => {

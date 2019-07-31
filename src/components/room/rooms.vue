@@ -307,10 +307,6 @@
                 this.disableButton = true;
                 this.selectAll = false;
 
-                var selectRole = {id: this.userId, index : 1, name : this.subscriptions[0].name}
-                var i = this.selected.length;
-                this.selected[i] = selectRole;
-
                 if (!this.checkFormValidity()) {
                     this.disableButton = false;
                     return
