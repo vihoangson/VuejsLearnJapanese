@@ -12,7 +12,11 @@
             </div>
             <div class="filter-list">
                 <div id="roomInfoSelectRole" class="selectCommonRole">
-                    <div v-bind:class="{active: isActiveSelect}" @click="selectBoxClicks">
+                    <div
+                        v-bind:class="{active: isActiveSelect}"
+                        @click="selectBoxClicks"
+                        ref="selectBoxClicks"
+                    >
                         <div class="selectboxDefault">
                             <span class="selectbox">{{ selectItems }}</span>
                             <span class="icon">
@@ -83,6 +87,7 @@
                 id="create-room"
                 v-bind:class="{ active: isActive, 'create-room': true }"
                 @click="toggleOption"
+                ref="toggleOption"
             >
                 <span>
                     <svg viewBox="0 0 10 10" id="icon_plus" xmlns="http://www.w3.org/2000/svg">
@@ -162,9 +167,26 @@ export default {
         this.userId = user.user_id;
         this.getListRoom();
         this.getAllGroup(this.userId);
+        document.addEventListener('click', this.documentClick);
+    },
+
+    destroyed() {
+        document.removeEventListener('click', this.documentClick);
     },
 
     methods: {
+        documentClick(e) {
+            let el1 = this.$refs.selectBoxClicks;
+            let el2 = this.$refs.toggleOption;
+            let target = e.target;
+            if (el1 !== target && !el1.contains(target)) {
+                this.isActiveSelect = false;
+            }
+            if (el2 !== target && !el2.contains(target)) {
+                this.isActive = false;
+            }
+        },
+
         toggleOption: function() {
             if (this.isActive) {
                 this.isActive = false;
