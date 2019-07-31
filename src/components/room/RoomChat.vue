@@ -90,7 +90,7 @@
                         <span @click="addRooms">Create a new Group Chat</span>
                         <span @click="settingRooms">Group Chat Setting</span>
                         <span @click="leaveRooms">Leave this group chat</span>
-                        <span @click="deleteRooms">Delete this group chast</span>
+                        <span @click="deleteRooms">Delete this group chat</span>
                     </div>
                 </span>
             </div>
