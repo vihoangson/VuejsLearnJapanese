@@ -22,7 +22,7 @@ export default {
     name: 'Reply',
     props: ['msg'],
     created() {
-        console.log(this.msg);
+        // console.log(this.msg);
     }
 };
 </script>

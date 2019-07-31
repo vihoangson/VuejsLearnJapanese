@@ -133,8 +133,6 @@
     import { API } from '../../services/api';
     import { ApiConst } from '../../common/ApiConst';
     import { AppConst } from '../../common/AppConst';
-    import modalMixin from '@/mixins/modal'
-    import axios from 'axios'
     export default {
         name: "Group",
         data() {
@@ -237,7 +235,7 @@
                 this.selected = tamp;
             },
             checkFormValidity() {
-                if(this.selected.length == 0){
+                if(this.selected.length === 0){
                     this.roomselectedError = "The selected field is required";
                     return false
                 }
@@ -289,7 +287,6 @@
                             case 1:
                                 this.roomselectedError = response.data;
                                 break;
-                            break;
                             default:
                             break
                         }

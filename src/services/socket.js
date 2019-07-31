@@ -1,8 +1,27 @@
 import { AppConst } from '../common/AppConst';
 
 export const SocketService = {
-    connect: function(socket) {
-        
+    connect: function() {
+        console.log('Connect socket.io successful!!');
+        let rooms = this.$store.getters.get_list_room;
+        console.log(rooms)
+        if (rooms.length > 0) {
+            let roomIds = [];
+            rooms.forEach(x => {
+                roomIds.push(x.room_id);
+            });
+            this.$socket.emit(
+                AppConst.EVENT_MESSAGE.JOIN_BY_LIST_ROOM,
+                roomIds
+            );
+        }
+        let user = this.$store.getters.get_current_user;
+        if (user.user_id !== null && user.user_id !== undefined) {
+            this.$socket.emit(
+                AppConst.EVENT_MESSAGE.CHANNEL_NEW_ROOM,
+                user.user_id
+            );
+        }
     },
     broadcast: function(e) {
         var room = this.$store.getters.get_current_room;
@@ -33,5 +52,9 @@ export const SocketService = {
                 this.$store.dispatch('editMessage', e);
             }
         }
+    },
+    new_room: function(e) {
+        this.$store.dispatch('addNewRoom', e);
+        this.$socket.emit(AppConst.EVENT_MESSAGE.JOIN_NEW_ROOM, e.room_id);
     }
 };
