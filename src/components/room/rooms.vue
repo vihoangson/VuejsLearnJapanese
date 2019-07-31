@@ -294,7 +294,7 @@
                 this.handleSubmit()
             },
             getAllUser(){
-                return API.GET(ApiConst.ROOM_GET_ALL_USER + '/' + this.userId).then(response => {
+                return API.GET(ApiConst.ROOM_GET_ALL_USER).then(response => {
                     return response;
                 })
             },
@@ -307,10 +307,6 @@
                 this.roomselectedError= "";
                 this.disableButton = true;
                 this.selectAll = false;
-
-                var selectRole = {id: this.userId, index : 1, name : this.subscriptions[0].name}
-                var i = this.selected.length;
-                this.selected[i] = selectRole;
 
                 if (!this.checkFormValidity()) {
                     this.disableButton = false;
