@@ -103,9 +103,7 @@
 <script>
 import BaseContact from '../contact/BaseContact.vue';
 import modalMixin from '@/mixins/modal';
-import { ApiConst } from '../../common/ApiConst';
 import { AppConst } from '../../common/AppConst';
-import { API } from '../../services/api';
 export default {
     name: 'Navigation',
     mixins: [modalMixin],
@@ -117,13 +115,8 @@ export default {
     },
     methods: {
         logout() {
-
-            API.POST(ApiConst.LOGOUT, null).then(res => {
-                if (res.error_code === 0) {
-                    localStorage.removeItem(AppConst.LOCAL_USER);
-                    this.$router.push({ path: '/login' });
-                }
-            });
+            localStorage.removeItem(AppConst.LOCAL_USER);
+            this.$router.push({ path: '/login' });
         },
         ShowPopUpModalContact() {
             this.showPageInModal(
@@ -228,6 +221,7 @@ export default {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    margin-bottom: 0px;
 }
 .status-name .name {
     font-weight: 700;
@@ -245,7 +239,7 @@ export default {
     box-sizing: border-box;
     position: absolute;
     min-width: 198px;
-    top: 30px;
+    top: 45px;
     right: 0;
     padding: 1px 0 5px;
     background-color: #33455b;
@@ -261,7 +255,7 @@ export default {
 .menu-item a {
     display: block;
     padding-left: 40px;
-    color: #fff;
+    color: #fff !important;
     border-radius: 3px;
     text-decoration: none;
     text-align: left;

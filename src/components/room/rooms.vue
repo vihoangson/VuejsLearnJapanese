@@ -149,8 +149,6 @@
     import { API } from '../../services/api';
     import { ApiConst } from '../../common/ApiConst';
     import { AppConst } from '../../common/AppConst';
-    import modalMixin from '@/mixins/modal'
-    import axios from 'axios'
     export default {
         name: "Group",
         data() {
@@ -183,10 +181,11 @@
                 this.roomId = id;
                 this.items = [];
 
-                if(id != 0){
+                if(id !== 0){
                     this.buttonName = "Update";
                     this.selected = [];
                     this.getAllUser().then(data => {
+                        console.log(data);
                         this.items = data;
                     });
                 }else{
@@ -195,9 +194,7 @@
                     this.roomImage = 'https://appdata.chatwork.com/icon/ico_group.png';
                     this.selected = [];
                     this.buttonName = "Create";
-                    this.getAllUser().then(data => {
-                        this.items = data;
-                    });
+                    this.getAllUser();
                 }
             });
         },
@@ -270,7 +267,7 @@
                 this.selected = tamp;
             },
             checkFormValidity() {
-                if(this.roomName == "" || this.roomName.length >= 50){
+                if(this.roomName === "" || this.roomName.length >= 50){
                     this.roomNameError = "Room Name not empty and may not be greater than 50 characters";
                     return false
                 }
@@ -278,7 +275,7 @@
                 //     this.roomDescriptionError = "descriptiom not empty and may not be greater than 255 characters";
                 //     return false
                 // }
-                if(this.selected.length == 0){
+                if(this.selected.length === 0){
                     this.roomselectedError = "The selected field is required";
                     return false
                 }
@@ -294,9 +291,10 @@
                 this.handleSubmit()
             },
             getAllUser(){
-                return API.GET(ApiConst.ROOM_GET_ALL_USER + '/' + this.userId).then(response => {
-                    return response;
-                })
+                API.GET(ApiConst.ROOM_GET_ALL_USER).then(response => {
+                    console.log(response);
+                    this.items = response.data;
+                });
             },
             btnCancel(){
                 this.$refs.modal.hide();
@@ -308,21 +306,25 @@
                 this.disableButton = true;
                 this.selectAll = false;
 
-                var selectRole = {id: this.userId, index : 1, name : this.subscriptions[0].name}
-                var i = this.selected.length;
-                this.selected[i] = selectRole;
-
                 if (!this.checkFormValidity()) {
                     this.disableButton = false;
                     return
                 }
+
                 let data = {
                     room_name: this.roomName,
-                    room_image: this.roomImage,
                     description: this.description,
-                    selected: this.selected,
+                    icon_img: this.roomImage,
+                    member_list: [],
                     only_token: true,
+                    not_read: 0,
+                    list_message: []
                 }
+
+                this.selected.forEach(x=>{
+                    if(x !== null)
+                    data.member_list.push(x);
+                })
                 
                 API.POST(ApiConst.ROOM_ADD,data).then(response => {
                     if(response.error_code === 0){
@@ -330,8 +332,9 @@
                             case 0:
                                 this.$refs.modal.hide();
                                 this.$root.$emit('push-notice', {message:'insert success', alert: 'alert-success'});
-                                this.$root.$emit('changed-list-room', response.data);
-                            break;
+                                data.room_id = response.data;
+                                this.$root.$emit('changed-list-room', data);
+                                break;
                             case 1:
                                 this.roomNameError = response.data;
                                 break;
@@ -341,15 +344,15 @@
                             case 3:
                                 this.roomselectedError = response.data;
                                 break;
-                            break;
                             default:
-                            break
+                                break;
                         }
                     }
                     this.disableButton = false;
                 });
             }
-        }
+        },
+
     }
 </script>
 

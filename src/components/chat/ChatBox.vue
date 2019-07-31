@@ -46,8 +46,8 @@
                 >
                     <div
                         class="timeline-message-body"
-                        v-for="(item, index) in this.$store.getters.get_current_room.list_message"
-                        :key="`item-${index}`"
+                        v-for="item in this.$store.getters.get_current_room.list_message"
+                        :key="item.message_id"
                     >
                         <div class="timeline-avatar">
                             <img :src="item.user_info.icon_img" alt class="avatar" />
@@ -60,7 +60,7 @@
                                 >{{item.organization}}</p>
                             </div>
                             <div class="timeline-content-message">
-                                <ChatMessage :message-object="item"></ChatMessage>
+                                <ChatMessage :message-object="item" :message_content="item.message"></ChatMessage>
                             </div>
                             <ChatAction
                                 :message="item"
@@ -199,10 +199,6 @@ import modalMixin from '@/mixins/modal';
 import SendFile from './SendFile';
 import ChatMessage from './partials/ChatMessage';
 
-// import ImportFile from "ImportFile";
-const EVENT_SEND = 'send_message';
-// const EVENT_RESPONSE = "response_message";
-
 export default {
     name: 'ChatBox',
     mixins: [modalMixin],
@@ -271,7 +267,8 @@ export default {
         },
         sendMessage() {
             let msg = this.createObjMessage();
-            if (msg.message !== '') this.$socket.emit(EVENT_SEND, msg);
+            if (msg.message !== '')
+                this.$socket.emit(AppConst.EVENT_MESSAGE.SEND, msg);
             var container = this.$el.querySelector('.timeline-message');
             container.scrollTop = container.scrollHeight;
 

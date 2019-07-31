@@ -3,7 +3,6 @@ export default {
         return state.current_room.list_message.push(message);
     },
     edit_message(state, message) {
-        console.log(message);
         var msg = state.current_room.list_message.find(function(d) {
             return d.message_id === message.message_id;
         });
@@ -54,5 +53,18 @@ export default {
                 window.location.href = this.tag;
             };
         }
+    },
+    new_room(state, obj){
+        state.list_room.push(obj);
+        state.list_room.sort((a,b) => {
+            return b.is_mychat - a.is_mychat;
+        });
+        state.current_room = obj;
+        state.current_room.color = '#bfbab0';
+        state.list_room.forEach(x=>{
+            if (obj.room_id !== x.room_id) {
+                x.color = '';
+            }
+        });
     }
 };

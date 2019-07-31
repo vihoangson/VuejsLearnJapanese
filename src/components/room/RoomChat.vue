@@ -36,7 +36,7 @@
                                 </span>
                             </li>
                             <li
-                                v-for="(s, index) in datascript"
+                                v-for="(s, index) in this.datascript"
                                 :class="{ 'active': activeIndex === index}"
                                 :key="s.id"
                                 @click="setActive(index, s.name)"
@@ -95,10 +95,10 @@
                 </span>
             </div>
         </div>
-        <div class="room-body" :style="{'height': `${myStyles}px`}">
+        <div class="room-body">
             <ul>
                 <li
-                    v-for="(item, index) in this.list_rooms"
+                    v-for="(item, index) in this.$store.getters.get_list_room"
                     :key="`room-${index}`"
                     @click="changeRoom(item)"
                     :style="{backgroundColor: item.color}"
@@ -122,9 +122,7 @@
 import { API } from '../../services/api';
 import { ApiConst } from '../../common/ApiConst';
 import { AppConst } from '../../common/AppConst';
-import modalMixin from '@/mixins/modal';
-import axios from 'axios';
-const EVENT_JOIN = 'join';
+
 export default {
     name: 'Room',
 
@@ -136,32 +134,22 @@ export default {
             datascript: [],
             activeIndex: undefined,
             userId: 0,
-            height: 0,
-            list_rooms: [
-                {
-                    room_id: 0,
-                    room_name: 'My Chat',
-                    icon_img: this.$store.getters.get_current_user.icon_img,
-                    list_message: [],
-                    not_read: 0,
-                    color: ''
-                }
-            ],
+            list_rooms: [],
             rooms: []
         };
     },
 
     mounted() {
         this.$root.$on('changed-list-group', data => {
-            this.getAllGroup(this.userId).then(response => {
-                if (response != undefined && response.error_code == 0) {
-                    this.datascript = response.data;
-                }
-            });
+            this.selectItems = 'All Chat';
+            this.getAllGroup(this.userId);
         });
-        this.$root.$on('changed-list-room', data => {
-            this.list_rooms = [];
-            this.getListRoom();
+        this.$root.$on('changed-list-room', room => {
+            this.pushNewRoom(room);
+            this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, room);
+        });
+        this.$root.$on('add-new-room-from-socket', data => {
+            this.pushNewRoom(data);
         });
     },
 
@@ -169,14 +157,7 @@ export default {
         let user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
         this.userId = user.user_id;
         this.getListRoom();
-        this.getListMessage();
-        this.getAllGroup(this.userId).then(response => {
-            if (response != undefined && response.error_code == 0) {
-                this.datascript = response.data;
-            }
-        });
-        window.addEventListener('resize', this.handleResize);
-        this.handleResize();
+        this.getAllGroup(this.userId);
     },
 
     methods: {
@@ -204,11 +185,12 @@ export default {
         },
 
         getAllGroup(id) {
-            return API.GET(ApiConst.GROUP_GET_BY_USER_ID + '/' + id).then(
-                response => {
-                    return response;
+            this.datascript = [];
+            API.GET(ApiConst.GROUP_GET_BY_USER_ID + '/' + id).then(response => {
+                if (response !== undefined && response.error_code === 0) {
+                    this.datascript = response.data;
                 }
-            );
+            });
         },
 
         addRooms() {
@@ -226,9 +208,9 @@ export default {
             this.$bvModal.show('modal-prevent-group');
         },
 
-        iconDelete(id) {
-            this.deleteGroup(id).then(response => {
-                if (response != undefined) {
+        deleteGroup(id) {
+            API.POST(ApiConst.GROUP_DELETE, { id: id }).then(response => {
+                if (response !== undefined) {
                     switch (parseInt(response.error_code)) {
                         case 0:
                             this.$root.$emit('push-notice', {
@@ -247,17 +229,30 @@ export default {
                 }
             });
         },
-
-        deleteGroup(id) {
-            return API.POST(ApiConst.GROUP_DELETE, { id: id }).then(
-                response => {
-                    return response;
-                }
-            );
+        iconDelete(id) {
+            this.$bvModal
+                .msgBoxConfirm('Do you really want to delete room ?', {
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'success',
+                    centered: true
+                })
+                .then(value => {
+                    this.deleteGroup(id);
+                })
+                .catch(error => {
+                    if (error) {
+                        console.log(error);
+                    }
+                    this.$root.$emit('push-notice', {
+                        message: 'Open model error',
+                        alert: 'alert-danger'
+                    });
+                });
         },
 
         editGroup(id) {
-            return API.POST(ApiConst.GROUP_EDIT, { id: id }).then(response => {
+            API.POST(ApiConst.GROUP_EDIT, { id: id }).then(response => {
                 return response;
             });
         },
@@ -276,21 +271,25 @@ export default {
                     }
                 )
                 .then(value => {
-                    var res = API.POST(ApiConst.ROOM_DELETE, {
+                    let data = {
                         id: this.$store.getters.get_current_room.room_id
-                    }).then(response => {
-                        return response;
-                    });
-
-                    res.then(response => {
-                        if (response != undefined) {
+                    };
+                    API.POST(ApiConst.ROOM_DELETE, data).then(response => {
+                        if (response !== undefined) {
                             switch (parseInt(response.error_code)) {
                                 case 0:
                                     this.$root.$emit('push-notice', {
                                         message: 'Delete success',
                                         alert: 'alert-success'
                                     });
-                                    this.$root.$emit('changed-list-room');
+                                    let room = this.list_rooms.find(d => {
+                                        return d.room_id === data.id;
+                                    });
+                                    if (room !== undefined) {
+                                        let idx = this.list_rooms.indexOf(room);
+                                        this.list_rooms.splice(idx, 1);
+                                    }
+
                                     break;
                                 default:
                                     this.$root.$emit('push-notice', {
@@ -303,6 +302,9 @@ export default {
                     });
                 })
                 .catch(err => {
+                    if (err) {
+                        console.log(err.stack);
+                    }
                     this.$root.$emit('push-notice', {
                         message: 'Open model error',
                         alert: 'alert-danger'
@@ -311,7 +313,7 @@ export default {
         },
 
         settingRooms() {
-            var res = API.POST(ApiConst.ROOM_SETTING, {
+            API.POST(ApiConst.ROOM_SETTING, {
                 id: this.$store.getters.get_current_room.room_id
             }).then(response => {
                 return response;
@@ -320,10 +322,11 @@ export default {
 
         changeRoom(room) {
             this.$store.dispatch('setCurrentRoom', room);
-            this.getListMessage();
+            this.getListMessage(room);
             room.color = '#bfbab0';
             room.not_read = 0;
-            this.list_rooms.forEach(x => {
+            let rooms = this.$store.getters.get_list_room;
+            rooms.forEach(x => {
                 if (room.room_id !== x.room_id) {
                     x.color = '';
                 }
@@ -333,24 +336,27 @@ export default {
         getListRoom() {
             API.GET(ApiConst.ALL_ROOM).then(res => {
                 if (res.error_code === 0) {
-                    res.data.forEach(x => {
+                    let rooms = res.data;
+                    rooms.forEach(x => {
                         x.color = '';
-                        this.list_rooms.push(x);
-                    });
-                    this.list_rooms.forEach(x => {
                         this.rooms.push(x.room_id);
                     });
+                    rooms.sort((a, b) => {
+                        return b.is_mychat - a.is_mychat;
+                    });
 
-                    this.$socket.emit(EVENT_JOIN, this.rooms);
-                    this.$store.dispatch('setListRoom', this.list_rooms);
-                    this.$store.dispatch('setCurrentRoom', this.list_rooms[0]);
-                    this.handleResize();
+                    this.$socket.emit(
+                        AppConst.EVENT_MESSAGE.JOIN_BY_LIST_ROOM,
+                        this.rooms
+                    );
+                    this.$store.dispatch('setListRoom', rooms);
+                    this.changeRoom(rooms[0]);
+                    this.getListMessage(rooms[0]);
                 }
             });
         },
 
-        getListMessage() {
-            let room = this.$store.getters.get_current_room;
+        getListMessage(room) {
             API.POST(ApiConst.RECEIVE_MESSAGE, {
                 page: 0,
                 room_id: room.room_id
@@ -361,11 +367,22 @@ export default {
                 }, 1);
             });
         },
-        handleResize() {
-            this.height = window.innerHeight - 45;
-        },
-        myStyles() {
-            return this.height - 45;
+
+        pushNewRoom(room) {
+            this.$store.dispatch('addNewRoom', room);
+            // this.list_rooms.push(room);
+            // this.list_rooms.forEach(x => {
+            //     this.rooms.push(x.room_id);
+            // });
+            // this.list_rooms.sort((a, b) => {
+            //     return b.is_mychat - a.is_mychat;
+            // });
+            this.changeRoom(room);
+
+            this.$socket.emit(
+                AppConst.EVENT_MESSAGE.JOIN_NEW_ROOM,
+                room.room_id
+            );
         }
     }
 };

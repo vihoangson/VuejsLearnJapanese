@@ -22,5 +22,8 @@ export default {
     },
     setNotification({ commit }, obj) {
         commit('set_notification', obj);
+    },
+    addNewRoom({ commit }, obj) {
+        commit('new_room', obj);
     }
 };

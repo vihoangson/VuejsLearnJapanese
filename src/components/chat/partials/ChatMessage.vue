@@ -21,7 +21,10 @@ export default {
         Reply,
         To
     },
-    props: ['messageObject'],
+    props: {
+        messageObject: Object,
+        message_content: String
+    },
     data() {
         return {
             user: this.$store.getters.get_current_user,
@@ -32,30 +35,33 @@ export default {
             to: ''
         };
     },
-    created() {
-        this.content = this.messageObject.message;
-
-        if (this.content.match(/(\[To:([0-9])+])/g)) {
-            this.type = 'To';
-        } else if (
-            this.content.match(/(\[Reply mid:([0-9]+) to:([0-9]+)\])/g)
-        ) {
-            this.type = 'Reply';
-        }
-
-        let messagePath = this.content.split('\n');
-        if (messagePath.length > 1) {
-            this.to_name = messagePath[0];
-            this.getToId(this.to_name);
-            this.to_name = this.to_name.replace(
-                /(\[To:([0-9])+])|(\[Reply mid:([0-9]+) to:([0-9]+)\])/g,
-                ''
-            );
-
-            this.content = messagePath[1];
-        }
+    create() {
+        this.formatMessage();
     },
     methods: {
+        formatMessage() {
+            this.content = this.messageObject.message;
+
+            if (this.content.match(/(\[To:([0-9])+])/g)) {
+                this.type = 'To';
+            } else if (
+                this.content.match(/(\[Reply mid:([0-9]+) to:([0-9]+)\])/g)
+            ) {
+                this.type = 'Reply';
+            }
+
+            let messagePath = this.content.split('\n');
+            if (messagePath.length > 1) {
+                this.to_name = messagePath[0];
+                // this.getToId(this.to_name);
+                this.to_name = this.to_name.replace(
+                    /(\[To:([0-9])+])|(\[Reply mid:([0-9]+) to:([0-9]+)\])/g,
+                    ''
+                );
+
+                this.content = messagePath[1];
+            }
+        },
         getClass(to) {
             if (to === this.user.id) return 'mention';
         },
@@ -66,6 +72,14 @@ export default {
                     console.log(res);
                 }
             });
+        }
+    },
+    mounted() {
+        this.formatMessage();
+    },
+    watch: {
+        message_content: function(val) {
+            this.formatMessage();
         }
     }
 };
