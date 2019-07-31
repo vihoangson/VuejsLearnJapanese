@@ -227,24 +227,41 @@ export default {
         },
 
         iconDelete(id) {
-            this.deleteGroup(id).then(response => {
-                if (response != undefined) {
-                    switch (parseInt(response.error_code)) {
-                        case 0:
-                            this.$root.$emit('push-notice', {
-                                message: 'Delete success',
-                                alert: 'alert-success'
-                            });
-                            this.$root.$emit('changed-list-group');
-                            break;
-                        default:
-                            this.$root.$emit('push-notice', {
-                                message: 'Delete error',
-                                alert: 'alert-danger'
-                            });
-                            break;
-                    }
+            this.$bvModal.msgBoxConfirm(
+                'Do you really want to delete room ?',
+                {
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'success',
+                    centered: true
                 }
+            )
+            .then(value => {
+                this.deleteGroup(id).then(response => {
+                    if (response != undefined) {
+                        switch (parseInt(response.error_code)) {
+                            case 0:
+                                this.$root.$emit('push-notice', {
+                                    message: 'Delete success',
+                                    alert: 'alert-success'
+                                });
+                                this.$root.$emit('changed-list-group');
+                                break;
+                            default:
+                                this.$root.$emit('push-notice', {
+                                    message: 'Delete error',
+                                    alert: 'alert-danger'
+                                });
+                                break;
+                        }
+                    }
+                });
+            })
+            .catch(err => {
+                this.$root.$emit('push-notice', {
+                    message: 'Open model error',
+                    alert: 'alert-danger'
+                });
             });
         },
 
@@ -265,8 +282,7 @@ export default {
 
         deleteRooms() {
             this.boxOne = '';
-            this.$bvModal
-                .msgBoxConfirm(
+            this.$bvModal.msgBoxConfirm(
                     'If you leave the group chat, your tasks will be deleted, and there is a case where your files will be deleted.  (About file retention)',
                     {
                         size: 'sm',
