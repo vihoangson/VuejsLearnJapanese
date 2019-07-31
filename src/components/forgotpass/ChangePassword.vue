@@ -18,9 +18,9 @@
                     <div class="login-form-row">
                         <label for="email">Confirm password</label>
                         <div class="login-email">
-                            <input type="password" v-model="email" />
+                            <input type="password" v-model="emailc" />
                         </div>
-                        <span class="error">{{errors.email}}</span>
+                        <span class="error">{{errors.emailc}}</span>
                     </div>
 
 
@@ -63,13 +63,13 @@
         },
         methods: {
 
-            sentemail1(e) {
+            sentemail(e) {
                 e.preventDefault();
                 if (this.email === '') this.errors.email = '* Userame required!';
 
                 let data = {'email':this.email};
 
-                API.POST(ApiConst.FORGOT_PASS_REQUEST, data).then(res => {
+                API.POST(ApiConst.FORGOT_PASS_CHANGE_PASS, data).then(res => {
                     console.log(res);
                 });
 

@@ -26,5 +26,7 @@ export const ApiConst = {
     MY_LIST_FILE: '/api/v1/file/get-my-list-file',
     FORGOT_PASS_REQUEST: '/api/v1/user/forgot-password-request',
     FORGOT_PASS_CHECK_TOKEN: '/api/v1/user/forgot-password-check-token',
+    FORGOT_PASS_CHANGE_PASS: '/api/v1/user/forgot-password-change-pass',
+
 
 };

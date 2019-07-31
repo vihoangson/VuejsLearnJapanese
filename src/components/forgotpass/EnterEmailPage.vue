@@ -117,16 +117,16 @@
 
         },
         mounted(){
-            console.log('123')
-            console.log(this.$route.params.token)
-            let data = {'token':this.$route.params.token}
-            API.POST(ApiConst.FORGOT_PASS_CHECK_TOKEN,data).then(res=>{
-                if(res.error_code === 0){
-                    this.$router.push({ name: 'forgotpasschange' });
-                }else{
-                    this.$router.push({ name: 'home' });
-                }
-            });
+            // console.log('123')
+            // console.log(this.$route.params.token)
+            // let data = {'token':this.$route.params.token}
+            // API.POST(ApiConst.FORGOT_PASS_CHECK_TOKEN,data).then(res=>{
+            //     if(res.error_code === 0){
+            //         this.$router.push({ name: 'forgotpasschange' });
+            //     }else{
+            //         this.$router.push({ name: 'home' });
+            //     }
+            // });
         }
 
     };
