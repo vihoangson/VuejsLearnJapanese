@@ -1,31 +1,15 @@
 <template>
     <div class="modal-group">
         <b-modal
-            id="modal-prevent-rooms"
+            id="modal-prevent-update-rooms"
             ref="modal"
             size= "lg"
-            title="Create a new Room Chat"
+            title="Add user to room"
             @show="resetModal"
             @hidden="resetModal"
             @ok="handleOk">
             <form ref="form" class="form-rooms">
                 <div class="row">
-                    <div class="col-md-3">
-                        <div class="roomInfo">
-                            <img id="roomInfoImage" class="roomInfoImage" v-bind:src="roomImage" alt="">
-                            <div id="roomIconChange" class="roomIconChange">Change</div>
-                        </div>
-                    </div>
-                    <div class="col-md-9">
-                        <div class="form-group">
-                            <label>Group Chat Name:</label><div class="error">{{roomNameError}}</div>
-                            <input type="text" name="roomName" v-model="roomName" class="form-control" placeholder="Group name">
-                        </div>
-                        <div class="form-group">
-                            <label>Group Description:</label> <div class="error">{{roomDescriptionError}}</div>
-                            <textarea name="description" v-model="description" id="Description" class="form-control" placeholder="Add chat description, notes, or links here."></textarea>
-                        </div>
-                    </div>
                     <div class="col-md-12 clearfix">
                         <div class="searchRoom">
                             <span class="icSearch">
@@ -137,8 +121,8 @@
             </form>
             <div slot="modal-footer" class="w-100">
                 <b-button variant="outline-secondary"
-                :disabled="!(selected.length > 0) || (roomName.length == 0) || disableButton"
-                size="md" @click="btnCreateRoom">{{buttonName}}</b-button>
+                :disabled="!(selected.length > 0) || disableButton"
+                size="md" @click="btnUpdateRoom">{{buttonName}}</b-button>
                 <b-button variant="outline-secondary" size="md" @click="btnCancel"> Cancel </b-button>
             </div>
         </b-modal>
@@ -165,37 +149,21 @@
                 selected: [],
                 selectAll: false,
                 roomId: 0,
-                roomName: "",
-                roomImage: "",
-                description: "",
                 buttonName:"",
                 disableButton: false,
-                roomDescriptionError: "",
-                roomNameError: "",
                 roomselectedError: "",
                 userId: 0,
             }
         },
         mounted() {
-            this.$root.$on('open-modal-room', id => {
-                this.roomId = id;
+            this.$root.$on('open-modal-update-room', id => {
+                this.roomId = this.$store.getters.get_current_room.room_id;
                 this.items = [];
-
-                if(id !== 0){
-                    this.buttonName = "Update";
-                    this.selected = [];
-                    this.getAllUser().then(data => {
-                        console.log(data);
-                        this.items = data;
-                    });
-                }else{
-                    this.roomName = '';
-                    this.description = '';
-                    this.roomImage = 'https://appdata.chatwork.com/icon/ico_group.png';
-                    this.selected = [];
-                    this.buttonName = "Create";
-                    this.getAllUser();
-                }
+                this.selected = [];
+                this.buttonName = "Add";
+                this.getAllUser().then(response => {
+                    this.items = response.data;
+                });
             });
         },
         created: function(){
@@ -267,14 +235,6 @@
                 this.selected = tamp;
             },
             checkFormValidity() {
-                if(this.roomName === "" || this.roomName.length >= 50){
-                    this.roomNameError = "Room Name not empty and may not be greater than 50 characters";
-                    return false
-                }
-                // if(this.description == "" || this.description.length >= 255){
-                //     this.roomDescriptionError = "descriptiom not empty and may not be greater than 255 characters";
-                //     return false
-                // }
                 if(this.selected.length === 0){
                     this.roomselectedError = "The selected field is required";
                     return false
@@ -291,16 +251,17 @@
                 this.handleSubmit()
             },
             getAllUser(){
-                API.GET(ApiConst.ROOM_GET_ALL_USER).then(response => {
-                    this.items = response.data;
-                });
+                return API.POST(ApiConst.ROOM_GET_ALL_USER_BY_ROOM ,{
+                    'room_id': this.$store.getters.get_current_room.room_id,
+                    'is_added': 0
+                }).then(response => {
+                    return response;
+                })
             },
             btnCancel(){
                 this.$refs.modal.hide();
             },
-            btnCreateRoom() {
-                this.roomDescriptionError = "";
-                this.roomNameError = "";
+            btnUpdateRoom() {
                 this.roomselectedError= "";
                 this.disableButton = true;
                 this.selectAll = false;
@@ -311,302 +272,31 @@
                 }
 
                 let data = {
-                    room_name: this.roomName,
-                    description: this.description,
-                    icon_img: this.roomImage,
-                    member_list: [],
+                    room_id : this.roomId,
+                    selected: this.selected,
                     only_token: true,
-                    not_read: 0,
-                    list_message: []
                 }
 
-                this.selected.forEach(x=>{
-                    if(x !== null)
-                    data.member_list.push(x);
-                })
-                
-                API.POST(ApiConst.ROOM_ADD,data).then(response => {
+                API.POST(ApiConst.ROOM_ADD_USER_TO_ROOM, data).then(response => {
                     if(response.error_code === 0){
                         switch(response.error_code){
                             case 0:
                                 this.$refs.modal.hide();
                                 this.$root.$emit('push-notice', {message:'insert success', alert: 'alert-success'});
-                                data.room_id = response.data;
-                                this.$root.$emit('changed-list-room', data);
-                                break;
+                            break;
                             case 1:
-                                this.roomNameError = response.data;
-                                break;
-                            case 2:
-                                this.roomDescriptionError = response.data;
-                                break;
-                            case 3:
                                 this.roomselectedError = response.data;
                                 break;
                             default:
-                                break;
+                            break
                         }
                     }
                     this.disableButton = false;
                 });
             }
-        },
-
+        }
     }
 </script>
 
 <style>
-    .selectRole .selectContent li:hover{
-        background: #0a8abd;
-        color: #fff;
-    }
-    .selectRole{
-        float: right;
-        position: relative;
-        display: block;
-        width: 150px;
-    }
-    .selectRole .selectDefault{
-        border: 1px #ccc solid;
-        display: inline-block;
-        width: 100%;
-    }
-    .selectRole .selectDefault .selectbox{
-        width: 100%;
-        display: inline-block;
-        padding: 2px 10px;
-    }
-    .selectRole .selectDefault .icon{
-        position: absolute;
-        right: 5px;
-        top: 1px;
-    }
-    .selectRole .selectContent{
-        position: absolute;
-        background: #fff;
-        width: 100%;
-        border: 1px #ccc solid;
-        padding: 0;
-        list-style: none;
-        top: 22px;
-        z-index: 10;
-        display: none;
-    }
-    .selectRole.active .selectContent{
-        display: block;
-    }
-    .selectRole .selectContent li{
-        padding: 2px;
-        padding-left: 6px;
-        font-size: 13px;
-    }
-    .modal-title{
-        font-weight: 600;
-    }
-    .modal-content{
-        background: #F7f7f7;
-    }
-    .form-group{
-        margin-bottom: 10px;;
-    }
-    .form-group label{
-        font-size: 13px;
-        font-weight: normal;
-        line-height: 18px;
-        color: #666666;
-    }
-
-    .form-rooms .roomInfo{
-        border-radius: 5px;
-        position: relative;
-        -ms-flex-negative: 0;
-        flex-shrink: 0;
-    }
-    .form-rooms .roomInfoImage{
-        width: 100%;
-        border-radius: 5px;
-        max-width: 175px;
-    }
-    .form-rooms .roomIconChange{
-        position: absolute;
-        bottom: 0;
-        width: 100%;
-        height: 30px;
-        color: #fff;
-        border-radius: 0 0 5px 5px;
-        background: rgba(0, 0, 0, 0.8);
-        line-height: 30px;
-        text-align: center;
-        cursor: pointer;
-        max-width: 175px;
-    }
-    .form-rooms .form-group label {
-        vertical-align: top;
-        margin-right: 10px;
-    }
-    .form-rooms .searchRoom{
-        position: relative;
-    }
-    .form-rooms .searchRoom .icSearch{
-        position: absolute;
-        top: 5px;
-        left: 4px;
-    }
-    .form-rooms .searchRoom .inputSearch input{
-        padding-left: 30px;
-        padding-top: 8px;
-        margin: 5px 0;
-    }
-    .form-rooms .form-control {
-        font-size: 14px;
-    }
-    .form-rooms .memberTableCheckAll{
-        align-items: center;
-        justify-content: center;
-        border-style: solid;
-        border-width: 1px;
-        border-radius: 2px;
-        border-color: #b3b3b3;
-        text-decoration: none;
-        cursor: pointer;
-        padding: 5px 15px;
-        line-height: 26px;
-        font-size: 13px;
-        background-color: #f5f5f4;
-        margin-right: 10px;
-        display: inline-block;
-        height: 35px;
-        width: 120px;
-    }
-    .form-rooms #checkAll{
-        position: relative;
-        top: 2px;
-        height: 15px;
-        width: 15px;
-    }
-    .form-rooms input[type="radio"], input[type="checkbox"] {
-        position: relative;
-        top: 2px;
-        height: 15px;
-        width: 15px;
-    }
-    .form-rooms .MemberSelect{
-        padding: 10px;
-        background: #fff;
-        border: 1px #b3b3b3 solid;
-        border-radius: 2px;
-
-        position: relative;
-    }
-    .form-rooms .roomMemberSelect{
-        display: inline-block;
-        padding: 0;
-        margin-bottom: 5px;
-    }
-
-    .form-rooms .roomMemberSelect li{
-        display: inline-block;
-        padding-left: 15px;
-        font-size: 14px;
-    }
-    .form-rooms .roomMemberSelect input{
-        position: relative;
-        top: 3px;
-        margin-right: 3px;
-        height: 15px;
-        width: 15px;
-    }
-    .form-rooms .selectboxDefault{
-        position: absolute;
-        right: 20px;
-        top: 15px;
-        align-items: center;
-        justify-content: center;
-        border-style: solid;
-        border-width: 1px;
-        border-radius: 2px;
-        text-decoration: none;
-        cursor: pointer;
-        user-select: none;
-        padding: 0px 12px;
-        line-height: 26px;
-        font-size: 13px;
-        border-color: #b3b3b3;
-        background-color: #fff;
-        width: 200px;
-    }
-    .form-rooms .selectboxDefault .icon {
-        top: 0;
-        width: 10px;
-        display: inline-block;
-        position: absolute;
-        right: 15px;
-    }
-    .form-rooms .selectboxContent{
-        display: none;
-        position: absolute;
-        right: 0;
-        top: 42px;
-        z-index: 10;
-        right: 20px;
-        font-size: 13px;
-        width: 200px;
-        list-style: none;
-        border: 1px #b6b6b6 solid;
-        padding: 0;
-        background: #fff;
-        -webkit-box-shadow: 1px 2px 5px -3px rgba(0,0,0,0.75);
-        -moz-box-shadow: 1px 2px 5px -3px rgba(0,0,0,0.75);
-        box-shadow: 1px 2px 5px -3px rgba(0,0,0,0.75);
-        cursor: pointer;
-    }
-    .form-rooms .active .selectboxContent{
-        display: inline-block;
-    }
-    .form-rooms .selectboxContent li:hover{
-        background: #0a8abd;
-        color: #fff;
-        transition: .5s;
-    }
-    .form-rooms .selectboxContent li{
-        padding: 3px;
-        padding-left: 12px;
-    }
-    .form-rooms .table-scroll{
-        height: 210px;
-        overflow-y: scroll;
-        display: block;
-        width: 100%;
-        font-size: 14px;
-    }
-    .form-rooms .table-group tr{
-        width: 100%;
-    }
-    .table-group tr td{
-        padding: 10px;
-        padding-bottom: 0;
-        padding-top: 15px;
-    }
-    .table-group .avatar{
-        width: 40px;
-    }
-    .table-group .avatar img{
-        width: 100%;
-        height: auto;
-        position: relative;
-        top: -3px;
-    }
-    .form-rooms .form-group textarea, .form-rooms .form-group input{
-        width: 100%;
-        display: inline-block;
-    }
-    .form-rooms .form-group textarea{
-        height: 80px;
-    }
-    .form-rooms .error {
-        display: block;
-        font-size: 12px;
-        color: red;
-        float: right;
-    }
 </style>

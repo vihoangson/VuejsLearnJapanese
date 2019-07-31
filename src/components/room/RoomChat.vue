@@ -43,7 +43,11 @@
                             >
                                 {{ s.name }}
                                 <div class="option-icon">
-                                    <span class="edit" aria-label="Edit" @click="iconEdit(s.id)">
+                                    <span
+                                        class="edit"
+                                        aria-label="Edit"
+                                        @click.stop="iconEdit(s.id)"
+                                    >
                                         <svg
                                             viewBox="0 0 10 10"
                                             id="icon_edit"
@@ -57,7 +61,7 @@
                                     <span
                                         class="delete"
                                         aria-label="Delete"
-                                        @click="iconDelete(s.id)"
+                                        @click.stop="iconDelete(s.id)"
                                     >
                                         <svg
                                             viewBox="0 0 10 10"
@@ -204,6 +208,7 @@ export default {
         },
 
         iconEdit(id) {
+            this.isActiveSelect = false;
             this.$root.$emit('open-modal-group', id);
             this.$bvModal.show('modal-prevent-group');
         },
@@ -230,6 +235,7 @@ export default {
             });
         },
         iconDelete(id) {
+            this.isActiveSelect = false;
             this.$bvModal
                 .msgBoxConfirm('Do you really want to delete room ?', {
                     size: 'sm',
