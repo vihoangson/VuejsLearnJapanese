@@ -11,17 +11,14 @@
                     <div class="login-form-row">
                         <label for="email">Email Address</label>
                         <div class="login-email">
-                            <input type="text" v-model="email" />
+                            <input type="email" v-model="email" required />
                         </div>
                         <span class="error">{{errors.email}}</span>
                     </div>
-
-
-                    <!--<vue-recaptcha @verify="markRecaptchaAsVerified" class="recapcha" sitekey="6LexDawUAAAAAP2dVouECeGm63c78bbwGtqJe-G1" :loadRecaptchaScript="true"></vue-recaptcha>-->
                     <span class="error">{{errors.pleaseTickRecaptchaMessage}}</span>
 
                     <div class="login-form-row login-button">
-                        <input type="submit" value="Forgot password" class="btn btn-login" />
+                        <input type="submit" value="Get email verify" class="btn btn-login" />
                     </div>
 
                 </form>
@@ -49,7 +46,7 @@
                     pleaseTickRecaptchaMessage: '',
                     login_fail: ''
                 },
-                email: '',
+                email: 'mcc@gmail.com',
                 password: '',
                 recaptchaVerified: true
             };
@@ -58,77 +55,46 @@
 
             sentemail(e) {
                 e.preventDefault();
-                if (this.email === '') this.errors.email = '* Userame required!';
 
-                let data = {'email':this.email};
+                let isValid = false;
 
-                API.POST(ApiConst.FORGOT_PASS_REQUEST, data).then(res => {
-                    console.log(res);
-                });
+                // Start: Check valid email
+                this.errors.email = ''
 
-                return;
-                if (this.email === '') this.errors.email = '* Userame required!';
+                if (this.email === '') {
+                    isValid = true;
+                    this.errors.email = 'Email required !';
+                }
+                let regexEmail = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
+                if (!regexEmail.test(this.email) && this.errors.email === '') {
+                    isValid = true;
+                    this.errors.email = 'Please enter format email.';
+                }
+                // End: Check valid email
 
-                if (this.password === '')
-                    this.errors.password = '* Password required!';
-
-                if (!this.recaptchaVerified)
-                    this.errors.pleaseTickRecaptchaMessage =
-                        '* Please tick recaptcha!';
-
-                if (
-                    this.email !== '' &&
-                    this.password !== '' &&
-                    this.recaptchaVerified
-                ) {
-                    let data = {
-                        email: this.email,
-                        password: this.password,
-                        only_token: true
-                    };
-
-                    API.POST(ApiConst.LOGIN, data).then(res => {
+                if(!isValid){
+                    let data = {'email': this.email};
+                    API.POST(ApiConst.FORGOT_PASS_REQUEST, data).then(res => {
                         if (res.error_code === 0) {
-                            let user = {
-                                token: res.data.token,
-                                user_id: res.data.id,
-                                icon_img: '',
-                                name: res.data.name
-                            };
-                            if (
-                                res.data.icon_img !== null &&
-                                res.data.icon_img !== ''
-                            )
-                                user.icon_img = res.data.icon_img;
-                            else
-                                user.icon_img =
-                                    'https://britz.mcmaster.ca/images/nouserimage.gif/image';
-                            localStorage.setItem(
-                                AppConst.LOCAL_USER,
-                                JSON.stringify(user)
-                            );
-                            this.$router.push({ path: '/' });
+                            alert('We have sent you an email, please check and follow the instructions.');
+                            this.$router.push({name: 'login'});
                         } else {
-                            this.errors.login_fail = '* ' + res.error_msg;
+                            switch(res.error_code){
+                                case 2:
+                                    alert(res.error_msg);
+                                    break;
+                                default:
+                                    alert('Can\'t sent email');
+                                    break;
+                            }
+
                         }
                     });
                 }
             }
-
         },
         mounted(){
-            // console.log('123')
-            // console.log(this.$route.params.token)
-            // let data = {'token':this.$route.params.token}
-            // API.POST(ApiConst.FORGOT_PASS_CHECK_TOKEN,data).then(res=>{
-            //     if(res.error_code === 0){
-            //         this.$router.push({ name: 'forgotpasschange' });
-            //     }else{
-            //         this.$router.push({ name: 'home' });
-            //     }
-            // });
         }
-
     };
 </script>
 
