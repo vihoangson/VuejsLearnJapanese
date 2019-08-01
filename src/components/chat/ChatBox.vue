@@ -39,7 +39,7 @@
                 </div>
                 <div class="file-detail" v-show="showListFile">
                     <div class="content-image" v-show="fileDetailInfo.content === ''">
-                        <img :src="codeReviewPhoto" alt />
+                        <img @click="getLinkDetailImage(fileDetailInfo.id)" :src="codeReviewPhoto" alt />
                     </div>
                     <div class="content-file" v-show="fileDetailInfo.content !== ''">
                         <pre>{{fileDetailInfo.content}}</pre>
@@ -241,6 +241,7 @@ export default {
             showFileDetail: true,
             codeReviewPhoto: '',
             fileDetailInfo: {
+                id: '',
                 name: '',
                 size: '',
                 uploadDate: '',
@@ -437,6 +438,7 @@ export default {
                     this.fileDetailInfo.size = (res.data[0].file_size).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     this.fileDetailInfo.owner = res.data[0].user_id;
                     this.fileDetailInfo.uploadDate = res.data[0].created_at;
+                    this.fileDetailInfo.id = res.data[0].id;
                     this.reviewPhotoStore[id] = res.data;
                 });
             } else {
@@ -447,7 +449,20 @@ export default {
                 this.fileDetailInfo.size = (this.reviewPhotoStore[id][0].file_size).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 this.fileDetailInfo.owner = this.reviewPhotoStore[id][0].user_id;
                 this.fileDetailInfo.uploadDate = this.reviewPhotoStore[id][0].created_at;
+                this.fileDetailInfo.id = this.reviewPhotoStore[id][0].id;
             }
+        },
+        getLinkDetailImage(id) {
+            API.POST('/api/v1/file/get-token/' + id).then(res => {
+                window.open(
+                    'http://api.sns-tool.vn/api/v1/view-image/' +
+                    id +
+                    '/' +
+                    res.data.token +
+                    '/' +
+                    res.data.user_id
+                );
+            });
         }
     },
     computed: {
@@ -478,11 +493,10 @@ export default {
 }
 
 .file-detail {
-    height: 70vh;
-    width: 60vh;
+    height: 60vh;
+    width: 65vh;
     opacity: 1;
     position: absolute;
-    /*padding-top: 12px;*/
     z-index: 5;
     top: 23px;
     right: 60vh;
@@ -493,7 +507,7 @@ export default {
     margin: auto;
     vertical-align: center;
     max-width: 100%;
-    max-height: 80%;
+    max-height: 100%;
 }
 .action-icon {
     text-align: center;
