@@ -98,7 +98,7 @@
         <div class="room-body" :style="{'height': `${myStyles}px`}">
             <ul>
                 <li
-                    v-for="(item, index) in this.$store.getters.get_list_room"
+                    v-for="(item, index) in this.list_rooms"
                     :key="`room-${index}`"
                     @click="changeRoom(item)"
                     :style="{backgroundColor: item.color}"
@@ -123,6 +123,8 @@ import { API } from '../../services/api';
 import { ApiConst } from '../../common/ApiConst';
 import { AppConst } from '../../common/AppConst';
 import modalMixin from '@/mixins/modal';
+import axios from 'axios';
+const EVENT_JOIN = 'join';
 export default {
     name: 'Room',
 
@@ -134,6 +136,7 @@ export default {
             datascript: [],
             activeIndex: undefined,
             userId: 0,
+            height: 0,
             list_rooms: [],
             rooms: []
         };
@@ -141,14 +144,15 @@ export default {
 
     mounted() {
         this.$root.$on('changed-list-group', data => {
-           this.getAllGroup(this.userId);
+            this.getAllGroup(this.userId).then(response => {
+                if (response != undefined && response.error_code == 0) {
+                    this.datascript = response.data;
+                }
+            });
         });
         this.$root.$on('changed-list-room', data => {
-            tthis.pushNewRoom(room);
-            this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, room);
-        });
-        this.$root.$on('add-new-room-from-socket', data => {
-            this.pushNewRoom(data);
+            this.list_rooms = [];
+            this.getListRoom();
         });
     },
 
@@ -156,8 +160,15 @@ export default {
         let user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
         this.userId = user.user_id;
         this.getListRoom();
-        this.getAllGroup(this.userId);
+        this.getListMessage();
+        this.getAllGroup(this.userId).then(response => {
+            if (response != undefined && response.error_code == 0) {
+                this.datascript = response.data;
+            }
+        });
         document.addEventListener('click', this.documentClick);
+        window.addEventListener('resize', this.handleResize);
+        this.handleResize();
     },
 
     destroyed () {
@@ -201,11 +212,11 @@ export default {
         },
 
         getAllGroup(id) {
-            API.GET(ApiConst.GROUP_GET_BY_USER_ID + '/' + id).then(response => {
-                if (response !== undefined && response.error_code === 0) {
-                    this.datascript = response.data;
+            return API.GET(ApiConst.GROUP_GET_BY_USER_ID + '/' + id).then(
+                response => {
+                    return response;
                 }
-            });
+            );
         },
 
         addRooms() {
@@ -339,11 +350,10 @@ export default {
 
         changeRoom(room) {
             this.$store.dispatch('setCurrentRoom', room);
-            this.getListMessage(room);
+            this.getListMessage();
             room.color = '#bfbab0';
             room.not_read = 0;
-            let rooms = this.$store.getters.get_list_room;
-            rooms.forEach(x => {
+            this.list_rooms.forEach(x => {
                 if (room.room_id !== x.room_id) {
                     x.color = '';
                 }
@@ -353,27 +363,24 @@ export default {
         getListRoom() {
             API.GET(ApiConst.ALL_ROOM).then(res => {
                 if (res.error_code === 0) {
-                    let rooms = res.data;
-                    rooms.forEach(x => {
+                    res.data.forEach(x => {
                         x.color = '';
+                        this.list_rooms.push(x);
+                    });
+                    this.list_rooms.forEach(x => {
                         this.rooms.push(x.room_id);
                     });
-                    rooms.sort((a, b) => {
-                        return b.is_mychat - a.is_mychat;
-                    });
 
-                    this.$socket.emit(
-                        AppConst.EVENT_MESSAGE.JOIN_BY_LIST_ROOM,
-                        this.rooms
-                    );
-                    this.$store.dispatch('setListRoom', rooms);
-                    this.changeRoom(rooms[0]);
-                    this.getListMessage(rooms[0]);
+                    this.$socket.emit(EVENT_JOIN, this.rooms);
+                    this.$store.dispatch('setListRoom', this.list_rooms);
+                    this.$store.dispatch('setCurrentRoom', this.list_rooms[0]);
+                    this.handleResize();
                 }
             });
         },
 
-        getListMessage(room) {
+        getListMessage() {
+            let room = this.$store.getters.get_current_room;
             API.POST(ApiConst.RECEIVE_MESSAGE, {
                 page: 0,
                 room_id: room.room_id
@@ -383,22 +390,6 @@ export default {
                     this.$emit('changeRoomEvent');
                 }, 1);
             });
-        },
-        pushNewRoom(room) {
-            this.$store.dispatch('addNewRoom', room);
-            // this.list_rooms.push(room);
-            // this.list_rooms.forEach(x => {
-            //     this.rooms.push(x.room_id);
-            // });
-            // this.list_rooms.sort((a, b) => {
-            //     return b.is_mychat - a.is_mychat;
-            // });
-            this.changeRoom(room);
-
-            this.$socket.emit(
-                AppConst.EVENT_MESSAGE.JOIN_NEW_ROOM,
-                room.room_id
-            );
         },
         handleResize() {
             this.height = window.innerHeight - 45;
