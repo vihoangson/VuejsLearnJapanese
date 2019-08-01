@@ -137,7 +137,7 @@
             </form>
             <div slot="modal-footer" class="w-100">
                 <b-button variant="outline-secondary"
-                :disabled="!(selected.length > 0) || (roomName.length == 0) || disableButton"
+                :disabled="disableButton"
                 size="md" @click="btnCreateRoom">{{buttonName}}</b-button>
                 <b-button variant="outline-secondary" size="md" @click="btnCancel"> Cancel </b-button>
             </div>
@@ -174,6 +174,7 @@
                 roomNameError: "",
                 roomselectedError: "",
                 userId: 0,
+                user: [],
             }
         },
         mounted() {
@@ -199,8 +200,8 @@
             });
         },
         created: function(){
-            let user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
-            this.userId = user.user_id;
+            this.user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
+            this.userId = this.user.user_id;
         },
         computed: {
             filteredItems() {
@@ -267,19 +268,14 @@
                 this.selected = tamp;
             },
             checkFormValidity() {
-                if(this.roomName === "" || this.roomName.length >= 50){
-                    this.roomNameError = "Room Name not empty and may not be greater than 50 characters";
+                if(this.roomName.length >= 50){
+                    this.roomNameError = "Room Name may not be greater than 50 characters";
                     return false
                 }
-                // if(this.description == "" || this.description.length >= 255){
-                //     this.roomDescriptionError = "descriptiom not empty and may not be greater than 255 characters";
-                //     return false
-                // }
-                if(this.selected.length === 0){
-                    this.roomselectedError = "The selected field is required";
+                if(this.description.length >= 255){
+                    this.roomDescriptionError = "descriptiom may not be greater than 255 characters";
                     return false
                 }
-
                 return true;
             },
             resetModal() {
@@ -310,6 +306,10 @@
                     return
                 }
 
+                if(this.roomName === ''){
+                    this.roomName = this.user.name
+                }
+
                 let data = {
                     room_name: this.roomName,
                     description: this.description,
@@ -324,7 +324,7 @@
                     if(x !== null)
                     data.member_list.push(x);
                 })
-                
+
                 API.POST(ApiConst.ROOM_ADD,data).then(response => {
                     if(response.error_code === 0){
                         switch(response.error_code){
@@ -340,9 +340,7 @@
                             case 2:
                                 this.roomDescriptionError = response.data;
                                 break;
-                            case 3:
-                                this.roomselectedError = response.data;
-                                break;
+                            break;
                             default:
                                 break;
                         }
