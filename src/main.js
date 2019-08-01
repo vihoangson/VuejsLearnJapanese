@@ -20,7 +20,6 @@ Vue.use(
     new VueSocketIO({
         debug: true,
         connection: 'http://172.16.100.35:3001'
-        // connection: 'http://127.0.0.1:3000'
     })
 );
 
