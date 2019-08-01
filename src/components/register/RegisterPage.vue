@@ -7,6 +7,9 @@
             <div class="register-inner">
                 <h2>REGISTER</h2>
                 <form class="register">
+                    <div v-if="msg !== ''">
+                        <label class="show-error">{{ msg }}</label>
+                    </div>
                     <div class="form-group register-form-row">
                         <label>Name</label>
                         <input
@@ -82,7 +85,9 @@
 </template>
 
 <script>
+import axios from 'axios';
 import { API } from '../../services/api';
+import { AppConst } from '../../common/AppConst';
 import { ApiConst } from '../../common/ApiConst';
 import VueRecaptcha from 'vue-recaptcha';
 export default {
@@ -105,7 +110,8 @@ export default {
             email: '',
             password: '',
             confirmPassword: '',
-            recaptchaVerified: true
+            recaptchaVerified: false,
+            msg: ''
         };
     },
     computed: {},
@@ -160,21 +166,10 @@ export default {
                 isValid = true;
                 this.errors.password = 'Password required !';
             }
-            let regexPassword = /^.{8,}$/;
-            if (!regexPassword.test(this.password) && this.errors.password === '') {
-                isValid = true;
-                this.errors.password =
-                    'Minimum of 8 characters ';
-            }
 
             if (this.confirmPassword === '') {
                 isValid = true;
                 this.errors.confirmPassword = 'Confirm password required !';
-            }
-            if (!regexPassword.test(this.confirmPassword) && this.errors.confirmPassword === '') {
-                isValid = true;
-                this.errors.confirmPassword =
-                    'Minimum of 8 characters ';
             }
 
             if (this.password !== this.confirmPassword && this.errors.confirmPassword === '') {
@@ -198,13 +193,11 @@ export default {
                 password: this.password
             };
             API.POST(ApiConst.REGISTER, data).then(res => {
-                if(res.error_code !== 0){
-                    alert(res.error_msg);
-                }else{
-                    alert('Create user successful !');
-
+                if (res.error_code === 0) {
                     this.$router.push({ name: 'login' });
-                }                
+                } else {
+                    this.msg = 'Duplicate email.';
+                }
             });
         }
     }
@@ -272,6 +265,10 @@ header {
     border-radius: 3px;
     background-color: #fff;
     margin-top: 8px;
+}
+.register .show-error {
+    color: red !important;
+    width: 100% !important;
 }
 .register-form-row {
     margin-bottom: 24px;
