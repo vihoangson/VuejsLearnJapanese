@@ -40,27 +40,22 @@ export default {
     },
     methods: {
         formatMessage() {
-            this.content = this.messageObject.message;
+            let msg = this.messageObject.message;
 
-            if (this.content.match(/(\[To:([0-9])+])/g)) {
+            if (msg.match(/(\[To:([0-9])+])/g)) {
                 this.type = 'To';
-            } else if (
-                this.content.match(/(\[Reply mid:([0-9]+) to:([0-9]+)\])/g)
-            ) {
+            } else if (msg.match(/(\[Reply mid:([0-9]+) to:([0-9]+)\])/g)) {
                 this.type = 'Reply';
             }
 
-            let messagePath = this.content.split('\n');
-            if (messagePath.length > 1) {
-                this.to_name = messagePath[0];
-                // this.getToId(this.to_name);
-                this.to_name = this.to_name.replace(
-                    /(\[To:([0-9])+])|(\[Reply mid:([0-9]+) to:([0-9]+)\])/g,
-                    ''
-                );
+            let messagePath = msg.substring(0, msg.indexOf('\n') + 1);
+            this.to_name = messagePath;
+            this.to_name = this.to_name.replace(
+                /(\[To:([0-9])+])|(\[Reply mid:([0-9]+) to:([0-9]+)\])/g,
+                ''
+            );
 
-                this.content = messagePath[1];
-            }
+            this.content = msg.substring(msg.indexOf('\n') + 1, msg.length - 1);
         },
         getClass(to) {
             if (to === this.user.id) return 'mention';
