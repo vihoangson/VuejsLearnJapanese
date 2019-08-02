@@ -13,7 +13,10 @@
                     <span class="icon_img" v-for="(item, index) in list_user_room" :key="`item-${index}`">
                          <img :src="item.icon_img" alt class="avatar" />
                     </span>
-                    <span class="btn-more" @click="openModalShowUserRoom"> {{room_length}}
+                    <span class="btn-more" @click="openModalShowUserRoom" v-if="room_length > 0 && !is_admin_room"> +{{room_length}}
+                    </span>
+                    <span class="btn-more" v-if="is_admin_room">
+                        <svg viewBox="0 0 10 10" id="icon_memberDetail" xmlns="http://www.w3.org/2000/svg"><path d="M6.25 2.5h3.13v.94H6.25zm0 2.03h3.13v.94H6.25z"></path><path d="M3.75 1.25a1.82 1.82 0 0 1 1.61 2A2.46 2.46 0 0 1 4.62 5a.39.39 0 0 0 .11.63l.55.3c.89.45 1.6.83 1.59 1.55S6 8.53 5.31 8.64a10.11 10.11 0 0 1-1.56.11 10.11 10.11 0 0 1-1.56-.11C1.46 8.53.62 8.17.62 7.48s.71-1.1 1.6-1.55l.55-.3A.39.39 0 0 0 2.88 5a2.46 2.46 0 0 1-.74-1.75 1.82 1.82 0 0 1 1.61-2zM7.2 6.56a1.58 1.58 0 0 1 .3.92h1.88v-.92z"></path></svg>
                     </span>
                     <span class="btn-plus" v-if="is_admin_room" @click="updateGroupChat">
                         <svg viewBox="0 0 10 10" class="chatRoomHeaderMemberList__editIcon" width="16" height="16">
@@ -467,18 +470,30 @@ export default {
 <style>
 .list_user .btn-more{
     height: 25px;
-    width: 30px;
+    width: 25px;
     background: #ccc;
     display: inline-block;
-    border-radius: 10px;
+    border-radius: 50%;
     color: #fff;
     text-align: center;
-    font-size: 16px;
-    line-height: 26px;
+    font-size: 14px;
+    line-height: 24px;
+}
+.list_user .btn-more svg{
+    width: 18px;
 }
 .list_user .btn-plus{
     float: right;
-    margin-left: 10px;
+    margin-left: 5px;
+    height: 25px;
+    width: 25px;
+    background: #b8daff;
+    display: inline-block;
+    border-radius: 50%;
+    color: #fff;
+    text-align: center;
+    font-size: 16px;
+    line-height: 24px;
 }
 .list_user{
     float: right;
@@ -491,6 +506,7 @@ export default {
     border-radius: 50%;
     border: 1px #eee solid;
     height: 25px;
+    margin: 0;
 }
 .action-icon {
     text-align: center;
@@ -598,7 +614,7 @@ export default {
 .chat-box-header .header-name {
     display: inline-block;
     margin-top: 8px;
-    width: 75%;
+    width: calc(100% - 300px);
 }
 .room-logo {
     display: inline-block;
