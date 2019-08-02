@@ -15,16 +15,15 @@
 }
 .alert{
     text-align: center;
-    padding: 10px 20px;
+    padding: 5px 20px;
     margin: 0;
     color: #333;
     text-transform: capitalize;
     width: 200px;
     margin: auto;
-    border-radius: 0px;
-    margin-top: 53px;
+    border-radius: 11px;
+    margin-top: 5px;
     border: 1px #ccc solid;
-    box-shadow: 0px 0px 5px 0px #ccc;
 }
 .notice.active{
     top: 0px;
