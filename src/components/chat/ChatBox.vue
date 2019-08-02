@@ -423,16 +423,12 @@ export default {
             this.$bvModal.show('modal-prevent-update-rooms');
         },
         getUserByRoomId(){
+            this.list_user_room = [];
+            this.room_length = 0;
+            this.is_admin_room = false;
             let room_id = this.$store.getters.get_current_room.room_id;
             if(room_id !== undefined){
-                // return API.POST(ApiConst.ROOM_GET_ALL_USER_BY_ROOM ,{
-                //     'room_id': room_id,
-                //     'is_added': 1
-                // }).then(response => {
-                //     this.list_user_room = response.data;
-                // })
                 API.GET(ApiConst.ROOM_CHECK_IS_ADMIN + "/" + room_id).then(response => {
-                    console.log(response);
                     if (response != undefined && response.error_code == 0) {
                         this.is_admin_room = response.data;
                     }
@@ -448,8 +444,10 @@ export default {
                     'room_id': this.$store.getters.get_current_room.room_id,
                     'is_added': 0
                 }).then(response => {
-                    this.room_length = response.data.length;
-                    this.$store.dispatch('setListUserByRoomId', response.data);
+                    if (response != undefined && response.error_code == 0) {
+                        this.room_length = response.data.length;
+                        this.$store.dispatch('setListUserByRoomId', response.data);
+                    }
                 })
             }
         },
