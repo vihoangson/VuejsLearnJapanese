@@ -3,6 +3,7 @@
 		<header class="globalHeader">
 			<h1 id="_logo">
 			    <img class="svgLogo_chatwork" src="https://lampart-vn.com/wp-content/uploads/2019/02/logo.png" alt srcset />
+				<button type="button" class="logout" @click="logout">Logout</button>
 			</h1>
 		</header>
 		<div class="content two">
@@ -10,7 +11,7 @@
 			<div class="register-content main" style="min-height: 556px;">
 				<h1>Setting Login Credentials</h1>
 				<div class="register-inner">
-					<p>You can set your name and password here.
+					<p>You can set your name and password here.<br>
 						*Your name will not be made public.</p>
 					<form class="register" style="min-height: 150px">
 						<div v-if="msg !== ''">
@@ -31,7 +32,9 @@
 								<input
 										type="checkbox"
 										v-model="chooseChangePassword"
-										name="chooseChangePassword">Make a new password
+										name="chooseChangePassword"
+								        id="chooseChangePassword">
+								<label for="chooseChangePassword" class="choose-change-password">Make a new password</label>
 								<div v-if="allowShow">
 									<div class="register-form-row register-form-row-child">
 										<label class="label-child">Current password :</label>
@@ -187,6 +190,7 @@ export default {
 
 		},
 	    save() {
+            this.msg = '';
 	        if (this.checkValidateForm()) return
 			let defaultData = {
 	            name : this.name
@@ -202,12 +206,21 @@ export default {
             }
             API.POST(ApiConst.EDIT_REGISTER,defaultData).then(res => {
                 if (res.error_code === 0) {
+                    alert('Success')
                     this.$router.push({name: 'home'})
                 } else {
 					for (var item in res.data) {
 					    this.msg = res.data[item].join()
 					}
 				}
+            });
+		},
+        logout () {
+            API.POST(ApiConst.LOGOUT, null).then(res => {
+                if (res.error_code === 0) {
+                    localStorage.removeItem(AppConst.LOCAL_USER);
+                    this.$router.push({ path: '/login' });
+                }
             });
 		}
 	}
@@ -231,11 +244,22 @@ export default {
 		display: block;
 	}
 	.main > h1 {
-		color: rgb(42, 46, 49);
-		border-top-color: rgb(61, 64, 67);
-		border-bottom-color: rgb(61, 64, 67);
+		border-top: black solid 1px;
+		border-bottom: black solid 1px;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		bottom: 13px;
+		position: relative;
 		font-size: 20px;
 		font-weight: 700;
+	}
+	.logout {
+		background-color: black;
+		color: white;
+		border: black;
+		position: relative;
+		left: 1060px;
+		bottom: 10px;
 	}
 	.main {
 		width: 698px;
@@ -425,5 +449,9 @@ export default {
 		width: 90%;
 		padding: 7px;
 		font-size: 18px;
+	}
+	.choose-change-password {
+		font-weight: normal !important;
+		padding: 0 15px 0 0 !important;
 	}
 </style>

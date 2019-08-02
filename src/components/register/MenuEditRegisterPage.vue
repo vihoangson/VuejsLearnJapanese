@@ -2,12 +2,13 @@
     <div id="register" class="sidebar">
         <ul>
             <li class="moreMenu">
-                <h1>Account</h1>
-                <ul>
-                    <li>Login Credentials</li>
-                </ul>
+                <h1><span style="color: red">|</span> Account</h1>
+                <h1>Login Credentials</h1>
             </li>
         </ul>
+        <div class="back-to-home">
+            <button type="button" class="back-button" @click="backHome">Back to home</button>
+        </div>
     </div>
 </template>
 
@@ -24,7 +25,11 @@ export default {
     watch: {},
     created() {},
     mounted() {},
-    methods: {}
+    methods: {
+        backHome () {
+            this.$router.push({ name: 'home' });
+        }
+    }
 };
 </script>
 
@@ -48,8 +53,21 @@ li {
     vertical-align: baseline;
     background: transparent;
 }
+.back-to-home {
+    text-align: center;
+}
+.back-to-home .back-button {
+    width: 80%;
+    border: 1px black solid;
+    padding: 2px;
+    background-color: #eae7e1;
+    border-radius: 3px;
+    font-size: 14px;
+}
 .moreMenu {
     border-bottom-color: rgb(209, 204, 195);
+    position: relative;
+    right: 26px;
 }
 .sidebar {
     width: 220px;
@@ -66,35 +84,6 @@ li {
     font-size: 100%;
     vertical-align: baseline;
     background: transparent;
-}
-header {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    width: 960px;
-    margin: 0 auto;
-    padding-top: 20px;
-}
-.register-inner h2 {
-    font-size: 2em;
-    font-weight: 300;
-    line-height: 1.4;
-}
-.register label {
-    box-sizing: border-box;
-    color: #34362f;
-    font-size: 0.875em;
-    font-weight: 700;
-    line-height: 1;
-}
-.register input[type='text'],
-.register input[type='email'],
-.register input[type='password'] {
-    outline: none;
-    border: none;
-    width: 100%;
-    padding: 7px;
-    font-size: 18px;
 }
 .moreMenu > h1 {
     font-size: 14px !important;
