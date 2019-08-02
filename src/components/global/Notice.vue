@@ -10,20 +10,25 @@
     position: absolute;
     z-index: 10;
     width: 100%;
-    top: -50px;
+    top: -150px;
     transition: 0.5s;
 }
 .alert{
     text-align: center;
-    padding: 9px;
+    padding: 10px 20px;
     margin: 0;
-    color: #216493;
+    color: #333;
     text-transform: capitalize;
+    width: 200px;
+    margin: auto;
+    border-radius: 0px;
+    margin-top: 53px;
+    border: 1px #ccc solid;
+    box-shadow: 0px 0px 5px 0px #ccc;
 }
 .notice.active{
     top: 0px;
     transition: 0.5s;
-    display: block;
 }
 </style>
 

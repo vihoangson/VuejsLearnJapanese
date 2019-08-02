@@ -36,6 +36,9 @@ export default {
     set_list_room(state, obj) {
         return (state.list_room = obj);
     },
+    set_list_user_by_room_id(state, obj) {
+        return (state.list_user_by_room_id = obj);
+    },
     set_notification(state, obj) {
         if (state.current_user.user_id !== obj.user_info.id) {
             var notify = new Notification(
