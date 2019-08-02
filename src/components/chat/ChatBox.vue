@@ -9,7 +9,10 @@
                 <h1 class="title">
                     <span>{{this.$store.getters.get_current_room.room_name}}</span>
                 </h1>
-                <div >
+                <div class="list_user">
+                    <span class="icon_img" v-for="(item, index) in list_user_room" :key="`item-${index}`">
+                         <img :src="item.icon_img" alt class="avatar" />
+                    </span>
                     <span @click="updateGroupChat">
                         <svg viewBox="0 0 10 10" class="chatRoomHeaderMemberList__editIcon" width="16" height="16">
                             <use fill-rule="evenodd" xlink:href="#icon_plus"></use>
@@ -217,7 +220,7 @@ export default {
         ChatAction,
         ChatEdit,
         ChatMessage,
-        UpdateRoom
+        UpdateRoom,
     },
     props: {
         value: {
@@ -239,8 +242,14 @@ export default {
             errors: null,
             user: this.$store.getters.get_current_user,
             editMessage: false,
-            listMyFile: []
+            listMyFile: [],
+            list_user_room: [],
         };
+    },
+    mounted() {
+        this.$root.$on('changed-id-rooms', data => {
+            this.getUserByRoomId();
+        });
     },
     created() {
         window.addEventListener('resize', this.handleResize);
@@ -253,6 +262,7 @@ export default {
             if (res.error_code === 0)
                 this.$store.dispatch('setListMessage', res.data);
         });
+        this.getUserByRoomId();
     },
     methods: {
         handleResize() {
@@ -404,6 +414,17 @@ export default {
         updateGroupChat(){
             this.$root.$emit('open-modal-update-room', 0);
             this.$bvModal.show('modal-prevent-update-rooms');
+        },
+        getUserByRoomId(){
+            let room_id = this.$store.getters.get_current_room.room_id;
+            if(room_id !== undefined){
+                return API.POST(ApiConst.ROOM_GET_ALL_USER_BY_ROOM ,{
+                    'room_id': room_id,
+                    'is_added': 1
+                }).then(response => {
+                    this.list_user_room = response.data;
+                })
+            }
         }
     },
     computed: {
@@ -418,6 +439,18 @@ export default {
 </script>
 
 <style>
+.list_user{
+    float: right;
+}
+.list_user .icon_img{
+    margin-right: 5px;
+}
+.list_user .icon_img img{
+    width: 25px;
+    border-radius: 50%;
+    border: 1px #eee solid;
+    height: 25px;
+}
 .action-icon {
     text-align: center;
     width: 30%;
@@ -522,40 +555,23 @@ export default {
     background-color: #fff;
 }
 .chat-box-header .header-name {
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    padding-right: 40px;
-    height: 100%;
-    max-width: calc(100% - 292px);
+    display: inline-block;
+    margin-top: 8px;
+    width: 75%;
 }
 .room-logo {
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    height: 100%;
-    max-width: calc(100% - 292px);
+    display: inline-block;
+    float: left;
 }
 .room-logo img {
-    box-sizing: border-box;
-    width: 24px;
-    height: 24px;
+    width: 25px;
     border-radius: 50%;
-    flex-shrink: 0;
 }
 .chat-box-header .title {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    height: 24px;
-    padding-left: 8px;
-    max-width: calc(100% - 24px - 8px);
-    position: relative;
+    display: inline-block;
     font-size: 16px;
-    font-weight: 700;
-    margin: 0;
-    vertical-align: middle;
-    line-height: 25px;
+    margin-top: 3px;
+    padding-left: 10px;
 }
 .title span {
     white-space: nowrap;

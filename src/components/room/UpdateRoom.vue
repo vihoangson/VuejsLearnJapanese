@@ -283,6 +283,7 @@
                             case 0:
                                 this.$refs.modal.hide();
                                 this.$root.$emit('push-notice', {message:'insert success', alert: 'alert-success'});
+                                this.$root.$emit('changed-id-rooms');
                             break;
                             case 1:
                                 this.roomselectedError = response.data;

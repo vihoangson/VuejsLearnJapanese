@@ -331,8 +331,8 @@
                             case 0:
                                 this.$refs.modal.hide();
                                 this.$root.$emit('push-notice', {message:'insert success', alert: 'alert-success'});
-                                data.room_id = response.data;
                                 this.$root.$emit('changed-list-room', data);
+                                this.$root.$emit('changed-id-rooms');
                                 break;
                             case 1:
                                 this.roomNameError = response.data;

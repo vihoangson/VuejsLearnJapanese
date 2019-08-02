@@ -350,6 +350,7 @@ export default {
 
         changeRoom(room) {
             this.$store.dispatch('setCurrentRoom', room);
+            this.$root.$emit('changed-id-rooms');
             this.getListMessage();
             room.color = '#bfbab0';
             room.not_read = 0;
