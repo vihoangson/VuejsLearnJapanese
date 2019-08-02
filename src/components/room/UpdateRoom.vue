@@ -161,9 +161,7 @@
                 this.items = [];
                 this.selected = [];
                 this.buttonName = "Add";
-                this.getAllUser().then(response => {
-                    this.items = response.data;
-                });
+                this.items = this.$store.getters.get_list_user_by_room_id;
             });
         },
         created: function(){
@@ -249,14 +247,6 @@
             handleOk(bvModalEvt) {
                 bvModalEvt.preventDefault()
                 this.handleSubmit()
-            },
-            getAllUser(){
-                return API.POST(ApiConst.ROOM_GET_ALL_USER_BY_ROOM ,{
-                    'room_id': this.$store.getters.get_current_room.room_id,
-                    'is_added': 0
-                }).then(response => {
-                    return response;
-                })
             },
             btnCancel(){
                 this.$refs.modal.hide();

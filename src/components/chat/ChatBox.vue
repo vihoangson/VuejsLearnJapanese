@@ -13,7 +13,9 @@
                     <span class="icon_img" v-for="(item, index) in list_user_room" :key="`item-${index}`">
                          <img :src="item.icon_img" alt class="avatar" />
                     </span>
-                    <span @click="updateGroupChat">
+                    <span class="btn-more" @click="openModalShowUserRoom"> {{room_length}}
+                    </span>
+                    <span class="btn-plus" v-if="is_admin_room" @click="updateGroupChat">
                         <svg viewBox="0 0 10 10" class="chatRoomHeaderMemberList__editIcon" width="16" height="16">
                             <use fill-rule="evenodd" xlink:href="#icon_plus"></use>
                         </svg>
@@ -244,6 +246,8 @@ export default {
             editMessage: false,
             listMyFile: [],
             list_user_room: [],
+            is_admin_room: false,
+            room_length: 0,
         };
     },
     mounted() {
@@ -418,13 +422,35 @@ export default {
         getUserByRoomId(){
             let room_id = this.$store.getters.get_current_room.room_id;
             if(room_id !== undefined){
-                return API.POST(ApiConst.ROOM_GET_ALL_USER_BY_ROOM ,{
-                    'room_id': room_id,
-                    'is_added': 1
+                // return API.POST(ApiConst.ROOM_GET_ALL_USER_BY_ROOM ,{
+                //     'room_id': room_id,
+                //     'is_added': 1
+                // }).then(response => {
+                //     this.list_user_room = response.data;
+                // })
+                API.GET(ApiConst.ROOM_CHECK_IS_ADMIN + "/" + room_id).then(response => {
+                    console.log(response);
+                    if (response != undefined && response.error_code == 0) {
+                        this.is_admin_room = response.data;
+                    }
+                });
+
+                API.GET(ApiConst.ROOM_GET_USER_BY_ROOM_ID + "/" + room_id).then(response => {
+                    if (response != undefined && response.error_code == 0) {
+                        this.list_user_room = response.data;
+                    }
+                });
+
+                API.POST(ApiConst.ROOM_GET_ALL_USER_BY_ROOM ,{
+                    'room_id': this.$store.getters.get_current_room.room_id,
+                    'is_added': 0
                 }).then(response => {
-                    this.list_user_room = response.data;
+                    this.room_length = response.data.length;
+                    this.$store.dispatch('setListUserByRoomId', response.data);
                 })
             }
+        },
+        openModalShowUserRoom(){
         }
     },
     computed: {
@@ -439,6 +465,21 @@ export default {
 </script>
 
 <style>
+.list_user .btn-more{
+    height: 25px;
+    width: 30px;
+    background: #ccc;
+    display: inline-block;
+    border-radius: 10px;
+    color: #fff;
+    text-align: center;
+    font-size: 16px;
+    line-height: 26px;
+}
+.list_user .btn-plus{
+    float: right;
+    margin-left: 10px;
+}
 .list_user{
     float: right;
 }

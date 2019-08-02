@@ -23,6 +23,8 @@ export const ApiConst = {
     ROOM_GET_ALL_USER: '/api/v1/user/get-all-user',
     ROOM_GET_ALL_USER_BY_ROOM: '/api/v1/user/get-all-user-by-room',
     ROOM_ADD_USER_TO_ROOM: '/api/v1/room/add-user-to-room',
+    ROOM_GET_USER_BY_ROOM_ID: '/api/v1/user/get-user-by-room-id',
+    ROOM_CHECK_IS_ADMIN: '/api/v1/user/check-is-admin-room',
     MY_LIST_FILE: '/api/v1/file/get-my-list-file',
 
 };

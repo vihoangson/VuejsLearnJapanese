@@ -11,7 +11,8 @@ export default new Vuex.Store({
     state: {
         current_room: {},
         current_user: {},
-        list_room: []
+        list_room: [],
+        list_user_by_room_id: [],
     },
     getters,
     mutations,

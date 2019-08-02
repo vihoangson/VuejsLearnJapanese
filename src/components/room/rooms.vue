@@ -186,7 +186,6 @@
                     this.buttonName = "Update";
                     this.selected = [];
                     this.getAllUser().then(data => {
-                        console.log(data);
                         this.items = data;
                     });
                 }else{
@@ -290,6 +289,7 @@
                 API.GET(ApiConst.ROOM_GET_ALL_USER).then(response => {
                     this.items = response.data;
                 });
+                this.$store.dispatch('setListUserByRoomId', this.items);
             },
             btnCancel(){
                 this.$refs.modal.hide();
