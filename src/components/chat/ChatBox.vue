@@ -37,7 +37,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="file-detail" v-show="showListFile">
+                <div class="file-detail" v-show="showFileDetail">
                     <div class="content-image" v-show="fileDetailInfo.content === ''">
                         <img
                             @click="getLinkDetailImage(fileDetailInfo.id)"
@@ -242,7 +242,7 @@ export default {
         return {
             enterToSendMessage: true,
             showListFile: false,
-            showFileDetail: true,
+            showFileDetail: false,
             codeReviewPhoto: '',
             roomId: null,
             fileDetailInfo: {
@@ -407,6 +407,9 @@ export default {
         },
         showMyListFile() {
             this.showListFile = !this.showListFile;
+            if (!this.showListFile) {
+                this.showFileDetail = false;
+            }
             if (this.showListFile) {
                 if (this.roomId !== this.$store.getters.get_current_room.room_id) {
                     this.listMyFile = [];
@@ -439,15 +442,33 @@ export default {
             });
         },
         deleteFile(id) {
-            let obj = {
-                delete_id: id
-            };
-            API.POST('/api/v1/file/delete-file', obj).then(res => {
-                this.showListFile = !this.showListFile;
-                this.showMyListFile();
-            });
+            this.$bvModal.msgBoxConfirm(
+                'Do you really want to delete file ?',
+                {
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'success',
+                    centered: true
+                }
+            )
+                .then(value => {
+                    let obj = {
+                        delete_id: id
+                    };
+                    API.POST('/api/v1/file/delete-file', obj).then(res => {
+                        this.showListFile = !this.showListFile;
+                        this.showMyListFile();
+                    });
+                })
+                .catch(err => {
+                    this.$root.$emit('push-notice', {
+                        message: 'Open model error',
+                        alert: 'alert-danger'
+                    });
+                });
         },
         getReviewPhoto(id) {
+            this.showFileDetail = true;
             if (typeof this.reviewPhotoStore[id] === 'undefined') {
                 API.GET('/api/v1/file/review-photo/mid/' + id).then(res => {
                     this.codeReviewPhoto = 'data:image/png;base64, ' + res.data.base_64;
@@ -456,7 +477,7 @@ export default {
                     this.fileDetailInfo.size = res.data[0].file_size
                         .toString()
                         .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                    this.fileDetailInfo.owner = res.data[0].user_id;
+                    this.fileDetailInfo.owner = res.data[0].name;
                     this.fileDetailInfo.uploadDate = res.data[0].created_at;
                     this.fileDetailInfo.id = res.data[0].id;
                     this.reviewPhotoStore[id] = res.data;
@@ -469,7 +490,7 @@ export default {
                 this.fileDetailInfo.size = this.reviewPhotoStore[id][0].file_size
                     .toString()
                     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-                this.fileDetailInfo.owner = this.reviewPhotoStore[id][0].user_id;
+                this.fileDetailInfo.owner = this.reviewPhotoStore[id][0].name;
                 this.fileDetailInfo.uploadDate = this.reviewPhotoStore[id][0].created_at;
                 this.fileDetailInfo.id = this.reviewPhotoStore[id][0].id;
             }
@@ -525,6 +546,7 @@ export default {
     background-color: darkgrey;
 }
 .content-image img {
+    cursor: pointer;
     display: block;
     margin: auto;
     vertical-align: center;

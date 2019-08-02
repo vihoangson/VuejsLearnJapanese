@@ -112,7 +112,7 @@ export default {
                 autoProcessQueue: false,
                 addRemoveLinks: true,
                 dictDefaultMessage:
-                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' + 'Kéo file vào đây</div>'
+                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' + 'Nhấp chọn hoặc thả file vào đây</div>'
             },
             message: ''
         };
@@ -122,26 +122,29 @@ export default {
     created() {},
     mounted() {},
     methods: {
+        toggleEmojiPicker(){},
+        addEmoji(){},
         getFile(file) {
-            console.log(file);
         },
         successImport(file) {
-            console.log(file);
         },
         showErrorMessage(file) {
-            // this.$refs['myVueDropzone'].removeFile(file);
+            this.$refs['myVueDropzone'].removeFile(file);
         },
         catchResponse(file, response) {
             this.message = '';
-            console.log(response);
-            if (response.success) {
-                this.$refs['myVueDropzone'].removeFile(file);
+            if (response.error_code === 0) {
+                alert('Upload thành công');
             }
-        },
-        hideDropzoneCheck() {
+            this.$refs['myVueDropzone'].removeFile(file);
             if (this.$refs['myVueDropzone'].getAcceptedFiles().length === 0) {
                 this.hideDropzone();
             }
+        },
+        hideDropzoneCheck() {
+            // if (this.$refs['myVueDropzone'].getAcceptedFiles().length === 0) {
+            //     this.hideDropzone();
+            // }
         },
         hideDropzone() {
             this.$refs['myVueDropzone'].removeAllFiles();
@@ -149,8 +152,7 @@ export default {
         },
         sendMessageFile() {
             this.$refs.myVueDropzone.processQueue();
-            console.log(this.message);
-            this.message = 's';
+            this.message = '';
         },
         addSending(file, xhr, formData) {
             formData.append('message', this.message ? this.message : '');
