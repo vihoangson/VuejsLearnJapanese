@@ -39,7 +39,11 @@
                 </div>
                 <div class="file-detail" v-show="showListFile">
                     <div class="content-image" v-show="fileDetailInfo.content === ''">
-                        <img @click="getLinkDetailImage(fileDetailInfo.id)" :src="codeReviewPhoto" alt />
+                        <img
+                            @click="getLinkDetailImage(fileDetailInfo.id)"
+                            :src="codeReviewPhoto"
+                            alt
+                        />
                     </div>
                     <div class="content-file" v-show="fileDetailInfo.content !== ''">
                         <pre>{{fileDetailInfo.content}}</pre>
@@ -240,6 +244,7 @@ export default {
             showListFile: false,
             showFileDetail: true,
             codeReviewPhoto: '',
+            roomId: null,
             fileDetailInfo: {
                 id: '',
                 name: '',
@@ -403,7 +408,20 @@ export default {
         showMyListFile() {
             this.showListFile = !this.showListFile;
             if (this.showListFile) {
-                API.GET(ApiConst.MY_LIST_FILE).then(res => {
+                if (this.roomId !== this.$store.getters.get_current_room.room_id) {
+                    this.listMyFile = [];
+                    this.codeReviewPhoto = '';
+                    this.fileDetailInfo.content = '';
+                    this.fileDetailInfo.name = '';
+                    this.fileDetailInfo.size = '';
+                    this.fileDetailInfo.owner = '';
+                    this.fileDetailInfo.uploadDate = '';
+                    this.fileDetailInfo.id = '';
+                    this.reviewPhotoStore = [];
+                }
+                API.GET(
+                    ApiConst.MY_LIST_FILE + '/' + this.$store.getters.get_current_room.room_id
+                ).then(res => {
                     this.listMyFile = res.data;
                 });
             }
@@ -435,7 +453,9 @@ export default {
                     this.codeReviewPhoto = 'data:image/png;base64, ' + res.data.base_64;
                     this.fileDetailInfo.content = res.data.content;
                     this.fileDetailInfo.name = res.data[0].file_name;
-                    this.fileDetailInfo.size = (res.data[0].file_size).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    this.fileDetailInfo.size = res.data[0].file_size
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                     this.fileDetailInfo.owner = res.data[0].user_id;
                     this.fileDetailInfo.uploadDate = res.data[0].created_at;
                     this.fileDetailInfo.id = res.data[0].id;
@@ -446,7 +466,9 @@ export default {
                     'data:image/png;base64, ' + this.reviewPhotoStore[id].base_64;
                 this.fileDetailInfo.content = this.reviewPhotoStore[id].content;
                 this.fileDetailInfo.name = this.reviewPhotoStore[id][0].file_name;
-                this.fileDetailInfo.size = (this.reviewPhotoStore[id][0].file_size).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                this.fileDetailInfo.size = this.reviewPhotoStore[id][0].file_size
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 this.fileDetailInfo.owner = this.reviewPhotoStore[id][0].user_id;
                 this.fileDetailInfo.uploadDate = this.reviewPhotoStore[id][0].created_at;
                 this.fileDetailInfo.id = this.reviewPhotoStore[id][0].id;
@@ -456,11 +478,11 @@ export default {
             API.POST('/api/v1/file/get-token/' + id).then(res => {
                 window.open(
                     'http://api.sns-tool.vn/api/v1/view-image/' +
-                    id +
-                    '/' +
-                    res.data.token +
-                    '/' +
-                    res.data.user_id
+                        id +
+                        '/' +
+                        res.data.token +
+                        '/' +
+                        res.data.user_id
                 );
             });
         }
@@ -568,33 +590,6 @@ export default {
     padding: 12px 16px;
     text-decoration: none;
     display: block;
-}
-.icon-close {
-    float: right;
-}
-.box-chat-nd {
-    margin-left: 25%;
-    margin-top: 8%;
-    width: 50%;
-    background-color: white;
-    opacity: 1;
-    overflow: auto;
-}
-.dropzone-main-chat {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    z-index: 1111;
-    top: 0px;
-    left: 0px;
-    display: block;
-    background-color: #393630;
-    opacity: 0.9;
-    overflow: visible;
-}
-.dropzone-main-chat-input {
-    overflow: scroll;
-    height: 280px;
 }
 #chat-box {
     position: absolute;

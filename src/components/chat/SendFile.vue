@@ -154,8 +154,7 @@ export default {
         },
         addSending(file, xhr, formData) {
             formData.append('message', this.message ? this.message : '');
-            formData.append('room_id', 4494);
-            // formData.append('room_id', this.$store.getters.get_current_room.room_id);
+            formData.append('room_id', this.$store.getters.get_current_room.room_id);
         }
     }
 };
@@ -163,10 +162,33 @@ export default {
 
 <style scoped>
 .dropzone-main-chat-input {
-    overflow: scroll;
+    overflow-y: scroll;
     height: 280px;
 }
 .icon-close {
     float: right;
+}
+textarea {
+    width: 100%;
+}
+.box-chat-nd {
+    margin-left: 25%;
+    margin-top: 8%;
+    width: 50%;
+    background-color: white;
+    opacity: 1;
+    overflow: auto;
+}
+.dropzone-main-chat {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 1111;
+    top: 0px;
+    left: 0px;
+    display: block;
+    background-color: #393630;
+    opacity: 0.9;
+    overflow: visible;
 }
 </style>
