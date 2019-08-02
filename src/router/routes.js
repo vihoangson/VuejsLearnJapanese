@@ -4,6 +4,16 @@ export default [
         name: 'home',
         component: () => import('@/components/home/Home.vue')
     },
+    {
+        path: '/404',
+        name: '404',
+        component: () => import('@/components/errorPage/404.vue')
+    },
+    {
+        path: '/500',
+        name: '500',
+        component: () => import('@/components/errorPage/500.vue')
+    },
     // {
     //     path: '/rid:room_id',
     //     name: 'home',
