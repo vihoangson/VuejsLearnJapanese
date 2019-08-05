@@ -2,6 +2,9 @@
     <div id="home">
         <Notice></Notice>
         <Header></Header>
+        <AddUser></AddUser>
+        <EditUser></EditUser>
+        <ShowUser></ShowUser>
         <div class="content">
             <Room @changeRoomEvent="changeRoomEvent"></Room>
             <Chat ref="chat"></Chat>
@@ -25,8 +28,11 @@ import Notice from '../global/Notice';
 import Header from '../global/Header';
 import Room from '../room/RoomChat';
 import Chat from '../chat/ChatBox';
-import Rooms from '../room/rooms';
-import Group from '../group/group';
+import Rooms from '../room/Rooms';
+import Group from '../group/Group';
+import AddUser from '../room/AddUser';
+import EditUser from '../room/EditUser';
+import ShowUser from '../room/ShowUser';
 import { AppConst } from '../../common/AppConst';
 export default {
     name: 'Home',
@@ -36,7 +42,10 @@ export default {
         Chat,
         Rooms,
         Group,
-        Notice
+        AddUser,
+        EditUser,
+        ShowUser,
+        Notice,
     },
     created() {
         let user = JSON.parse(localStorage.getItem('user'));
