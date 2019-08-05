@@ -1,10 +1,10 @@
 <template>
 	<div id="register">
 		<header class="globalHeader">
-			<h1 id="_logo">
+			<div id="_logo">
 			    <img class="svgLogo_chatwork" src="https://lampart-vn.com/wp-content/uploads/2019/02/logo.png" alt srcset />
 				<button type="button" class="logout" @click="logout">Logout</button>
-			</h1>
+			</div>
 		</header>
 		<div class="content two">
 			<menu-edit-register-page></menu-edit-register-page>
@@ -257,9 +257,9 @@ export default {
 		background-color: black;
 		color: white;
 		border: black;
-		position: relative;
-		left: 1060px;
-		bottom: 10px;
+		position: absolute;
+		right: 0px;
+		bottom: -6px;
 	}
 	.main {
 		width: 698px;
@@ -270,8 +270,8 @@ export default {
 		border-left-color: rgb(209, 204, 195);
 		padding: 30px 20px 10px;
 	}
-	img {
-		border-top-color: initial;
+	img.svgLogo_chatwork {
+			border-top-color: initial;
 		border-right-color: initial;
 		border-bottom-color: initial;
 		border-left-color: initial;
@@ -283,12 +283,12 @@ export default {
 		outline: 0;
 		font-size: 100%;
 		position: absolute;
-		left: 193px;
-		top: 5px;
-	}
+		left: 0px;
+		top: -18px;
+		}
 	.svgLogo_chatwork {
 		display: block;
-		width: 144px;
+		/*width: 144px;*/
 		height: 29.538432px;
 	}
 	.globalHeader h1 {
@@ -377,7 +377,7 @@ export default {
 		margin-top: 12px;
 		min-height: 540px;
 	}
-	.register label {
+	.register .form-group > label {
 		box-sizing: border-box;
 		color: #34362f;
 		font-size: 0.875em;
@@ -453,5 +453,10 @@ export default {
 	.choose-change-password {
 		font-weight: normal !important;
 		padding: 0 15px 0 0 !important;
+	}
+	div#_logo {
+		position: relative;
+		width: 960px;
+		margin: 0 auto;
 	}
 </style>
