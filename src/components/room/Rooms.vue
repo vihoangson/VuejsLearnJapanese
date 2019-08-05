@@ -342,6 +342,11 @@
                                 this.roomDescriptionError = response.data;
                                 break;
                             default:
+                                this.$refs.modal.hide();
+                                this.$root.$emit('push-notice', {
+                                    message: response.data,
+                                    alert: 'alert-danger'
+                                });
                                 break;
                         }
                     }

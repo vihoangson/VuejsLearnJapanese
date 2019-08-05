@@ -18,13 +18,13 @@
                     </span>
                     <span
                         class="btn-more"
-                        @click="openModalShowUserRoom(is_admin_room)"
-                        v-if="room_length > 0 && !is_admin_room"
+                        @click="openModalShowUserRoom()"
+                        v-if="!is_admin_room"
                     >+{{room_length}}</span>
                     <span
                         class="btn-more"
                         v-if="is_admin_room"
-                        @click="openModalShowUserRoom(is_admin_room)"
+                        @click="openModalShowUserRoom()"
                     >
                         <svg
                             viewBox="0 0 10 10"
@@ -490,8 +490,12 @@ export default {
                 });
             }
         },
-        openModalShowUserRoom(isAdmin) {
-            this.$root.$emit('open-modal-edit-user', isAdmin);
+        openModalShowUserRoom() {
+            this.$root.$emit('open-modal-show-user');
+            this.$bvModal.show('modal-prevent-show-user');
+        },
+        openModalEditUserRoom() {
+            this.$root.$emit('open-modal-edit-user');
             this.$bvModal.show('modal-prevent-edit-user');
         }
     },

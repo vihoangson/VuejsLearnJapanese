@@ -135,6 +135,8 @@
 </template>
 
 <script>
+import { API } from '../../services/api';
+import { ApiConst } from '../../common/ApiConst';
 import { AppConst } from '../../common/AppConst';
 export default {
     name: 'Group',
@@ -149,8 +151,8 @@ export default {
             activeIndex: undefined,
             selectItem: 'Edit all permissions',
             subscriptions: [
-                { id: 1, name: 'Admin' },
                 { id: 0, name: 'Member' },
+                { id: 1, name: 'Admin' },
                 { id: 2, name: 'Readonly' }
             ],
             selected: [],
@@ -171,8 +173,8 @@ export default {
                 var id = this.items[i].id;
                 var selectRole = {
                     id: id,
-                    permission: 0,
-                    name: this.subscriptions[1].name
+                    permission: this.items[i].permission,
+                    name: this.subscriptions[this.items[i].permission].name
                 };
                 this.selected[id] = selectRole;
             }
@@ -227,23 +229,61 @@ export default {
         },
         deleteUserOfRoom(id) {
             var itemsTamp = [];
-            console.log(this.selected);
             for (let i in this.items) {
                 if (id !== this.items[i].id) {
                     itemsTamp[i] = this.items[i];
                 }
             }
             for (let i in this.selected) {
-                if (id !== this.selected[i].id) {
+                if (id === this.selected[i].id) {
                     this.selected[i] = 'empty';
                 }
             }
 
             this.items = itemsTamp;
-
-            console.log(this.selected);
         },
-        btnSaveRoom() {}
+        btnSaveRoom() {
+            console.log(this.selected)
+            let data = {
+                room_id: this.roomId,
+                selected: this.selected,
+                only_token: true
+            };
+
+            API.POST(ApiConst.ROOM_UPDATE, data).then(response => {
+                if(response != undefined){
+                    switch (response.error_code) {
+                        case 0:
+                            this.$refs.modal.hide();
+                            this.$root.$emit('push-notice', {
+                                message: 'Save success',
+                                alert: 'alert-success'
+                            });
+                            this.$root.$emit('changed-id-rooms');
+                            break;
+                        case 1:
+                            this.roomselectedError = response.data;
+                            break;
+                        case 6:
+                            this.$bvModal
+                            .msgBoxOk( response.data, {
+                                size: 'sm',
+                                buttonSize: 'sm',
+                                okVariant: 'success',
+                                centered: true
+                            });
+                            break;
+                        default:
+                            this.$refs.modal.hide();
+                            this.$root.$emit('push-notice', {
+                                message: response.data,
+                                alert: 'alert-danger'
+                            });
+                            break;
+                    }
+                }
+            });
+        }
     }
 };
 </script>

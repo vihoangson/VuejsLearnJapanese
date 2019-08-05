@@ -30,5 +30,4 @@ export const ApiConst = {
     FORGOT_PASS_CHECK_TOKEN: '/api/v1/user/forgot-password-check-token',
     FORGOT_PASS_CHANGE_PASS: '/api/v1/user/forgot-password-change-pass',
 
-
 };

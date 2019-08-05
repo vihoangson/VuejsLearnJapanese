@@ -339,7 +339,7 @@ export default {
             };
 
             API.POST(ApiConst.ROOM_ADD_USER_TO_ROOM, data).then(response => {
-                if (response.error_code === 0) {
+                if(response != undefined){
                     switch (response.error_code) {
                         case 0:
                             this.$refs.modal.hide();
@@ -353,6 +353,11 @@ export default {
                             this.roomselectedError = response.data;
                             break;
                         default:
+                            this.$refs.modal.hide();
+                            this.$root.$emit('push-notice', {
+                                message: response.data,
+                                alert: 'alert-danger'
+                            });
                             break;
                     }
                 }

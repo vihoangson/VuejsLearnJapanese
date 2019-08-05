@@ -273,7 +273,7 @@ export default {
                                 break;
                             default:
                                 this.$root.$emit('push-notice', {
-                                    message: 'Delete error',
+                                    message: response.data,
                                     alert: 'alert-danger'
                                 });
                                 break;
@@ -328,7 +328,7 @@ export default {
                                         break;
                                     default:
                                         this.$root.$emit('push-notice', {
-                                            message: 'Delete Error',
+                                            message: response.data,
                                             alert: 'alert-danger'
                                         });
                                         break;
