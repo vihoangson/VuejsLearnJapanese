@@ -1,25 +1,23 @@
 <template>
     <div v-bind:class="getClass()">
-        <div v-if="this.type !== ''" class="message">
-            <div class="message-badge">
-                <component :is="this.type" :msg="this.content" :to="this.to"></component>
-                <img class="message-badge-avatar" :src="this.messageObject.user_info.icon_img" />
+        <pre>
+            <div class="message">
+                <DynamicType
+    :data="item.data"
+    v-for="(item, index) in this.list_content_message"
+    :key="index"
+></DynamicType>
+<img class="message-badge-avatar" :src="this.messageObject.user_info.icon_img" />
             </div>
-            {{this.to_name}}
-        </div>
-        <pre>{{this.content}}</pre>
+        </pre>
     </div>
 </template>
 <script>
-import Reply from './message/Reply';
-import To from './message/To';
-import { API } from '../../../services/api';
-import { ApiConst } from '../../../common/ApiConst';
+import DynamicType from './message/DynamicType';
 export default {
     name: 'ChatMessage',
     components: {
-        Reply,
-        To
+        DynamicType
     },
     props: {
         messageObject: Object,
@@ -28,45 +26,59 @@ export default {
     data() {
         return {
             user: this.$store.getters.get_current_user,
-            type: '',
-            to_name: '',
-            content: '',
-            msg: '',
-            to: ''
+            list_content_message: []
         };
     },
     create() {
         this.formatMessage();
     },
     methods: {
-        formatMessage() {
-            let msg = this.messageObject.message;
+        // formatMessage() {
+        //     let msg = this.messageObject.message;
 
-            if (msg.match(/(\[To:([0-9])+])/g)) {
-                this.type = 'To';
-            } else if (msg.match(/(\[Reply mid:([0-9]+) to:([0-9]+)\])/g)) {
-                this.type = 'Reply';
-            }
+        //     if (msg.match(/(\[To:([0-9])+])/g)) {
+        //         this.type = 'To';
+        //     } else if (msg.match(/(\[Reply mid:([0-9]+) to:([0-9]+)\])/g)) {
+        //         this.type = 'Reply';
+        //     }
 
-            let messagePath = msg.substring(0, msg.indexOf('\n') + 1);
-            this.to_name = messagePath;
-            this.to_name = this.to_name.replace(
-                /(\[To:([0-9])+])|(\[Reply mid:([0-9]+) to:([0-9]+)\])/g,
-                ''
-            );
+        //     let messagePath = msg.substring(0, msg.indexOf('\n') + 1);
+        //     this.to_name = messagePath;
+        //     this.to_name = this.to_name.replace(
+        //         /(\[To:([0-9])+])|(\[Reply mid:([0-9]+) to:([0-9]+)\])/g,
+        //         ''
+        //     );
 
-            this.content = msg.substring(msg.indexOf('\n') + 1, msg.length - 1);
-        },
+        //     this.content = msg.substring(msg.indexOf('\n') + 1, msg.length - 1);
+        // },
         getClass(to) {
             if (to === this.user.id) return 'mention';
         },
-        getToId(to) {
-            let _id = to.match(/(\d+)/g);
-            API.POST(ApiConst.GET_USER_INFO, { id: _id }).then(res => {
-                if (res.error_code === 0) {
-                    console.log(res);
-                }
+        formatMessage() {
+            let msg = this.messageObject.message;
+            let listContentLineBreak = msg.split('\n');
+            listContentLineBreak.forEach(x => {
+                let item = {
+                    data: '',
+                    type: ''
+                };
+                // if (x.match(/(\[To:([0-9])+])/g)) {
+                //     item.type = 'To';
+                //     item.data = x.replace(/(\[To:([0-9])+])/g, '');
+                // } else if (x.match(/(\[Reply mid:([0-9]+) to:([0-9]+)\])/g)) {
+                //     item.type = 'Reply';
+                //     item.data = x.replace(
+                //         /(\[Reply mid:([0-9]+) to:([0-9]+)\])/g,
+                //         ''
+                //     );
+                // } else {
+                //     item.type = 'Default';
+                //     item.data = x;
+                // }
+                item.data = x;
+                this.list_content_message.push(item);
             });
+            console.log(this.list_content_message)
         }
     },
     mounted() {
