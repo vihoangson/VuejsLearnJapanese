@@ -1,7 +1,7 @@
 <template>
     <div class="modal-group">
         <b-modal
-            id="modal-prevent-update-rooms"
+            id="modal-prevent-edit-user"
             ref="modal"
             size= "lg"
             title="Add user to room"
@@ -31,55 +31,18 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="MemberSelect">
-                            <div id="SelectAllBtn" class="memberTableCheckAll" >
-                                <input id="checkAll" name="checkAll" type="checkbox"  v-model="selectAll" @click="select">
-                                <label for="checkAll" class="linkStatus" >Check All</label>
-                            </div>
-                            <ul id="OrganizationFilter" class="roomMemberSelect" role="radiogroup">
-                                <li class="roomMemberSelect">
-                                    <input type="radio" id="InfoOrganizeFilter" value="all" name="org_filter">
-                                    <label for="InfoOrganizeFilter"> Show all </label>
-                                </li>
-                                <li class="roomMemberSelect">
-                                    <input type="radio" id="InfoOrganized" value="organized" name="org_filter">
-                                    <label for="InfoOrganized">Show only within organization</label>
-                                </li>
-                            </ul>
-                            <div class="roomMemberSelect__commonRoleContainer">
-                                <div id="roomInfoSelectRole" class="selectCommonRole">
-                                    <div v-bind:class="{active: isActive, cwTextUnselectable: true}" @click="selectBoxClick">
-                                        <div class="selectboxDefault">
-                                              <span class="selectbox"> {{ selectItem }} </span>
-                                              <span class="icon">
-                                                <svg viewBox="0 0 10 10" width="16" height="16" >
-                                                  <use fill-rule="evenodd" xlink:href="#icon_triangleDown"></use>
-                                                </svg>
-                                              </span>
-                                        </div>
-                                        <ul role="list" class="selectboxContent">
-                                            <li @click="selectDefault"> Edit all permissions </li>
-                                            <li v-for="(s, index) in subscriptions"
-                                                :class="{ 'active': activeIndex === index}" :key="s.id"
-                                                @click="setActive(s.id, s.name)">
-                                                {{ s.name }}
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="table-scroll" >
                                 <table class="table table-group">
                                     <tr v-for="(item, index) in filteredItems" :key="index">
-                                        <td><input type="checkbox" v-model="selected[item.id]" @change="updateCheck(item.id)"></td>
-                                        <td class="avatar">
+                                        <td class="avatar" width="10%">
                                             <img width="10" v-bind:src="item.icon_img">
                                         </td>
-                                        <td class="persion">
+                                        <td class="persion" width="10%">
                                             <p class="member">
                                                 <span class="name">{{item.name}}</span>
                                             </p>
                                         </td>
-                                        <td>
+                                        <td width="65%">
                                             <p>
                                                 <span class="company">{{item.company}}</span>
                                                 <span class="selectRole" @click="itemRoleRoomClick($event)">
@@ -108,7 +71,11 @@
                                                 </span>
                                             </p>
                                         </td>
-                                        <td></td>
+                                        <td width="5%">
+                                            <span class="icon-delete" @click="deleteUserOfRoom(item.id)">
+                                                <svg viewBox="0 0 10 10" id="icon_cancel" xmlns="http://www.w3.org/2000/svg"><path d="M6.831 2.5L4.997 4.335 3.163 2.5l-.663.663 1.834 1.834L2.5 6.831l.663.663L4.997 5.66l1.834 1.834.663-.663-1.835-1.834 1.835-1.834z"></path></svg>
+                                            </span>
+                                        </td>
                                     </tr>
                                 </table>
                             </div>
@@ -122,7 +89,7 @@
             <div slot="modal-footer" class="w-100">
                 <b-button variant="outline-secondary"
                 :disabled="!(selected.length > 0) || disableButton"
-                size="md" @click="btnUpdateRoom">{{buttonName}}</b-button>
+                size="md" @click="btnSaveRoom">{{buttonName}}</b-button>
                 <b-button variant="outline-secondary" size="md" @click="btnCancel"> Cancel </b-button>
             </div>
         </b-modal>
@@ -156,12 +123,15 @@
             }
         },
         mounted() {
-            this.$root.$on('open-modal-update-room', id => {
+            this.$root.$on('open-modal-edit-user', id => {
+                this.buttonName = "Save";
                 this.roomId = this.$store.getters.get_current_room.room_id;
-                this.items = [];
-                this.selected = [];
-                this.buttonName = "Add";
                 this.items = this.$store.getters.get_list_user_by_room_id;
+                for (let i in this.items) {
+                    var id = this.items[i].id;
+                    var selectRole = {id: id, permission : 0, name : this.subscriptions[1].name}
+                    this.selected[id] = selectRole;
+                }
             });
         },
         created: function(){
@@ -179,16 +149,6 @@
             }
         },
         methods: {
-            select() {
-                this.selected = [];
-                if (!this.selectAll) {
-                    for (let i in this.items) {
-                        var id = this.items[i].id;
-                        var selectRole = {id: id, permission : 0, name : this.subscriptions[1].name}
-                        this.selected[id] = selectRole;
-                    }
-                }
-            },
             itemRoleRoomClick(event){
                 event.currentTarget.classList.toggle('active');
             },
@@ -199,46 +159,12 @@
                     this.isActive = true;
                 }
             },
-            setActive(index, criptions) {
-                var tamp = this.selected;
-                this.activeIndex = index;
-                this.selectItem = criptions;
-                this.selected = [];
-
-                for (let i in tamp) {
-                    var id = tamp[i].id;
-                    var selectRole = {id: id, permission : index, name : criptions}
-                    this.selected[id] = selectRole;
-                }
-            },
-            selectDefault(){
-                this.selectItem = "Edit all permissions";
-            },
             setActiveItem(id, index, name){
                 var tamp = this.selected;
                 this.selected = [];
                 var selectRole = {id: id, permission : index, name : name}
                 tamp[id] = selectRole;
                 this.selected = tamp;
-            },
-            updateCheck(id){
-                var tamp = this.selected;
-                this.selected = [];
-                for (let i in tamp) {
-                    if(tamp[i] === true){
-                        var selectRole = {id: id, permission : 0, name : this.subscriptions[1].name}
-                        tamp[i] = selectRole;
-                    }
-                }
-                this.selected = tamp;
-            },
-            checkFormValidity() {
-                if(this.selected.length === 0){
-                    this.roomselectedError = "The selected field is required";
-                    return false
-                }
-
-                return true;
             },
             resetModal() {
                 this.name = ''
@@ -251,43 +177,34 @@
             btnCancel(){
                 this.$refs.modal.hide();
             },
-            btnUpdateRoom() {
-                this.roomselectedError= "";
-                this.disableButton = true;
-                this.selectAll = false;
-
-                if (!this.checkFormValidity()) {
-                    this.disableButton = false;
-                    return
-                }
-
-                let data = {
-                    room_id : this.roomId,
-                    selected: this.selected,
-                    only_token: true,
-                }
-
-                API.POST(ApiConst.ROOM_ADD_USER_TO_ROOM, data).then(response => {
-                    if(response.error_code === 0){
-                        switch(response.error_code){
-                            case 0:
-                                this.$refs.modal.hide();
-                                this.$root.$emit('push-notice', {message:'insert success', alert: 'alert-success'});
-                                this.$root.$emit('changed-id-rooms');
-                            break;
-                            case 1:
-                                this.roomselectedError = response.data;
-                                break;
-                            default:
-                            break
-                        }
+            deleteUserOfRoom(id){
+                var itemsTamp = [];
+console.log(this.selected);
+                for (let i in this.items) {
+                    if(id !== this.items[i].id){
+                        itemsTamp[i] = this.items[i];
                     }
-                    this.disableButton = false;
-                });
+                }
+                for (let i in this.selected) {
+                    if(id !== this.selected[i].id){
+                       this.selected[i] = 'empty';
+                    }
+                }
+
+                this.items = itemsTamp;
+
+                console.log(this.selected);
+            },
+            btnSaveRoom(){
+
             }
         }
     }
 </script>
 
 <style>
+.table-scroll .icon-delete svg{
+    height: 16px;
+    width: 16px;
+}
 </style>
