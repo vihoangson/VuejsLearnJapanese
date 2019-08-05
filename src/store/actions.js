@@ -23,6 +23,9 @@ export default {
     setListUserByRoomId({ commit }, obj) {
         commit('set_list_user_by_room_id', obj);
     },
+    setListNotUserByRoomId({ commit }, obj) {
+        commit('set_list_not_user_by_room_id', obj);
+    },
     setNotification({ commit }, obj) {
         commit('set_notification', obj);
     },

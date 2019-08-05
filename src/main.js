@@ -11,7 +11,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import VModal from 'vue-js-modal';
 import { SocketService } from './services/socket';
-
+import { AppConst } from './common/AppConst';
 Vue.config.productionTip = false;
 Vue.use(BootstrapVue);
 Vue.use(Moment);
@@ -19,8 +19,7 @@ Vue.use(Moment);
 Vue.use(
     new VueSocketIO({
         debug: true,
-        // connection: 'http://172.16.100.35:3001',
-        connection: 'http://127.0.0.1:3000'
+        connection: AppConst.SOCKET_ADDRESS
     })
 );
 
