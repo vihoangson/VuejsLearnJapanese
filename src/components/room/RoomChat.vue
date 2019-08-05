@@ -12,7 +12,11 @@
             </div>
             <div class="filter-list">
                 <div id="roomInfoSelectRole" class="selectCommonRole">
-                    <div v-bind:class="{active: isActiveSelect}" @click="selectBoxClicks" ref="selectBoxClicks">
+                    <div
+                        v-bind:class="{active: isActiveSelect}"
+                        @click="selectBoxClicks"
+                        ref="selectBoxClicks"
+                    >
                         <div class="selectboxDefault">
                             <span class="selectbox">{{ selectItems }}</span>
                             <span class="icon">
@@ -43,7 +47,11 @@
                             >
                                 {{ s.name }}
                                 <div class="option-icon">
-                                    <span class="edit" aria-label="Edit" @click.stop="iconEdit(s.id)">
+                                    <span
+                                        class="edit"
+                                        aria-label="Edit"
+                                        @click.stop="iconEdit(s.id)"
+                                    >
                                         <svg
                                             viewBox="0 0 10 10"
                                             id="icon_edit"
@@ -78,7 +86,8 @@
             <div
                 id="create-room"
                 v-bind:class="{ active: isActive, 'create-room': true }"
-                @click="toggleOption" ref="toggleOption"
+                @click="toggleOption"
+                ref="toggleOption"
             >
                 <span>
                     <svg viewBox="0 0 10 10" id="icon_plus" xmlns="http://www.w3.org/2000/svg">
@@ -122,8 +131,7 @@
 import { API } from '../../services/api';
 import { ApiConst } from '../../common/ApiConst';
 import { AppConst } from '../../common/AppConst';
-import modalMixin from '@/mixins/modal';
-import axios from 'axios';
+
 const EVENT_JOIN = 'join';
 export default {
     name: 'Room',
@@ -144,11 +152,7 @@ export default {
 
     mounted() {
         this.$root.$on('changed-list-group', data => {
-            this.getAllGroup(this.userId).then(response => {
-                if (response != undefined && response.error_code == 0) {
-                    this.datascript = response.data;
-                }
-            });
+            this.getAllGroup(this.userId);
         });
         this.$root.$on('changed-list-room', data => {
             this.list_rooms = [];
@@ -161,30 +165,26 @@ export default {
         this.userId = user.user_id;
         this.getListRoom();
         this.getListMessage();
-        this.getAllGroup(this.userId).then(response => {
-            if (response != undefined && response.error_code == 0) {
-                this.datascript = response.data;
-            }
-        });
+        this.getAllGroup(this.userId);
         document.addEventListener('click', this.documentClick);
         window.addEventListener('resize', this.handleResize);
         this.handleResize();
     },
 
-    destroyed () {
-        document.removeEventListener('click', this.documentClick)
+    destroyed() {
+        document.removeEventListener('click', this.documentClick);
     },
 
     methods: {
-        documentClick(e){
+        documentClick(e) {
             let el1 = this.$refs.selectBoxClicks;
             let el2 = this.$refs.toggleOption;
-            let target = e.target
-            if (( el1 !== target) && !el1.contains(target)) {
-               this.isActiveSelect = false;
+            let target = e.target;
+            if (el1 !== target && !el1.contains(target)) {
+                this.isActiveSelect = false;
             }
-            if (( el2 !== target) && !el2.contains(target)) {
-               this.isActive = false;
+            if (el2 !== target && !el2.contains(target)) {
+                this.isActive = false;
             }
         },
 
@@ -214,7 +214,9 @@ export default {
         getAllGroup(id) {
             return API.GET(ApiConst.GROUP_GET_BY_USER_ID + '/' + id).then(
                 response => {
-                    return response;
+                    if (response !== undefined && response.error_code === 0) {
+                        this.datascript = response.data;
+                    }
                 }
             );
         },
@@ -237,50 +239,47 @@ export default {
 
         iconDelete(id) {
             this.isActiveSelect = false;
-            this.$bvModal.msgBoxConfirm(
-                'Do you really want to delete room ?',
-                {
+            this.$bvModal
+                .msgBoxConfirm('Do you really want to delete room ?', {
                     size: 'sm',
                     buttonSize: 'sm',
                     okVariant: 'success',
                     centered: true
-                }
-            )
-            .then(value => {
-                if(value){
-                    this.deleteGroup(id).then(response => {
-                        if (response != undefined) {
-                            switch (parseInt(response.error_code)) {
-                                case 0:
-                                    this.$root.$emit('push-notice', {
-                                        message: 'Delete success',
-                                        alert: 'alert-success'
-                                    });
-                                    this.$root.$emit('changed-list-group');
-                                    break;
-                                default:
-                                    this.$root.$emit('push-notice', {
-                                        message: 'Delete error',
-                                        alert: 'alert-danger'
-                                    });
-                                    break;
-                            }
-                        }
+                })
+                .then(value => {
+                    if (value) {
+                        this.deleteGroup(id);
+                    }
+                })
+                .catch(err => {
+                    if (err !== null) console.log(err);
+                    this.$root.$emit('push-notice', {
+                        message: 'Open model error',
+                        alert: 'alert-danger'
                     });
-                }
-            })
-            .catch(err => {
-                this.$root.$emit('push-notice', {
-                    message: 'Open model error',
-                    alert: 'alert-danger'
                 });
-            });
         },
 
         deleteGroup(id) {
             return API.POST(ApiConst.GROUP_DELETE, { id: id }).then(
                 response => {
-                    return response;
+                    if (response !== undefined) {
+                        switch (parseInt(response.error_code)) {
+                            case 0:
+                                this.$root.$emit('push-notice', {
+                                    message: 'Delete success',
+                                    alert: 'alert-success'
+                                });
+                                this.$root.$emit('changed-list-group');
+                                break;
+                            default:
+                                this.$root.$emit('push-notice', {
+                                    message: 'Delete error',
+                                    alert: 'alert-danger'
+                                });
+                                break;
+                        }
+                    }
                 }
             );
         },
@@ -294,7 +293,8 @@ export default {
 
         deleteRooms() {
             this.boxOne = '';
-            this.$bvModal.msgBoxConfirm(
+            this.$bvModal
+                .msgBoxConfirm(
                     'If you leave the group chat, your tasks will be deleted, and there is a case where your files will be deleted.  (About file retention)',
                     {
                         size: 'sm',
@@ -304,15 +304,11 @@ export default {
                     }
                 )
                 .then(value => {
-                    if(value){
-                        var res = API.POST(ApiConst.ROOM_DELETE, {
+                    if (value) {
+                        API.POST(ApiConst.ROOM_DELETE, {
                             id: this.$store.getters.get_current_room.room_id
                         }).then(response => {
-                            return response;
-                        });
-
-                        res.then(response => {
-                            if (response != undefined) {
+                            if (response !== undefined) {
                                 switch (parseInt(response.error_code)) {
                                     case 0:
                                         this.$root.$emit('push-notice', {
@@ -333,6 +329,7 @@ export default {
                     }
                 })
                 .catch(err => {
+                    if (err !== null) console.log(err);
                     this.$root.$emit('push-notice', {
                         message: 'Open model error',
                         alert: 'alert-danger'
@@ -341,7 +338,7 @@ export default {
         },
 
         settingRooms() {
-            var res = API.POST(ApiConst.ROOM_SETTING, {
+            API.POST(ApiConst.ROOM_SETTING, {
                 id: this.$store.getters.get_current_room.room_id
             }).then(response => {
                 return response;

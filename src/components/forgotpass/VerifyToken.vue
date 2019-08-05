@@ -1,4 +1,5 @@
 <template>
+<div id='checktoken'></div>
 </template>
 
 <script>

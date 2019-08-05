@@ -426,16 +426,16 @@ export default {
             this.list_user_room = [];
             this.room_length = 0;
             this.is_admin_room = false;
-            let room_id = this.$store.getters.get_current_room.room_id;
-            if(room_id !== undefined){
-                API.GET(ApiConst.ROOM_CHECK_IS_ADMIN + "/" + room_id).then(response => {
-                    if (response != undefined && response.error_code == 0) {
+            let roomId = this.$store.getters.get_current_room.room_id;
+            if(roomId !== undefined){
+                API.GET(ApiConst.ROOM_CHECK_IS_ADMIN + "/" + roomId).then(response => {
+                    if (response !== undefined && response.error_code === 0) {
                         this.is_admin_room = response.data;
                     }
                 });
 
-                API.GET(ApiConst.ROOM_GET_USER_BY_ROOM_ID + "/" + room_id).then(response => {
-                    if (response != undefined && response.error_code == 0) {
+                API.GET(ApiConst.ROOM_GET_USER_BY_ROOM_ID + "/" + roomId).then(response => {
+                    if (response !== undefined && response.error_code === 0) {
                         this.list_user_room = response.data;
                     }
                 });
@@ -444,7 +444,7 @@ export default {
                     'room_id': this.$store.getters.get_current_room.room_id,
                     'is_added': 0
                 }).then(response => {
-                    if (response != undefined && response.error_code == 0) {
+                    if (response !== undefined && response.error_code === 0) {
                         this.room_length = response.data.length;
                         this.$store.dispatch('setListUserByRoomId', response.data);
                     }

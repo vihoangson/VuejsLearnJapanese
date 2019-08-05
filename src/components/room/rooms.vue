@@ -340,7 +340,6 @@
                             case 2:
                                 this.roomDescriptionError = response.data;
                                 break;
-                            break;
                             default:
                                 break;
                         }
