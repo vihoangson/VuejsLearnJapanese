@@ -4,7 +4,6 @@ export const SocketService = {
     connect: function() {
         console.log('Connect socket.io successful!!');
         let rooms = this.$store.getters.get_list_room;
-        console.log(rooms)
         if (rooms.length > 0) {
             let roomIds = [];
             rooms.forEach(x => {
@@ -24,6 +23,7 @@ export const SocketService = {
         }
     },
     broadcast: function(e) {
+        console.log(e);
         var room = this.$store.getters.get_current_room;
         if (room.room_id === e.room_id) {
             if (e.type === AppConst.MESSAGE_TYPE.CREATE) {

@@ -1,6 +1,5 @@
 <template>
     <div id="chat-box" @dragover="showDropzoneForm">
-        <UpdateRoom></UpdateRoom>
         <div class="chat-box-header">
             <div class="header-name">
                 <div class="room-logo">
@@ -10,17 +9,42 @@
                     <span>{{this.$store.getters.get_current_room.room_name}}</span>
                 </h1>
                 <div class="list_user">
-                    <span class="icon_img" v-for="(item, index) in list_user_room" :key="`item-${index}`">
-                         <img :src="item.icon_img" alt class="avatar" />
+                    <span
+                        class="icon_img"
+                        v-for="(item, index) in list_user_room"
+                        :key="`item-${index}`"
+                    >
+                        <img :src="item.icon_img" alt class="avatar" />
                     </span>
-                    <span class="btn-more" @click="openModalShowUserRoom" v-if="room_length > 0 && !is_admin_room"> +{{room_length}}
-                    </span>
-                    <span class="btn-more" v-if="is_admin_room">
-                        <svg viewBox="0 0 10 10" id="icon_memberDetail" xmlns="http://www.w3.org/2000/svg"><path d="M6.25 2.5h3.13v.94H6.25zm0 2.03h3.13v.94H6.25z"></path><path d="M3.75 1.25a1.82 1.82 0 0 1 1.61 2A2.46 2.46 0 0 1 4.62 5a.39.39 0 0 0 .11.63l.55.3c.89.45 1.6.83 1.59 1.55S6 8.53 5.31 8.64a10.11 10.11 0 0 1-1.56.11 10.11 10.11 0 0 1-1.56-.11C1.46 8.53.62 8.17.62 7.48s.71-1.1 1.6-1.55l.55-.3A.39.39 0 0 0 2.88 5a2.46 2.46 0 0 1-.74-1.75 1.82 1.82 0 0 1 1.61-2zM7.2 6.56a1.58 1.58 0 0 1 .3.92h1.88v-.92z"></path></svg>
+                    <span
+                        class="btn-more"
+                        @click="openModalShowUserRoom(is_admin_room)"
+                        v-if="room_length > 0 && !is_admin_room"
+                    >+{{room_length}}</span>
+                    <span
+                        class="btn-more"
+                        v-if="is_admin_room"
+                        @click="openModalShowUserRoom(is_admin_room)"
+                    >
+                        <svg
+                            viewBox="0 0 10 10"
+                            id="icon_memberDetail"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path d="M6.25 2.5h3.13v.94H6.25zm0 2.03h3.13v.94H6.25z" />
+                            <path
+                                d="M3.75 1.25a1.82 1.82 0 0 1 1.61 2A2.46 2.46 0 0 1 4.62 5a.39.39 0 0 0 .11.63l.55.3c.89.45 1.6.83 1.59 1.55S6 8.53 5.31 8.64a10.11 10.11 0 0 1-1.56.11 10.11 10.11 0 0 1-1.56-.11C1.46 8.53.62 8.17.62 7.48s.71-1.1 1.6-1.55l.55-.3A.39.39 0 0 0 2.88 5a2.46 2.46 0 0 1-.74-1.75 1.82 1.82 0 0 1 1.61-2zM7.2 6.56a1.58 1.58 0 0 1 .3.92h1.88v-.92z"
+                            />
+                        </svg>
                     </span>
                     <span class="btn-plus" v-if="is_admin_room" @click="updateGroupChat">
-                        <svg viewBox="0 0 10 10" class="chatRoomHeaderMemberList__editIcon" width="16" height="16">
-                            <use fill-rule="evenodd" xlink:href="#icon_plus"></use>
+                        <svg
+                            viewBox="0 0 10 10"
+                            class="chatRoomHeaderMemberList__editIcon"
+                            width="16"
+                            height="16"
+                        >
+                            <use fill-rule="evenodd" xlink:href="#icon_plus" />
                         </svg>
                     </span>
                 </div>
@@ -214,7 +238,6 @@ import ChatEdit from './partials/ChatEdit';
 import modalMixin from '@/mixins/modal';
 import SendFile from './SendFile';
 import ChatMessage from './partials/ChatMessage';
-import UpdateRoom from '../room/UpdateRoom';
 
 export default {
     name: 'ChatBox',
@@ -224,8 +247,7 @@ export default {
         TextareaEmojiPicker,
         ChatAction,
         ChatEdit,
-        ChatMessage,
-        UpdateRoom,
+        ChatMessage
     },
     props: {
         value: {
@@ -250,7 +272,7 @@ export default {
             listMyFile: [],
             list_user_room: [],
             is_admin_room: false,
-            room_length: 0,
+            room_length: 0
         };
     },
     mounted() {
@@ -418,42 +440,59 @@ export default {
                 );
             });
         },
-        updateGroupChat(){
-            this.$root.$emit('open-modal-update-room', 0);
-            this.$bvModal.show('modal-prevent-update-rooms');
+        updateGroupChat() {
+            this.$root.$emit('open-modal-add-user', 0);
+            this.$bvModal.show('modal-prevent-add-user');
         },
-        getUserByRoomId(){
-            let room_id = this.$store.getters.get_current_room.room_id;
-            if(room_id !== undefined){
-                // return API.POST(ApiConst.ROOM_GET_ALL_USER_BY_ROOM ,{
-                //     'room_id': room_id,
-                //     'is_added': 1
-                // }).then(response => {
-                //     this.list_user_room = response.data;
-                // })
-                API.GET(ApiConst.ROOM_CHECK_IS_ADMIN + "/" + room_id).then(response => {
-                    console.log(response);
-                    if (response != undefined && response.error_code == 0) {
-                        this.is_admin_room = response.data;
+        getUserByRoomId() {
+            this.list_user_room = [];
+            this.room_length = 0;
+            this.is_admin_room = false;
+            let roomId = this.$store.getters.get_current_room.room_id;
+            if (roomId !== undefined) {
+                API.GET(ApiConst.ROOM_CHECK_IS_ADMIN + '/' + roomId).then(
+                    response => {
+                        if (
+                            response !== undefined &&
+                            response.error_code === 0
+                        ) {
+                            this.is_admin_room = response.data;
+                        }
                     }
-                });
+                );
 
-                API.GET(ApiConst.ROOM_GET_USER_BY_ROOM_ID + "/" + room_id).then(response => {
-                    if (response != undefined && response.error_code == 0) {
-                        this.list_user_room = response.data;
+                API.GET(ApiConst.ROOM_GET_USER_BY_ROOM_ID + '/' + roomId).then(
+                    response => {
+                        if (
+                            response !== undefined &&
+                            response.error_code === 0
+                        ) {
+                            this.$store.dispatch(
+                                'setListUserByRoomId',
+                                response.data
+                            );
+                            this.list_user_room = this.$store.getters.get_list_user_by_room_id;
+                        }
                     }
-                });
+                );
 
-                API.POST(ApiConst.ROOM_GET_ALL_USER_BY_ROOM ,{
-                    'room_id': this.$store.getters.get_current_room.room_id,
-                    'is_added': 0
+                API.POST(ApiConst.ROOM_GET_ALL_USER_BY_ROOM, {
+                    room_id: this.$store.getters.get_current_room.room_id,
+                    is_added: 0
                 }).then(response => {
-                    this.room_length = response.data.length;
-                    this.$store.dispatch('setListUserByRoomId', response.data);
-                })
+                    if (response !== undefined && response.error_code === 0) {
+                        this.room_length = response.data.length;
+                        this.$store.dispatch(
+                            'setListNotUserByRoomId',
+                            response.data
+                        );
+                    }
+                });
             }
         },
-        openModalShowUserRoom(){
+        openModalShowUserRoom(isAdmin) {
+            this.$root.$emit('open-modal-edit-user', isAdmin);
+            this.$bvModal.show('modal-prevent-edit-user');
         }
     },
     computed: {
@@ -468,7 +507,7 @@ export default {
 </script>
 
 <style>
-.list_user .btn-more{
+.list_user .btn-more {
     height: 25px;
     width: 25px;
     background: #ccc;
@@ -479,29 +518,29 @@ export default {
     font-size: 14px;
     line-height: 24px;
 }
-.list_user .btn-more svg{
+.list_user .btn-more svg {
     width: 18px;
 }
-.list_user .btn-plus{
+.list_user .btn-plus {
     float: right;
     margin-left: 5px;
     height: 25px;
     width: 25px;
     background: #b8daff;
-    display: inline-block;
+    display: block;
     border-radius: 50%;
     color: #fff;
     text-align: center;
     font-size: 16px;
     line-height: 24px;
 }
-.list_user{
+.list_user {
     float: right;
 }
-.list_user .icon_img{
+.list_user .icon_img {
     margin-right: 5px;
 }
-.list_user .icon_img img{
+.list_user .icon_img img {
     width: 25px;
     border-radius: 50%;
     border: 1px #eee solid;
@@ -544,7 +583,7 @@ export default {
 .dropdown {
     float: right;
     position: relative;
-    display: inline-block;
+    display: block;
 }
 
 .dropdown-content {
@@ -617,7 +656,7 @@ export default {
     width: calc(100% - 300px);
 }
 .room-logo {
-    display: inline-block;
+    display: block;
     float: left;
 }
 .room-logo img {
