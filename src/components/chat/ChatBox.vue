@@ -449,8 +449,8 @@ export default {
                 })
             }
         },
-        openModalShowUserRoom(is_admin){
-            this.$root.$emit('open-modal-edit-user', is_admin);
+        openModalShowUserRoom(isAdmin){
+            this.$root.$emit('open-modal-edit-user', isAdmin);
             this.$bvModal.show('modal-prevent-edit-user');
         }
     },
