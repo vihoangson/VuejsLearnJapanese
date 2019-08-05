@@ -30,7 +30,6 @@
 <script>
     import { API } from '../../services/api';
     import { ApiConst } from '../../common/ApiConst';
-    import { AppConst } from '../../common/AppConst';
     import VueRecaptcha from 'vue-recaptcha';
 
     export default {

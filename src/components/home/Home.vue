@@ -50,9 +50,11 @@ export default {
     created() {
         let user = JSON.parse(localStorage.getItem('user'));
 
-        this.$store.dispatch('setCurrentUser', user);
-        this.$socket.emit(AppConst.EVENT_MESSAGE.CHANNEL_NEW_ROOM, user.user_id);
-        this.setNotification();
+        if(user !== null){
+            this.$store.dispatch('setCurrentUser', user);
+            this.$socket.emit(AppConst.EVENT_MESSAGE.CHANNEL_NEW_ROOM, user.user_id);
+            this.setNotification();
+        }
     },
     // beforeRouteUpdate(to, from, next) {
     //     let room = this.$route.params.room_id;

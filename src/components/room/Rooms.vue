@@ -323,7 +323,7 @@
                 this.selected.forEach(x=>{
                     if(x !== null)
                     data.member_list.push(x);
-                })
+                });
 
                 API.POST(ApiConst.ROOM_ADD,data).then(response => {
                     if(response.error_code === 0){
@@ -331,6 +331,7 @@
                             case 0:
                                 this.$refs.modal.hide();
                                 this.$root.$emit('push-notice', {message:'insert success', alert: 'alert-success'});
+                                data.room_id = response.data;
                                 this.$root.$emit('changed-list-room', data);
                                 this.$root.$emit('changed-id-rooms');
                                 break;
@@ -340,7 +341,6 @@
                             case 2:
                                 this.roomDescriptionError = response.data;
                                 break;
-                            break;
                             default:
                                 break;
                         }
