@@ -458,5 +458,6 @@ export default {
 		position: relative;
 		width: 960px;
 		margin: 0 auto;
+		height: 13px;
 	}
 </style>
