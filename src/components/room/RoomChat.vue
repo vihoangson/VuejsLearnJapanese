@@ -663,4 +663,11 @@ export default {
     color: #fff;
     transition: 0.5s;
 }
+
+span.not-read-number {
+    background: red;
+    color: white;
+    padding: 4px;
+    border-radius: 5px;
+}
 </style>
