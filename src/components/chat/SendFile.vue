@@ -121,6 +121,8 @@ export default {
     created() {},
     mounted() {},
     methods: {
+        addEmoji(){},
+        toggleEmojiPicker(){},
         getFile(file) {
             console.log(file);
         },
@@ -138,13 +140,14 @@ export default {
             }
         },
         hideDropzoneCheck() {
-            if (this.$refs['myVueDropzone'].getAcceptedFiles().length === 0) {
-                this.hideDropzone();
-            }
+            // if (this.$refs['myVueDropzone'].getAcceptedFiles().length === 0) {
+            //     this.hideDropzone();
+            // }
         },
         hideDropzone() {
-            this.$refs['myVueDropzone'].removeAllFiles();
-            this.$emit('close');
+            this.$modal.hide('SendFile');
+            // this.$refs['myVueDropzone'].removeAllFiles();
+            // this.$emit('close');
         },
         sendMessageFile() {
             this.$refs.myVueDropzone.processQueue();

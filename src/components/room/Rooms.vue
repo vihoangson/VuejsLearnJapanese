@@ -4,7 +4,7 @@
             id="modal-prevent-rooms"
             ref="modal"
             size= "lg"
-            title="Create a new Group Chat"
+            title="Create a new Room Chat"
             @show="resetModal"
             @hidden="resetModal"
             @ok="handleOk">
@@ -137,7 +137,7 @@
             </form>
             <div slot="modal-footer" class="w-100">
                 <b-button variant="outline-secondary"
-                :disabled="!(selected.length > 0) || (roomName.length == 0) || disableButton"
+                :disabled="disableButton"
                 size="md" @click="btnCreateRoom">{{buttonName}}</b-button>
                 <b-button variant="outline-secondary" size="md" @click="btnCancel"> Cancel </b-button>
             </div>
@@ -174,6 +174,7 @@
                 roomNameError: "",
                 roomselectedError: "",
                 userId: 0,
+                user: [],
             }
         },
         mounted() {
@@ -185,7 +186,6 @@
                     this.buttonName = "Update";
                     this.selected = [];
                     this.getAllUser().then(data => {
-                        console.log(data);
                         this.items = data;
                     });
                 }else{
@@ -199,8 +199,8 @@
             });
         },
         created: function(){
-            let user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
-            this.userId = user.user_id;
+            this.user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
+            this.userId = this.user.user_id;
         },
         computed: {
             filteredItems() {
@@ -218,7 +218,7 @@
                 if (!this.selectAll) {
                     for (let i in this.items) {
                         var id = this.items[i].id;
-                        var selectRole = {id: id, index : 0, name : this.subscriptions[1].name}
+                        var selectRole = {id: id, permission : 0, name : this.subscriptions[1].name}
                         this.selected[id] = selectRole;
                     }
                 }
@@ -241,7 +241,7 @@
 
                 for (let i in tamp) {
                     var id = tamp[i].id;
-                    var selectRole = {id: id, index : index, name : criptions}
+                    var selectRole = {id: id, permission : index, name : criptions}
                     this.selected[id] = selectRole;
                 }
             },
@@ -251,7 +251,7 @@
             setActiveItem(id, index, name){
                 var tamp = this.selected;
                 this.selected = [];
-                var selectRole = {id: id, index : index, name : name}
+                var selectRole = {id: id, permission : index, name : name}
                 tamp[id] = selectRole;
                 this.selected = tamp;
             },
@@ -260,26 +260,21 @@
                 this.selected = [];
                 for (let i in tamp) {
                     if(tamp[i] === true){
-                        var selectRole = {id: id, index : 0, name : this.subscriptions[1].name}
+                        var selectRole = {id: id, permission : 0, name : this.subscriptions[1].name}
                         tamp[i] = selectRole;
                     }
                 }
                 this.selected = tamp;
             },
             checkFormValidity() {
-                if(this.roomName === "" || this.roomName.length >= 50){
-                    this.roomNameError = "Room Name not empty and may not be greater than 50 characters";
+                if(this.roomName.length >= 50){
+                    this.roomNameError = "Room Name may not be greater than 50 characters";
                     return false
                 }
-                // if(this.description == "" || this.description.length >= 255){
-                //     this.roomDescriptionError = "descriptiom not empty and may not be greater than 255 characters";
-                //     return false
-                // }
-                if(this.selected.length === 0){
-                    this.roomselectedError = "The selected field is required";
+                if(this.description.length >= 255){
+                    this.roomDescriptionError = "descriptiom may not be greater than 255 characters";
                     return false
                 }
-
                 return true;
             },
             resetModal() {
@@ -292,9 +287,9 @@
             },
             getAllUser(){
                 API.GET(ApiConst.ROOM_GET_ALL_USER).then(response => {
-                    console.log(response);
                     this.items = response.data;
                 });
+                this.$store.dispatch('setListUserByRoomId', this.items);
             },
             btnCancel(){
                 this.$refs.modal.hide();
@@ -311,6 +306,10 @@
                     return
                 }
 
+                if(this.roomName === ''){
+                    this.roomName = this.user.name
+                }
+
                 let data = {
                     room_name: this.roomName,
                     description: this.description,
@@ -324,8 +323,8 @@
                 this.selected.forEach(x=>{
                     if(x !== null)
                     data.member_list.push(x);
-                })
-                
+                });
+
                 API.POST(ApiConst.ROOM_ADD,data).then(response => {
                     if(response.error_code === 0){
                         switch(response.error_code){
@@ -334,15 +333,13 @@
                                 this.$root.$emit('push-notice', {message:'insert success', alert: 'alert-success'});
                                 data.room_id = response.data;
                                 this.$root.$emit('changed-list-room', data);
+                                this.$root.$emit('changed-id-rooms');
                                 break;
                             case 1:
                                 this.roomNameError = response.data;
                                 break;
                             case 2:
                                 this.roomDescriptionError = response.data;
-                                break;
-                            case 3:
-                                this.roomselectedError = response.data;
                                 break;
                             default:
                                 break;

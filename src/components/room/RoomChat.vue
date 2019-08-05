@@ -12,7 +12,11 @@
             </div>
             <div class="filter-list">
                 <div id="roomInfoSelectRole" class="selectCommonRole">
-                    <div v-bind:class="{active: isActiveSelect}" @click="selectBoxClicks">
+                    <div
+                        v-bind:class="{active: isActiveSelect}"
+                        @click="selectBoxClicks"
+                        ref="selectBoxClicks"
+                    >
                         <div class="selectboxDefault">
                             <span class="selectbox">{{ selectItems }}</span>
                             <span class="icon">
@@ -36,14 +40,18 @@
                                 </span>
                             </li>
                             <li
-                                v-for="(s, index) in this.datascript"
+                                v-for="(s, index) in datascript"
                                 :class="{ 'active': activeIndex === index}"
                                 :key="s.id"
                                 @click="setActive(index, s.name)"
                             >
                                 {{ s.name }}
                                 <div class="option-icon">
-                                    <span class="edit" aria-label="Edit" @click="iconEdit(s.id)">
+                                    <span
+                                        class="edit"
+                                        aria-label="Edit"
+                                        @click.stop="iconEdit(s.id)"
+                                    >
                                         <svg
                                             viewBox="0 0 10 10"
                                             id="icon_edit"
@@ -57,7 +65,7 @@
                                     <span
                                         class="delete"
                                         aria-label="Delete"
-                                        @click="iconDelete(s.id)"
+                                        @click.stop="iconDelete(s.id)"
                                     >
                                         <svg
                                             viewBox="0 0 10 10"
@@ -79,6 +87,7 @@
                 id="create-room"
                 v-bind:class="{ active: isActive, 'create-room': true }"
                 @click="toggleOption"
+                ref="toggleOption"
             >
                 <span>
                     <svg viewBox="0 0 10 10" id="icon_plus" xmlns="http://www.w3.org/2000/svg">
@@ -158,9 +167,26 @@ export default {
         this.userId = user.user_id;
         this.getListRoom();
         this.getAllGroup(this.userId);
+        document.addEventListener('click', this.documentClick);
+    },
+
+    destroyed() {
+        document.removeEventListener('click', this.documentClick);
     },
 
     methods: {
+        documentClick(e) {
+            let el1 = this.$refs.selectBoxClicks;
+            let el2 = this.$refs.toggleOption;
+            let target = e.target;
+            if (el1 !== target && !el1.contains(target)) {
+                this.isActiveSelect = false;
+            }
+            if (el2 !== target && !el2.contains(target)) {
+                this.isActive = false;
+            }
+        },
+
         toggleOption: function() {
             if (this.isActive) {
                 this.isActive = false;
@@ -185,12 +211,13 @@ export default {
         },
 
         getAllGroup(id) {
-            this.datascript = [];
-            API.GET(ApiConst.GROUP_GET_BY_USER_ID + '/' + id).then(response => {
-                if (response !== undefined && response.error_code === 0) {
-                    this.datascript = response.data;
+            return API.GET(ApiConst.GROUP_GET_BY_USER_ID + '/' + id).then(
+                response => {
+                    if (response !== undefined && response.error_code === 0) {
+                        this.datascript = response.data;
+                    }
                 }
-            });
+            );
         },
 
         addRooms() {
@@ -204,32 +231,13 @@ export default {
         },
 
         iconEdit(id) {
+            this.isActiveSelect = false;
             this.$root.$emit('open-modal-group', id);
             this.$bvModal.show('modal-prevent-group');
         },
 
-        deleteGroup(id) {
-            API.POST(ApiConst.GROUP_DELETE, { id: id }).then(response => {
-                if (response !== undefined) {
-                    switch (parseInt(response.error_code)) {
-                        case 0:
-                            this.$root.$emit('push-notice', {
-                                message: 'Delete success',
-                                alert: 'alert-success'
-                            });
-                            this.$root.$emit('changed-list-group');
-                            break;
-                        default:
-                            this.$root.$emit('push-notice', {
-                                message: 'Delete error',
-                                alert: 'alert-danger'
-                            });
-                            break;
-                    }
-                }
-            });
-        },
         iconDelete(id) {
+            this.isActiveSelect = false;
             this.$bvModal
                 .msgBoxConfirm('Do you really want to delete room ?', {
                     size: 'sm',
@@ -238,12 +246,12 @@ export default {
                     centered: true
                 })
                 .then(value => {
-                    this.deleteGroup(id);
-                })
-                .catch(error => {
-                    if (error) {
-                        console.log(error);
+                    if (value) {
+                        this.deleteGroup(id);
                     }
+                })
+                .catch(err => {
+                    if (err !== null) console.log(err);
                     this.$root.$emit('push-notice', {
                         message: 'Open model error',
                         alert: 'alert-danger'
@@ -251,8 +259,32 @@ export default {
                 });
         },
 
+        deleteGroup(id) {
+            return API.POST(ApiConst.GROUP_DELETE, { id: id }).then(
+                response => {
+                    if (response !== undefined) {
+                        switch (parseInt(response.error_code)) {
+                            case 0:
+                                this.$root.$emit('push-notice', {
+                                    message: 'Delete success',
+                                    alert: 'alert-success'
+                                });
+                                this.$root.$emit('changed-list-group');
+                                break;
+                            default:
+                                this.$root.$emit('push-notice', {
+                                    message: 'Delete error',
+                                    alert: 'alert-danger'
+                                });
+                                break;
+                        }
+                    }
+                }
+            );
+        },
+
         editGroup(id) {
-            API.POST(ApiConst.GROUP_EDIT, { id: id }).then(response => {
+            return API.POST(ApiConst.GROUP_EDIT, { id: id }).then(response => {
                 return response;
             });
         },
@@ -271,40 +303,42 @@ export default {
                     }
                 )
                 .then(value => {
-                    let data = {
-                        id: this.$store.getters.get_current_room.room_id
-                    };
-                    API.POST(ApiConst.ROOM_DELETE, data).then(response => {
-                        if (response !== undefined) {
-                            switch (parseInt(response.error_code)) {
-                                case 0:
-                                    this.$root.$emit('push-notice', {
-                                        message: 'Delete success',
-                                        alert: 'alert-success'
-                                    });
-                                    let room = this.list_rooms.find(d => {
-                                        return d.room_id === data.id;
-                                    });
-                                    if (room !== undefined) {
-                                        let idx = this.list_rooms.indexOf(room);
-                                        this.list_rooms.splice(idx, 1);
-                                    }
-
-                                    break;
-                                default:
-                                    this.$root.$emit('push-notice', {
-                                        message: 'Delete Error',
-                                        alert: 'alert-danger'
-                                    });
-                                    break;
+                    if (value) {
+                        let data = {
+                            id: this.$store.getters.get_current_room.room_id
+                        };
+                        API.POST(ApiConst.ROOM_DELETE, data).then(response => {
+                            if (response !== undefined) {
+                                switch (parseInt(response.error_code)) {
+                                    case 0:
+                                        this.$root.$emit('push-notice', {
+                                            message: 'Delete success',
+                                            alert: 'alert-success'
+                                        });
+                                        let room = this.list_rooms.find(d => {
+                                            return d.room_id === data.id;
+                                        });
+                                        if (room !== undefined) {
+                                            let idx = this.list_rooms.indexOf(
+                                                room
+                                            );
+                                            this.list_rooms.splice(idx, 1);
+                                        }
+                                        this.changeRoom(this.list_rooms[0]);
+                                        break;
+                                    default:
+                                        this.$root.$emit('push-notice', {
+                                            message: 'Delete Error',
+                                            alert: 'alert-danger'
+                                        });
+                                        break;
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 })
                 .catch(err => {
-                    if (err) {
-                        console.log(err.stack);
-                    }
+                    if (err !== null) console.log(err);
                     this.$root.$emit('push-notice', {
                         message: 'Open model error',
                         alert: 'alert-danger'
@@ -322,6 +356,7 @@ export default {
 
         changeRoom(room) {
             this.$store.dispatch('setCurrentRoom', room);
+            this.$root.$emit('changed-id-rooms');
             this.getListMessage(room);
             room.color = '#bfbab0';
             room.not_read = 0;
@@ -367,16 +402,8 @@ export default {
                 }, 1);
             });
         },
-
         pushNewRoom(room) {
             this.$store.dispatch('addNewRoom', room);
-            // this.list_rooms.push(room);
-            // this.list_rooms.forEach(x => {
-            //     this.rooms.push(x.room_id);
-            // });
-            // this.list_rooms.sort((a, b) => {
-            //     return b.is_mychat - a.is_mychat;
-            // });
             this.changeRoom(room);
 
             this.$socket.emit(

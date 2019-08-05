@@ -5,38 +5,30 @@
         </header>
         <section class="login-content">
             <div class="login-inner">
-                <h2 class="title">LOGIN</h2>
-                <form name="login" class="login" method="post" @submit="login">
+                <h2 class="title">Change password</h2>
+                <form name="login" class="login" method="post" @submit="mchangePassword">
                     <span class="error">{{errors.login_fail}}</span>
                     <div class="login-form-row">
-                        <label for="email">Email Address</label>
+                        <label for="email">New password</label>
                         <div class="login-email">
-                            <input type="text" v-model="email" />
+                            <input type="password" v-model="m_password" required minlength="8" />
                         </div>
-                        <span class="error">{{errors.email}}</span>
+                        <span class="error">{{errors.m_password}}</span>
                     </div>
                     <div class="login-form-row">
-                        <label for="email">Password</label>
+                        <label for="email">Confirm new password</label>
                         <div class="login-email">
-                            <input type="password" v-model="password" />
+                            <input type="password" v-model="m_password_c" required minlength="8" />
                         </div>
-                        <span class="error">{{errors.password}}</span>
+                        <span class="error">{{errors.m_password_c}}</span>
                     </div>
-                    <div class="login-form-row keep-login">
-                        <input id="login-checkbox" type="checkbox" />
-                        <label for="login-checkbox">Keep me logged in</label>
-                    </div>
+
                     <!--<vue-recaptcha @verify="markRecaptchaAsVerified" class="recapcha" sitekey="6LexDawUAAAAAP2dVouECeGm63c78bbwGtqJe-G1" :loadRecaptchaScript="true"></vue-recaptcha>-->
                     <span class="error">{{errors.pleaseTickRecaptchaMessage}}</span>
 
                     <div class="login-form-row login-button">
-                        <input type="submit" value="Login" class="btn btn-login" />
+                        <input type="submit" value="Change password" class="btn btn-login" />
                     </div>
-
-                    <div class="text-center box-button-bottom">
-                        <button class="forget-password-button btn" type="button" @click="SetNewPassword">Reset password</button> <button class="sign-up-button btn" type="button" @click="SignUp">Register</button>
-                    </div>
-
                 </form>
             </div>
         </section>
@@ -46,20 +38,19 @@
 <script>
 import { API } from '../../services/api';
 import { ApiConst } from '../../common/ApiConst';
-import { AppConst } from '../../common/AppConst';
-import VueRecaptcha from 'vue-recaptcha';
+// import VueRecaptcha from 'vue-recaptcha';
 
 export default {
-    name: 'Login',
-    components: {
-        VueRecaptcha
-    },
+    name: 'EnterEmail',
+    components: {},
     data() {
         return {
             errors: {
                 email: '',
                 password: '',
                 pleaseTickRecaptchaMessage: '',
+                m_password_c: '',
+                m_password: '',
                 login_fail: ''
             },
             email: '',
@@ -68,67 +59,57 @@ export default {
         };
     },
     methods: {
-        markRecaptchaAsVerified() {
-            this.errors.pleaseTickRecaptchaMessage = '';
-            this.recaptchaVerified = true;
-        },
-        login(e) {
+        mchangePassword(e) {
             e.preventDefault();
+            let isValid = false;
 
-            if (this.email === '') this.errors.email = '* Userame required!';
+            if (this.m_password === '') {
+                this.errors.m_password = '* Password required!';
+                isValid = true;
+            }
+            if (this.m_password_c === '') {
+                this.errors.m_password_c = '* Password required!';
+                isValid = true;
+            }
+            if (this.m_password_c !== this.m_password) {
+                this.errors.m_password_c =
+                    '* Password and confirm password not same';
+                isValid = true;
+            }
 
-            if (this.password === '')
-                this.errors.password = '* Password required!';
+            let tokenResetPass = localStorage.getItem('token_resetpass');
+            let data = {
+                password_c: this.m_password_c,
+                password: this.m_password,
+                token: tokenResetPass
+            };
 
-            if (!this.recaptchaVerified)
-                this.errors.pleaseTickRecaptchaMessage =
-                    '* Please tick recaptcha!';
-
-            if (
-                this.email !== '' &&
-                this.password !== '' &&
-                this.recaptchaVerified
-            ) {
-                let data = {
-                    email: this.email,
-                    password: this.password,
-                    only_token: true
-                };
-
-                API.POST(ApiConst.LOGIN, data).then(res => {
+            if (!isValid) {
+                API.POST(ApiConst.FORGOT_PASS_CHANGE_PASS, data).then(res => {
+                    console.log(res);
                     if (res.error_code === 0) {
-                        let user = {
-                            token: res.data.token,
-                            user_id: res.data.id,
-                            icon_img: '',
-                            name: res.data.name
-                        };
-                        if (
-                            res.data.icon_img !== null &&
-                            res.data.icon_img !== ''
-                        )
-                            user.icon_img = res.data.icon_img;
-                        else
-                            user.icon_img =
-                                'https://britz.mcmaster.ca/images/nouserimage.gif/image';
-                        localStorage.setItem(
-                            AppConst.LOCAL_USER,
-                            JSON.stringify(user)
-                        );
-                        this.$router.push({ path: '/' });
+                        alert('Change password successfully !');
+                        this.$router.push({ name: 'login' });
                     } else {
-                        this.errors.login_fail = '* ' + res.error_msg;
+                        switch (res.error_code) {
+                            case 2:
+                                alert('Token does not exist or expires');
+                                return this.$router.push({ name: 'login' });
+                            default:
+                                alert(
+                                    'Change password fail ! ' +
+                                        res.error_msg +
+                                        ' : ' +
+                                        res.data
+                                );
+                                break;
+                        }
                     }
                 });
             }
-        },
-        SetNewPassword() {
-            this.$router.push({ name: 'ForgotPassword' });
-        },
-        SignUp() {
-            this.$router.push({ name: 'Register' });
         }
-    }
+    },
+    mounted() {}
 };
 </script>
 
