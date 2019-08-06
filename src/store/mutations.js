@@ -60,17 +60,32 @@ export default {
             };
         }
     },
-    new_room(state, obj){
+    new_room(state, obj) {
         state.list_room.push(obj);
-        state.list_room.sort((a,b) => {
+        state.list_room.sort((a, b) => {
             return b.is_mychat - a.is_mychat;
         });
         state.current_room = obj;
         state.current_room.color = '#bfbab0';
-        state.list_room.forEach(x=>{
+        state.list_room.forEach(x => {
             if (obj.room_id !== x.room_id) {
                 x.color = '';
             }
         });
+    },
+    set_current_user_info(state, obj) {
+        return (state.current_user_info = obj);
+    },
+    set_list_message(state, list) {
+        return (state.list_message = list);
+    },
+    setContactDisplay(state, style) {
+        state.openContactDisplay = style;
+    },
+    setProfileDisplay(state, style) {
+        state.openProfileDisplay = style;
+    },
+    setProfileEdit(state, style) {
+        state.openProfileEdit = style;
     }
 };

@@ -8,6 +8,9 @@
         <div class="content">
             <Room @changeRoomEvent="changeRoomEvent"></Room>
             <Chat ref="chat"></Chat>
+            <Contact></Contact>
+            <PersonalInfo></PersonalInfo>
+            <EditPersonalInfo></EditPersonalInfo>
         </div>
         <Rooms></Rooms>
         <Group></Group>
@@ -34,6 +37,9 @@ import AddUser from '../room/AddUser';
 import EditUser from '../room/EditUser';
 import ShowUser from '../room/ShowUser';
 import { AppConst } from '../../common/AppConst';
+import Contact from '../contact/Contact';
+import PersonalInfo from '../personal_info/PersonalInfo';
+import EditPersonalInfo from '../personal_info/EditPersonalInfo';
 export default {
     name: 'Home',
     components: {
@@ -46,15 +52,24 @@ export default {
         EditUser,
         ShowUser,
         Notice,
+        Contact,
+        PersonalInfo,
+        EditPersonalInfo
     },
     created() {
-        let user = JSON.parse(localStorage.getItem('user'));
-
-        if(user !== null){
-            this.$store.dispatch('setCurrentUser', user);
-            this.$socket.emit(AppConst.EVENT_MESSAGE.CHANNEL_NEW_ROOM, user.user_id);
+        let user = localStorage.getItem('user');
+        if (user) {
+            this.$socket.emit(
+                AppConst.EVENT_MESSAGE.CHANNEL_NEW_ROOM,
+                user.user_id
+            );
+            this.$store.dispatch('setCurrentUser', JSON.parse(user));
             this.setNotification();
         }
+
+        let userInfo = localStorage.getItem(AppConst.LOCAL_USER_INFO);
+        if (userInfo)
+            this.$store.dispatch('setCurrentUserInfo', JSON.parse(userInfo));
     },
     // beforeRouteUpdate(to, from, next) {
     //     let room = this.$route.params.room_id;
@@ -74,8 +89,7 @@ export default {
         setNotification() {
             if (!window.Notification) {
                 alert('Trình duyệt của bạn không hỗ trợ chức năng này.');
-            }
-            else {
+            } else {
                 Notification.requestPermission(function(p) {
                     console.log(p);
                 });
