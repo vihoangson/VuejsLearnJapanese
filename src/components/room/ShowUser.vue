@@ -58,14 +58,15 @@ export default {
             this.listAdmin = [];
             this.listMember = [];
             this.listReadOnly = [];
-            for (let i in this.items) {
-                if(this.items[i].permission === 1){
+            console.log(this.$store.getters.get_list_user_by_room_id);
+            for (let i in this.$store.getters.get_list_user_by_room_id) {
+                if(this.items[i].role_in_room === 1){
                     this.listAdmin.push(this.items[i]);
                 }else
-                if(this.items[i].permission === 0){
+                if(this.items[i].role_in_room === 0){
                     this.listMember.push(this.items[i]);
                 }else
-                if(this.items[i].permission === 2){
+                if(this.items[i].role_in_room === 2){
                     this.listReadOnly.push(this.items[i]);
                 }
             }

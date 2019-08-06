@@ -12,6 +12,7 @@ export default new Vuex.Store({
         current_room: {},
         current_user: {},
         list_room: [],
+        list_user: [],
         list_user_by_room_id: [],
         list_not_user_by_room_id: [],
         is_admin_room: false,

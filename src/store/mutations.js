@@ -36,6 +36,9 @@ export default {
     set_list_room(state, obj) {
         return (state.list_room = obj);
     },
+    set_list_user(state, obj) {
+        return (state.list_user = obj);
+    },
     set_list_user_by_room_id(state, obj) {
         return (state.list_user_by_room_id = obj);
     },

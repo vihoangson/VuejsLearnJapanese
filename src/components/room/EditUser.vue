@@ -178,11 +178,12 @@ export default {
                 var id = this.items[i].id;
                 var selectRole = {
                     id: id,
-                    permission: this.items[i].permission,
-                    name: this.subscriptions[this.items[i].permission].name
+                    permission: this.items[i].role_in_room,
+                    name: this.subscriptions[this.items[i].role_in_room].name
                 };
                 this.selected[id] = selectRole;
             }
+             console.log(this.selected)
         });
     },
     created: function() {
@@ -248,7 +249,6 @@ export default {
             this.items = itemsTamp;
         },
         btnSaveRoom() {
-            console.log(this.selected)
             let data = {
                 room_id: this.roomId,
                 selected: this.selected,
