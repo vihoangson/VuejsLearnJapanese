@@ -1,84 +1,73 @@
 <template>
     <div v-bind:class="getClass()">
-        <pre>
-            <div class="message">
-                <DynamicType
-    :data="item.data"
-    v-for="(item, index) in this.list_content_message"
-    :key="index"
-></DynamicType>
-<img class="message-badge-avatar" :src="this.messageObject.user_info.icon_img" />
-            </div>
-        </pre>
+        <div class="message">
+            <pre><template v-for="(item, index) in this.listContent">{{item.content}}<component :key="index" v-if="item.type !== ''" :is="item.type" :msg="item.data"></component></template></pre>
+        </div>
     </div>
 </template>
 <script>
-import DynamicType from './message/DynamicType';
+import Reply from './message/Reply';
+import To from './message/To';
+
 export default {
     name: 'ChatMessage',
     components: {
-        DynamicType
+        Reply,
+        To
     },
     props: {
-        messageObject: Object,
-        message_content: String
+        messageObject: Object
     },
     data() {
         return {
             user: this.$store.getters.get_current_user,
-            list_content_message: []
+            content: '',
+            listContent: []
         };
     },
     create() {
         this.formatMessage();
     },
     methods: {
-        // formatMessage() {
-        //     let msg = this.messageObject.message;
-
-        //     if (msg.match(/(\[To:([0-9])+])/g)) {
-        //         this.type = 'To';
-        //     } else if (msg.match(/(\[Reply mid:([0-9]+) to:([0-9]+)\])/g)) {
-        //         this.type = 'Reply';
-        //     }
-
-        //     let messagePath = msg.substring(0, msg.indexOf('\n') + 1);
-        //     this.to_name = messagePath;
-        //     this.to_name = this.to_name.replace(
-        //         /(\[To:([0-9])+])|(\[Reply mid:([0-9]+) to:([0-9]+)\])/g,
-        //         ''
-        //     );
-
-        //     this.content = msg.substring(msg.indexOf('\n') + 1, msg.length - 1);
-        // },
         getClass(to) {
             if (to === this.user.id) return 'mention';
         },
         formatMessage() {
-            let msg = this.messageObject.message;
-            let listContentLineBreak = msg.split('\n');
-            listContentLineBreak.forEach(x => {
-                let item = {
-                    data: '',
-                    type: ''
-                };
-                // if (x.match(/(\[To:([0-9])+])/g)) {
-                //     item.type = 'To';
-                //     item.data = x.replace(/(\[To:([0-9])+])/g, '');
-                // } else if (x.match(/(\[Reply mid:([0-9]+) to:([0-9]+)\])/g)) {
-                //     item.type = 'Reply';
-                //     item.data = x.replace(
-                //         /(\[Reply mid:([0-9]+) to:([0-9]+)\])/g,
-                //         ''
-                //     );
-                // } else {
-                //     item.type = 'Default';
-                //     item.data = x;
-                // }
-                item.data = x;
-                this.list_content_message.push(item);
-            });
-            console.log(this.list_content_message)
+            this.content = this.messageObject.message;
+
+            let regExp = /(\[To:([0-9])+])|(\[Reply mid:([0-9]+) to:([0-9]+)\])/g;
+            let m;
+            let mIndex = 0;
+            if (!this.content.match(regExp))
+                this.listContent.push({
+                    type: '',
+                    content: this.content
+                });
+            else {
+                while ((m = regExp.exec(this.content))) {
+                    this.listContent.push({
+                        type: '',
+                        content: this.content.substring(mIndex, m.index)
+                    });
+                    let matchStr = this.content.substring(
+                        m.index,
+                        regExp.lastIndex
+                    );
+                    let item = {};
+                    if (matchStr.match(/(\[To:([0-9])+])/g)) {
+                        item.type = 'To';
+                        // let userId = matchStr.match(/([0-9]+)/g);
+                    } else if (
+                        matchStr.match(/(\[Reply mid:([0-9]+) to:([0-9]+)\])/g)
+                    )
+                        item.type = 'Reply';
+
+                    item.data = matchStr;
+
+                    this.listContent.push(item);
+                    mIndex = regExp.lastIndex;
+                }
+            }
         }
     },
     mounted() {
@@ -87,11 +76,14 @@ export default {
     watch: {
         message_content: function(val) {
             this.formatMessage();
+        },
+        memberList: function() {
+            alert();
         }
     }
 };
 </script>
-<style scoped>
+<style>
 .message-badge {
     display: inline-flex;
     margin: 2px 2px 0 0;
@@ -109,5 +101,72 @@ export default {
 }
 .mention {
     background-color: read;
+}
+.reply-message {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    height: 18px;
+    background-color: #66a300;
+    border-radius: 2px 0 0 2px;
+    padding: 2px 4px 2px 3px;
+    cursor: pointer;
+}
+.reply-message:hover {
+    background-color: #598f00;
+}
+.reply-message-icon {
+    width: 12px;
+    height: 16px;
+    fill: #ffffff;
+    margin-right: 3px;
+}
+svg:not(:root) {
+    overflow: hidden;
+    margin-top: -5px;
+}
+.reply-message-txticon {
+    color: #ffffff;
+    font-weight: 750;
+    font-size: 12px;
+}
+.to-message {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    height: 18px;
+    background-color: #66a300;
+    border-radius: 2px 0 0 2px;
+    padding: 4px 4px 2px 3px;
+    cursor: pointer;
+}
+.to-message:hover {
+    background-color: #598f00;
+}
+.to-message-icon {
+    width: 12px;
+    height: 16px;
+    fill: #ffffff;
+    margin-right: 3px;
+}
+svg:not(:root) {
+    overflow: hidden;
+}
+.to-message-txticon {
+    color: #ffffff;
+    font-weight: 750;
+    font-size: 12px;
+}
+pre {
+    display: block;
+    font-family: monospace;
+    white-space: pre;
+    margin: 1em 0px;
+}
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
 }
 </style>

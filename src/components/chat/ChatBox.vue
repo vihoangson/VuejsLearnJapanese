@@ -11,7 +11,7 @@
                 <div class="list_user">
                     <span
                         class="icon_img"
-                        v-for="(item, index) in list_user_room"
+                        v-for="(item, index) in this.$store.getters.get_current_room.member_list"
                         :key="`item-${index}`"
                     >
                         <img :src="item.icon_img" alt class="avatar" />
@@ -97,7 +97,7 @@
                                 <p class="timeline-content-header-username">{{item.user_info.name}}</p>
                                 <p
                                     class="timeline-content-header-organization"
-                                >{{item.organization}}</p>
+                                >{{item.company}}</p>
                             </div>
                             <div class="timeline-content-message">
                                 <ChatMessage :message-object="item" :message_content="item.message"></ChatMessage>
@@ -270,15 +270,15 @@ export default {
             user: this.$store.getters.get_current_user,
             editMessage: false,
             listMyFile: [],
-            list_user_room: [],
+            // list_user_room: this.$store.getters.get_current_room.member_list,
             is_admin_room: false,
             room_length: 0
         };
     },
     mounted() {
-        this.$root.$on('changed-id-rooms', data => {
-            this.getUserByRoomId();
-        });
+        // this.$root.$on('changed-id-rooms', data => {
+        //     this.list_user_room = this.$store.getters.get_current_room.member_list;
+        // });
     },
     created() {
         window.addEventListener('resize', this.handleResize);
@@ -291,7 +291,6 @@ export default {
             if (res.error_code === 0)
                 this.$store.dispatch('setListMessage', res.data);
         });
-        this.getUserByRoomId();
     },
     methods: {
         handleResize() {
@@ -444,52 +443,52 @@ export default {
             this.$root.$emit('open-modal-add-user', 0);
             this.$bvModal.show('modal-prevent-add-user');
         },
-        getUserByRoomId() {
-            this.list_user_room = [];
-            this.room_length = 0;
-            this.is_admin_room = false;
-            let roomId = this.$store.getters.get_current_room.room_id;
-            if (roomId !== undefined) {
-                API.GET(ApiConst.ROOM_CHECK_IS_ADMIN + '/' + roomId).then(
-                    response => {
-                        if (
-                            response !== undefined &&
-                            response.error_code === 0
-                        ) {
-                            this.is_admin_room = response.data;
-                        }
-                    }
-                );
+        // getUserByRoomId() {
+        //      [];
+        //     this.room_length = 0;
+        //     this.is_admin_room = false;
+        //     let roomId = this.$store.getters.get_current_room.room_id;
+        //     if (roomId !== undefined) {
+        //         API.GET(ApiConst.ROOM_CHECK_IS_ADMIN + '/' + roomId).then(
+        //             response => {
+        //                 if (
+        //                     response !== undefined &&
+        //                     response.error_code === 0
+        //                 ) {
+        //                     this.is_admin_room = response.data;
+        //                 }
+        //             }
+        //         );
 
-                API.GET(ApiConst.ROOM_GET_USER_BY_ROOM_ID + '/' + roomId).then(
-                    response => {
-                        if (
-                            response !== undefined &&
-                            response.error_code === 0
-                        ) {
-                            this.$store.dispatch(
-                                'setListUserByRoomId',
-                                response.data
-                            );
-                            this.list_user_room = this.$store.getters.get_list_user_by_room_id;
-                        }
-                    }
-                );
+        //         API.GET(ApiConst.ROOM_GET_USER_BY_ROOM_ID + '/' + roomId).then(
+        //             response => {
+        //                 if (
+        //                     response !== undefined &&
+        //                     response.error_code === 0
+        //                 ) {
+        //                     this.$store.dispatch(
+        //                         'setListUserByRoomId',
+        //                         response.data
+        //                     );
+        //                     this.list_user_room = this.$store.getters.get_list_user_by_room_id;
+        //                 }
+        //             }
+        //         );
 
-                API.POST(ApiConst.ROOM_GET_ALL_USER_BY_ROOM, {
-                    room_id: this.$store.getters.get_current_room.room_id,
-                    is_added: 0
-                }).then(response => {
-                    if (response !== undefined && response.error_code === 0) {
-                        this.room_length = response.data.length;
-                        this.$store.dispatch(
-                            'setListNotUserByRoomId',
-                            response.data
-                        );
-                    }
-                });
-            }
-        },
+        //         API.POST(ApiConst.ROOM_GET_ALL_USER_BY_ROOM, {
+        //             room_id: this.$store.getters.get_current_room.room_id,
+        //             is_added: 0
+        //         }).then(response => {
+        //             if (response !== undefined && response.error_code === 0) {
+        //                 this.room_length = response.data.length;
+        //                 this.$store.dispatch(
+        //                     'setListNotUserByRoomId',
+        //                     response.data
+        //                 );
+        //             }
+        //         });
+        //     }
+        // },
         openModalShowUserRoom(isAdmin) {
             this.$root.$emit('open-modal-edit-user', isAdmin);
             this.$bvModal.show('modal-prevent-edit-user');

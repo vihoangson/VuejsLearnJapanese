@@ -1,5 +1,5 @@
 <template>
-    <div class="messageBadge">
+    <div class="message-badge">
         <div class="reply-message">
             <span class="reply-message-icon">
                 <svg
@@ -14,6 +14,7 @@
             </span>
             <span class="reply-message-txticon">RE</span>
         </div>
+        <img class="message-badge-avatar" data-aid="2647483" src="https://appdata.chatwork.com/icon/ico_group.png">
     </div>
 </template>
 
@@ -22,39 +23,7 @@ export default {
     name: 'Reply',
     props: ['msg'],
     created() {
-        // console.log(this.msg);
+        // console.log(this.member_list);
     }
 };
 </script>
-
-<style scoped>
-.reply-message {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    box-sizing: border-box;
-    height: 18px;
-    background-color: #66a300;
-    border-radius: 2px 0 0 2px;
-    padding: 2px 4px 2px 3px;
-    cursor: pointer;
-}
-.reply-message:hover {
-    background-color: #598f00;
-}
-.reply-message-icon {
-    width: 12px;
-    height: 16px;
-    fill: #ffffff;
-    margin-right: 3px;
-}
-svg:not(:root) {
-    overflow: hidden;
-    margin-top: -5px;
-}
-.reply-message-txticon {
-    color: #ffffff;
-    font-weight: 750;
-    font-size: 12px;
-}
-</style>

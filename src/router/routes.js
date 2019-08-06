@@ -5,6 +5,11 @@ export default [
         component: () => import('@/components/home/Home.vue')
     },
     {
+        path: '/rid-*',
+        name: 'home',
+        component: () => import('@/components/home/Home.vue')
+    },
+    {
         path: '/404',
         name: '404',
         component: () => import('@/components/errorPage/404.vue')
@@ -39,9 +44,9 @@ export default [
             {
                 path: '',
                 name: 'ForgotPassword',
-                component: () => import('@/components/forgotpass/EnterEmailPage')
-            }
-            ,
+                component: () =>
+                    import('@/components/forgotpass/EnterEmailPage')
+            },
             {
                 path: 'verify_token/:token',
                 name: 'ForgotPasswordVerifyToken',
@@ -50,9 +55,9 @@ export default [
             {
                 path: 'changepass',
                 name: 'forgotpasschange',
-                component: () => import('@/components/forgotpass/ChangePassword')
+                component: () =>
+                    import('@/components/forgotpass/ChangePassword')
             }
-
         ]
     },
 

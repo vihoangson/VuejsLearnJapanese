@@ -66,7 +66,7 @@
                 <img :src="this.user.icon_img" alt />
             </div>
             <p class="status-name">
-                <span class="name">{{user.name}}</span>
+                <span class="name">{{this.user.name}}</span>
                 <span class="menu-icon">
                     <svg
                         viewBox="0 0 10 10"
@@ -112,6 +112,12 @@ export default {
             isHidden: true,
             user: this.$store.getters.get_current_user
         };
+    },
+    created(){
+        let _user = localStorage.getItem(AppConst.LOCAL_USER);
+        console.log(_user)
+        if(_user)
+            this.user = JSON.parse(_user);
     },
     methods: {
         logout() {

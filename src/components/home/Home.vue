@@ -45,16 +45,22 @@ export default {
         AddUser,
         EditUser,
         ShowUser,
-        Notice,
+        Notice
     },
     created() {
         let user = JSON.parse(localStorage.getItem('user'));
 
-        if(user !== null){
+        if (user !== null) {
             this.$store.dispatch('setCurrentUser', user);
-            this.$socket.emit(AppConst.EVENT_MESSAGE.CHANNEL_NEW_ROOM, user.user_id);
+            this.$socket.emit(
+                AppConst.EVENT_MESSAGE.CHANNEL_NEW_ROOM,
+                user.user_id
+            );
             this.setNotification();
         }
+        this.$root.$on('event-get-list-message', () => {
+            this.changeRoomEvent();
+        });
     },
     // beforeRouteUpdate(to, from, next) {
     //     let room = this.$route.params.room_id;
@@ -74,8 +80,7 @@ export default {
         setNotification() {
             if (!window.Notification) {
                 alert('Trình duyệt của bạn không hỗ trợ chức năng này.');
-            }
-            else {
+            } else {
                 Notification.requestPermission(function(p) {
                     console.log(p);
                 });

@@ -142,9 +142,7 @@ export default {
             selectItems: 'All Chat',
             datascript: [],
             activeIndex: undefined,
-            userId: 0,
-            list_rooms: [],
-            rooms: []
+            userId: 0
         };
     },
 
@@ -165,7 +163,6 @@ export default {
     created: function() {
         let user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
         this.userId = user.user_id;
-        this.getListRoom();
         this.getAllGroup(this.userId);
         document.addEventListener('click', this.documentClick);
     },
@@ -355,52 +352,7 @@ export default {
         },
 
         changeRoom(room) {
-            this.$store.dispatch('setCurrentRoom', room);
-            this.$root.$emit('changed-id-rooms');
-            this.getListMessage(room);
-            room.color = '#bfbab0';
-            room.not_read = 0;
-            let rooms = this.$store.getters.get_list_room;
-            rooms.forEach(x => {
-                if (room.room_id !== x.room_id) {
-                    x.color = '';
-                }
-            });
-        },
-
-        getListRoom() {
-            API.GET(ApiConst.ALL_ROOM).then(res => {
-                if (res.error_code === 0) {
-                    let rooms = res.data;
-                    rooms.forEach(x => {
-                        x.color = '';
-                        this.rooms.push(x.room_id);
-                    });
-                    rooms.sort((a, b) => {
-                        return b.is_mychat - a.is_mychat;
-                    });
-
-                    this.$socket.emit(
-                        AppConst.EVENT_MESSAGE.JOIN_BY_LIST_ROOM,
-                        this.rooms
-                    );
-                    this.$store.dispatch('setListRoom', rooms);
-                    this.changeRoom(rooms[0]);
-                    this.getListMessage(rooms[0]);
-                }
-            });
-        },
-
-        getListMessage(room) {
-            API.POST(ApiConst.RECEIVE_MESSAGE, {
-                page: 0,
-                room_id: room.room_id
-            }).then(res => {
-                if (res.error_code === 0) room.list_message = res.data;
-                setTimeout(() => {
-                    this.$emit('changeRoomEvent');
-                }, 1);
-            });
+            this.$root.$emit('change-room', room);
         },
         pushNewRoom(room) {
             this.$store.dispatch('addNewRoom', room);

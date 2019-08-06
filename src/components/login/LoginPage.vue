@@ -107,7 +107,7 @@ export default {
                             res.data.icon_img !== null &&
                             res.data.icon_img !== ''
                         )
-                            user.icon_img = res.data.icon_img;
+                            user.icon_img = res.dat a.icon_img;
                         else
                             user.icon_img =
                                 'https://britz.mcmaster.ca/images/nouserimage.gif/image';
