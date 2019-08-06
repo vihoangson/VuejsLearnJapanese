@@ -85,9 +85,7 @@
 </template>
 
 <script>
-import axios from 'axios';
 import { API } from '../../services/api';
-import { AppConst } from '../../common/AppConst';
 import { ApiConst } from '../../common/ApiConst';
 import VueRecaptcha from 'vue-recaptcha';
 export default {
@@ -172,14 +170,19 @@ export default {
                 this.errors.confirmPassword = 'Confirm password required !';
             }
 
-            if (this.password !== this.confirmPassword && this.errors.confirmPassword === '') {
+            if (
+                this.password !== this.confirmPassword &&
+                this.errors.confirmPassword === ''
+            ) {
                 isValid = true;
-                this.errors.confirmPassword = 'Password and confirm password are not the same.';
+                this.errors.confirmPassword =
+                    'Password and confirm password are not the same.';
             }
 
             if (!this.recaptchaVerified) {
                 isValid = true;
-                this.errors.pleaseTickRecaptchaMessage = 'Please tick recaptcha!';
+                this.errors.pleaseTickRecaptchaMessage =
+                    'Please tick recaptcha!';
             }
 
             return isValid;
