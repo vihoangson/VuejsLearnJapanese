@@ -14,16 +14,16 @@
                         v-for="(item, index) in list_user_room"
                         :key="`item-${index}`"
                     >
-                        <img :src="item.icon_img" alt class="avatar" />
+                        <img :src="item.icon_img" alt class="avatar" v-b-tooltip.hover v-bind:title="item.name"/>
                     </span>
                     <span
                         class="btn-more"
                         @click="openModalShowUserRoom()"
-                        v-if="!is_admin_room"
+                        v-if="!this.$store.getters.get_is_admin_room"
                     >+{{room_length}}</span>
                     <span
                         class="btn-more"
-                        v-if="is_admin_room"
+                        v-if="this.$store.getters.get_is_admin_room"
                         @click="openModalShowUserRoom()"
                     >
                         <svg
@@ -37,7 +37,7 @@
                             />
                         </svg>
                     </span>
-                    <span class="btn-plus" v-if="is_admin_room" @click="updateGroupChat">
+                    <span class="btn-plus" v-if="this.$store.getters.get_is_admin_room" @click="updateGroupChat">
                         <svg
                             viewBox="0 0 10 10"
                             class="chatRoomHeaderMemberList__editIcon"
@@ -271,7 +271,6 @@ export default {
             editMessage: false,
             listMyFile: [],
             list_user_room: [],
-            is_admin_room: false,
             room_length: 0
         };
     },
@@ -447,7 +446,6 @@ export default {
         getUserByRoomId() {
             this.list_user_room = [];
             this.room_length = 0;
-            this.is_admin_room = false;
             let roomId = this.$store.getters.get_current_room.room_id;
             if (roomId !== undefined) {
                 API.GET(ApiConst.ROOM_CHECK_IS_ADMIN + '/' + roomId).then(
@@ -456,7 +454,10 @@ export default {
                             response !== undefined &&
                             response.error_code === 0
                         ) {
-                            this.is_admin_room = response.data;
+                            this.$store.dispatch(
+                                'isAdminRoom',
+                                response.data
+                            );
                         }
                     }
                 );

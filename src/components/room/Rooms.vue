@@ -18,11 +18,11 @@
                     </div>
                     <div class="col-md-9">
                         <div class="form-group">
-                            <label>Group Chat Name:</label><div class="error">{{roomNameError}}</div>
+                            <label>Room Chat Name:</label><div class="error">{{roomNameError}}</div>
                             <input type="text" name="roomName" v-model="roomName" class="form-control" placeholder="Group name">
                         </div>
                         <div class="form-group">
-                            <label>Group Description:</label> <div class="error">{{roomDescriptionError}}</div>
+                            <label>Room Description:</label> <div class="error">{{roomDescriptionError}}</div>
                             <textarea name="description" v-model="description" id="Description" class="form-control" placeholder="Add chat description, notes, or links here."></textarea>
                         </div>
                     </div>
@@ -267,8 +267,8 @@
                 this.selected = tamp;
             },
             checkFormValidity() {
-                if(this.roomName.length >= 50){
-                    this.roomNameError = "Room Name may not be greater than 50 characters";
+                if(this.roomName === '' || this.roomName.length >= 50){
+                    this.roomNameError = "Room Name not empty and may not be greater than 50 characters";
                     return false
                 }
                 if(this.description.length >= 255){

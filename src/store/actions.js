@@ -26,6 +26,9 @@ export default {
     setListNotUserByRoomId({ commit }, obj) {
         commit('set_list_not_user_by_room_id', obj);
     },
+    isAdminRoom({ commit }, obj) {
+        commit('is_admin_room', obj);
+    },
     setNotification({ commit }, obj) {
         commit('set_notification', obj);
     },

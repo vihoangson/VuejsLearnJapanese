@@ -117,6 +117,11 @@
                                 </table>
                             </div>
                         </div>
+                        <div class="col-md-12">
+                            <span class="icon_add_user" v-if="this.$store.getters.get_is_admin_room" @click="openModalAddUserRoom()" >
+                                <svg viewBox="0 0 10 10" id="icon_plus" xmlns="http://www.w3.org/2000/svg"><path d="M4.375.625v3.75H.625v1.25h3.75v3.75h1.25v-3.75h3.75v-1.25h-3.75V.625z"></path></svg> Add Member
+                            </span>
+                        </div>
                         <div class="error">{{roomselectedError}}</div>
                     </div>
                 </div>
@@ -251,7 +256,7 @@ export default {
             };
 
             API.POST(ApiConst.ROOM_UPDATE, data).then(response => {
-                if(response != undefined){
+                if(response !== undefined){
                     switch (response.error_code) {
                         case 0:
                             this.$refs.modal.hide();
@@ -283,6 +288,11 @@ export default {
                     }
                 }
             });
+        },
+        openModalAddUserRoom(){
+            this.$refs.modal.hide();
+            this.$root.$emit('open-modal-add-user');
+            this.$bvModal.show('modal-prevent-add-user');
         }
     }
 };
@@ -292,5 +302,15 @@ export default {
 .table-scroll .icon-delete svg {
     height: 16px;
     width: 16px;
+}
+.icon_add_user{
+    margin-top: 10px;
+    display: inline-block;
+}
+.icon_add_user svg{
+    height: 15px;
+    width: 15px;
+    position: relative;
+    top: -2px;
 }
 </style>

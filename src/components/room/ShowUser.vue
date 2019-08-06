@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <div class="col-md-12">
-                    <span class="icon_edit" @click="openModalEditUserRoom()">
+                    <span class="icon_edit" v-if="this.$store.getters.get_is_admin_room" @click="openModalEditUserRoom()" >
                         <svg viewBox="0 0 10 10" id="icon_edit" xmlns="http://www.w3.org/2000/svg"><path d="M4.33 7.432L2.566 5.661 7.322.917a.469.469 0 0 1 .663.001l1.103 1.107a.47.47 0 0 1-.001.663L4.331 7.432zM1.462 8.537l.554-2.097L3.56 7.989l-2.098.548z"></path></svg> Edit Member
                     </span>
                 </div>
