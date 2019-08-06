@@ -16,7 +16,8 @@ export default {
         To
     },
     props: {
-        messageObject: Object
+        messageObject: Object,
+        message_content: Object
     },
     data() {
         return {
@@ -33,6 +34,7 @@ export default {
             if (to === this.user.id) return 'mention';
         },
         formatMessage() {
+            this.listContent = [];
             this.content = this.messageObject.message;
 
             let regExp = /(\[To:([0-9])+])|(\[Reply mid:([0-9]+) to:([0-9]+)\])/g;
@@ -66,6 +68,17 @@ export default {
 
                     this.listContent.push(item);
                     mIndex = regExp.lastIndex;
+                    let str = this.content.substring(
+                        regExp.lastIndex,
+                        this.content.length
+                    );
+                    if (!str.match(regExp)) {
+                        this.listContent.push({
+                            type: '',
+                            content: str
+                        });
+                        break;
+                    }
                 }
             }
         }
@@ -75,10 +88,8 @@ export default {
     },
     watch: {
         message_content: function(val) {
+            console.log(val);
             this.formatMessage();
-        },
-        memberList: function() {
-            alert();
         }
     }
 };

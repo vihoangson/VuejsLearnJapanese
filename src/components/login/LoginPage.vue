@@ -34,9 +34,13 @@
                     </div>
 
                     <div class="text-center box-button-bottom">
-                        <button class="forget-password-button btn" type="button" @click="SetNewPassword">Reset password</button> <button class="sign-up-button btn" type="button" @click="SignUp">Register</button>
+                        <button
+                            class="forget-password-button btn"
+                            type="button"
+                            @click="SetNewPassword"
+                        >Reset password</button>
+                        <button class="sign-up-button btn" type="button" @click="SignUp">Register</button>
                     </div>
-
                 </form>
             </div>
         </section>
@@ -107,7 +111,7 @@ export default {
                             res.data.icon_img !== null &&
                             res.data.icon_img !== ''
                         )
-                            user.icon_img = res.dat a.icon_img;
+                            user.icon_img = res.data.icon_img;
                         else
                             user.icon_img =
                                 'https://britz.mcmaster.ca/images/nouserimage.gif/image';
