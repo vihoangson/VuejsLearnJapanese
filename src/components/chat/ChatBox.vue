@@ -11,20 +11,20 @@
                 <div class="list_user">
                     <span
                         class="icon_img"
-                        v-for="(item, index) in list_user_room"
+                        v-for="(item, index) in this.$store.getters.get_list_user_by_room_id"
                         :key="`item-${index}`"
                     >
-                        <img :src="item.icon_img" alt class="avatar" />
+                        <img :src="item.icon_img" alt class="avatar" v-b-tooltip.hover v-bind:title="item.name"/>
                     </span>
                     <span
                         class="btn-more"
-                        @click="openModalShowUserRoom(is_admin_room)"
-                        v-if="room_length > 0 && !is_admin_room"
-                    >+{{room_length}}</span>
+                        @click="openModalShowUserRoom()"
+                        v-if="!this.$store.getters.get_is_admin_room"
+                    >+{{this.$store.getters.get_list_user_by_room_id.length}}</span>
                     <span
                         class="btn-more"
-                        v-if="is_admin_room"
-                        @click="openModalShowUserRoom(is_admin_room)"
+                        v-if="this.$store.getters.get_is_admin_room"
+                        @click="openModalShowUserRoom()"
                     >
                         <svg
                             viewBox="0 0 10 10"
@@ -37,7 +37,7 @@
                             />
                         </svg>
                     </span>
-                    <span class="btn-plus" v-if="is_admin_room" @click="updateGroupChat">
+                    <span class="btn-plus" v-if="this.$store.getters.get_is_admin_room" @click="updateGroupChat">
                         <svg
                             viewBox="0 0 10 10"
                             class="chatRoomHeaderMemberList__editIcon"
@@ -270,9 +270,6 @@ export default {
             user: this.$store.getters.get_current_user,
             editMessage: false,
             listMyFile: [],
-            list_user_room: [],
-            is_admin_room: false,
-            room_length: 0
         };
     },
     mounted() {
@@ -445,53 +442,43 @@ export default {
             this.$bvModal.show('modal-prevent-add-user');
         },
         getUserByRoomId() {
-            this.list_user_room = [];
-            this.room_length = 0;
-            this.is_admin_room = false;
+            var list_not_exists = [];
             let roomId = this.$store.getters.get_current_room.room_id;
+            this.$store.dispatch('setAdminRoom', false);
+            this.$store.dispatch('setListUserByRoomId', []);
+            this.$store.dispatch('setListNotUserByRoomId', []);
             if (roomId !== undefined) {
-                API.GET(ApiConst.ROOM_CHECK_IS_ADMIN + '/' + roomId).then(
-                    response => {
-                        if (
-                            response !== undefined &&
-                            response.error_code === 0
-                        ) {
-                            this.is_admin_room = response.data;
+                for(let i in this.$store.getters.get_list_room){
+                    if(this.$store.getters.get_list_room[i].room_id === roomId){
+                        this.$store.dispatch('setListUserByRoomId', this.$store.getters.get_list_room[i].member_list);
+                    }
+                }
+                for(let i in this.$store.getters.get_list_user_by_room_id){
+                    if((this.$store.getters.get_list_user_by_room_id[i].role_in_room === 1) 
+                        && (this.$store.getters.get_list_user_by_room_id[i].id === this.$store.getters.get_current_user.user_id)){
+                        this.$store.dispatch('setAdminRoom', true);
+                    }
+                }
+                for(let i in this.$store.getters.get_list_user){
+                    var has = false;
+                    for(let j in this.$store.getters.get_list_user_by_room_id){
+                        if(this.$store.getters.get_list_user_by_room_id[j].id === this.$store.getters.get_list_user[i].id){
+                           has = true;
                         }
                     }
-                );
-
-                API.GET(ApiConst.ROOM_GET_USER_BY_ROOM_ID + '/' + roomId).then(
-                    response => {
-                        if (
-                            response !== undefined &&
-                            response.error_code === 0
-                        ) {
-                            this.$store.dispatch(
-                                'setListUserByRoomId',
-                                response.data
-                            );
-                            this.list_user_room = this.$store.getters.get_list_user_by_room_id;
-                        }
+                    if(!has){
+                        list_not_exists.push(this.$store.getters.get_list_user[i]);
                     }
-                );
-
-                API.POST(ApiConst.ROOM_GET_ALL_USER_BY_ROOM, {
-                    room_id: this.$store.getters.get_current_room.room_id,
-                    is_added: 0
-                }).then(response => {
-                    if (response !== undefined && response.error_code === 0) {
-                        this.room_length = response.data.length;
-                        this.$store.dispatch(
-                            'setListNotUserByRoomId',
-                            response.data
-                        );
-                    }
-                });
+                }
+                this.$store.dispatch('setListNotUserByRoomId', list_not_exists);
             }
         },
-        openModalShowUserRoom(isAdmin) {
-            this.$root.$emit('open-modal-edit-user', isAdmin);
+        openModalShowUserRoom() {
+            this.$root.$emit('open-modal-show-user');
+            this.$bvModal.show('modal-prevent-show-user');
+        },
+        openModalEditUserRoom() {
+            this.$root.$emit('open-modal-edit-user');
             this.$bvModal.show('modal-prevent-edit-user');
         }
     },

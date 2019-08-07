@@ -11,6 +11,9 @@ export default {
     get_list_room: state => {
         return state.list_room;
     },
+    get_list_user: state => {
+        return state.list_user;
+    },
     get_list_user_by_room_id: state => {
         return state.list_user_by_room_id;
     },
@@ -29,5 +32,8 @@ export default {
     },
     getProfileEdit: state => {
         return state.openProfileEdit;
+	},
+    get_is_admin_room: state => {
+        return state.is_admin_room;
     }
 };

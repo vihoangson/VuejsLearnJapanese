@@ -153,9 +153,12 @@ export default {
             this.selectItems = 'All Chat';
             this.getAllGroup(this.userId);
         });
-        this.$root.$on('changed-list-room', room => {
-            this.pushNewRoom(room);
-            this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, room);
+        this.$root.$on('changed-list-room', data => {
+            this.pushNewRoom(data);
+            this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, data);
+        });
+        this.$root.$on('changed-list-user', data => {
+            this.getListUser();
         });
         this.$root.$on('add-new-room-from-socket', data => {
             this.pushNewRoom(data);
@@ -166,6 +169,7 @@ export default {
         let user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
         this.userId = user.user_id;
         this.getListRoom();
+        this.getListUser();
         this.getAllGroup(this.userId);
         document.addEventListener('click', this.documentClick);
     },
@@ -273,7 +277,7 @@ export default {
                                 break;
                             default:
                                 this.$root.$emit('push-notice', {
-                                    message: 'Delete error',
+                                    message: response.data,
                                     alert: 'alert-danger'
                                 });
                                 break;
@@ -315,20 +319,20 @@ export default {
                                             message: 'Delete success',
                                             alert: 'alert-success'
                                         });
-                                        let room = this.list_rooms.find(d => {
+                                        let room = this.$store.getters.get_list_room.find(d => {
                                             return d.room_id === data.id;
                                         });
                                         if (room !== undefined) {
-                                            let idx = this.list_rooms.indexOf(
+                                            let idx = this.$store.getters.get_list_room.indexOf(
                                                 room
                                             );
-                                            this.list_rooms.splice(idx, 1);
+                                            this.$store.getters.get_list_room.splice(idx, 1);
                                         }
-                                        this.changeRoom(this.list_rooms[0]);
+                                        this.changeRoom(this.$store.getters.get_list_room[0]);
                                         break;
                                     default:
                                         this.$root.$emit('push-notice', {
-                                            message: 'Delete Error',
+                                            message: response.data,
                                             alert: 'alert-danger'
                                         });
                                         break;
@@ -387,6 +391,14 @@ export default {
                     this.$store.dispatch('setListRoom', rooms);
                     this.changeRoom(rooms[0]);
                     this.getListMessage(rooms[0]);
+                }
+            });
+        },
+
+        getListUser(){
+            API.GET(ApiConst.ROOM_GET_ALL_USER).then(response => {
+                if (response !== undefined && response.error_code === 0) {
+                    this.$store.dispatch('setListUser',  response.data);
                 }
             });
         },

@@ -305,9 +305,12 @@ export default {
                             case 2:
                                 this.selectedError = response.data;
                                 break;
-                            case 3:
-                                break;
                             default:
+                                this.$refs.modal.hide();
+                                this.$root.$emit('push-notice', {
+                                    message: response.data,
+                                    alert: 'alert-danger'
+                                });
                                 break;
                         }
                     }
@@ -341,9 +344,12 @@ export default {
                         case 2:
                             this.selectedError = response.data.error_msg;
                             break;
-                        case 3:
-                            break;
                         default:
+                            this.$refs.modal.hide();
+                            this.$root.$emit('push-notice', {
+                                message: response.data,
+                                alert: 'alert-danger'
+                            });
                             break;
                     }
 

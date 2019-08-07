@@ -4,7 +4,7 @@
             id="modal-prevent-edit-user"
             ref="modal"
             size="lg"
-            title="Add user to room"
+            title="Update user to room"
             @show="resetModal"
             @hidden="resetModal"
             @ok="handleOk"
@@ -117,6 +117,11 @@
                                 </table>
                             </div>
                         </div>
+                        <div class="col-md-12">
+                            <span class="icon_add_user" v-if="this.$store.getters.get_is_admin_room" @click="openModalAddUserRoom()" >
+                                <svg viewBox="0 0 10 10" id="icon_plus" xmlns="http://www.w3.org/2000/svg"><path d="M4.375.625v3.75H.625v1.25h3.75v3.75h1.25v-3.75h3.75v-1.25h-3.75V.625z"></path></svg> Add Member
+                            </span>
+                        </div>
                         <div class="error">{{roomselectedError}}</div>
                     </div>
                 </div>
@@ -135,6 +140,8 @@
 </template>
 
 <script>
+import { API } from '../../services/api';
+import { ApiConst } from '../../common/ApiConst';
 import { AppConst } from '../../common/AppConst';
 export default {
     name: 'Group',
@@ -149,8 +156,8 @@ export default {
             activeIndex: undefined,
             selectItem: 'Edit all permissions',
             subscriptions: [
-                { id: 1, name: 'Admin' },
                 { id: 0, name: 'Member' },
+                { id: 1, name: 'Admin' },
                 { id: 2, name: 'Readonly' }
             ],
             selected: [],
@@ -163,19 +170,10 @@ export default {
         };
     },
     mounted() {
-        this.$root.$on('open-modal-edit-user', () => {
+        this.$root.$on('open-modal-edit-user', data => {
             this.buttonName = 'Save';
             this.roomId = this.$store.getters.get_current_room.room_id;
             this.items = this.$store.getters.get_list_user_by_room_id;
-            for (let i in this.items) {
-                var id = this.items[i].id;
-                var selectRole = {
-                    id: id,
-                    permission: 0,
-                    name: this.subscriptions[1].name
-                };
-                this.selected[id] = selectRole;
-            }
         });
     },
     created: function() {
@@ -184,7 +182,16 @@ export default {
     },
     computed: {
         filteredItems() {
-            if (this.items.length > 0) {
+            if (this.$store.getters.get_list_user_by_room_id.length > 0) {
+                for (let i in this.items) {
+                    var id = this.items[i].id;
+                    var selectRole = {
+                        id: id,
+                        permission: this.items[i].role_in_room,
+                        name: this.subscriptions[this.items[i].role_in_room].name
+                    };
+                    this.selected[id] = selectRole;
+                }
                 return this.items.filter(item => {
                     return (
                         item.name
@@ -227,23 +234,84 @@ export default {
         },
         deleteUserOfRoom(id) {
             var itemsTamp = [];
-            console.log(this.selected);
             for (let i in this.items) {
                 if (id !== this.items[i].id) {
                     itemsTamp[i] = this.items[i];
                 }
             }
             for (let i in this.selected) {
-                if (id !== this.selected[i].id) {
+                if (id === this.selected[i].id) {
                     this.selected[i] = 'empty';
                 }
             }
 
             this.items = itemsTamp;
-
-            console.log(this.selected);
         },
-        btnSaveRoom() {}
+        btnSaveRoom() {
+            let data = {
+                room_id: this.roomId,
+                selected: this.selected,
+                only_token: true
+            };
+            API.POST(ApiConst.ROOM_UPDATE, data).then(response => {
+                if(response !== undefined){
+                    switch (response.error_code) {
+                        case 0:
+                            this.$refs.modal.hide();
+                            this.$root.$emit('push-notice', {
+                                message: 'Save success',
+                                alert: 'alert-success'
+                            });
+
+                            var list_room = this.$store.getters.get_list_room;
+                            for(let i in list_room){
+                                if(list_room[i].room_id === this.roomId){
+                                    var member_list = list_room[i].member_list;
+                                    var member_update = [];
+                                    for(let key in member_list){
+                                        for(let i in this.selected){
+                                            if((this.selected[i] !== undefined) && (this.selected[i].id !== undefined)){
+                                                if(member_list[key].id === this.selected[i].id){
+                                                    member_list[key].role_in_room = this.selected[i].permission;
+                                                    member_update.push(member_list[key]);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    list_room[i].member_list = member_update;
+                                }
+                            }
+                            this.$store.dispatch('setListRoom',  list_room);
+                            this.$root.$emit('changed-id-rooms');
+                            break;
+                        case 1:
+                            this.roomselectedError = response.data;
+                            break;
+                        case 6:
+                            this.$bvModal
+                            .msgBoxOk( response.data, {
+                                size: 'sm',
+                                buttonSize: 'sm',
+                                okVariant: 'success',
+                                centered: true
+                            });
+                            break;
+                        default:
+                            this.$refs.modal.hide();
+                            this.$root.$emit('push-notice', {
+                                message: response.data,
+                                alert: 'alert-danger'
+                            });
+                            break;
+                    }
+                }
+            });
+        },
+        openModalAddUserRoom(){
+            this.$refs.modal.hide();
+            this.$root.$emit('open-modal-add-user');
+            this.$bvModal.show('modal-prevent-add-user');
+        }
     }
 };
 </script>
@@ -252,5 +320,15 @@ export default {
 .table-scroll .icon-delete svg {
     height: 16px;
     width: 16px;
+}
+.icon_add_user{
+    margin-top: 10px;
+    display: inline-block;
+}
+.icon_add_user svg{
+    height: 15px;
+    width: 15px;
+    position: relative;
+    top: -2px;
 }
 </style>

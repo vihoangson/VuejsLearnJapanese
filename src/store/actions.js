@@ -20,11 +20,17 @@ export default {
     setListRoom({ commit }, obj) {
         commit('set_list_room', obj);
     },
+    setListUser({ commit }, obj) {
+        commit('set_list_user', obj);
+    },
     setListUserByRoomId({ commit }, obj) {
         commit('set_list_user_by_room_id', obj);
     },
     setListNotUserByRoomId({ commit }, obj) {
         commit('set_list_not_user_by_room_id', obj);
+    },
+    setAdminRoom({ commit }, obj) {
+        commit('is_admin_room', obj);
     },
     setNotification({ commit }, obj) {
         commit('set_notification', obj);

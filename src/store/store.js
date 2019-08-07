@@ -17,8 +17,10 @@ export default new Vuex.Store({
         openProfileEdit: 'none',
         current_room: {},
         list_room: [],
+        list_user: [],
         list_user_by_room_id: [],
-        list_not_user_by_room_id: []
+        list_not_user_by_room_id: [],
+        is_admin_room: false,
     },
     getters,
     mutations,
