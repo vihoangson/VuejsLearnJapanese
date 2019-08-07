@@ -13,12 +13,11 @@ export const ApiConst = {
     GROUP_GET_BY_ID: '/api/v1/group/get-group-by-id',
     GROUP_GET_ROOM_BY_GROUP_ID: '/api/v1/group/get-room-by-group-id',
     GROUP_GET_ALL_ROOM: '/api/v1/room/get-all-rooms',
-
+    GET_ALL_USER: '/api/v1/user/get-all-user',
     ROOM_ADD: '/api/v1/room/add',
     ROOM_UPDATE: '/api/v1/room/update',
     ROOM_DELETE: '/api/v1/room/delete',
     ROOM_SETTING: '/api/v1/room/setting',
-    ROOM_GET_ALL_USER: '/api/v1/user/get-all-user',
     ROOM_ADD_USER_TO_ROOM: '/api/v1/room/add-user-to-room',
     MY_LIST_FILE: '/api/v1/file/get-my-list-file',
     FORGOT_PASS_REQUEST: '/api/v1/user/forgot-password-request',

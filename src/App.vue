@@ -27,9 +27,10 @@ export default {
         this.$root.$on('change-room', data => {
             this.changeRoom(data);
         });
-        this.$root.$on('get-list-rooms', ()=>{
+        this.$root.$on('get-list-rooms', () => {
             this.getListRoom();
         });
+        this.getListUser();
     },
     mounted() {},
     methods: {
@@ -73,6 +74,12 @@ export default {
                 }
             });
         },
+        getListUser() {
+            API.GET(ApiConst.GET_ALL_USER).then(res => {
+                if (res.error_code === 0)
+                    this.$store.dispatch('setListUser', res.data);
+            });
+        },
         changeRoom(room) {
             this.$store.dispatch('setCurrentRoom', room);
             this.getListMessage(room);
@@ -86,7 +93,7 @@ export default {
             });
             this.$root.$emit('changed-id-rooms');
             let roomId = room.room_id;
-            this.$router.push('/rid-' + roomId)
+            this.$router.push('/rid-' + roomId);
         },
         getListMessage(room) {
             API.POST(ApiConst.RECEIVE_MESSAGE, {
