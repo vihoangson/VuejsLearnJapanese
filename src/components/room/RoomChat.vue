@@ -151,9 +151,12 @@ export default {
             this.selectItems = 'All Chat';
             this.getAllGroup(this.userId);
         });
-        this.$root.$on('changed-list-room', room => {
-            this.pushNewRoom(room);
-            this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, room);
+        this.$root.$on('changed-list-room', data => {
+            this.pushNewRoom(data);
+            this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, data);
+        });
+        this.$root.$on('changed-list-user', data => {
+            this.getListUser();
         });
         this.$root.$on('add-new-room-from-socket', data => {
             this.pushNewRoom(data);
@@ -270,7 +273,7 @@ export default {
                                 break;
                             default:
                                 this.$root.$emit('push-notice', {
-                                    message: 'Delete error',
+                                    message: response.data,
                                     alert: 'alert-danger'
                                 });
                                 break;
@@ -312,20 +315,20 @@ export default {
                                             message: 'Delete success',
                                             alert: 'alert-success'
                                         });
-                                        let room = this.list_rooms.find(d => {
+                                        let room = this.$store.getters.get_list_room.find(d => {
                                             return d.room_id === data.id;
                                         });
                                         if (room !== undefined) {
-                                            let idx = this.list_rooms.indexOf(
+                                            let idx = this.$store.getters.get_list_room.indexOf(
                                                 room
                                             );
-                                            this.list_rooms.splice(idx, 1);
+                                            this.$store.getters.get_list_room.splice(idx, 1);
                                         }
-                                        this.changeRoom(this.list_rooms[0]);
+                                        this.changeRoom(this.$store.getters.get_list_room[0]);
                                         break;
                                     default:
                                         this.$root.$emit('push-notice', {
-                                            message: 'Delete Error',
+                                            message: response.data,
                                             alert: 'alert-danger'
                                         });
                                         break;
@@ -627,5 +630,12 @@ export default {
     background: #6c757d;
     color: #fff;
     transition: 0.5s;
+}
+
+span.not-read-number {
+    background: red;
+    color: white;
+    padding: 4px;
+    border-radius: 5px;
 }
 </style>

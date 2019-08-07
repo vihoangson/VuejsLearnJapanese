@@ -18,11 +18,11 @@
                     </div>
                     <div class="col-md-9">
                         <div class="form-group">
-                            <label>Group Chat Name:</label><div class="error">{{roomNameError}}</div>
+                            <label>Room Chat Name:</label><div class="error">{{roomNameError}}</div>
                             <input type="text" name="roomName" v-model="roomName" class="form-control" placeholder="Group name">
                         </div>
                         <div class="form-group">
-                            <label>Group Description:</label> <div class="error">{{roomDescriptionError}}</div>
+                            <label>Room Description:</label> <div class="error">{{roomDescriptionError}}</div>
                             <textarea name="description" v-model="description" id="Description" class="form-control" placeholder="Add chat description, notes, or links here."></textarea>
                         </div>
                     </div>
@@ -173,34 +173,26 @@
                 roomDescriptionError: "",
                 roomNameError: "",
                 roomselectedError: "",
-                userId: 0,
-                user: [],
             }
         },
         mounted() {
             this.$root.$on('open-modal-room', id => {
                 this.roomId = id;
-                this.items = [];
-
-                if(id !== 0){
-                    this.buttonName = "Update";
-                    this.selected = [];
-                    this.getAllUser().then(data => {
-                        this.items = data;
-                    });
-                }else{
-                    this.roomName = '';
-                    this.description = '';
-                    this.roomImage = 'https://appdata.chatwork.com/icon/ico_group.png';
-                    this.selected = [];
-                    this.buttonName = "Create";
-                    this.getAllUser();
+                this.roomName = '';
+                this.description = '';
+                this.roomImage = 'https://appdata.chatwork.com/icon/ico_group.png';
+                this.selected = [];
+                this.buttonName = "Create";
+                var list_not_admin = [];
+                for(let i in this.$store.getters.get_list_user){
+                    if(this.$store.getters.get_list_user[i].id !== this.$store.getters.get_current_user.user_id){
+                        list_not_admin.push(this.$store.getters.get_list_user[i]);
+                    }
                 }
+                this.items = list_not_admin;
             });
         },
         created: function(){
-            this.user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
-            this.userId = this.user.user_id;
         },
         computed: {
             filteredItems() {
@@ -267,8 +259,8 @@
                 this.selected = tamp;
             },
             checkFormValidity() {
-                if(this.roomName.length >= 50){
-                    this.roomNameError = "Room Name may not be greater than 50 characters";
+                if(this.roomName === '' || this.roomName.length >= 50){
+                    this.roomNameError = "Room Name not empty and may not be greater than 50 characters";
                     return false
                 }
                 if(this.description.length >= 255){
@@ -285,12 +277,6 @@
                 bvModalEvt.preventDefault()
                 this.handleSubmit()
             },
-            getAllUser(){
-                API.GET(ApiConst.ROOM_GET_ALL_USER).then(response => {
-                    this.items = response.data;
-                });
-                this.$store.dispatch('setListUserByRoomId', this.items);
-            },
             btnCancel(){
                 this.$refs.modal.hide();
             },
@@ -300,14 +286,13 @@
                 this.roomselectedError= "";
                 this.disableButton = true;
                 this.selectAll = false;
+                if(this.roomName === ''){
+                    this.roomName = this.$store.getters.get_current_user.user_id
+                }
 
                 if (!this.checkFormValidity()) {
                     this.disableButton = false;
                     return
-                }
-
-                if(this.roomName === ''){
-                    this.roomName = this.user.name
                 }
 
                 let data = {
@@ -329,11 +314,11 @@
                     if(response.error_code === 0){
                         switch(response.error_code){
                             case 0:
-                                this.$refs.modal.hide();
-                                this.$root.$emit('push-notice', {message:'insert success', alert: 'alert-success'});
                                 data.room_id = response.data;
+                                this.$refs.modal.hide();
                                 this.$root.$emit('changed-list-room', data);
                                 this.$root.$emit('changed-id-rooms');
+                                this.$root.$emit('push-notice', {message:'insert success', alert: 'alert-success'});
                                 break;
                             case 1:
                                 this.roomNameError = response.data;
@@ -342,6 +327,11 @@
                                 this.roomDescriptionError = response.data;
                                 break;
                             default:
+                                this.$refs.modal.hide();
+                                this.$root.$emit('push-notice', {
+                                    message: response.data,
+                                    alert: 'alert-danger'
+                                });
                                 break;
                         }
                     }

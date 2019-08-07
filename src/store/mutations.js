@@ -36,11 +36,17 @@ export default {
     set_list_room(state, obj) {
         return (state.list_room = obj);
     },
+    set_list_user(state, obj) {
+        return (state.list_user = obj);
+    },
     set_list_user_by_room_id(state, obj) {
         return (state.list_user_by_room_id = obj);
     },
     set_list_not_user_by_room_id(state, obj) {
         return (state.list_not_user_by_room_id = obj);
+    },
+    is_admin_room(state, obj) {
+        return (state.is_admin_room = obj);
     },
     set_notification(state, obj) {
         if (state.current_user.user_id !== obj.user_info.id) {
@@ -72,5 +78,20 @@ export default {
                 x.color = '';
             }
         });
+    },
+    set_current_user_info(state, obj) {
+        return (state.current_user_info = obj);
+    },
+    set_list_message(state, list) {
+        return (state.list_message = list);
+    },
+    setContactDisplay(state, style) {
+        state.openContactDisplay = style;
+    },
+    setProfileDisplay(state, style) {
+        state.openProfileDisplay = style;
+    },
+    setProfileEdit(state, style) {
+        state.openProfileEdit = style;
     }
 };
