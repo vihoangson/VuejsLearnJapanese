@@ -200,9 +200,9 @@ export default {
         };
     },
     mounted() {
-        // this.$root.$on('changed-id-rooms', data => {
-        //     this.list_user_room = this.$store.getters.get_current_room.member_list;
-        // });
+        this.$root.$on('changed-id-rooms', data => {
+            this.getUserByRoomId();
+        });
     },
     created() {
         window.addEventListener('resize', this.handleResize);
@@ -363,10 +363,6 @@ export default {
                 );
             });
         },
-        updateGroupChat() {
-            this.$root.$emit('open-modal-add-user', 0);
-            this.$bvModal.show('modal-prevent-add-user');
-        },
         getUserByRoomId() {
             var list_not_exists = [];
             let roomId = this.$store.getters.get_current_room.room_id;
@@ -413,14 +409,6 @@ export default {
                 }
                 this.$store.dispatch('setListNotUserByRoomId', list_not_exists);
             }
-        },
-        openModalShowUserRoom() {
-            this.$root.$emit('open-modal-show-user');
-            this.$bvModal.show('modal-prevent-show-user');
-        },
-        openModalEditUserRoom() {
-            this.$root.$emit('open-modal-edit-user');
-            this.$bvModal.show('modal-prevent-edit-user');
         }
     },
     computed: {

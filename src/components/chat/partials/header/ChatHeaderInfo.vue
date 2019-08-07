@@ -4,7 +4,7 @@
             <div class="list_user">
                 <span
                     class="icon_img"
-                    v-for="(item, index) in this.$store.getters.get_current_room.member_list"
+                    v-for="(item, index) in this.$store.getters.get_current_room.member_list.slice(0,5)"
                     :key="`item-${index}`"
                 >
                     <img
@@ -18,8 +18,8 @@
                 <span
                     class="btn-more"
                     @click="openModalShowUserRoom()"
-                    v-if="!this.$store.getters.get_is_admin_room"
-                >+{{this.$store.getters.get_list_user_by_room_id.length}}</span>
+                    v-if="!this.$store.getters.get_is_admin_room && this.$store.getters.get_list_user_by_room_id.length > 5"
+                >+{{this.$store.getters.get_list_user_by_room_id.length - 5}}</span>
                 <span
                     class="btn-more"
                     v-if="this.$store.getters.get_is_admin_room"
@@ -51,7 +51,7 @@
                     </svg>
                 </span>
             </div>
-            <div class="room-action" @click="showMyListFile">
+            <div class="room-action">
                 <span class="icon-file-all">
                     <svg viewBox="0 0 10 10" id="icon_menuFile" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -90,7 +90,21 @@
 
 <script>
 export default {
-    name: 'ChatHeaderInfo'
+    name: 'ChatHeaderInfo',
+    methods: {
+        openModalShowUserRoom() {
+            this.$root.$emit('open-modal-show-user');
+            this.$bvModal.show('modal-prevent-show-user');
+        },
+        openModalEditUserRoom() {
+            this.$root.$emit('open-modal-edit-user');
+            this.$bvModal.show('modal-prevent-edit-user');
+        },
+        updateGroupChat() {
+            this.$root.$emit('open-modal-add-user', 0);
+            this.$bvModal.show('modal-prevent-add-user');
+        }
+    }
 };
 </script>
 
