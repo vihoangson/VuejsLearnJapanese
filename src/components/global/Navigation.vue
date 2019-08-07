@@ -29,7 +29,7 @@
                     </span>
                 </li>
                 <li class="menu-admin-item">
-                    <span @click="ShowPopUpModalContact">
+                    <span @click="openContact">
                         <svg
                             viewBox="0 0 10 10"
                             id="icon_menuContact"
@@ -66,7 +66,8 @@
                 <img :src="this.user.icon_img" alt />
             </div>
             <p class="status-name">
-                <span class="name">{{user.name}}</span>
+                <!-- <span class="name">{{user_info.name}}</span> -->
+                <span class="name">{{this.$store.getters.get_current_user_info.name}}</span>
                 <span class="menu-icon">
                     <svg
                         viewBox="0 0 10 10"
@@ -81,7 +82,7 @@
         <div class="menu" role="menu" v-if="!isHidden">
             <ul class="account-menu">
                 <li class="menu-item" id="profile">
-                    <a>Profile</a>
+                    <a @click="openProfile">Profile</a>
                 </li>
                 <li class="menu-item" id="personal">
                     <a>Personal Settings</a>
@@ -101,7 +102,7 @@
 </template>
     
 <script>
-import BaseContact from '../contact/BaseContact.vue';
+// import BaseContact from '../contact/BaseContact.vue';
 import modalMixin from '@/mixins/modal';
 import { AppConst } from '../../common/AppConst';
 export default {
@@ -110,27 +111,40 @@ export default {
     data() {
         return {
             isHidden: true,
-            user: this.$store.getters.get_current_user
+            user: this.$store.getters.get_current_user,
+            user_info: this.$store.getters.get_current_user_info
         };
+    },
+    created(){
+        let _user = localStorage.getItem(AppConst.LOCAL_USER);
+
+        if(_user)
+            this.user = JSON.parse(_user);
     },
     methods: {
         logout() {
             localStorage.removeItem(AppConst.LOCAL_USER);
             this.$router.push({ path: '/login' });
         },
-        ShowPopUpModalContact() {
-            this.showPageInModal(
-                BaseContact,
-                {},
-                { pivotX: 0.5, width: '80%', resizable: true, adaptive: true },
-                {}
-            );
-        },
+        // ShowPopUpModalContact() {
+        //     this.showPageInModal(
+        //         BaseContact,
+        //         {},
+        //         { pivotX: 0.5, width: '80%', resizable: true, adaptive: true },
+        //         {}
+        //     );
+        // },
         ShowFormEditRegister() {
             let routeToEditRegister = this.$router.resolve({
                 path: '/register/edit'
             });
             window.open(routeToEditRegister.href, '_blank');
+        },
+        openContact() {
+            this.$store.dispatch('setContactDisplay', 'block');
+        },
+        openProfile() {
+            this.$store.dispatch('setProfileDisplay', 'block');
         }
     }
 };

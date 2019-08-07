@@ -37,5 +37,17 @@ export default {
     },
     addNewRoom({ commit }, obj) {
         commit('new_room', obj);
+    },
+    setCurrentUserInfo({ commit }, obj) {
+        commit('set_current_user_info', obj);
+    },
+    setContactDisplay({ commit }, style) {
+        commit('setContactDisplay', style);
+    },
+    setProfileDisplay({ commit }, style) {
+        commit('setProfileDisplay', style);
+    },
+    setProfileEdit({ commit }, style) {
+        commit('setProfileEdit', style);
     }
 };

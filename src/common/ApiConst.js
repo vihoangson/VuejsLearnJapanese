@@ -3,11 +3,9 @@ export const ApiConst = {
     LOGOUT: '/api/v1/user/logout',
     REGISTER: '/api/v1/user/register',
     DETAIL_REGISTER: '/api/v1/user/details',
-    EDIT_REGISTER: '/api/v1/user/register/edit',
+    EDIT_REGISTER: '/api/v1/user/edit-account',
     RECEIVE_MESSAGE: '/api/v1/message/receive',
     ALL_ROOM: '/api/v1/message/get-all-rooms',
-    GET_USER_INFO: 'api/v1/user/detail',
-
     GROUP_GET_BY_USER_ID: '/api/v1/group/get-group-by-user-id',
     GROUP_ADD: '/api/v1/group/add',
     GROUP_UPDATE: '/api/v1/group/update',
@@ -15,16 +13,16 @@ export const ApiConst = {
     GROUP_GET_BY_ID: '/api/v1/group/get-group-by-id',
     GROUP_GET_ROOM_BY_GROUP_ID: '/api/v1/group/get-room-by-group-id',
     GROUP_GET_ALL_ROOM: '/api/v1/room/get-all-rooms',
-
+    GET_ALL_USER: '/api/v1/user/get-all-user',
     ROOM_ADD: '/api/v1/room/add',
     ROOM_UPDATE: '/api/v1/room/update',
     ROOM_DELETE: '/api/v1/room/delete',
     ROOM_SETTING: '/api/v1/room/setting',
-    ROOM_GET_ALL_USER: '/api/v1/user/get-all-user',
     ROOM_ADD_USER_TO_ROOM: '/api/v1/room/add-user-to-room',
     MY_LIST_FILE: '/api/v1/file/get-my-list-file',
     FORGOT_PASS_REQUEST: '/api/v1/user/forgot-password-request',
     FORGOT_PASS_CHECK_TOKEN: '/api/v1/user/forgot-password-check-token',
     FORGOT_PASS_CHANGE_PASS: '/api/v1/user/forgot-password-change-pass',
-
+    GET_USER_INFO: '/api/v1/user/detail',
+    UPDATE_USER_INFO: '/api/v1/user/update-user'
 };
