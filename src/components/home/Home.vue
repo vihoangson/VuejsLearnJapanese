@@ -33,7 +33,7 @@ import Group from '../group/Group';
 import AddUser from '../room/AddUser';
 import EditUser from '../room/EditUser';
 import ShowUser from '../room/ShowUser';
-import { AppConst } from '../../common/AppConst';
+import {AppConst} from '../../common/AppConst';
 export default {
     name: 'Home',
     components: {
@@ -57,6 +57,7 @@ export default {
                 user.user_id
             );
             this.setNotification();
+            this.$root.$emit('get-list-rooms');
         }
         this.$root.$on('event-get-list-message', () => {
             this.changeRoomEvent();

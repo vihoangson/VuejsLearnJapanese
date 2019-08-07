@@ -115,7 +115,7 @@ export default {
     },
     created(){
         let _user = localStorage.getItem(AppConst.LOCAL_USER);
-        console.log(_user)
+
         if(_user)
             this.user = JSON.parse(_user);
     },

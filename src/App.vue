@@ -23,11 +23,12 @@ export default {
 
         if (user === null) {
             this.$router.push({ path: 'login' });
-        } else {
-            this.getListRoom();
         }
         this.$root.$on('change-room', data => {
             this.changeRoom(data);
+        });
+        this.$root.$on('get-list-rooms', ()=>{
+            this.getListRoom();
         });
     },
     mounted() {},

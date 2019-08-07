@@ -1,19 +1,24 @@
 <template>
     <div v-bind:class="getClass()">
         <div class="message">
-            <pre><template v-for="(item, index) in this.listContent">{{item.content}}<component :key="index" v-if="item.type !== ''" :is="item.type" :msg="item.data"></component></template></pre>
+            <!-- <pre><template v-for="(item, index) in this.listContent">{{item.content}}<component :key="index" v-if="item.type !== ''" :is="item.type" :msg="item.data"></component></template></pre> -->
+            <div>
+                <Dynamic :string="content" />
+            </div>
         </div>
     </div>
 </template>
 <script>
-import Reply from './message/Reply';
-import To from './message/To';
+// import Reply from './message/Reply';
+// import To from './message/To';
+import Dynamic from './message/DynamicType';
 
 export default {
     name: 'ChatMessage',
     components: {
-        Reply,
-        To
+        // Reply,
+        // To,
+        Dynamic
     },
     props: {
         messageObject: Object,
@@ -23,7 +28,9 @@ export default {
         return {
             user: this.$store.getters.get_current_user,
             content: '',
-            listContent: []
+            listContent: [],
+            reply: `<div class="message-badge" @click="test()"><div class="reply-message"> <span class="reply-message-icon"> <svg viewBox="0 0 10 10" id="icon_chatTimeLineReplyBadge" xmlns="http://www.w3.org/2000/svg" > <path d="M6.67 3.336H3.192l1.818-1.819a.415.415 0 0 0 0-.589L4.42.34a.415.415 0 0 0-.589 0L.297 3.874a.416.416 0 0 0 0 .59L3.832 8a.415.415 0 0 0 .59 0l.589-.589a.415.415 0 0 0 0-.59L3.192 5.003H6.67c.92 0 1.667.746 1.667 1.667v2.083c0 .23.186.417.416.417h.834c.23 0 .416-.187.416-.417V6.67A3.333 3.333 0 0 0 6.67 3.336"/> </svg> </span> <span class="reply-message-txticon">RE</span> </div><img class="message-badge-avatar" data-aid="2647483" src="https://appdata.chatwork.com/icon/ico_group.png"> </div>`,
+            to: `<div class="message-badge"> <div class="to-message"> <span class="to-message-txticon">TO</span> </div><img class="message-badge-avatar" src="https://appdata.chatwork.com/icon/ico_group.png"/> </div>`
         };
     },
     create() {
@@ -34,53 +41,13 @@ export default {
             if (to === this.user.id) return 'mention';
         },
         formatMessage() {
-            this.listContent = [];
+            // this.listContent = [];
             this.content = this.messageObject.message;
 
-            let regExp = /(\[To:([0-9])+])|(\[Reply mid:([0-9]+) to:([0-9]+)\])/g;
-            let m;
-            let mIndex = 0;
-            if (!this.content.match(regExp))
-                this.listContent.push({
-                    type: '',
-                    content: this.content
-                });
-            else {
-                while ((m = regExp.exec(this.content))) {
-                    this.listContent.push({
-                        type: '',
-                        content: this.content.substring(mIndex, m.index)
-                    });
-                    let matchStr = this.content.substring(
-                        m.index,
-                        regExp.lastIndex
-                    );
-                    let item = {};
-                    if (matchStr.match(/(\[To:([0-9])+])/g)) {
-                        item.type = 'To';
-                        // let userId = matchStr.match(/([0-9]+)/g);
-                    } else if (
-                        matchStr.match(/(\[Reply mid:([0-9]+) to:([0-9]+)\])/g)
-                    )
-                        item.type = 'Reply';
-
-                    item.data = matchStr;
-
-                    this.listContent.push(item);
-                    mIndex = regExp.lastIndex;
-                    let str = this.content.substring(
-                        regExp.lastIndex,
-                        this.content.length
-                    );
-                    if (!str.match(regExp)) {
-                        this.listContent.push({
-                            type: '',
-                            content: str
-                        });
-                        break;
-                    }
-                }
-            }
+            let regExpTo = /(\[To:([0-9])+])/g;
+            let regExpReply = /(\[Reply mid:([0-9]+) to:([0-9]+)\])/g;
+            this.content = this.content.replace(regExpTo, this.to);
+            this.content = this.content.replace(regExpReply, this.reply);
         }
     },
     mounted() {
@@ -132,10 +99,15 @@ export default {
     height: 16px;
     fill: #ffffff;
     margin-right: 3px;
+    position: relative;
+}
+.reply-message-icon svg{
+    position: absolute;
+    left: 0px;
+    top: 1px;
 }
 svg:not(:root) {
     overflow: hidden;
-    margin-top: -5px;
 }
 .reply-message-txticon {
     color: #ffffff;
