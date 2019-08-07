@@ -4,7 +4,7 @@
             id="modal-prevent-edit-user"
             ref="modal"
             size="lg"
-            title="Add user to room"
+            title="Update user to room"
             @show="resetModal"
             @hidden="resetModal"
             @ok="handleOk"
@@ -170,20 +170,10 @@ export default {
         };
     },
     mounted() {
-        this.$root.$on('open-modal-edit-user', () => {
+        this.$root.$on('open-modal-edit-user', data => {
             this.buttonName = 'Save';
             this.roomId = this.$store.getters.get_current_room.room_id;
             this.items = this.$store.getters.get_list_user_by_room_id;
-            for (let i in this.items) {
-                var id = this.items[i].id;
-                var selectRole = {
-                    id: id,
-                    permission: this.items[i].role_in_room,
-                    name: this.subscriptions[this.items[i].role_in_room].name
-                };
-                this.selected[id] = selectRole;
-            }
-             console.log(this.selected)
         });
     },
     created: function() {
@@ -192,7 +182,16 @@ export default {
     },
     computed: {
         filteredItems() {
-            if (this.items.length > 0) {
+            if (this.$store.getters.get_list_user_by_room_id.length > 0) {
+                for (let i in this.items) {
+                    var id = this.items[i].id;
+                    var selectRole = {
+                        id: id,
+                        permission: this.items[i].role_in_room,
+                        name: this.subscriptions[this.items[i].role_in_room].name
+                    };
+                    this.selected[id] = selectRole;
+                }
                 return this.items.filter(item => {
                     return (
                         item.name
@@ -254,7 +253,6 @@ export default {
                 selected: this.selected,
                 only_token: true
             };
-
             API.POST(ApiConst.ROOM_UPDATE, data).then(response => {
                 if(response !== undefined){
                     switch (response.error_code) {
@@ -264,6 +262,26 @@ export default {
                                 message: 'Save success',
                                 alert: 'alert-success'
                             });
+
+                            var list_room = this.$store.getters.get_list_room;
+                            for(let i in list_room){
+                                if(list_room[i].room_id === this.roomId){
+                                    var member_list = list_room[i].member_list;
+                                    var member_update = [];
+                                    for(let key in member_list){
+                                        for(let i in this.selected){
+                                            if((this.selected[i] !== undefined) && (this.selected[i].id !== undefined)){
+                                                if(member_list[key].id === this.selected[i].id){
+                                                    member_list[key].role_in_room = this.selected[i].permission;
+                                                    member_update.push(member_list[key]);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    list_room[i].member_list = member_update;
+                                }
+                            }
+                            this.$store.dispatch('setListRoom',  list_room);
                             this.$root.$emit('changed-id-rooms');
                             break;
                         case 1:
