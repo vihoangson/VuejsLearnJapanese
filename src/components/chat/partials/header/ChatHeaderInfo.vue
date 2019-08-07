@@ -118,34 +118,6 @@ export default {
     border-bottom: 1px solid #cccccc;
     background-color: #fff;
 }
-.list_user .btn-more {
-    height: 25px;
-    width: 25px;
-    background: #ccc;
-    display: inline-block;
-    border-radius: 50%;
-    color: #fff;
-    text-align: center;
-    font-size: 14px;
-    line-height: 24px;
-}
-.list_user .btn-more svg {
-    width: 18px;
-}
-.list_user .btn-plus {
-    float: right;
-    margin-left: 5px;
-    height: 25px;
-    width: 25px;
-    background: #b8daff;
-    display: block;
-    border-radius: 50%;
-    color: #fff;
-    text-align: center;
-    font-size: 16px;
-    line-height: 24px;
-}
-
 .list_user .icon_img {
     margin-right: 5px;
 }
@@ -266,5 +238,54 @@ export default {
     align-items: center;
     padding-right: 8px;
     border-right: 1px solid #cccccc;
+}
+.list_user .btn-more {
+    height: 25px;
+    padding: 0 4px;
+    width: 30px;
+    background: #aaa;
+    display: inline-block;
+    border-radius: 20px;
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+    line-height: 24px;
+}
+.list_user .btn-persion {
+    height: 25px;
+    padding: 0 4px;
+    width: 30px;
+    background: #aaa;
+    display: inline-block;
+    border-radius: 20px;
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+    line-height: 24px;
+}
+.list_user .btn-persion svg {
+    width: 15px;
+}
+.list_user .btn-more svg {
+    width: 18px;
+}
+.list_user .btn-plus {
+    float: right;
+    margin-left: 5px;
+    height: 25px;
+    width: 30px;
+    background: #b8daff;
+    display: block;
+    border-radius: 15px;
+    color: #fff;
+    text-align: center;
+    font-size: 16px;
+    line-height: 20px;
+    position: relative;
+    top: 1px;
+    border: 1px #aaa solid;
+}
+.list_user .btn-plus svg {
+    width: 15px;
 }
 </style>
