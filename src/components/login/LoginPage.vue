@@ -34,9 +34,13 @@
                     </div>
 
                     <div class="text-center box-button-bottom">
-                        <button class="forget-password-button btn" type="button" @click="SetNewPassword">Reset password</button> <button class="sign-up-button btn" type="button" @click="SignUp">Register</button>
+                        <button
+                            class="forget-password-button btn"
+                            type="button"
+                            @click="SetNewPassword"
+                        >Reset password</button>
+                        <button class="sign-up-button btn" type="button" @click="SignUp">Register</button>
                     </div>
-
                 </form>
             </div>
 

@@ -11,7 +11,7 @@
                 <div class="list_user">
                     <span
                         class="icon_img"
-                        v-for="(item, index) in this.$store.getters.get_list_user_by_room_id"
+                        v-for="(item, index) in this.$store.getters.get_current_room.member_list"
                         :key="`item-${index}`"
                     >
                         <img :src="item.icon_img" alt class="avatar" v-b-tooltip.hover v-bind:title="item.name"/>
@@ -95,9 +95,7 @@
                         <div class="timeline-content">
                             <div class="timeline-content-header">
                                 <p class="timeline-content-header-username">{{item.user_info.name}}</p>
-                                <p
-                                    class="timeline-content-header-organization"
-                                >{{item.organization}}</p>
+                                <p class="timeline-content-header-organization">{{item.company}}</p>
                             </div>
                             <div class="timeline-content-message">
                                 <ChatMessage :message-object="item" :message_content="item.message"></ChatMessage>
@@ -270,12 +268,15 @@ export default {
             user: this.$store.getters.get_current_user,
             editMessage: false,
             listMyFile: [],
+            // list_user_room: this.$store.getters.get_current_room.member_list,
+            is_admin_room: false,
+            room_length: 0
         };
     },
     mounted() {
-        this.$root.$on('changed-id-rooms', data => {
-            this.getUserByRoomId();
-        });
+        // this.$root.$on('changed-id-rooms', data => {
+        //     this.list_user_room = this.$store.getters.get_current_room.member_list;
+        // });
     },
     created() {
         window.addEventListener('resize', this.handleResize);
@@ -288,7 +289,6 @@ export default {
             if (res.error_code === 0)
                 this.$store.dispatch('setListMessage', res.data);
         });
-        this.getUserByRoomId();
     },
     methods: {
         handleResize() {
@@ -787,6 +787,7 @@ textarea:focus:-webkit-placeholder {
     align-items: center;
     list-style: none;
     padding-left: 0px;
+    margin-bottom: 0px;
 }
 .emoji {
     border-color: transparent;

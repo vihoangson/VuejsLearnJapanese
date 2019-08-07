@@ -65,8 +65,11 @@ export default {
             );
             this.$store.dispatch('setCurrentUser', JSON.parse(user));
             this.setNotification();
+            this.$root.$emit('get-list-rooms');
         }
-
+        this.$root.$on('event-get-list-message', () => {
+            this.changeRoomEvent();
+        });
         let userInfo = localStorage.getItem(AppConst.LOCAL_USER_INFO);
         if (userInfo)
             this.$store.dispatch('setCurrentUserInfo', JSON.parse(userInfo));

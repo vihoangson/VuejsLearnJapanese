@@ -115,6 +115,12 @@ export default {
             user_info: this.$store.getters.get_current_user_info
         };
     },
+    created(){
+        let _user = localStorage.getItem(AppConst.LOCAL_USER);
+
+        if(_user)
+            this.user = JSON.parse(_user);
+    },
     methods: {
         logout() {
             localStorage.removeItem(AppConst.LOCAL_USER);
