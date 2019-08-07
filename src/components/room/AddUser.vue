@@ -213,7 +213,7 @@ export default {
             disableButton: false,
             roomselectedError: '',
             userId: 0,
-            listAdd: [],
+            listAdd: []
         };
     },
     mounted() {
@@ -323,9 +323,9 @@ export default {
         btnCancel() {
             this.$refs.modal.hide();
         },
-        getUserbyId(id){
-            for(let i in this.$store.getters.get_list_user){
-                if(this.$store.getters.get_list_user[i].id === id){
+        getUserbyId(id) {
+            for (let i in this.$store.getters.get_list_user) {
+                if (this.$store.getters.get_list_user[i].id === id) {
                     return this.$store.getters.get_list_user[i];
                 }
             }
@@ -347,7 +347,7 @@ export default {
             };
 
             API.POST(ApiConst.ROOM_ADD_USER_TO_ROOM, data).then(response => {
-                if(response != undefined){
+                if (response !== undefined) {
                     switch (response.error_code) {
                         case 0:
                             this.$refs.modal.hide();
@@ -355,29 +355,38 @@ export default {
                                 message: 'insert success',
                                 alert: 'alert-success'
                             });
-                            var list_room = this.$store.getters.get_list_room;
-                            for(let i in list_room){
-                                if(list_room[i].room_id === this.roomId){
+                            var listRoom = this.$store.getters.get_list_room;
+                            for (let i in listRoom) {
+                                if (listRoom[i].room_id === this.roomId) {
                                     var userAdd = [];
-                                    for(let j in this.selected){
-                                        var length = list_room[i].member_list.length;
-                                        if((this.selected[j] !== undefined) && (this.selected[j].id !== undefined)){
-                                            userAdd = this.getUserbyId(this.selected[j].id);
-                                            var role_in_room = this.selected[j].permission;
+                                    for (let j in this.selected) {
+                                        var length =
+                                            listRoom[i].member_list.length;
+                                        if (
+                                            this.selected[j] !== undefined &&
+                                            this.selected[j].id !== undefined
+                                        ) {
+                                            userAdd = this.getUserbyId(
+                                                this.selected[j].id
+                                            );
+                                            var roleInRoom = this.selected[j]
+                                                .permission;
                                             this.listAdd = {
-                                                'company': userAdd.company,
-                                                'email': userAdd.email,
-                                                'icon_img': userAdd.icon_img,
-                                                'id': userAdd.id,
-                                                'name': userAdd.name,
-                                                'role_in_room': role_in_room
+                                                company: userAdd.company,
+                                                email: userAdd.email,
+                                                icon_img: userAdd.icon_img,
+                                                id: userAdd.id,
+                                                name: userAdd.name,
+                                                role_in_room: roleInRoom
                                             };
-                                            list_room[i].member_list[length] = this.listAdd;
+                                            listRoom[i].member_list[
+                                                length
+                                            ] = this.listAdd;
                                         }
                                     }
                                 }
                             }
-                            this.$store.dispatch('setListRoom',  list_room);
+                            this.$store.dispatch('setListRoom', listRoom);
                             this.$root.$emit('changed-id-rooms');
                             break;
                         case 1:

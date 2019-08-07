@@ -148,7 +148,6 @@
 <script>
     import { API } from '../../services/api';
     import { ApiConst } from '../../common/ApiConst';
-    import { AppConst } from '../../common/AppConst';
     export default {
         name: "Group",
         data() {
@@ -183,13 +182,13 @@
                 this.roomImage = 'https://appdata.chatwork.com/icon/ico_group.png';
                 this.selected = [];
                 this.buttonName = "Create";
-                var list_not_admin = [];
+                var listNotAdmin = [];
                 for(let i in this.$store.getters.get_list_user){
                     if(this.$store.getters.get_list_user[i].id !== this.$store.getters.get_current_user.user_id){
-                        list_not_admin.push(this.$store.getters.get_list_user[i]);
+                        listNotAdmin.push(this.$store.getters.get_list_user[i]);
                     }
                 }
-                this.items = list_not_admin;
+                this.items = listNotAdmin;
             });
         },
         created: function(){
