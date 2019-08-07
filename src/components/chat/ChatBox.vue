@@ -11,7 +11,8 @@
                 <div class="list_user">
                     <span
                         class="icon_img"
-                        v-for="(item, index) in this.$store.getters.get_list_user_by_room_id"
+                        v-for="(item, index) in this.$store.getters.get_list_user_by_room_id.slice(0,5)"
+                        v-if="property!='image'"
                         :key="`item-${index}`"
                     >
                         <img :src="item.icon_img" alt class="avatar" v-b-tooltip.hover v-bind:title="item.name"/>
@@ -19,10 +20,10 @@
                     <span
                         class="btn-more"
                         @click="openModalShowUserRoom()"
-                        v-if="!this.$store.getters.get_is_admin_room"
-                    >+{{this.$store.getters.get_list_user_by_room_id.length}}</span>
+                        v-if="(this.$store.getters.get_list_user_by_room_id.length - 5) > 0"
+                        >+{{this.$store.getters.get_list_user_by_room_id.length - 5}}</span>
                     <span
-                        class="btn-more"
+                        class="btn-persion"
                         v-if="this.$store.getters.get_is_admin_room"
                         @click="openModalShowUserRoom()"
                     >
@@ -496,14 +497,30 @@ export default {
 <style>
 .list_user .btn-more {
     height: 25px;
-    width: 25px;
-    background: #ccc;
+    padding: 0 4px;
+    width: 30px;
+    background: #aaa;
     display: inline-block;
-    border-radius: 50%;
+    border-radius: 20px;
     color: #fff;
     text-align: center;
     font-size: 14px;
     line-height: 24px;
+}
+.list_user .btn-persion {
+    height: 25px;
+    padding: 0 4px;
+    width: 30px;
+    background: #aaa;
+    display: inline-block;
+    border-radius: 20px;
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+    line-height: 24px;
+}
+.list_user .btn-persion svg{
+    width: 15px;
 }
 .list_user .btn-more svg {
     width: 18px;
@@ -512,14 +529,20 @@ export default {
     float: right;
     margin-left: 5px;
     height: 25px;
-    width: 25px;
+    width: 30px;
     background: #b8daff;
     display: block;
-    border-radius: 50%;
+    border-radius: 15px;
     color: #fff;
     text-align: center;
     font-size: 16px;
-    line-height: 24px;
+    line-height: 20px;
+    position: relative;
+    top: 1px;
+    border: 1px #aaa solid;
+}
+.list_user .btn-plus svg{
+    width: 15px;
 }
 .list_user {
     float: right;
