@@ -1,82 +1,7 @@
 <template>
     <div id="chat-box" @dragover="showDropzoneForm">
         <div class="chat-box-header">
-            <div class="header-name">
-                <div class="room-logo">
-                    <img :src="this.$store.getters.get_current_room.icon_img" alt />
-                </div>
-                <h1 class="title">
-                    <span>{{this.$store.getters.get_current_room.room_name}}</span>
-                </h1>
-                <div class="list_user">
-                    <span
-                        class="icon_img"
-                        v-for="(item, index) in this.$store.getters.get_current_room.member_list"
-                        :key="`item-${index}`"
-                    >
-                        <img :src="item.icon_img" alt class="avatar" v-b-tooltip.hover v-bind:title="item.name"/>
-                    </span>
-                    <span
-                        class="btn-more"
-                        @click="openModalShowUserRoom()"
-                        v-if="!this.$store.getters.get_is_admin_room"
-                    >+{{this.$store.getters.get_list_user_by_room_id.length}}</span>
-                    <span
-                        class="btn-more"
-                        v-if="this.$store.getters.get_is_admin_room"
-                        @click="openModalShowUserRoom()"
-                    >
-                        <svg
-                            viewBox="0 0 10 10"
-                            id="icon_memberDetail"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path d="M6.25 2.5h3.13v.94H6.25zm0 2.03h3.13v.94H6.25z" />
-                            <path
-                                d="M3.75 1.25a1.82 1.82 0 0 1 1.61 2A2.46 2.46 0 0 1 4.62 5a.39.39 0 0 0 .11.63l.55.3c.89.45 1.6.83 1.59 1.55S6 8.53 5.31 8.64a10.11 10.11 0 0 1-1.56.11 10.11 10.11 0 0 1-1.56-.11C1.46 8.53.62 8.17.62 7.48s.71-1.1 1.6-1.55l.55-.3A.39.39 0 0 0 2.88 5a2.46 2.46 0 0 1-.74-1.75 1.82 1.82 0 0 1 1.61-2zM7.2 6.56a1.58 1.58 0 0 1 .3.92h1.88v-.92z"
-                            />
-                        </svg>
-                    </span>
-                    <span class="btn-plus" v-if="this.$store.getters.get_is_admin_room" @click="updateGroupChat">
-                        <svg
-                            viewBox="0 0 10 10"
-                            class="chatRoomHeaderMemberList__editIcon"
-                            width="16"
-                            height="16"
-                        >
-                            <use fill-rule="evenodd" xlink:href="#icon_plus" />
-                        </svg>
-                    </span>
-                </div>
-            </div>
-            <div class="dropdown">
-                <div class="emoji" @click="showMyListFile">
-                    <span class="icon-container">
-                        <svg
-                            viewBox="0 0 10 10"
-                            id="icon_menuFile"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                d="M.417.417v2.5h9.167v-1.25H4.167L2.917.417h-2.5zM0 3.75l.417 5.833h9.167l.417-5.833h-10zm.781.73h8.438l-.313 4.375H1.093L.78 4.48z"
-                            />
-                        </svg>
-                    </span>
-                </div>
-                <div class="dropdown-content" v-if="showListFile">
-                    <div
-                        v-for="(file, index) in listMyFile"
-                        :key="`file-${index}`"
-                        class="item-file"
-                    >
-                        {{ file.file_name }}
-                        <div class="action-file"></div>
-                        <div class="action-icon" @click="downloadFile(file.id)">
-                            <span>download</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <ChatHeaderInfo></ChatHeaderInfo>
         </div>
         <div class="chat-box-content" id="chat-box-content" :style="{'height': `${myStyles}px`}">
             <div class="timeline">
@@ -236,7 +161,7 @@ import ChatEdit from './partials/ChatEdit';
 import modalMixin from '@/mixins/modal';
 import SendFile from './SendFile';
 import ChatMessage from './partials/ChatMessage';
-
+import ChatHeaderInfo from './partials/header/ChatHeaderInfo';
 export default {
     name: 'ChatBox',
     mixins: [modalMixin],
@@ -245,7 +170,8 @@ export default {
         TextareaEmojiPicker,
         ChatAction,
         ChatEdit,
-        ChatMessage
+        ChatMessage,
+        ChatHeaderInfo
     },
     props: {
         value: {
@@ -448,26 +374,41 @@ export default {
             this.$store.dispatch('setListUserByRoomId', []);
             this.$store.dispatch('setListNotUserByRoomId', []);
             if (roomId !== undefined) {
-                for(let i in this.$store.getters.get_list_room){
-                    if(this.$store.getters.get_list_room[i].room_id === roomId){
-                        this.$store.dispatch('setListUserByRoomId', this.$store.getters.get_list_room[i].member_list);
+                for (let i in this.$store.getters.get_list_room) {
+                    if (
+                        this.$store.getters.get_list_room[i].room_id === roomId
+                    ) {
+                        this.$store.dispatch(
+                            'setListUserByRoomId',
+                            this.$store.getters.get_list_room[i].member_list
+                        );
                     }
                 }
-                for(let i in this.$store.getters.get_list_user_by_room_id){
-                    if((this.$store.getters.get_list_user_by_room_id[i].role_in_room === 1) 
-                        && (this.$store.getters.get_list_user_by_room_id[i].id === this.$store.getters.get_current_user.user_id)){
+                for (let i in this.$store.getters.get_list_user_by_room_id) {
+                    if (
+                        this.$store.getters.get_list_user_by_room_id[i]
+                            .role_in_room === 1 &&
+                        this.$store.getters.get_list_user_by_room_id[i].id ===
+                            this.$store.getters.get_current_user.user_id
+                    ) {
                         this.$store.dispatch('setAdminRoom', true);
                     }
                 }
-                for(let i in this.$store.getters.get_list_user){
+                for (let i in this.$store.getters.get_list_user) {
                     var has = false;
-                    for(let j in this.$store.getters.get_list_user_by_room_id){
-                        if(this.$store.getters.get_list_user_by_room_id[j].id === this.$store.getters.get_list_user[i].id){
-                           has = true;
+                    for (let j in this.$store.getters
+                        .get_list_user_by_room_id) {
+                        if (
+                            this.$store.getters.get_list_user_by_room_id[j]
+                                .id === this.$store.getters.get_list_user[i].id
+                        ) {
+                            has = true;
                         }
                     }
-                    if(!has){
-                        list_not_exists.push(this.$store.getters.get_list_user[i]);
+                    if (!has) {
+                        list_not_exists.push(
+                            this.$store.getters.get_list_user[i]
+                        );
                     }
                 }
                 this.$store.dispatch('setListNotUserByRoomId', list_not_exists);
@@ -494,104 +435,6 @@ export default {
 </script>
 
 <style>
-.list_user .btn-more {
-    height: 25px;
-    width: 25px;
-    background: #ccc;
-    display: inline-block;
-    border-radius: 50%;
-    color: #fff;
-    text-align: center;
-    font-size: 14px;
-    line-height: 24px;
-}
-.list_user .btn-more svg {
-    width: 18px;
-}
-.list_user .btn-plus {
-    float: right;
-    margin-left: 5px;
-    height: 25px;
-    width: 25px;
-    background: #b8daff;
-    display: block;
-    border-radius: 50%;
-    color: #fff;
-    text-align: center;
-    font-size: 16px;
-    line-height: 24px;
-}
-.list_user {
-    float: right;
-}
-.list_user .icon_img {
-    margin-right: 5px;
-}
-.list_user .icon_img img {
-    width: 25px;
-    border-radius: 50%;
-    border: 1px #eee solid;
-    height: 25px;
-    margin: 0;
-}
-.action-icon {
-    text-align: center;
-    width: 30%;
-    height: 70%;
-    opacity: 1;
-    position: absolute;
-    padding-top: 12px;
-    z-index: 4;
-    top: 0;
-    right: 0;
-    background-color: greenyellow;
-    display: none;
-}
-.item-file {
-    position: relative;
-}
-.item-file:hover .action-file {
-    display: block;
-}
-.item-file:hover .action-icon {
-    display: block;
-}
-.action-file {
-    height: 100%;
-    width: 60vh;
-    top: 0;
-    left: 0;
-    position: absolute;
-    background-color: greenyellow;
-    z-index: 2;
-    opacity: 0.5;
-    display: none;
-}
-.dropdown {
-    float: right;
-    position: relative;
-    display: block;
-}
-
-.dropdown-content {
-    max-height: 80vh;
-    min-height: 30vh;
-    width: 60vh;
-    overflow: scroll;
-    right: 0px;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-}
-
-.dropdown-content div.item-file {
-    color: black;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: block;
-}
 .icon-close {
     float: right;
 }
@@ -627,15 +470,6 @@ export default {
     height: 100%;
     min-width: 700px;
     z-index: 1;
-}
-.chat-box-header {
-    box-sizing: border-box;
-    height: 41px;
-    padding-right: 8px;
-    padding-left: 8px;
-    border-left: 1px solid #b3b3b3;
-    border-bottom: 1px solid #cccccc;
-    background-color: #fff;
 }
 .chat-box-header .header-name {
     display: inline-block;

@@ -1,0 +1,256 @@
+<template>
+    <div class="chat-room-header">
+        <div class="info-container">
+            <div class="list_user">
+                <span
+                    class="icon_img"
+                    v-for="(item, index) in this.$store.getters.get_current_room.member_list"
+                    :key="`item-${index}`"
+                >
+                    <img
+                        :src="item.icon_img"
+                        alt
+                        class="avatar"
+                        v-b-tooltip.hover
+                        v-bind:title="item.name"
+                    />
+                </span>
+                <span
+                    class="btn-more"
+                    @click="openModalShowUserRoom()"
+                    v-if="!this.$store.getters.get_is_admin_room"
+                >+{{this.$store.getters.get_list_user_by_room_id.length}}</span>
+                <span
+                    class="btn-more"
+                    v-if="this.$store.getters.get_is_admin_room"
+                    @click="openModalShowUserRoom()"
+                >
+                    <svg
+                        viewBox="0 0 10 10"
+                        id="icon_memberDetail"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path d="M6.25 2.5h3.13v.94H6.25zm0 2.03h3.13v.94H6.25z" />
+                        <path
+                            d="M3.75 1.25a1.82 1.82 0 0 1 1.61 2A2.46 2.46 0 0 1 4.62 5a.39.39 0 0 0 .11.63l.55.3c.89.45 1.6.83 1.59 1.55S6 8.53 5.31 8.64a10.11 10.11 0 0 1-1.56.11 10.11 10.11 0 0 1-1.56-.11C1.46 8.53.62 8.17.62 7.48s.71-1.1 1.6-1.55l.55-.3A.39.39 0 0 0 2.88 5a2.46 2.46 0 0 1-.74-1.75 1.82 1.82 0 0 1 1.61-2zM7.2 6.56a1.58 1.58 0 0 1 .3.92h1.88v-.92z"
+                        />
+                    </svg>
+                </span>
+                <span
+                    class="btn-plus"
+                    v-if="this.$store.getters.get_is_admin_room"
+                    @click="updateGroupChat"
+                >
+                    <svg
+                        viewBox="0 0 10 10"
+                        class="chatRoomHeaderMemberList__editIcon"
+                        width="16"
+                        height="16"
+                    >
+                        <use fill-rule="evenodd" xlink:href="#icon_plus" />
+                    </svg>
+                </span>
+            </div>
+            <div class="room-action" @click="showMyListFile">
+                <span class="icon-file-all">
+                    <svg viewBox="0 0 10 10" id="icon_menuFile" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M.417.417v2.5h9.167v-1.25H4.167L2.917.417h-2.5zM0 3.75l.417 5.833h9.167l.417-5.833h-10zm.781.73h8.438l-.313 4.375H1.093L.78 4.48z"
+                        />
+                    </svg>
+                </span>
+                <span class="icon-config-all">
+                    <svg viewBox="0 0 10 10" id="icon_setting" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M8.075 5.497a3.096 3.096 0 0 1-.548 1.327l.477.902-.277.277-.902-.477a3.102 3.102 0 0 1-1.327.548l-.301.977-.196.01-.196-.01-.302-.977a3.093 3.093 0 0 1-1.328-.548l-.902.477-.277-.277.478-.902a3.102 3.102 0 0 1-.548-1.327l-.977-.301L.939 5l.01-.196.977-.302c.079-.491.269-.941.548-1.328l-.478-.902.277-.277.902.478c.386-.28.837-.469 1.328-.548l.302-.977.196-.01.196.01.301.977c.491.079.941.268 1.327.548l.902-.478.277.277-.477.902a3.1 3.1 0 0 1 .548 1.328l.977.302.01.196-.01.196-.977.301zm1.856.3c.042-.26.069-.525.069-.798 0-.272-.027-.537-.069-.797l-1.014-.266a4.063 4.063 0 0 0-.394-.954l.529-.905A5.005 5.005 0 0 0 7.924.95l-.904.528a4.005 4.005 0 0 0-.955-.394L5.799.07a5.114 5.114 0 0 0-.798-.069 5.1 5.1 0 0 0-.797.069l-.266 1.014a4.021 4.021 0 0 0-.954.394L2.079.95A5.021 5.021 0 0 0 .952 2.077l.528.905c-.17.297-.302.616-.394.954l-1.014.266c-.042.26-.069.526-.069.797 0 .272.027.538.069.798l1.013.266c.092.338.225.657.395.954l-.528.905c.314.434.694.814 1.127 1.128l.905-.529c.296.171.617.303.954.394l.266 1.014c.261.042.526.069.797.069.272 0 .537-.027.798-.069l.266-1.014c.337-.091.658-.224.955-.394l.904.529a5.03 5.03 0 0 0 1.128-1.128l-.529-.905c.17-.297.303-.616.395-.954l1.013-.266zM5 6.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5m0-3.438a2.188 2.188 0 1 0 0 4.376 2.188 2.188 0 0 0 0-4.376"
+                        />
+                    </svg>
+                </span>
+            </div>
+            <div class="dropdown-content" v-if="showListFile">
+                <div v-for="(file, index) in listMyFile" :key="`file-${index}`" class="item-file">
+                    {{ file.file_name }}
+                    <div class="action-file"></div>
+                    <div class="action-icon" @click="downloadFile(file.id)">
+                        <span>download</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="header-name">
+            <div class="room-logo">
+                <img :src="this.$store.getters.get_current_room.icon_img" alt />
+            </div>
+            <h1 class="title">
+                <span>{{this.$store.getters.get_current_room.room_name}}</span>
+            </h1>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+    name: 'ChatHeaderInfo'
+};
+</script>
+
+<style scoped>
+.chat-room-header {
+    box-sizing: border-box;
+    height: 41px;
+    padding-right: 8px;
+    padding-left: 8px;
+    border-left: 1px solid #b3b3b3;
+    border-bottom: 1px solid #cccccc;
+    background-color: #fff;
+}
+.list_user .btn-more {
+    height: 25px;
+    width: 25px;
+    background: #ccc;
+    display: inline-block;
+    border-radius: 50%;
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+    line-height: 24px;
+}
+.list_user .btn-more svg {
+    width: 18px;
+}
+.list_user .btn-plus {
+    float: right;
+    margin-left: 5px;
+    height: 25px;
+    width: 25px;
+    background: #b8daff;
+    display: block;
+    border-radius: 50%;
+    color: #fff;
+    text-align: center;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.list_user .icon_img {
+    margin-right: 5px;
+}
+.list_user .icon_img img {
+    width: 25px;
+    border-radius: 50%;
+    border: 1px #eee solid;
+    height: 25px;
+    margin: 0;
+}
+.action-icon {
+    text-align: center;
+    width: 30%;
+    height: 70%;
+    opacity: 1;
+    position: absolute;
+    padding-top: 12px;
+    z-index: 4;
+    top: 0;
+    right: 0;
+    background-color: greenyellow;
+    display: none;
+}
+.item-file {
+    position: relative;
+}
+.item-file:hover .action-file {
+    display: block;
+}
+.item-file:hover .action-icon {
+    display: block;
+}
+.action-file {
+    height: 100%;
+    width: 60vh;
+    top: 0;
+    left: 0;
+    position: absolute;
+    background-color: greenyellow;
+    z-index: 2;
+    opacity: 0.5;
+    display: none;
+}
+.info-container {
+    float: right;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 292px;
+    height: 100%;
+}
+
+.dropdown-content {
+    max-height: 80vh;
+    min-height: 30vh;
+    width: 60vh;
+    overflow: scroll;
+    right: 0px;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-content div.item-file {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+.icon-close {
+    float: right;
+}
+.room-action {
+    display: flex;
+    align-items: center;
+    margin-left: 16px;
+    height: 24px;
+}
+.icon-file-all,
+.icon-config-all {
+    box-sizing: border-box;
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 2px;
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border-color: transparent;
+    background-color: transparent;
+    color: #1a1a1a;
+    fill: #1a1a1a;
+}
+.icon-file-all:hover,
+.icon-config-all:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-color: transparent;
+    color: #1a1a1a;
+    fill: #1a1a1a;
+}
+.icon-file-all svg,
+.icon-config-all svg {
+    width: 16px;
+}
+.icon-config-all {
+    margin-left: 10px;
+}
+.list_user {
+    display: flex;
+    align-items: center;
+    padding-right: 8px;
+    border-right: 1px solid #cccccc;
+}
+</style>
