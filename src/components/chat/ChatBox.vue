@@ -14,7 +14,13 @@
                         v-for="(item, index) in this.$store.getters.get_current_room.member_list"
                         :key="`item-${index}`"
                     >
-                        <img :src="item.icon_img" alt class="avatar" v-b-tooltip.hover v-bind:title="item.name"/>
+                        <img
+                            :src="item.icon_img"
+                            alt
+                            class="avatar"
+                            v-b-tooltip.hover
+                            v-bind:title="item.name"
+                        />
                     </span>
                     <span
                         class="btn-more"
@@ -37,7 +43,11 @@
                             />
                         </svg>
                     </span>
-                    <span class="btn-plus" v-if="this.$store.getters.get_is_admin_room" @click="updateGroupChat">
+                    <span
+                        class="btn-plus"
+                        v-if="this.$store.getters.get_is_admin_room"
+                        @click="updateGroupChat"
+                    >
                         <svg
                             viewBox="0 0 10 10"
                             class="chatRoomHeaderMemberList__editIcon"
@@ -448,26 +458,41 @@ export default {
             this.$store.dispatch('setListUserByRoomId', []);
             this.$store.dispatch('setListNotUserByRoomId', []);
             if (roomId !== undefined) {
-                for(let i in this.$store.getters.get_list_room){
-                    if(this.$store.getters.get_list_room[i].room_id === roomId){
-                        this.$store.dispatch('setListUserByRoomId', this.$store.getters.get_list_room[i].member_list);
+                for (let i in this.$store.getters.get_list_room) {
+                    if (
+                        this.$store.getters.get_list_room[i].room_id === roomId
+                    ) {
+                        this.$store.dispatch(
+                            'setListUserByRoomId',
+                            this.$store.getters.get_list_room[i].member_list
+                        );
                     }
                 }
-                for(let i in this.$store.getters.get_list_user_by_room_id){
-                    if((this.$store.getters.get_list_user_by_room_id[i].role_in_room === 1) 
-                        && (this.$store.getters.get_list_user_by_room_id[i].id === this.$store.getters.get_current_user.user_id)){
+                for (let i in this.$store.getters.get_list_user_by_room_id) {
+                    if (
+                        this.$store.getters.get_list_user_by_room_id[i]
+                            .role_in_room === 1 &&
+                        this.$store.getters.get_list_user_by_room_id[i].id ===
+                            this.$store.getters.get_current_user.user_id
+                    ) {
                         this.$store.dispatch('setAdminRoom', true);
                     }
                 }
-                for(let i in this.$store.getters.get_list_user){
+                for (let i in this.$store.getters.get_list_user) {
                     var has = false;
-                    for(let j in this.$store.getters.get_list_user_by_room_id){
-                        if(this.$store.getters.get_list_user_by_room_id[j].id === this.$store.getters.get_list_user[i].id){
-                           has = true;
+                    for (let j in this.$store.getters
+                        .get_list_user_by_room_id) {
+                        if (
+                            this.$store.getters.get_list_user_by_room_id[j]
+                                .id === this.$store.getters.get_list_user[i].id
+                        ) {
+                            has = true;
                         }
                     }
-                    if(!has){
-                        list_not_exists.push(this.$store.getters.get_list_user[i]);
+                    if (!has) {
+                        list_not_exists.push(
+                            this.$store.getters.get_list_user[i]
+                        );
                     }
                 }
                 this.$store.dispatch('setListNotUserByRoomId', list_not_exists);
@@ -787,7 +812,7 @@ textarea:focus:-webkit-placeholder {
     align-items: center;
     list-style: none;
     padding-left: 0px;
-    margin-bottom: 0px;
+    margin-bottom: 7px;
 }
 .emoji {
     border-color: transparent;
