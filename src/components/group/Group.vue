@@ -452,9 +452,8 @@ export default {
     width: 100%;
 }
 .table-group tr td {
-    padding: 10px;
-    padding-bottom: 0;
-    padding-top: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 .table-group .avatar {
     width: 40px;
