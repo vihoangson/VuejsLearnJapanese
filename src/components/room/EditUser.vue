@@ -174,6 +174,17 @@ export default {
             this.buttonName = 'Save';
             this.roomId = this.$store.getters.get_current_room.room_id;
             this.items = this.$store.getters.get_list_user_by_room_id;
+            var selectTamp = [];
+            for (let i in this.items) {
+                var id = this.items[i].id;
+                var selectRole = {
+                    id: id,
+                    permission: this.items[i].role_in_room,
+                    name: this.subscriptions[this.items[i].role_in_room].name
+                };
+                selectTamp[id] = selectRole;
+            }
+            this.selected = selectTamp;
         });
     },
     created: function() {
@@ -183,15 +194,6 @@ export default {
     computed: {
         filteredItems() {
             if (this.$store.getters.get_list_user_by_room_id.length > 0) {
-                for (let i in this.items) {
-                    var id = this.items[i].id;
-                    var selectRole = {
-                        id: id,
-                        permission: this.items[i].role_in_room,
-                        name: this.subscriptions[this.items[i].role_in_room].name
-                    };
-                    this.selected[id] = selectRole;
-                }
                 return this.items.filter(item => {
                     return (
                         item.name
