@@ -21,7 +21,7 @@
                     v-if="!this.$store.getters.get_is_admin_room && this.$store.getters.get_list_user_by_room_id.length > 5"
                 >+{{this.$store.getters.get_list_user_by_room_id.length - 5}}</span>
                 <span
-                    class="btn-more"
+                    class="btn-persion"
                     v-if="this.$store.getters.get_is_admin_room"
                     @click="openModalShowUserRoom()"
                 >
@@ -250,6 +250,8 @@ export default {
     text-align: center;
     font-size: 14px;
     line-height: 24px;
+    position: relative;
+    top: 1px;
 }
 .list_user .btn-persion {
     height: 25px;
@@ -261,13 +263,17 @@ export default {
     color: #fff;
     text-align: center;
     font-size: 14px;
-    line-height: 24px;
+    line-height: 20px;
+    position: relative;
+    top: 1px;
 }
 .list_user .btn-persion svg {
     width: 15px;
+    fill: #fff
 }
 .list_user .btn-more svg {
-    width: 18px;
+    width: 16px;
+    fill: #fff
 }
 .list_user .btn-plus {
     float: right;
@@ -280,12 +286,12 @@ export default {
     color: #fff;
     text-align: center;
     font-size: 16px;
-    line-height: 20px;
+    line-height: 19px;
     position: relative;
     top: 1px;
-    border: 1px #aaa solid;
 }
 .list_user .btn-plus svg {
     width: 15px;
+    fill: #fff
 }
 </style>
