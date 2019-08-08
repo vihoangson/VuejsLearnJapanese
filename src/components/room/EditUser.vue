@@ -270,7 +270,7 @@ export default {
                                     var check_is_room = false;
                                     for(let key in member_list){
                                         if((this.selected[i] !== undefined) && (this.selected[i].id !== undefined)){
-                                            if(this.selected[i].id === this.$store.getters.get_current_user.user_id){
+                                            if(this.selected[i].id === this.$store.getters.get_current_user_info.id){
                                                 check_is_room = true;
                                             }
                                         }

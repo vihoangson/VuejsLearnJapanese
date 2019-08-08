@@ -184,7 +184,7 @@
                 this.buttonName = "Create";
                 var listNotAdmin = [];
                 for(let i in this.$store.getters.get_list_user){
-                    if(this.$store.getters.get_list_user[i].id !== this.$store.getters.get_current_user.user_id){
+                    if(this.$store.getters.get_list_user[i].id !== this.$store.getters.get_current_user_info.id){
                         listNotAdmin.push(this.$store.getters.get_list_user[i]);
                     }
                 }

@@ -40,10 +40,10 @@
                                 </span>
                             </li>
                             <li
-                                v-for="(s, index) in datascript"
+                                v-for="(s, index) in this.$store.getters.get_list_group"
                                 :class="{ 'active': activeIndex === index}"
                                 :key="s.id"
-                                @click="setActive(index, s.name)"
+                                @click="setActive(index, s.name, s.id)"
                             >
                                 {{ s.name }}
                                 <div class="option-icon">
@@ -107,7 +107,7 @@
         <div class="room-body">
             <ul>
                 <li
-                    v-for="(item, index) in this.$store.getters.get_list_room"
+                    v-for="(item, index) in this.$store.getters.get_list_room_by_group"
                     :key="`room-${index}`"
                     @click="changeRoom(item)"
                     :style="{backgroundColor: item.color}"
@@ -140,16 +140,15 @@ export default {
             isActive: false,
             isActiveSelect: false,
             selectItems: 'All Chat',
-            datascript: [],
             activeIndex: undefined,
-            userId: 0
+            userId: 0,
+            groupId: 0,
         };
     },
 
     mounted() {
-        this.$root.$on('changed-list-group', data => {
-            this.selectItems = 'All Chat';
-            this.getAllGroup(this.userId);
+        this.$root.$on('changed-group', data => {
+            this.getDataGroup();
         });
         this.$root.$on('changed-list-room', data => {
             this.pushNewRoom(data);
@@ -205,16 +204,18 @@ export default {
             this.isActive = false;
         },
 
-        setActive(index, criptions) {
+        setActive(index, criptions, id) {
             this.activeIndex = index;
             this.selectItems = criptions;
+            this.groupId = id;
+            this.getDataGroup();
         },
 
         getAllGroup(id) {
             return API.GET(ApiConst.GROUP_GET_BY_USER_ID + '/' + id).then(
                 response => {
                     if (response !== undefined && response.error_code === 0) {
-                        this.datascript = response.data;
+                        this.$store.dispatch('setListGroup', response.data);
                     }
                 }
             );
@@ -269,7 +270,16 @@ export default {
                                     message: 'Delete success',
                                     alert: 'alert-success'
                                 });
-                                this.$root.$emit('changed-list-group');
+                                let list_group = this.$store.getters.get_list_group;
+                                let list_group_delete = [];
+                                for (let i in list_group) {
+                                    if(list_group[i].id !== response.data){
+                                        list_group_delete[i] = list_group[i];
+                                    }
+                                }
+
+                                this.$store.dispatch('setListGroup', list_group_delete);
+
                                 break;
                             default:
                                 this.$root.$emit('push-notice', {
@@ -357,6 +367,7 @@ export default {
         changeRoom(room) {
             this.$root.$emit('change-room', room);
         },
+
         pushNewRoom(room) {
             this.$store.dispatch('addNewRoom', room);
             this.changeRoom(room);
@@ -365,6 +376,25 @@ export default {
                 AppConst.EVENT_MESSAGE.JOIN_NEW_ROOM,
                 room.room_id
             );
+        },
+
+        getDataGroup(){
+            let list_group = this.$store.getters.get_list_group;
+            let list_room = this.$store.getters.get_list_room;
+            let list_room_by_group = [];
+            list_group.forEach(X => {
+                if(X.id == this.groupId){
+                    X.room_list.forEach(Y =>{
+                        for(let i in list_room){
+                            if(list_room[i].room_id === Y.id){
+                                list_room_by_group.push(list_room[i]);
+                                break;
+                            }
+                        }
+                    });
+                }
+            });
+            this.$store.dispatch('setListRoomByGroup', list_room_by_group);
         }
     }
 };

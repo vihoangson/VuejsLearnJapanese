@@ -11,6 +11,12 @@ export default {
     get_list_room: state => {
         return state.list_room;
     },
+    get_list_room_by_group: state => {
+        return state.list_room_by_group;
+    },
+    get_list_group: state => {
+        return state.list_group;
+    },
     get_list_user: state => {
         return state.list_user;
     },

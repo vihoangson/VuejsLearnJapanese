@@ -385,7 +385,7 @@ export default {
                         this.$store.getters.get_list_user_by_room_id[i]
                             .role_in_room === 1 &&
                         this.$store.getters.get_list_user_by_room_id[i].id ===
-                            this.$store.getters.get_current_user.user_id
+                            this.$store.getters.get_current_user_info.id
                     ) {
                         this.$store.dispatch('setAdminRoom', true);
                     }

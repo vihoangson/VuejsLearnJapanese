@@ -58,9 +58,7 @@ export default {
             this.listAdmin = [];
             this.listMember = [];
             this.listReadOnly = [];
-            console.log(this.$store.getters.get_list_user_by_room_id);
             for (let i in this.$store.getters.get_list_user_by_room_id) {
-                 console.log(this.items[i]);
                 if(this.items[i].role_in_room === 1){
                     this.listAdmin.push(this.items[i]);
                 }else
