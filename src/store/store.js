@@ -17,6 +17,8 @@ export default new Vuex.Store({
         openProfileEdit: 'none',
         current_room: {},
         list_room: [],
+        list_room_by_group: [],
+        list_group: [],
         list_user: [],
         list_user_by_room_id: [],
         list_not_user_by_room_id: [],

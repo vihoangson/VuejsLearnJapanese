@@ -84,7 +84,7 @@
                                             <td width="5%">
                                                 <input
                                                     type="checkbox"
-                                                    :value="item.id"
+                                                    :value="item.room_id"
                                                     v-model="selected"
                                                 />
                                             </td>
@@ -93,7 +93,7 @@
                                             </td>
                                             <td width="90%" class="persion">
                                                 <p class="member">
-                                                    <span class="name">{{item.name}}</span>
+                                                    <span class="name">{{item.room_name}}</span>
                                                 </p>
                                             </td>
                                         </tr>
@@ -127,48 +127,31 @@ export default {
     mounted() {
         this.$root.$on('open-modal-group', groupId => {
             this.groupId = groupId;
-            this.items = [];
+            this.items = this.$store.getters.get_list_room;
             this.groupName = '';
             this.selected = [];
             if (groupId !== 0) {
                 this.buttonName = 'Update';
-                this.getAllRooms().then(response => {
-                    if (response !== undefined && response.error_code === 0) {
-                        this.items = response.data;
-                        this.getGroupById(groupId).then(response => {
-                            if (
-                                response !== undefined &&
-                                response.error_code === 0
-                            ) {
-                                this.groupName = response.data.name;
-                            }
-                        });
-                        this.getRoomByGroupId(groupId).then(response => {
-                            if (
-                                response !== undefined &&
-                                response.error_code === 0
-                            ) {
-                                var items = this.items;
-                                for (var i = 0; i < items.length; i++) {
-                                    var groupItem = response.data;
-                                    for (var j = 0; j < groupItem.length; j++) {
-                                        if (items[i].id === groupItem[j].id) {
-                                            this.selected.push(items[i].id);
-                                            break;
-                                        }
-                                    }
+                this.$store.getters.get_list_group.forEach(data =>{ 
+                    this.items = this.$store.getters.get_list_room;
+                    if(data.id === groupId){
+                        this.groupName = data.name;
+                        var items = this.items;
+                        for (var i = 0; i < items.length; i++) {
+                            for (var j = 0; j < data.room_list.length; j++) {
+                                if (items[i].room_id === data.room_list[j].id) {
+                                    this.selected.push(items[i].room_id);
+                                    break;
                                 }
                             }
-                            this.selectAll =
-                                this.selected.length === this.items.length;
-                        });
+                        }
+                        this.selectAll =
+                            this.selected.length === this.items.length;
                     }
                 });
             } else {
                 this.buttonName = 'Create';
-                this.getAllRooms().then(response => {
-                    this.items = response.data;
-                });
+                this.items = this.$store.getters.get_list_room;
             }
         });
     },
@@ -190,7 +173,7 @@ export default {
             selected: [],
             selectAll: false,
             groupName: '',
-            userId: 0,
+            userId: this.$store.getters.get_list_group,
             description: '',
             groupId: 0,
             groupNameError: '',
@@ -200,15 +183,14 @@ export default {
         };
     },
     created: function() {
-        let user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
-        this.userId = user.user_id;
+        this.userId = this.$store.getters.get_current_user_info.id;
     },
     computed: {
         filteredItems() {
             if (this.items.length > 0) {
                 return this.items.filter(item => {
                     return (
-                        item.name
+                        item.room_name
                             .toLowerCase()
                             .indexOf(this.search.toLowerCase()) > -1
                     );
@@ -222,7 +204,7 @@ export default {
             this.selected = [];
             if (!this.selectAll) {
                 for (let i in this.items) {
-                    this.selected.push(this.items[i].id);
+                    this.selected.push(this.items[i].room_id);
                 }
             }
         },
@@ -230,28 +212,6 @@ export default {
         setActive(index, criptions) {
             this.activeIndex = index;
             this.selectItem = criptions;
-        },
-
-        getAllRooms() {
-            return API.GET(ApiConst.GROUP_GET_ALL_ROOM).then(response => {
-                return response;
-            });
-        },
-
-        getGroupById(id) {
-            return API.GET(ApiConst.GROUP_GET_BY_ID + '/' + id).then(
-                response => {
-                    return response;
-                }
-            );
-        },
-
-        getRoomByGroupId(id) {
-            return API.GET(ApiConst.GROUP_GET_ROOM_BY_GROUP_ID + '/' + id).then(
-                response => {
-                    return response;
-                }
-            );
         },
 
         btnCancel() {
@@ -272,6 +232,37 @@ export default {
             return true;
         },
 
+        getRoomByGroupId(id){
+            this.$store.getters.get_list_group.forEach(x =>{
+                let list_room = [];
+                if(x !== null && x.id === id){
+                    x.list_room.forEach( y=>{
+                        if(y !== null){
+                            list_room.push(y);
+                        }
+                    })
+                }
+                return list_room;
+            })
+        },
+
+        // getRoomByRoomId(id){
+        //     this.$store.getters.get_list_room.forEach(x =>{
+        //         if(x !== null && x.room_id === id){
+        //             console.log(x);
+        //             return x;
+        //         }
+        //     })
+        // },
+
+        getRoomByRoomId(id) {
+            for (let i in this.$store.getters.get_list_room) {
+                if ( this.$store.getters.get_list_room[i].room_id === id) {
+                    return this.$store.getters.get_list_room[i];
+                }
+            }
+        },
+
         btnCreate() {
             this.disableButton = true;
             this.groupNameError = '';
@@ -283,12 +274,14 @@ export default {
                     return;
                 }
 
-                API.POST(ApiConst.GROUP_ADD, {
+                let addData = {
                     group_name: this.groupName,
                     user_id: this.userId,
                     selected: this.selected,
                     only_token: true
-                }).then(response => {
+                }
+
+                API.POST(ApiConst.GROUP_ADD, addData).then(response => {
                     if (response !== undefined) {
                         switch (parseInt(response.error_code)) {
                             case 0:
@@ -297,7 +290,31 @@ export default {
                                     message: 'insert success',
                                     alert: 'alert-success'
                                 });
-                                this.$root.$emit('changed-list-group');
+
+                                let pushData = {
+                                    id: response.data,
+                                    name: this.groupName,
+                                    room_list: [],
+                                    user_id: this.userId
+                                }
+
+                                this.selected.forEach(x=>{
+                                    if(x !== null && x !== undefined){
+                                        let data = this.getRoomByRoomId(x);
+                                        let roomData = {
+                                            id: data.room_id,
+                                            icon_img: data.icon_img,
+                                            name: data.room_name
+                                        }
+                                        pushData.room_list.push(roomData);
+                                    }
+                                });
+
+                                let list_add = this.$store.getters.get_list_group;
+                                list_add.push(pushData);
+                                this.$store.dispatch('setListGroup', list_add);
+                                this.$root.$emit('changed-group');
+
                                 break;
                             case 1:
                                 this.groupNameError = response.data;
@@ -336,7 +353,32 @@ export default {
                                 message: 'Update success',
                                 alert: 'alert-success'
                             });
-                            this.$root.$emit('changed-list-group');
+
+                            let room_list = [];
+
+                            this.selected.forEach( x =>{
+                                if(x !== null && x !== undefined){
+                                    let data = this.getRoomByRoomId(x);
+                                    let roomData = {
+                                        id: data.room_id,
+                                        icon_img: data.icon_img,
+                                        name: data.room_name
+                                    }
+                                    room_list.push(roomData);
+                                }
+                            });
+
+                            let list_update = this.$store.getters.get_list_group;
+                            for (let i in list_update) {
+                                if(list_update[i].id == this.groupId){
+                                    list_update[i].name = this.groupName;
+                                    list_update[i].room_list = room_list;
+                                }
+                            }
+
+                            this.$store.dispatch('setListGroup', list_update);
+                            this.$root.$emit('changed-group');
+
                             break;
                         case 1:
                             this.groupNameError = response.data.error_msg;
