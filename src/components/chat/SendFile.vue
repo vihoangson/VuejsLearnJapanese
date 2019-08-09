@@ -136,7 +136,9 @@ export default {
         catchResponse(file, response) {
             this.message = '';
             if (response.error_code === 0) {
-                alert('Upload thành công');
+                alert('Upload successfully');
+            } else {
+                alert('Upload failed');
             }
             this.$refs['myVueDropzone'].removeFile(file);
             if (this.$refs['myVueDropzone'].getAcceptedFiles().length === 0) {
