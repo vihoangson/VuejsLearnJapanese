@@ -173,7 +173,7 @@ export default {
             selected: [],
             selectAll: false,
             groupName: '',
-            userId: 0,
+            userId: this.$store.getters.get_list_group,
             description: '',
             groupId: 0,
             groupNameError: '',
@@ -313,6 +313,7 @@ export default {
                                 let list_add = this.$store.getters.get_list_group;
                                 list_add.push(pushData);
                                 this.$store.dispatch('setListGroup', list_add);
+                                this.$root.$emit('changed-group');
 
                                 break;
                             case 1:
@@ -376,6 +377,7 @@ export default {
                             }
 
                             this.$store.dispatch('setListGroup', list_update);
+                            this.$root.$emit('changed-group');
 
                             break;
                         case 1:

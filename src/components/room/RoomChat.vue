@@ -39,6 +39,9 @@
                                     </svg>
                                 </span>
                             </li>
+                            <li class="category" @click="getListAllChat">
+                                All Chat
+                            </li>
                             <li
                                 v-for="(s, index) in this.$store.getters.get_list_group"
                                 :class="{ 'active': activeIndex === index}"
@@ -107,7 +110,7 @@
         <div class="room-body">
             <ul>
                 <li
-                    v-for="(item, index) in this.$store.getters.get_list_room_by_group"
+                    v-for="(item, index) in this.items"
                     :key="`room-${index}`"
                     @click="changeRoom(item)"
                     :style="{backgroundColor: item.color}"
@@ -142,6 +145,7 @@ export default {
             selectItems: 'All Chat',
             activeIndex: undefined,
             userId: 0,
+            items: [],
             groupId: 0,
         };
     },
@@ -163,10 +167,10 @@ export default {
     },
 
     created: function() {
-        let user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
-        this.userId = user.user_id;
-        this.getAllGroup(this.userId);
+        this.userId = this.$store.getters.get_current_user_info.id;
+        var res = this.getAllGroup(this.userId);
         document.addEventListener('click', this.documentClick);
+        this.getListAllChat();
     },
 
     destroyed() {
@@ -185,7 +189,9 @@ export default {
                 this.isActive = false;
             }
         },
-
+        getListAllChat(){
+            this.items = this.$store.getters.get_list_room;
+        },
         toggleOption: function() {
             if (this.isActive) {
                 this.isActive = false;
@@ -279,6 +285,7 @@ export default {
                                 }
 
                                 this.$store.dispatch('setListGroup', list_group_delete);
+                                this.$root.$emit('changed-group');
 
                                 break;
                             default:
@@ -335,6 +342,7 @@ export default {
                                             this.$store.getters.get_list_room.splice(idx, 1);
                                         }
                                         this.changeRoom(this.$store.getters.get_list_room[0]);
+                                        this.$root.$emit('changed-group');
                                         break;
                                     default:
                                         this.$root.$emit('push-notice', {
@@ -382,8 +390,9 @@ export default {
             let list_group = this.$store.getters.get_list_group;
             let list_room = this.$store.getters.get_list_room;
             let list_room_by_group = [];
+
             list_group.forEach(X => {
-                if(X.id == this.groupId){
+                if(X.id === this.groupId){
                     X.room_list.forEach(Y =>{
                         for(let i in list_room){
                             if(list_room[i].room_id === Y.id){
@@ -394,6 +403,7 @@ export default {
                     });
                 }
             });
+            this.items = list_room_by_group;
             this.$store.dispatch('setListRoomByGroup', list_room_by_group);
         }
     }

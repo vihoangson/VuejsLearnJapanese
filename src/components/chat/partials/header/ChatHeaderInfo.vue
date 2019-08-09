@@ -4,7 +4,8 @@
             <div class="list_user">
                 <span
                     class="icon_img"
-                    v-for="(item, index) in this.$store.getters.get_current_room.member_list.slice(0,5)"
+                    v-for="(item, index) in this.$store.getters.get_current_room.member_list"
+                    v-if="index <= 5"
                     :key="`item-${index}`"
                 >
                     <img

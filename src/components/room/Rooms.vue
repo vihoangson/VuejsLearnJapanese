@@ -311,17 +311,6 @@
                     list_message: []
                 }
 
-                let admin_user = {
-                    company: this.$store.getters.get_current_user_info.company,
-                    email: this.$store.getters.get_current_user_info.email,
-                    icon_img: this.$store.getters.get_current_user_info.icon_img,
-                    id: this.$store.getters.get_current_user_info.id,
-                    name: this.$store.getters.get_current_user_info.name,
-                    role_in_room: 1
-                };
-
-                data.member_list.push(admin_user);
-
                 this.selected.forEach(x=>{
                     if(x !== null){
                         //data.member_list.push(x);
@@ -345,8 +334,20 @@
                             case 0:
                                 data.room_id = response.data;
                                 this.$refs.modal.hide();
+
+                                let admin_user = {
+                                    company: this.$store.getters.get_current_user_info.company,
+                                    email: this.$store.getters.get_current_user_info.email,
+                                    icon_img: this.$store.getters.get_current_user_info.icon_img,
+                                    id: this.$store.getters.get_current_user_info.id,
+                                    name: this.$store.getters.get_current_user_info.name,
+                                    role_in_room: 1
+                                };
+
+                                data.member_list.push(admin_user);
                                 this.$root.$emit('changed-list-room', data);
                                 this.$root.$emit('changed-id-rooms');
+                                this.$root.$emit('changed-group');
                                 this.$root.$emit('push-notice', {message:'insert success', alert: 'alert-success'});
                                 break;
                             case 1:
