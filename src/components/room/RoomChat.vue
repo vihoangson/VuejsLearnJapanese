@@ -524,9 +524,19 @@ export default {
     color: #fff;
     transition: 0.5s;
 }
+.room-header .selectboxContent li svg{
+    line-height: 16px;
+    margin-right: 2px;
+}
+
+.room-header .selectboxContent li span:hover svg{
+    fill: #ffffff;
+}
+
 .room-header .selectboxContent li {
     padding: 8px;
     position: relative;
+    margin-right: 3px;
 }
 
 .room-header .selectboxContent li > span {
@@ -584,20 +594,25 @@ export default {
     text-decoration: none;
     cursor: pointer;
     user-select: none;
-    width: 24px;
-    height: 24px;
+    width: 25px;
+    height: 28px;
     padding: 0;
     border-color: transparent;
     background-color: transparent;
     color: #1a1a1a;
     fill: #1a1a1a;
+    margin-top: 1px;
+    line-height: 11px;
+    padding: 12px;
+    border-radius: 5px;
 }
 .create-room:hover,
 .my-chat:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: #0a8abd;
     border-color: transparent;
-    color: #1a1a1a;
-    fill: #1a1a1a;
+    color: #fff;
+    fill: #fff;
+    height: 28px;
 }
 .create-room svg,
 .my-chat svg {
