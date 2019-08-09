@@ -20,5 +20,12 @@ export const ApiConst = {
     ROOM_DELETE: '/api/v1/room/delete',
     ROOM_SETTING: '/api/v1/room/setting',
     ROOM_GET_ALL_USER: '/api/v1/user/get-all-user',
-    MY_LIST_FILE: '/api/v1/file/get-my-list-file'
+    MY_LIST_FILE: '/api/v1/file/get-my-list-file',
+    GET_LINK_DOWNLOAD_FILE: '/api/v1/file/download-file',
+    DELETE_FILE: '/api/v1/file/delete-file',
+    GET_FILE_PREVIEW_MID: '/api/v1/file/preview-photo/mid',
+    GET_TOKEN_IMAGE_DETAIL: '/api/v1/file/get-token',
+    MESSAGE_UPLOAD_FILE: '/api/v1/message/message-file',
+    DOWNLOAD_FILE: '/api/v1/download-file',
+    DETAIL_IMAGE: '/api/v1/view-image',
 };

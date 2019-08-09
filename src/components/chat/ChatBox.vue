@@ -430,14 +430,14 @@ export default {
             }
         },
         downloadFile(id) {
-            API.GET('/api/v1/file/download-file/' + id).then(res => {
+            API.GET(ApiConst.GET_LINK_DOWNLOAD_FILE + '/' + id).then(res => {
                 window.open(
-                    'http://api.sns-tool.vn/api/v1/download-file/' +
+                    process.env.ROOT_API + ApiConst.DOWNLOAD_FILE + '/' +
                         id +
                         '/' +
-                        res.token_file +
+                        res.data.token_file +
                         '/' +
-                        res.user_id
+                        res.data.user_id
                 );
             });
         },
@@ -455,7 +455,7 @@ export default {
                     let obj = {
                         delete_id: id
                     };
-                    API.POST('/api/v1/file/delete-file', obj).then(res => {
+                    API.POST(ApiConst.DELETE_FILE, obj).then(res => {
                         this.showListFile = !this.showListFile;
                         this.showMyListFile();
                     });
@@ -470,7 +470,7 @@ export default {
         getReviewPhoto(id) {
             this.showFileDetail = true;
             if (typeof this.reviewPhotoStore[id] === 'undefined') {
-                API.GET('/api/v1/file/review-photo/mid/' + id).then(res => {
+                API.GET(ApiConst.GET_FILE_PREVIEW_MID + '/' + id).then(res => {
                     this.codeReviewPhoto = 'data:image/png;base64, ' + res.data.base_64;
                     this.fileDetailInfo.content = res.data.content;
                     this.fileDetailInfo.name = res.data[0].file_name;
@@ -496,9 +496,9 @@ export default {
             }
         },
         getLinkDetailImage(id) {
-            API.POST('/api/v1/file/get-token/' + id).then(res => {
+            API.POST(ApiConst.GET_TOKEN_IMAGE_DETAIL + '/' + id).then(res => {
                 window.open(
-                    'http://api.sns-tool.vn/api/v1/view-image/' +
+                    process.env.ROOT_API + ApiConst.DETAIL_IMAGE + '/' +
                         id +
                         '/' +
                         res.data.token +

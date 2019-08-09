@@ -88,6 +88,8 @@
 import vue2Dropzone from 'vue2-dropzone';
 import 'vue2-dropzone/dist/vue2Dropzone.min.css';
 import { authHeader } from '../../helpers/auth-header';
+import { ApiConst } from '../../common/ApiConst';
+
 export default {
     name: 'SendFile',
     components: { vueDropzone: vue2Dropzone },
@@ -97,7 +99,7 @@ export default {
         return {
             selectedComponent: '',
             dropzoneOptions: {
-                url: 'http://api.sns-tool.vn/api/v1/message/message-file',
+                url: process.env.ROOT_API + ApiConst.MESSAGE_UPLOAD_FILE,
                 // thumbnailWidth: 150,
                 maxFilesize: 100,
                 headers: {
