@@ -115,14 +115,25 @@ export default {
             user_info: this.$store.getters.get_current_user_info
         };
     },
-    created(){
+    created() {
         let _user = localStorage.getItem(AppConst.LOCAL_USER);
 
-        if(_user)
-            this.user = JSON.parse(_user);
+        if (_user) this.user = JSON.parse(_user);
     },
     methods: {
         logout() {
+            this.$root.$off('changed-list-room');
+            this.$root.$off('changed-id-rooms');
+            this.$root.$off('push-notice');
+            this.$root.$off('open-modal-group');
+            this.$root.$off('event-get-list-message');
+            this.$root.$off('open-modal-add-user');
+            this.$root.$off('open-modal-edit-user');
+            this.$root.$off('changed-group');
+            this.$root.$off('changed-list-user');
+            this.$root.$off('add-new-room-from-socket');
+            this.$root.$off('open-modal-room');
+            this.$root.$off('open-modal-show-user');
             localStorage.removeItem(AppConst.LOCAL_USER);
             this.$router.push({ path: '/login' });
         },

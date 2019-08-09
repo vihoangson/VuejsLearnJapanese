@@ -31,6 +31,7 @@ export default {
         return (state.current_user = obj);
     },
     set_current_room(state, obj) {
+        //
         return (state.current_room = obj);
     },
     set_list_room(state, obj) {
