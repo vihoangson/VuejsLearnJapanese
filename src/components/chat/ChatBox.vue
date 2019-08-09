@@ -203,6 +203,19 @@ export default {
         this.$root.$on('changed-id-rooms', data => {
             this.getUserByRoomId();
         });
+        this.$root.$on('changed-group', data => {
+            this.getDataGroup();
+        });
+        this.$root.$on('changed-list-room', data => {
+            this.pushNewRoom(data);
+            this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, data);
+        });
+        this.$root.$on('changed-list-user', data => {
+            this.getListUser();
+        });
+        this.$root.$on('add-new-room-from-socket', data => {
+            this.pushNewRoom(data);
+        });
     },
     created() {
         window.addEventListener('resize', this.handleResize);
