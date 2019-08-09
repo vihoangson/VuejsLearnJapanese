@@ -2,20 +2,22 @@
     <div class="chat-room-header">
         <div class="info-container">
             <div class="list_user">
-                <span
-                    class="icon_img"
-                    v-for="(item, index) in this.$store.getters.get_current_room.member_list"
-                    v-if="index <= 5"
-                    :key="`item-${index}`"
-                >
-                    <img
-                        :src="item.icon_img"
-                        alt
-                        class="avatar"
-                        v-b-tooltip.hover
-                        v-bind:title="item.name"
-                    />
-                </span>
+                <div class="icon-list-contain" v-if="this.$store.getters.get_current_room.can_add_user === 1">
+                    <span
+                        class="icon_img"
+                        v-for="(item, index) in this.$store.getters.get_current_room.member_list"
+                        v-if="index < 5"
+                        :key="`item-${index}`"
+                    >
+                        <img
+                            :src="item.icon_img"
+                            alt
+                            class="avatar"
+                            v-b-tooltip.hover
+                            v-bind:title="item.name"
+                        />
+                    </span>
+                </div>
                 <span
                     class="btn-more"
                     @click="openModalShowUserRoom()"
@@ -23,7 +25,7 @@
                 >+{{this.$store.getters.get_list_user_by_room_id.length - 5}}</span>
                 <span
                     class="btn-persion"
-                    v-if="this.$store.getters.get_is_admin_room"
+                    v-if="this.$store.getters.get_is_admin_room && (this.$store.getters.get_current_room.can_add_user === 1)"
                     @click="openModalShowUserRoom()"
                 >
                     <svg
@@ -39,7 +41,7 @@
                 </span>
                 <span
                     class="btn-plus"
-                    v-if="this.$store.getters.get_is_admin_room"
+                    v-if="this.$store.getters.get_is_admin_room && (this.$store.getters.get_current_room.can_add_user === 1)"
                     @click="updateGroupChat"
                 >
                     <svg
@@ -110,6 +112,8 @@ export default {
 </script>
 
 <style scoped>
+.icon-list-contain{
+}
 .chat-room-header {
     box-sizing: border-box;
     height: 41px;
