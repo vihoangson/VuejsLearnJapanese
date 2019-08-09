@@ -308,7 +308,8 @@
                     member_list: [],
                     only_token: true,
                     not_read: 0,
-                    list_message: []
+                    list_message: [],
+                    can_add_user: 1
                 }
 
                 this.selected.forEach(x=>{
@@ -322,7 +323,7 @@
                             icon_img: userAdd.icon_img,
                             id: userAdd.id,
                             name: userAdd.name,
-                            role_in_room: roleInRoom
+                            role_in_room: roleInRoom,
                         };
                     }
                     data.member_list.push(this.listAdd);
@@ -341,7 +342,7 @@
                                     icon_img: this.$store.getters.get_current_user_info.icon_img,
                                     id: this.$store.getters.get_current_user_info.id,
                                     name: this.$store.getters.get_current_user_info.name,
-                                    role_in_room: 1
+                                    role_in_room: 1,
                                 };
 
                                 data.member_list.push(admin_user);

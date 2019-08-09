@@ -108,7 +108,25 @@
             </div>
         </div>
         <div class="room-body">
-            <ul>
+            <ul v-if="this.items.length === 0">
+                <li
+                    v-for="(item, index) in this.$store.getters.get_list_room"
+                    :key="`room-${index}`"
+                    @click="changeRoom(item)"
+                    :style="{backgroundColor: item.color}"
+                >
+                    <div class="name">
+                        <div class="room-image">
+                            <img :src="item.icon_img" :alt="item.room_name" />
+                        </div>
+                        <div class="room-name">
+                            <span>{{item.room_name}}</span>
+                            <span v-if="item.not_read > 0" class="not-read-number">{{item.not_read}}</span>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+            <ul v-else>
                 <li
                     v-for="(item, index) in this.items"
                     :key="`room-${index}`"
@@ -191,6 +209,9 @@ export default {
         },
         getListAllChat(){
             this.items = this.$store.getters.get_list_room;
+            this.activeIndex = 0;
+            this.selectItems = 'All Chat';
+            this.groupId = 0;
         },
         toggleOption: function() {
             if (this.isActive) {

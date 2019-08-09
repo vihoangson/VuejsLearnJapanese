@@ -171,7 +171,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    width: 292px;
+    width: 350px;
     height: 100%;
 }
 
