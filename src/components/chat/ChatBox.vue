@@ -20,7 +20,7 @@
                         <div class="timeline-content">
                             <div class="timeline-content-header">
                                 <p class="timeline-content-header-username">{{item.user_info.name}}</p>
-                                <p class="timeline-content-header-organization">{{item.company}}</p>
+                                <p class="timeline-content-header-organization">{{item.user_info.company}}</p>
                             </div>
                             <div class="timeline-content-message">
                                 <ChatMessage :message-object="item" :message_content="item.message"></ChatMessage>
@@ -385,7 +385,7 @@ export default {
                         this.$store.getters.get_list_user_by_room_id[i]
                             .role_in_room === 1 &&
                         this.$store.getters.get_list_user_by_room_id[i].id ===
-                            this.$store.getters.get_current_user.user_id
+                            this.$store.getters.get_current_user_info.id
                     ) {
                         this.$store.dispatch('setAdminRoom', true);
                     }
@@ -462,7 +462,7 @@ export default {
 .chat-box-header .header-name {
     display: inline-block;
     margin-top: 8px;
-    width: calc(100% - 300px);
+    width: calc(100% - 400px);
 }
 .room-logo {
     display: block;
@@ -609,7 +609,7 @@ textarea:focus:-webkit-placeholder {
     align-items: center;
     list-style: none;
     padding-left: 0px;
-    margin-bottom: 0px;
+    margin-bottom: 7px;
 }
 .emoji {
     border-color: transparent;

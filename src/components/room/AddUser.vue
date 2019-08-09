@@ -225,8 +225,7 @@ export default {
         });
     },
     created: function() {
-        let user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
-        this.userId = user.user_id;
+        this.userId = this.$store.getters.get_current_user_info.id
     },
     computed: {
         filteredItems() {

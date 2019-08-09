@@ -187,10 +187,7 @@ export default {
             this.selected = selectTamp;
         });
     },
-    created: function() {
-        let user = JSON.parse(localStorage.getItem(AppConst.LOCAL_USER));
-        this.userId = user.user_id;
-    },
+    created: function() {    },
     computed: {
         filteredItems() {
             if (this.$store.getters.get_list_user_by_room_id.length > 0) {
@@ -255,6 +252,7 @@ export default {
                 selected: this.selected,
                 only_token: true
             };
+
             API.POST(ApiConst.ROOM_UPDATE, data).then(response => {
                 if(response !== undefined){
                     switch (response.error_code) {
@@ -264,26 +262,38 @@ export default {
                                 message: 'Save success',
                                 alert: 'alert-success'
                             });
-
                             var list_room = this.$store.getters.get_list_room;
                             for(let i in list_room){
                                 if(list_room[i].room_id === this.roomId){
                                     var member_list = list_room[i].member_list;
                                     var member_update = [];
-                                    for(let key in member_list){
-                                        for(let i in this.selected){
-                                            if((this.selected[i] !== undefined) && (this.selected[i].id !== undefined)){
-                                                if(member_list[key].id === this.selected[i].id){
-                                                    member_list[key].role_in_room = this.selected[i].permission;
-                                                    member_update.push(member_list[key]);
-                                                }
+                                    var check_is_room = false;
+                                    for(let key in this.selected){
+                                        if((this.selected[key] !== undefined) && (this.selected[key].id !== undefined)){
+                                            if(this.selected[key].id === this.$store.getters.get_current_user_info.id){
+                                                check_is_room = true;
                                             }
                                         }
                                     }
-                                    list_room[i].member_list = member_update;
+                                    if(check_is_room){
+                                        for(let key in member_list){
+                                            for(let i in this.selected){
+                                                if((this.selected[i] !== undefined) && (this.selected[i].id !== undefined)){
+                                                    if(member_list[key].id === this.selected[i].id){
+                                                        member_list[key].role_in_room = this.selected[i].permission;
+                                                        member_update.push(member_list[key]);
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        list_room[i].member_list = member_update;
+                                    }else{
+                                        list_room.splice(i, 1);
+                                    }
                                 }
                             }
-                            this.$store.dispatch('setListRoom',  list_room);
+                            this.$store.dispatch('setListRoom', list_room);
                             this.$root.$emit('changed-id-rooms');
                             break;
                         case 1:
