@@ -20,7 +20,7 @@
                         <div class="timeline-content">
                             <div class="timeline-content-header">
                                 <p class="timeline-content-header-username">{{item.user_info.name}}</p>
-                                <p class="timeline-content-header-organization">{{item.company}}</p>
+                                <p class="timeline-content-header-organization">{{item.user_info.company}}</p>
                             </div>
                             <div class="timeline-content-message">
                                 <ChatMessage :message-object="item" :message_content="item.message"></ChatMessage>
@@ -202,6 +202,19 @@ export default {
     mounted() {
         this.$root.$on('changed-id-rooms', data => {
             this.getUserByRoomId();
+        });
+        this.$root.$on('changed-group', data => {
+            this.getDataGroup();
+        });
+        this.$root.$on('changed-list-room', data => {
+            this.pushNewRoom(data);
+            this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, data);
+        });
+        this.$root.$on('changed-list-user', data => {
+            this.getListUser();
+        });
+        this.$root.$on('add-new-room-from-socket', data => {
+            this.pushNewRoom(data);
         });
     },
     created() {
@@ -462,7 +475,7 @@ export default {
 .chat-box-header .header-name {
     display: inline-block;
     margin-top: 8px;
-    width: calc(100% - 300px);
+    width: calc(100% - 400px);
 }
 .room-logo {
     display: block;
