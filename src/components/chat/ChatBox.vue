@@ -462,7 +462,7 @@ export default {
 .chat-box-header .header-name {
     display: inline-block;
     margin-top: 8px;
-    width: calc(100% - 300px);
+    width: calc(100% - 400px);
 }
 .room-logo {
     display: block;
