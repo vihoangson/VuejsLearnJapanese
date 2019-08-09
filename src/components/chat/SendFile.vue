@@ -114,7 +114,7 @@ export default {
                 autoProcessQueue: false,
                 addRemoveLinks: true,
                 dictDefaultMessage:
-                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' + 'Nhấp chọn hoặc thả file vào đây</div>'
+                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' + 'Click or drop the file here</div>'
             },
             message: ''
         };
