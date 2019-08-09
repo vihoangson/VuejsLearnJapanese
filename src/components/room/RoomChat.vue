@@ -39,9 +39,7 @@
                                     </svg>
                                 </span>
                             </li>
-                            <li class="category" @click="getListAllChat">
-                                All Chat
-                            </li>
+                            <li class="category" @click="getListAllChat">All Chat</li>
                             <li
                                 v-for="(s, index) in this.$store.getters.get_list_group"
                                 :class="{ 'active': activeIndex === index}"
@@ -164,7 +162,7 @@ export default {
             activeIndex: undefined,
             userId: 0,
             items: [],
-            groupId: 0,
+            groupId: 0
         };
     },
 
@@ -207,7 +205,7 @@ export default {
                 this.isActive = false;
             }
         },
-        getListAllChat(){
+        getListAllChat() {
             this.items = this.$store.getters.get_list_room;
             this.activeIndex = 0;
             this.selectItems = 'All Chat';
@@ -297,15 +295,19 @@ export default {
                                     message: 'Delete success',
                                     alert: 'alert-success'
                                 });
-                                let list_group = this.$store.getters.get_list_group;
+                                let list_group = this.$store.getters
+                                    .get_list_group;
                                 let list_group_delete = [];
                                 for (let i in list_group) {
-                                    if(list_group[i].id !== response.data){
+                                    if (list_group[i].id !== response.data) {
                                         list_group_delete[i] = list_group[i];
                                     }
                                 }
 
-                                this.$store.dispatch('setListGroup', list_group_delete);
+                                this.$store.dispatch(
+                                    'setListGroup',
+                                    list_group_delete
+                                );
                                 this.$root.$emit('changed-group');
 
                                 break;
@@ -353,16 +355,23 @@ export default {
                                             message: 'Delete success',
                                             alert: 'alert-success'
                                         });
-                                        let room = this.$store.getters.get_list_room.find(d => {
-                                            return d.room_id === data.id;
-                                        });
+                                        let room = this.$store.getters.get_list_room.find(
+                                            d => {
+                                                return d.room_id === data.id;
+                                            }
+                                        );
                                         if (room !== undefined) {
                                             let idx = this.$store.getters.get_list_room.indexOf(
                                                 room
                                             );
-                                            this.$store.getters.get_list_room.splice(idx, 1);
+                                            this.$store.getters.get_list_room.splice(
+                                                idx,
+                                                1
+                                            );
                                         }
-                                        this.changeRoom(this.$store.getters.get_list_room[0]);
+                                        this.changeRoom(
+                                            this.$store.getters.get_list_room[0]
+                                        );
                                         this.$root.$emit('changed-group');
                                         break;
                                     default:
@@ -407,16 +416,16 @@ export default {
             );
         },
 
-        getDataGroup(){
+        getDataGroup() {
             let list_group = this.$store.getters.get_list_group;
             let list_room = this.$store.getters.get_list_room;
             let list_room_by_group = [];
 
             list_group.forEach(X => {
-                if(X.id === this.groupId){
-                    X.room_list.forEach(Y =>{
-                        for(let i in list_room){
-                            if(list_room[i].room_id === Y.id){
+                if (X.id === this.groupId) {
+                    X.room_list.forEach(Y => {
+                        for (let i in list_room) {
+                            if (list_room[i].room_id === Y.id) {
                                 list_room_by_group.push(list_room[i]);
                                 break;
                             }
