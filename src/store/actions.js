@@ -20,6 +20,12 @@ export default {
     setListRoom({ commit }, obj) {
         commit('set_list_room', obj);
     },
+    setListRoomByGroup({ commit }, obj) {
+        commit('set_list_room_by_group', obj);
+    },
+    setListGroup({ commit }, obj) {
+        commit('set_list_group', obj);
+    },
     setListUser({ commit }, obj) {
         commit('set_list_user', obj);
     },

@@ -179,12 +179,12 @@
                 this.roomId = id;
                 this.roomName = '';
                 this.description = '';
-                this.roomImage = 'https://appdata.chatwork.com/icon/ico_group.png';
+                this.roomImage = 'https://appdata.chatwork.com/avatar/3094/3094762.rsz.gif';
                 this.selected = [];
                 this.buttonName = "Create";
                 var listNotAdmin = [];
                 for(let i in this.$store.getters.get_list_user){
-                    if(this.$store.getters.get_list_user[i].id !== this.$store.getters.get_current_user.user_id){
+                    if(this.$store.getters.get_list_user[i].id !== this.$store.getters.get_current_user_info.id){
                         listNotAdmin.push(this.$store.getters.get_list_user[i]);
                     }
                 }
@@ -279,6 +279,13 @@
             btnCancel(){
                 this.$refs.modal.hide();
             },
+            getUserbyId(id) {
+                for (let i in this.$store.getters.get_list_user) {
+                    if (this.$store.getters.get_list_user[i].id === id) {
+                        return this.$store.getters.get_list_user[i];
+                    }
+                }
+            },
             btnCreateRoom() {
                 this.roomDescriptionError = "";
                 this.roomNameError = "";
@@ -286,7 +293,7 @@
                 this.disableButton = true;
                 this.selectAll = false;
                 if(this.roomName === ''){
-                    this.roomName = this.$store.getters.get_current_user.user_id
+                    this.roomName = this.$store.getters.get_current_user_info.name
                 }
 
                 if (!this.checkFormValidity()) {
@@ -301,12 +308,25 @@
                     member_list: [],
                     only_token: true,
                     not_read: 0,
-                    list_message: []
+                    list_message: [],
+                    can_add_user: 1
                 }
 
                 this.selected.forEach(x=>{
-                    if(x !== null)
-                    data.member_list.push(x);
+                    if(x !== null){
+                        //data.member_list.push(x);
+                        let userAdd = this.getUserbyId(x.id);
+                        var roleInRoom = x.permission;
+                        this.listAdd = {
+                            company: userAdd.company,
+                            email: userAdd.email,
+                            icon_img: userAdd.icon_img,
+                            id: userAdd.id,
+                            name: userAdd.name,
+                            role_in_room: roleInRoom,
+                        };
+                    }
+                    data.member_list.push(this.listAdd);
                 });
 
                 API.POST(ApiConst.ROOM_ADD,data).then(response => {
@@ -315,8 +335,20 @@
                             case 0:
                                 data.room_id = response.data;
                                 this.$refs.modal.hide();
+
+                                let admin_user = {
+                                    company: this.$store.getters.get_current_user_info.company,
+                                    email: this.$store.getters.get_current_user_info.email,
+                                    icon_img: this.$store.getters.get_current_user_info.icon_img,
+                                    id: this.$store.getters.get_current_user_info.id,
+                                    name: this.$store.getters.get_current_user_info.name,
+                                    role_in_room: 1,
+                                };
+
+                                data.member_list.push(admin_user);
                                 this.$root.$emit('changed-list-room', data);
                                 this.$root.$emit('changed-id-rooms');
+                                this.$root.$emit('changed-group');
                                 this.$root.$emit('push-notice', {message:'insert success', alert: 'alert-success'});
                                 break;
                             case 1:
