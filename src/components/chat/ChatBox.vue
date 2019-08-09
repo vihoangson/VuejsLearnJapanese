@@ -20,7 +20,7 @@
                         <div class="timeline-content">
                             <div class="timeline-content-header">
                                 <p class="timeline-content-header-username">{{item.user_info.name}}</p>
-                                <p class="timeline-content-header-organization">{{item.company}}</p>
+                                <p class="timeline-content-header-organization">{{item.user_info.company}}</p>
                             </div>
                             <div class="timeline-content-message">
                                 <ChatMessage :message-object="item" :message_content="item.message"></ChatMessage>
