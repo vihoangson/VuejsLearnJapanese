@@ -445,8 +445,6 @@ export default {
         },
         pushNewRoom(room) {
             this.$store.dispatch('addNewRoom', room);
-            this.changeRoom(room);
-
             this.$socket.emit(
                 AppConst.EVENT_MESSAGE.JOIN_NEW_ROOM,
                 room.room_id
