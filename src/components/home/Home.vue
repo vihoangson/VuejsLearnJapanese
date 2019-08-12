@@ -5,6 +5,7 @@
         <AddUser></AddUser>
         <EditUser></EditUser>
         <ShowUser></ShowUser>
+        <DeleteRoom></DeleteRoom>
         <div class="content">
             <Room @changeRoomEvent="changeRoomEvent"></Room>
             <Chat ref="chat"></Chat>
@@ -32,6 +33,7 @@ import Header from '../global/Header';
 import Room from '../room/RoomChat';
 import Chat from '../chat/ChatBox';
 import Rooms from '../room/Rooms';
+import DeleteRoom from '../room/DeleteRoom';
 import Group from '../group/Group';
 import AddUser from '../room/AddUser';
 import EditUser from '../room/EditUser';
@@ -47,6 +49,7 @@ export default {
         Room,
         Chat,
         Rooms,
+        DeleteRoom,
         Group,
         AddUser,
         EditUser,
