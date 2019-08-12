@@ -64,12 +64,12 @@
                         >{{errors.confirmPassword}}</div>
                     </div>
                     <div class="form-group register-form-row">
-                        <vue-recaptcha
+                        <!-- <vue-recaptcha
                             @verify="markRecaptchaAsVerified"
                             class="recapcha"
                             sitekey="6LexDawUAAAAAP2dVouECeGm63c78bbwGtqJe-G1"
                             :loadRecaptchaScript="true"
-                        ></vue-recaptcha>
+                        ></vue-recaptcha> -->
                         <div
                             class="error"
                             v-if="errors.pleaseTickRecaptchaMessage !== ''"
@@ -108,7 +108,7 @@ export default {
             email: '',
             password: '',
             confirmPassword: '',
-            recaptchaVerified: false,
+            recaptchaVerified: true,
             msg: ''
         };
     },

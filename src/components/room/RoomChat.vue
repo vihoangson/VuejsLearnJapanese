@@ -317,67 +317,8 @@ export default {
         leaveRooms() {},
 
         deleteRooms() {
-            this.boxOne = '';
-            this.$bvModal
-                .msgBoxConfirm(
-                    'If you leave the group chat, your tasks will be deleted, and there is a case where your files will be deleted.  (About file retention)',
-                    {
-                        size: 'sm',
-                        buttonSize: 'sm',
-                        okVariant: 'success',
-                        centered: true
-                    }
-                )
-                .then(value => {
-                    if (value) {
-                        let data = {
-                            id: this.$store.getters.get_current_room.room_id
-                        };
-                        API.POST(ApiConst.ROOM_DELETE, data).then(response => {
-                            if (response !== undefined) {
-                                switch (parseInt(response.error_code)) {
-                                    case 0:
-                                        this.$root.$emit('push-notice', {
-                                            message: 'Delete success',
-                                            alert: 'alert-success'
-                                        });
-                                        let room = this.$store.getters.get_list_room.find(
-                                            d => {
-                                                return d.room_id === data.id;
-                                            }
-                                        );
-                                        if (room !== undefined) {
-                                            let idx = this.$store.getters.get_list_room.indexOf(
-                                                room
-                                            );
-                                            this.$store.getters.get_list_room.splice(
-                                                idx,
-                                                1
-                                            );
-                                        }
-                                        this.changeRoom(
-                                            this.$store.getters.get_list_room[0]
-                                        );
-                                        this.$root.$emit('changed-group');
-                                        break;
-                                    default:
-                                        this.$root.$emit('push-notice', {
-                                            message: response.data,
-                                            alert: 'alert-danger'
-                                        });
-                                        break;
-                                }
-                            }
-                        });
-                    }
-                })
-                .catch(err => {
-                    if (err !== null) console.log(err);
-                    this.$root.$emit('push-notice', {
-                        message: 'Open model error',
-                        alert: 'alert-danger'
-                    });
-                });
+            this.$root.$emit('open-modal-delete-room', 0);
+            this.$bvModal.show('modal-prevent-delete-room');
         },
 
         settingRooms() {
@@ -524,9 +465,19 @@ export default {
     color: #fff;
     transition: 0.5s;
 }
+.room-header .selectboxContent li svg{
+    line-height: 16px;
+    margin-right: 2px;
+}
+
+.room-header .selectboxContent li span:hover svg{
+    fill: #ffffff;
+}
+
 .room-header .selectboxContent li {
     padding: 8px;
     position: relative;
+    margin-right: 3px;
 }
 
 .room-header .selectboxContent li > span {
@@ -584,20 +535,25 @@ export default {
     text-decoration: none;
     cursor: pointer;
     user-select: none;
-    width: 24px;
-    height: 24px;
+    width: 25px;
+    height: 28px;
     padding: 0;
     border-color: transparent;
     background-color: transparent;
     color: #1a1a1a;
     fill: #1a1a1a;
+    margin-top: 1px;
+    line-height: 11px;
+    padding: 12px;
+    border-radius: 5px;
 }
 .create-room:hover,
 .my-chat:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: #0a8abd;
     border-color: transparent;
-    color: #1a1a1a;
-    fill: #1a1a1a;
+    color: #fff;
+    fill: #fff;
+    height: 28px;
 }
 .create-room svg,
 .my-chat svg {
