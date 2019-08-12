@@ -2,7 +2,7 @@
     <div @mouseleave="hideDropzoneCheck" @mouseup="hideDropzoneCheck" class="dropzone-main-chat">
         <div class="box-chat-nd">
             <div>
-                <span>File Upload</span>
+                <span class="title-upload-file">File Upload</span>
                 <span class="icon-close" @click="hideDropzone">X</span>
             </div>
             <div>
@@ -109,12 +109,12 @@ export default {
                 maxFiles: 10,
                 uploadMultiple: true,
                 parallelUploads: 1,
-                acceptedFiles:
-                    'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,.xls,.xlsx,.jpg,.gif,.png,.jpeg,.txt,.xml,.php,.js,.vue,.rar,.zip,.sql,.gz',
+                acceptedFiles: '.jpg,.png',
                 autoProcessQueue: false,
                 addRemoveLinks: true,
                 dictDefaultMessage:
-                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' + 'Click or drop the file here</div>'
+                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' +
+                    'Click or drop the file here</div>'
             },
             message: ''
         };
@@ -124,12 +124,10 @@ export default {
     created() {},
     mounted() {},
     methods: {
-        toggleEmojiPicker(){},
-        addEmoji(){},
-        getFile(file) {
-        },
-        successImport(file) {
-        },
+        toggleEmojiPicker() {},
+        addEmoji() {},
+        getFile(file) {},
+        successImport(file) {},
         showErrorMessage(file) {
             this.$refs['myVueDropzone'].removeFile(file);
         },
@@ -155,8 +153,12 @@ export default {
             this.$emit('close');
         },
         sendMessageFile() {
-            this.$refs.myVueDropzone.processQueue();
-            this.message = '';
+            if (this.$refs['myVueDropzone'].getAcceptedFiles().length === 0) {
+                alert('There are no files!');
+            } else {
+                this.$refs.myVueDropzone.processQueue();
+                this.message = '';
+            }
         },
         addSending(file, xhr, formData) {
             formData.append('message', this.message ? this.message : '');
@@ -167,12 +169,17 @@ export default {
 </script>
 
 <style scoped>
+.title-upload-file {
+    padding-left: 6px;
+}
 .dropzone-main-chat-input {
     overflow-y: scroll;
     height: 280px;
 }
 .icon-close {
     float: right;
+    padding-right: 6px;
+    cursor: pointer;
 }
 textarea {
     width: 100%;
@@ -182,7 +189,6 @@ textarea {
     margin-top: 8%;
     width: 50%;
     background-color: white;
-    opacity: 1;
     overflow: auto;
 }
 .dropzone-main-chat {
@@ -193,8 +199,6 @@ textarea {
     top: 0px;
     left: 0px;
     display: block;
-    background-color: #393630;
-    opacity: 0.9;
     overflow: visible;
 }
 </style>

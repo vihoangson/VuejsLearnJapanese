@@ -32,8 +32,32 @@
                         {{ file.file_name }}
                         <div class="action-file" @mouseover="getReviewPhoto(file.id)"></div>
                         <div class="action-icon">
-                            <span @click="downloadFile(file.id)">down</span>
-                            <span @click="deleteFile(file.id)">delete</span>
+                            <div class="emoji file-emoji" @click="downloadFile(file.id)">
+                                <span class="icon-container">
+                                    <svg
+                                        viewBox="0 0 10 10"
+                                        id="icon_download"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M3.75.625h2.5V3.75h1.874L5 6.876 1.874 3.75H3.75V.625zm4.687 5h.938v3.75H.625v-3.75h.938v2.813h6.875V5.625z"
+                                        />
+                                    </svg>
+                                </span>
+                            </div>
+                            <div class="emoji file-emoji" @click="deleteFile(file.id)">
+                                <span class="icon-container">
+                                    <svg
+                                        viewBox="0 0 10 10"
+                                        id="icon_delete"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            d="M6.88 1.25V.63H3.13v.63H1.25V2.5h.63v6.88h6.25V2.5h.63V1.25zm.31 7.19H2.81V2.5h4.38zM3.75 3.12h.63V7.5h-.63zm1.88 0h.63V7.5h-.63z"
+                                        />
+                                    </svg>
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -275,8 +299,7 @@ export default {
             room_id: 1
         };
         API.POST(ApiConst.RECEIVE_MESSAGE, obj).then(res => {
-            if (res.error_code === 0)
-                this.$store.dispatch('setListMessage', res.data);
+            if (res.error_code === 0) this.$store.dispatch('setListMessage', res.data);
         });
     },
     methods: {
@@ -317,10 +340,7 @@ export default {
         addEmoji(emoji) {
             const textarea = this.$refs.textarea;
             const cursorPosition = textarea.selectionEnd;
-            const start = this.message.content.substring(
-                0,
-                textarea.selectionStart
-            );
+            const start = this.message.content.substring(0, textarea.selectionStart);
             const end = this.message.content.substring(textarea.selectionEnd);
             const text = start + emoji.native + end;
             this.$emit('input', text);
@@ -420,11 +440,14 @@ export default {
                     this.fileDetailInfo.owner = '';
                     this.fileDetailInfo.uploadDate = '';
                     this.fileDetailInfo.id = '';
-                    this.reviewPhotoStore = [];
                 }
                 API.GET(
                     ApiConst.MY_LIST_FILE + '/' + this.$store.getters.get_current_room.room_id
                 ).then(res => {
+                    if (res.data == 0) {
+                        alert('There are no files!');
+                        this.showListFile = false;
+                    }
                     this.listMyFile = res.data;
                 });
             }
@@ -432,7 +455,9 @@ export default {
         downloadFile(id) {
             API.GET(ApiConst.GET_LINK_DOWNLOAD_FILE + '/' + id).then(res => {
                 window.open(
-                    process.env.ROOT_API + ApiConst.DOWNLOAD_FILE + '/' +
+                    process.env.ROOT_API +
+                        ApiConst.DOWNLOAD_FILE +
+                        '/' +
                         id +
                         '/' +
                         res.data.token_file +
@@ -442,15 +467,13 @@ export default {
             });
         },
         deleteFile(id) {
-            this.$bvModal.msgBoxConfirm(
-                'Do you really want to delete file ?',
-                {
+            this.$bvModal
+                .msgBoxConfirm('Do you really want to delete file ?', {
                     size: 'sm',
                     buttonSize: 'sm',
                     okVariant: 'success',
                     centered: true
-                }
-            )
+                })
                 .then(value => {
                     let obj = {
                         delete_id: id
@@ -498,7 +521,9 @@ export default {
         getLinkDetailImage(id) {
             API.POST(ApiConst.GET_TOKEN_IMAGE_DETAIL + '/' + id).then(res => {
                 window.open(
-                    process.env.ROOT_API + ApiConst.DETAIL_IMAGE + '/' +
+                    process.env.ROOT_API +
+                        ApiConst.DETAIL_IMAGE +
+                        '/' +
                         id +
                         '/' +
                         res.data.token +
@@ -520,6 +545,9 @@ export default {
 </script>
 
 <style>
+.file-emoji {
+    display: inline-block;
+}
 .detail-info-file {
     background-color: #cccccc;
 }
@@ -556,7 +584,7 @@ export default {
 .action-icon {
     text-align: center;
     width: 30%;
-    height: 70%;
+    height: 100%;
     opacity: 1;
     position: absolute;
     padding-top: 12px;
