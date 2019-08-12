@@ -317,67 +317,8 @@ export default {
         leaveRooms() {},
 
         deleteRooms() {
-            this.boxOne = '';
-            this.$bvModal
-                .msgBoxConfirm(
-                    'If you leave the group chat, your tasks will be deleted, and there is a case where your files will be deleted.  (About file retention)',
-                    {
-                        size: 'sm',
-                        buttonSize: 'sm',
-                        okVariant: 'success',
-                        centered: true
-                    }
-                )
-                .then(value => {
-                    if (value) {
-                        let data = {
-                            id: this.$store.getters.get_current_room.room_id
-                        };
-                        API.POST(ApiConst.ROOM_DELETE, data).then(response => {
-                            if (response !== undefined) {
-                                switch (parseInt(response.error_code)) {
-                                    case 0:
-                                        this.$root.$emit('push-notice', {
-                                            message: 'Delete success',
-                                            alert: 'alert-success'
-                                        });
-                                        let room = this.$store.getters.get_list_room.find(
-                                            d => {
-                                                return d.room_id === data.id;
-                                            }
-                                        );
-                                        if (room !== undefined) {
-                                            let idx = this.$store.getters.get_list_room.indexOf(
-                                                room
-                                            );
-                                            this.$store.getters.get_list_room.splice(
-                                                idx,
-                                                1
-                                            );
-                                        }
-                                        this.changeRoom(
-                                            this.$store.getters.get_list_room[0]
-                                        );
-                                        this.$root.$emit('changed-group');
-                                        break;
-                                    default:
-                                        this.$root.$emit('push-notice', {
-                                            message: response.data,
-                                            alert: 'alert-danger'
-                                        });
-                                        break;
-                                }
-                            }
-                        });
-                    }
-                })
-                .catch(err => {
-                    if (err !== null) console.log(err);
-                    this.$root.$emit('push-notice', {
-                        message: 'Open model error',
-                        alert: 'alert-danger'
-                    });
-                });
+            this.$root.$emit('open-modal-delete-room');
+            this.$bvModal.show('modal-prevent-delete-room');
         },
 
         settingRooms() {
@@ -391,37 +332,6 @@ export default {
         changeRoom(room) {
             this.$root.$emit('change-room', room);
         },
-
-        pushNewRoom(room) {
-            this.$store.dispatch('addNewRoom', room);
-            this.changeRoom(room);
-
-            this.$socket.emit(
-                AppConst.EVENT_MESSAGE.JOIN_NEW_ROOM,
-                room.room_id
-            );
-        },
-
-        getDataGroup() {
-            let list_group = this.$store.getters.get_list_group;
-            let list_room = this.$store.getters.get_list_room;
-            let list_room_by_group = [];
-
-            list_group.forEach(X => {
-                if (X.id === this.groupId) {
-                    X.room_list.forEach(Y => {
-                        for (let i in list_room) {
-                            if (list_room[i].room_id === Y.id) {
-                                list_room_by_group.push(list_room[i]);
-                                break;
-                            }
-                        }
-                    });
-                }
-            });
-            this.items = list_room_by_group;
-            this.$store.dispatch('setListRoomByGroup', list_room_by_group);
-        }
     }
 };
 </script>

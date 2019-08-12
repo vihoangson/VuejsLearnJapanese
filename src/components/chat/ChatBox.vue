@@ -422,7 +422,34 @@ export default {
                 }
                 this.$store.dispatch('setListNotUserByRoomId', list_not_exists);
             }
-        }
+        },
+        getDataGroup() {
+            let list_group = this.$store.getters.get_list_group;
+            let list_room = this.$store.getters.get_list_room;
+            let list_room_by_group = [];
+
+            list_group.forEach(X => {
+                if (X.id === this.groupId) {
+                    X.room_list.forEach(Y => {
+                        for (let i in list_room) {
+                            if (list_room[i].room_id === Y.id) {
+                                list_room_by_group.push(list_room[i]);
+                                break;
+                            }
+                        }
+                    });
+                }
+            });
+            this.items = list_room_by_group;
+            this.$store.dispatch('setListRoomByGroup', list_room_by_group);
+        },
+        pushNewRoom(room) {
+            this.$store.dispatch('addNewRoom', room);
+            this.$socket.emit(
+                AppConst.EVENT_MESSAGE.JOIN_NEW_ROOM,
+                room.room_id
+            );
+        },
     },
     computed: {
         myStyles() {
