@@ -60,6 +60,13 @@ export default {
             checkedThree: false,
         };
     },
+    mounted(){
+        this.$root.$on('open-modal-delete-room', id => {
+            this.checkedOne = false;
+            this.checkedTwo = false;
+            this.checkedThree = false;
+        });
+    },
     methods: {
         btnOk(bvModalEvt) {
             let data = {
