@@ -17,10 +17,46 @@ export default {
     setCurrentRoom({ commit }, obj) {
         commit('set_current_room', obj);
     },
+    setCurrentGroup({ commit }, obj) {
+        commit('set_current_group', obj);
+    },
     setListRoom({ commit }, obj) {
         commit('set_list_room', obj);
     },
-    setContactDisplay({commit}, style) {
-        commit('setContactDisplay', style)
+    setListRoomByGroup({ commit }, obj) {
+        commit('set_list_room_by_group', obj);
+    },
+    setListGroup({ commit }, obj) {
+        commit('set_list_group', obj);
+    },
+    setListUser({ commit }, obj) {
+        commit('set_list_user', obj);
+    },
+    setListUserByRoomId({ commit }, obj) {
+        commit('set_list_user_by_room_id', obj);
+    },
+    setListNotUserByRoomId({ commit }, obj) {
+        commit('set_list_not_user_by_room_id', obj);
+    },
+    setAdminRoom({ commit }, obj) {
+        commit('is_admin_room', obj);
+    },
+    setNotification({ commit }, obj) {
+        commit('set_notification', obj);
+    },
+    addNewRoom({ commit }, obj) {
+        commit('new_room', obj);
+    },
+    setCurrentUserInfo({ commit }, obj) {
+        commit('set_current_user_info', obj);
+    },
+    setContactDisplay({ commit }, style) {
+        commit('setContactDisplay', style);
+    },
+    setProfileDisplay({ commit }, style) {
+        commit('setProfileDisplay', style);
+    },
+    setProfileEdit({ commit }, style) {
+        commit('setProfileEdit', style);
     }
 };

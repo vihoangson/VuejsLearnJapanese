@@ -6,31 +6,35 @@
 </template>
 
 <script>
+import { API } from './services/api';
+import { ApiConst } from './common/ApiConst';
+import { AppConst } from './common/AppConst';
 export default {
     name: 'App',
     data() {
         return {
             authenticated: false,
-            mockAccount: {
-                username: 'syhung@gmail.com',
-                password: 'password'
-            }
         };
     },
-    mounted() {
+    created() {
         let user = localStorage.getItem('user');
-
         if (user === null) {
-            this.$router.push({ path: 'login' });
+            let pathname = window.location.pathname;
+            if(pathname.match('forgot-password') != null || pathname.match('changepass') != null){
+
+            }else{
+                this.$router.push({ path: 'login' });
+            }
         }
     },
+    mounted() {},
     methods: {
         setAuthenticated(status) {
             this.authenticated = status;
         },
         logout() {
             this.authenticated = false;
-        }
+        },
     }
 };
 </script>

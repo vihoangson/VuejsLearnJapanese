@@ -1,14 +1,7 @@
 <template>
     <div id="chat-box" @dragover="showDropzoneForm">
         <div class="chat-box-header">
-            <div class="header-name">
-                <div class="room-logo">
-                    <img :src="this.$store.getters.get_current_room.icon_img" alt />
-                </div>
-                <h1 class="title">
-                    <span>{{this.$store.getters.get_current_room.room_name}}</span>
-                </h1>
-            </div>
+            <ChatHeaderInfo></ChatHeaderInfo>
         </div>
         <div class="chat-box-content" id="chat-box-content" :style="{'height': `${myStyles}px`}">
             <div class="timeline">
@@ -18,8 +11,8 @@
                 >
                     <div
                         class="timeline-message-body"
-                        v-for="(item, index) in this.$store.getters.get_current_room.list_message"
-                        :key="`item-${index}`"
+                        v-for="item in this.$store.getters.get_current_room.list_message"
+                        :key="item.message_id"
                     >
                         <div class="timeline-avatar">
                             <img :src="item.user_info.icon_img" alt class="avatar" />
@@ -27,11 +20,11 @@
                         <div class="timeline-content">
                             <div class="timeline-content-header">
                                 <p class="timeline-content-header-username">{{item.user_info.name}}</p>
-                                <p
-                                    class="timeline-content-header-organization"
-                                >{{item.organization}}</p>
+                                <p class="timeline-content-header-organization">{{item.user_info.company}}</p>
                             </div>
-                            <div class="timeline-content-message">{{item.message}}</div>
+                            <div class="timeline-content-message">
+                                <ChatMessage :message-object="item" :message_content="item.message"></ChatMessage>
+                            </div>
                             <ChatAction
                                 :message="item"
                                 @reply="onReply"
@@ -120,7 +113,7 @@
                             role="button"
                             tabindex="2"
                             aria-disabled="false"
-                            @click="sendMessage"
+                            @click="onSend()"
                         >Send</div>
                     </div>
                 </div>
@@ -130,11 +123,25 @@
                         id="chat-text"
                         ref="textarea"
                         cols="30"
-                        rows="8"
-                        placeholder="Enter your message here"
+                        rows="7"
+                        placeholder="Enter your message here
+(Press Shift + Enter for line break)"
                         v-model="message.content"
-                        @input="$emit('input', $event.target.value)"
+                        v-if="this.enterToSendMessage"
+                        @keydown.enter.exact.prevent
                         @keyup.enter.exact="pressEnterToSendMessage($event)"
+                    ></textarea>
+                    <textarea
+                        id="chat-text2"
+                        ref="textarea"
+                        cols="30"
+                        rows="7"
+                        placeholder="Enter your message here
+(Press Shift + Enter for send)"
+                        v-model="message.content"
+                        v-if="!this.enterToSendMessage"
+                        @keydown.enter.shift.prevent
+                        @keydown.enter.shift.exact="sendMessage()"
                     ></textarea>
                 </div>
             </div>
@@ -153,11 +160,8 @@ import ChatAction from './partials/ChatAction';
 import ChatEdit from './partials/ChatEdit';
 import modalMixin from '@/mixins/modal';
 import SendFile from './SendFile';
-
-// import ImportFile from "ImportFile";
-const EVENT_SEND = 'send_message';
-// const EVENT_RESPONSE = "response_message";
-
+import ChatMessage from './partials/ChatMessage';
+import ChatHeaderInfo from './partials/header/ChatHeaderInfo';
 export default {
     name: 'ChatBox',
     mixins: [modalMixin],
@@ -165,7 +169,9 @@ export default {
         Picker,
         TextareaEmojiPicker,
         ChatAction,
-        ChatEdit
+        ChatEdit,
+        ChatMessage,
+        ChatHeaderInfo
     },
     props: {
         value: {
@@ -176,7 +182,7 @@ export default {
     data() {
         return {
             enterToSendMessage: true,
-            showDropzone: false,
+            showListFile: false,
             height: 0,
             message: {
                 id: 0,
@@ -184,26 +190,32 @@ export default {
                 type: AppConst.MESSAGE_TYPE.CREATE
             },
             message_id: 0,
-            showEmojiPicker: false,
-            dropzoneOptions: {
-                url: 'http://sns.dev.com/api/v1/message-file',
-                // thumbnailWidth: 150,
-                maxFilesize: 1,
-                headers: 'gfgdfgdfgdfgdgfdg',
-                maxFiles: 10,
-                uploadMultiple: true,
-                parallelUploads: 10,
-                // acceptedFiles: 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,.xls,.xlsx',
-                autoProcessQueue: false,
-                addRemoveLinks: true,
-                dictDefaultMessage:
-                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' +
-                    'Kéo file vào đây</div>'
-            },
             errors: null,
             user: this.$store.getters.get_current_user,
-            editMessage: false
+            editMessage: false,
+            listMyFile: [],
+            // list_user_room: this.$store.getters.get_current_room.member_list,
+            is_admin_room: false,
+            room_length: 0
         };
+    },
+    mounted() {
+        this.$root.$on('changed-id-rooms', data => {
+            this.getUserByRoomId();
+        });
+        this.$root.$on('changed-group', data => {
+            this.getDataGroup();
+        });
+        this.$root.$on('changed-list-room', data => {
+            this.pushNewRoom(data);
+            this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, data);
+        });
+        this.$root.$on('changed-list-user', data => {
+            this.getListUser();
+        });
+        this.$root.$on('add-new-room-from-socket', data => {
+            this.pushNewRoom(data);
+        });
     },
     created() {
         window.addEventListener('resize', this.handleResize);
@@ -213,7 +225,6 @@ export default {
             room_id: 1
         };
         API.POST(ApiConst.RECEIVE_MESSAGE, obj).then(res => {
-            console.log(res);
             if (res.error_code === 0)
                 this.$store.dispatch('setListMessage', res.data);
         });
@@ -225,7 +236,7 @@ export default {
         createObjMessage() {
             let msg = {
                 room_id: this.$store.getters.get_current_room.room_id,
-                message: this.message.content,
+                message: this.message.content.trim(),
                 type: this.message.type,
                 token: this.user.token
             };
@@ -241,10 +252,15 @@ export default {
         },
         sendMessage() {
             let msg = this.createObjMessage();
-            this.$socket.emit(EVENT_SEND, msg);
+            if (msg.message !== '')
+                this.$socket.emit(AppConst.EVENT_MESSAGE.SEND, msg);
+            var container = this.$el.querySelector('.timeline-message');
+            container.scrollTop = container.scrollHeight;
 
             this.message.content = '';
             this.message.id = 0;
+            this.message.type = AppConst.MESSAGE_TYPE.CREATE;
+            this.editMessage = false;
         },
         toggleEmojiPicker() {
             this.showEmojiPicker = !this.showEmojiPicker;
@@ -252,8 +268,11 @@ export default {
         addEmoji(emoji) {
             const textarea = this.$refs.textarea;
             const cursorPosition = textarea.selectionEnd;
-            const start = this.value.substring(0, textarea.selectionStart);
-            const end = this.value.substring(textarea.selectionStart);
+            const start = this.message.content.substring(
+                0,
+                textarea.selectionStart
+            );
+            const end = this.message.content.substring(textarea.selectionEnd);
             const text = start + emoji.native + end;
             this.$emit('input', text);
             this.message += text;
@@ -283,13 +302,29 @@ export default {
             this.$emit('close');
         },
         pressEnterToSendMessage() {
-            if (this.enterToSendMessage) this.sendMessage();
+            if (this.message.content !== '') {
+                if (this.enterToSendMessage) {
+                    this.sendMessage();
+                }
+            }
         },
         check: function(e) {
             this.enterToSendMessage = e.target.value;
         },
         onReply(value) {
-            this.message = value.message;
+            this.message.content =
+                '[Reply mid:' +
+                value.message_id +
+                ' to:' +
+                value.user_info.id +
+                '] ' +
+                value.user_info.name;
+            this.message.content += '\n';
+            this.$refs.textarea.focus();
+        },
+        onSend() {
+            this.message.type = AppConst.MESSAGE_TYPE.CREATE;
+            this.sendMessage();
         },
         onEdit(value) {
             this.message.id = value.message_id;
@@ -298,6 +333,12 @@ export default {
 
             this.editMessage = true;
             this.$refs.textarea.focus();
+
+            let roomId = this.$store.getters.get_current_room.room_id;
+            localStorage.setItem('id', value.message_id);
+            localStorage.setItem('content', value.message);
+            localStorage.setItem('type', AppConst.MESSAGE_TYPE.EDIT);
+            localStorage.setItem('roomId', roomId);
         },
         onDelete(value) {
             let con = confirm('Do you want to delete it!?');
@@ -314,14 +355,115 @@ export default {
             this.message.type = AppConst.MESSAGE_TYPE.CREATE;
 
             this.editMessage = false;
-        }
+        },
+        showMyListFile() {
+            this.showListFile = !this.showListFile;
+            if (this.showListFile) {
+                API.GET(ApiConst.MY_LIST_FILE).then(res => {
+                    this.listMyFile = res.data;
+                });
+            }
+        },
+        downloadFile(id) {
+            API.GET('/api/v1/file/download-file/' + id).then(res => {
+                window.open(
+                    'http://api.sns-tool.vn/api/v1/download-file/' +
+                        id +
+                        '/' +
+                        res.token_file +
+                        '/' +
+                        res.user_id
+                );
+            });
+        },
+        getUserByRoomId() {
+            var list_not_exists = [];
+            let roomId = this.$store.getters.get_current_room.room_id;
+            this.$store.dispatch('setAdminRoom', false);
+            this.$store.dispatch('setListUserByRoomId', []);
+            this.$store.dispatch('setListNotUserByRoomId', []);
+            if (roomId !== undefined) {
+                for (let i in this.$store.getters.get_list_room) {
+                    if (
+                        this.$store.getters.get_list_room[i].room_id === roomId
+                    ) {
+                        this.$store.dispatch(
+                            'setListUserByRoomId',
+                            this.$store.getters.get_list_room[i].member_list
+                        );
+                    }
+                }
+                for (let i in this.$store.getters.get_list_user_by_room_id) {
+                    if (this.$store.getters.get_list_user_by_room_id[i] !== undefined &&
+                        this.$store.getters.get_list_user_by_room_id[i]
+                            .role_in_room === 1 &&
+                        this.$store.getters.get_list_user_by_room_id[i].id ===
+                            this.$store.getters.get_current_user_info.id
+                    ) {
+                        this.$store.dispatch('setAdminRoom', true);
+                    }
+                }
+                for (let i in this.$store.getters.get_list_user) {
+                    var has = false;
+                    for (let j in this.$store.getters
+                        .get_list_user_by_room_id) {
+                        if (
+                            this.$store.getters.get_list_user_by_room_id[j]
+                                .id === this.$store.getters.get_list_user[i].id
+                        ) {
+                            has = true;
+                        }
+                    }
+                    if (!has) {
+                        list_not_exists.push(
+                            this.$store.getters.get_list_user[i]
+                        );
+                    }
+                }
+                this.$store.dispatch('setListNotUserByRoomId', list_not_exists);
+                this.getDataGroup();
+            }
+        },
+
+        getDataGroup() {
+            let list_group = this.$store.getters.get_list_group;
+            let list_room = this.$store.getters.get_list_room;
+            let current_group_id = this.$store.getters.get_current_group;
+
+            let list_room_by_group = [];
+            if(current_group_id === 0){
+                this.$store.dispatch('setListRoomByGroup', this.$store.getters.get_list_room);
+            }else{
+                list_group.forEach(X => {
+                    if (X.id === current_group_id) {
+                        X.room_list.forEach(Y => {
+                            for (let i in list_room) {
+                                if (list_room[i].room_id === Y.id) {
+                                    list_room_by_group.push(list_room[i]);
+                                    break;
+                                }
+                            }
+                        });
+                    }
+                });
+                this.$store.dispatch('setListRoomByGroup', list_room_by_group);
+            }
+        },
+
+        pushNewRoom(room) {
+            this.$store.dispatch('addNewRoom', room);
+            this.$socket.emit(
+                AppConst.EVENT_MESSAGE.JOIN_NEW_ROOM,
+                room.room_id
+            );
+        },
     },
     computed: {
         myStyles() {
             return this.height - 45;
         },
         timelineMessage() {
-            return this.height - 45 - 200;
+            return this.height - 245;
         }
     }
 };
@@ -364,50 +506,24 @@ export default {
     min-width: 700px;
     z-index: 1;
 }
-.chat-box-header {
-    box-sizing: border-box;
-    height: 41px;
-    padding-right: 8px;
-    padding-left: 8px;
-    border-left: 1px solid #b3b3b3;
-    border-bottom: 1px solid #cccccc;
-    background-color: #fff;
-}
 .chat-box-header .header-name {
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    padding-right: 40px;
-    height: 100%;
-    max-width: calc(100% - 292px);
+    display: inline-block;
+    margin-top: 8px;
+    width: calc(100% - 400px);
 }
 .room-logo {
-    box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    height: 100%;
-    max-width: calc(100% - 292px);
+    display: block;
+    float: left;
 }
 .room-logo img {
-    box-sizing: border-box;
-    width: 24px;
-    height: 24px;
+    width: 25px;
     border-radius: 50%;
-    flex-shrink: 0;
 }
 .chat-box-header .title {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    height: 24px;
-    padding-left: 8px;
-    max-width: calc(100% - 24px - 8px);
-    position: relative;
+    display: inline-block;
     font-size: 16px;
-    font-weight: 700;
-    margin: 0;
-    vertical-align: middle;
-    line-height: 25px;
+    margin-top: 3px;
+    padding-left: 10px;
 }
 .title span {
     white-space: nowrap;
@@ -434,6 +550,7 @@ export default {
     zoom: 1;
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;
+    margin-bottom: 10px;
 }
 .timeline-message-body:hover {
     border-top: 1px solid #b1d6ed;
@@ -447,7 +564,9 @@ export default {
     padding: 8px 16px;
     position: relative;
     border: 1px solid transparent;
+    margin: 15px 0px;
 }
+
 .timeline-avatar {
     float: left;
 }
@@ -537,6 +656,7 @@ textarea:focus:-webkit-placeholder {
     align-items: center;
     list-style: none;
     padding-left: 0px;
+    margin-bottom: 7px;
 }
 .emoji {
     border-color: transparent;
@@ -615,5 +735,11 @@ textarea:focus:-webkit-placeholder {
 
 .emoji-trigger.triggered path {
     fill: darken(#fec84a, 15%);
+}
+.timeline-content-message pre {
+    font-size: 14px;
+    font-family: arial;
+    margin-top: 3px;
+    margin-bottom: 0px;
 }
 </style>

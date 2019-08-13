@@ -13,6 +13,7 @@
                     :options="dropzoneOptions"
                     @vdropzone-file-added="getFile"
                     @vdropzone-success="catchResponse"
+                    @vdropzone-sending="addSending"
                     @vdropzone-error="showErrorMessage"
                 ></vue-dropzone>
             </div>
@@ -86,6 +87,7 @@
 <script>
 import vue2Dropzone from 'vue2-dropzone';
 import 'vue2-dropzone/dist/vue2Dropzone.min.css';
+import { authHeader } from '../../helpers/auth-header';
 export default {
     name: 'SendFile',
     components: { vueDropzone: vue2Dropzone },
@@ -95,10 +97,13 @@ export default {
         return {
             selectedComponent: '',
             dropzoneOptions: {
-                url: 'http://api.sns-tool.vn/api/v1/message-file',
+                url: 'http://api.sns-tool.vn/api/v1/message/message-file',
                 // thumbnailWidth: 150,
-                maxFilesize: 50,
-                headers: 'gfgdfgdfgdfgdgfdg',
+                maxFilesize: 100,
+                headers: {
+                    Accept: 'application/json',
+                    Authorization: authHeader()
+                },
                 maxFiles: 10,
                 uploadMultiple: true,
                 parallelUploads: 1,
@@ -106,9 +111,9 @@ export default {
                 autoProcessQueue: false,
                 addRemoveLinks: true,
                 dictDefaultMessage:
-                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' +
-                    'Kéo file vào đây</div>'
-            }
+                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' + 'Kéo file vào đây</div>'
+            },
+            message: ''
         };
     },
     computed: {},
@@ -116,6 +121,8 @@ export default {
     created() {},
     mounted() {},
     methods: {
+        addEmoji(){},
+        toggleEmojiPicker(){},
         getFile(file) {
             console.log(file);
         },
@@ -126,26 +133,41 @@ export default {
             // this.$refs['myVueDropzone'].removeFile(file);
         },
         catchResponse(file, response) {
+            this.message = '';
             console.log(response);
             if (response.success) {
                 this.$refs['myVueDropzone'].removeFile(file);
             }
         },
         hideDropzoneCheck() {
-            if (this.$refs['myVueDropzone'].getAcceptedFiles().length === 0) {
-                this.hideDropzone();
-            }
+            // if (this.$refs['myVueDropzone'].getAcceptedFiles().length === 0) {
+            //     this.hideDropzone();
+            // }
         },
         hideDropzone() {
-            this.$refs['myVueDropzone'].removeAllFiles();
-            this.$emit('close');
+            this.$modal.hide('SendFile');
+            // this.$refs['myVueDropzone'].removeAllFiles();
+            // this.$emit('close');
         },
         sendMessageFile() {
             this.$refs.myVueDropzone.processQueue();
+            console.log(this.message);
+            this.message = 's';
+        },
+        addSending(file, xhr, formData) {
+            formData.append('message', this.message ? this.message : '');
+            formData.append('room_id', this.$store.getters.get_current_room.room_id);
         }
     }
 };
 </script>
 
 <style scoped>
+.dropzone-main-chat-input {
+    overflow: scroll;
+    height: 280px;
+}
+.icon-close {
+    float: right;
+}
 </style>

@@ -870,7 +870,7 @@
     .alert {
         text-align: center;
         background: #fff;
-        padding: 10px;
+        padding: 5px 10px;
         border: 1px solid #999;
         border-radius: 3px;
         margin-bottom: 20px;

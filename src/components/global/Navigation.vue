@@ -66,7 +66,8 @@
                 <img :src="this.user.icon_img" alt />
             </div>
             <p class="status-name">
-                <span class="name">{{user.name}}</span>
+                <!-- <span class="name">{{user_info.name}}</span> -->
+                <span class="name">{{this.$store.getters.get_current_user_info.name}}</span>
                 <span class="menu-icon">
                     <svg
                         viewBox="0 0 10 10"
@@ -81,7 +82,7 @@
         <div class="menu" role="menu" v-if="!isHidden">
             <ul class="account-menu">
                 <li class="menu-item" id="profile">
-                    <a>Profile</a>
+                    <a @click="openProfile">Profile</a>
                 </li>
                 <li class="menu-item" id="personal">
                     <a>Personal Settings</a>
@@ -103,36 +104,52 @@
 <script>
 import BaseContact from '../contact/BaseContact.vue';
 import modalMixin from '@/mixins/modal';
-import { ApiConst } from '../../common/ApiConst';
 import { AppConst } from '../../common/AppConst';
 import { API } from '../../services/api';
+import { ApiConst } from '../../common/ApiConst';
 export default {
     name: 'Navigation',
     mixins: [modalMixin],
     data() {
         return {
             isHidden: true,
-            user: this.$store.getters.get_current_user
+            user: this.$store.getters.get_current_user,
+            user_info: this.$store.getters.get_current_user_info
         };
+    },
+    created() {
+        let _user = localStorage.getItem(AppConst.LOCAL_USER);
+
+        if (_user) this.user = JSON.parse(_user);
     },
     methods: {
         logout() {
-
-            API.POST(ApiConst.LOGOUT, null).then(res => {
-                if (res.error_code === 0) {
-                    localStorage.removeItem(AppConst.LOCAL_USER);
-                    this.$router.push({ path: '/login' });
-                }
-            });
+            this.$root.$off('changed-list-room');
+            this.$root.$off('changed-id-rooms');
+            this.$root.$off('push-notice');
+            this.$root.$off('open-modal-group');
+            this.$root.$off('event-get-list-message');
+            this.$root.$off('open-modal-add-user');
+            this.$root.$off('open-modal-edit-user');
+            this.$root.$off('changed-group');
+            this.$root.$off('changed-list-user');
+            this.$root.$off('add-new-room-from-socket');
+            this.$root.$off('open-modal-room');
+            this.$root.$off('open-modal-show-user');
+            this.$store.dispatch('setCurrentRoom', []);
+            this.$store.dispatch('setListRoom', []);
+            this.$store.dispatch('setListUser', []);
+            localStorage.removeItem(AppConst.LOCAL_USER);
+            this.$router.push({ path: '/login' });
         },
-        ShowPopUpModalContact() {
-            this.showPageInModal(
-                BaseContact,
-                {},
-                { pivotX: 0.5, width: '80%', resizable: true, adaptive: true },
-                {}
-            );
-        },
+        // ShowPopUpModalContact() {
+        //     this.showPageInModal(
+        //         BaseContact,
+        //         {},
+        //         { pivotX: 0.5, width: '80%', resizable: true, adaptive: true },
+        //         {}
+        //     );
+        // },
         ShowFormEditRegister() {
             let routeToEditRegister = this.$router.resolve({
                 path: '/register/edit'
@@ -140,12 +157,14 @@ export default {
             window.open(routeToEditRegister.href, '_blank');
         },
         openContact() {
-            this.$store.dispatch("setContactDisplay", 'block');
+            this.$store.dispatch('setContactDisplay', 'block');
+        },
+        openProfile() {
+            this.$store.dispatch('setProfileDisplay', 'block');
         }
     }
 };
 </script>
-
 <style>
 .navigation {
     display: flex;
@@ -232,6 +251,7 @@ export default {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+    margin-bottom: 0px;
 }
 .status-name .name {
     font-weight: 700;
@@ -249,7 +269,7 @@ export default {
     box-sizing: border-box;
     position: absolute;
     min-width: 198px;
-    top: 30px;
+    top: 45px;
     right: 0;
     padding: 1px 0 5px;
     background-color: #33455b;
@@ -265,7 +285,7 @@ export default {
 .menu-item a {
     display: block;
     padding-left: 40px;
-    color: #fff;
+    color: #fff !important;
     border-radius: 3px;
     text-decoration: none;
     text-align: left;
@@ -276,8 +296,8 @@ export default {
     cursor: pointer;
 }
 .menu-item.separate-top {
-    border-top: solid 1px #13202f;
-    padding-top: 8px;
-    margin-top: 8px;
+    /*border-top: solid 1px #13202f;*/
+    /*padding-top: 8px;*/
+    /*margin-top: 8px;*/
 }
 </style>
