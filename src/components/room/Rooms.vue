@@ -348,7 +348,6 @@
                                 data.member_list.push(admin_user);
                                 this.$root.$emit('changed-list-room', data);
                                 this.$root.$emit('changed-id-rooms');
-                                this.$root.$emit('changed-group');
                                 this.$root.$emit('push-notice', {message:'insert success', alert: 'alert-success'});
                                 break;
                             case 1:

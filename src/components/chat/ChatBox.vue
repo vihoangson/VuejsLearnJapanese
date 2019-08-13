@@ -408,6 +408,7 @@ export default {
                     for (let j in this.$store.getters
                         .get_list_user_by_room_id) {
                         if (
+                            this.$store.getters.get_list_user_by_room_id[j] !== undefined &&
                             this.$store.getters.get_list_user_by_room_id[j]
                                 .id === this.$store.getters.get_list_user[i].id
                         ) {

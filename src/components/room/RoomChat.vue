@@ -1,7 +1,7 @@
 <template>
     <div id="room" class="room">
         <div class="room-header">
-            <div class="my-chat">
+            <div class="my-chat" @click="setIsMyChat">
                 <span>
                     <svg viewBox="0 0 10 10" id="icon_home" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -169,6 +169,14 @@ export default {
                 this.isActive = false;
             }
         },
+        setIsMyChat(){
+            this.$store.getters.get_list_room_by_group.forEach(X=>{
+                if(X.is_mychat !== null){
+                    console.log(X)
+                    this.$root.$emit('change-room', X);
+                }
+            })
+        },
         getListAllChat() {
             this.$store.dispatch('setListRoomByGroup', this.$store.getters.get_list_room);
             this.$store.dispatch('setCurrentGroup', 0);
@@ -196,7 +204,11 @@ export default {
         setActive(index, criptions, id) {
             this.activeIndex = index;
             this.selectItems = criptions;
-            this.$store.dispatch('setCurrentGroup', id);
+            if(id != undefined){
+                this.$store.dispatch('setCurrentGroup', id);
+            }else{
+                this.$store.dispatch('setCurrentGroup', 0);
+            }
             this.$root.$emit('changed-group');
         },
 
@@ -259,12 +271,11 @@ export default {
                                     message: 'Delete success',
                                     alert: 'alert-success'
                                 });
-                                let list_group = this.$store.getters
-                                    .get_list_group;
+                                let list_group = this.$store.getters.get_list_group;
                                 let list_group_delete = [];
                                 for (let i in list_group) {
                                     if (list_group[i].id !== response.data) {
-                                        list_group_delete[i] = list_group[i];
+                                        list_group_delete.push(list_group[i]);
                                     }
                                 }
 
@@ -272,6 +283,7 @@ export default {
                                     'setListGroup',
                                     list_group_delete
                                 );
+                                this.$store.dispatch('setCurrentGroup', 0);
                                 this.$root.$emit('changed-group');
 
                                 break;
