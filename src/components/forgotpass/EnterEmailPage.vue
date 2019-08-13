@@ -18,6 +18,7 @@
                     <span class="error">{{errors.pleaseTickRecaptchaMessage}}</span>
 
                     <div class="login-form-row login-button">
+                        <button type="button" class="btn btn-default" @click="btnBack" >Back</button>
                         <input type="submit" value="Get email verify" class="btn btn-login" />
                     </div>
 
@@ -45,13 +46,15 @@
                     pleaseTickRecaptchaMessage: '',
                     login_fail: ''
                 },
-                email: 'mcc@gmail.com',
+                email: '',
                 password: '',
                 recaptchaVerified: true
             };
         },
         methods: {
-
+            btnBack(e){
+                this.$router.push({ name: 'login' });
+            },
             sentemail(e) {
                 e.preventDefault();
 
@@ -187,6 +190,11 @@
         padding: 20px 20px;
         -webkit-box-shadow: none;
         box-shadow: none;
+    }
+    .btn-default {
+        background-color: #ccc;
+        width: 200px;
+        font-size: 16px;
     }
     .btn-login {
         background-color: #f9423a;
