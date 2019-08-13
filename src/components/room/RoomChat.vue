@@ -98,7 +98,7 @@
                     </svg>
                     <div class="add-option">
                         <span @click="addRooms">Create a new Group Chat</span>
-                        <span @click="deleteRooms">Delete this group chat</span>
+                        <span @click="deleteRooms" v-if="this.$store.getters.get_is_admin_room">Delete this group chat</span>
                     </div>
                 </span>
             </div>
