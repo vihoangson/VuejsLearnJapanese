@@ -19,7 +19,12 @@ export default {
     created() {
         let user = localStorage.getItem('user');
         if (user === null) {
-            this.$router.push({ path: 'login' });
+            let pathname = window.location.pathname;
+            if(pathname.match('forgot-password') != null || pathname.match('changepass') != null){
+
+            }else{
+                this.$router.push({ path: 'login' });
+            }
         }
     },
     mounted() {},
