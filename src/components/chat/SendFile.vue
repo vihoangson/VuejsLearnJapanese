@@ -89,6 +89,7 @@ import vue2Dropzone from 'vue2-dropzone';
 import 'vue2-dropzone/dist/vue2Dropzone.min.css';
 import { authHeader } from '../../helpers/auth-header';
 import { ApiConst } from '../../common/ApiConst';
+import { AppConst } from '../../common/AppConst';
 
 export default {
     name: 'SendFile',
@@ -101,15 +102,15 @@ export default {
             dropzoneOptions: {
                 url: process.env.ROOT_API + ApiConst.MESSAGE_UPLOAD_FILE,
                 // thumbnailWidth: 150,
-                maxFilesize: 100,
+                maxFilesize: AppConst.MAX_FILE_SIZE,
                 headers: {
                     Accept: 'application/json',
                     Authorization: authHeader()
                 },
-                maxFiles: 10,
+                maxFiles: AppConst.MAX_FILE,
                 uploadMultiple: true,
                 parallelUploads: 1,
-                acceptedFiles: '.jpg,.png',
+                acceptedFiles: AppConst.ACCEPTED_FILES,
                 autoProcessQueue: false,
                 addRemoveLinks: true,
                 dictDefaultMessage:
