@@ -394,8 +394,7 @@ export default {
                     }
                 }
                 for (let i in this.$store.getters.get_list_user_by_room_id) {
-                    if (this.$store.getters.get_list_user_by_room_id[i]
-                            .role_in_room !== undefined &&
+                    if (this.$store.getters.get_list_user_by_room_id[i] !== undefined &&
                         this.$store.getters.get_list_user_by_room_id[i]
                             .role_in_room === 1 &&
                         this.$store.getters.get_list_user_by_room_id[i].id ===
