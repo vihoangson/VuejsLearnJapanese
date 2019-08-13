@@ -527,7 +527,7 @@ export default {
 .room-body {
     overflow: hidden;
     overflow-y: scroll;
-    max-height: 100vh;
+    max-height: calc(100vh - 85px);
     padding-bottom: 40px;
     background: #f2f2f2;
 }
