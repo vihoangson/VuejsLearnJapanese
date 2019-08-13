@@ -444,8 +444,9 @@ export default {
                     ApiConst.MY_LIST_FILE + '/' + this.$store.getters.get_current_room.room_id
                 ).then(res => {
                     if (res.data == 0) {
-                        alert('There are no files!');
                         this.showListFile = false;
+                        this.showFileDetail = false;
+                        alert('There are no files!');
                     }
                     this.listMyFile = res.data;
                 });
