@@ -1,5 +1,5 @@
 <template>
-    <div id="chat-box" @dragover="showDropzoneForm">
+    <div id="chat-box" @dragover="showDropzoneForm" @dragend="hideDropzoneForm">
         <div class="chat-box-header">
             <div class="header-name">
                 <div class="room-logo">
@@ -366,9 +366,8 @@ export default {
                 );
             }
         },
-        hideDropzone() {
-            this.$refs['myVueDropzone'].removeAllFiles();
-            this.$emit('close');
+        hideDropzoneForm() {
+            this.$modal.hide('SendFile');
         },
         pressEnterToSendMessage() {
             if (this.message.content !== '') {
