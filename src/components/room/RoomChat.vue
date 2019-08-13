@@ -171,8 +171,7 @@ export default {
         },
         setIsMyChat(){
             this.$store.getters.get_list_room_by_group.forEach(X=>{
-                if(X.is_mychat !== null){
-                    console.log(X)
+                if(X.is_mychat === 1){
                     this.$root.$emit('change-room', X);
                 }
             })
