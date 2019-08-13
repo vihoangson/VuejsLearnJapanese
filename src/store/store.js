@@ -16,6 +16,7 @@ export default new Vuex.Store({
         openProfileDisplay: 'none',
         openProfileEdit: 'none',
         current_room: {},
+        current_group: 0,
         list_room: [],
         list_room_by_group: [],
         list_group: [],

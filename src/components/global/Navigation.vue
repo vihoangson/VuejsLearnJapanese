@@ -29,7 +29,7 @@
                     </span>
                 </li>
                 <li class="menu-admin-item">
-                    <span @click="openContact">
+                    <span>
                         <svg
                             viewBox="0 0 10 10"
                             id="icon_menuContact"
@@ -134,6 +134,9 @@ export default {
             this.$root.$off('add-new-room-from-socket');
             this.$root.$off('open-modal-room');
             this.$root.$off('open-modal-show-user');
+            this.$store.dispatch('setCurrentRoom', []);
+            this.$store.dispatch('setListRoom', []);
+            this.$store.dispatch('setListUser', []);
             localStorage.removeItem(AppConst.LOCAL_USER);
             this.$router.push({ path: '/login' });
         },

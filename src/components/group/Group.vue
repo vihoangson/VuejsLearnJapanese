@@ -378,7 +378,6 @@ export default {
 
                             this.$store.dispatch('setListGroup', list_update);
                             this.$root.$emit('changed-group');
-
                             break;
                         case 1:
                             this.groupNameError = response.data.error_msg;

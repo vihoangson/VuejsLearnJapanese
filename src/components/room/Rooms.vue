@@ -313,7 +313,7 @@
                 }
 
                 this.selected.forEach(x=>{
-                    if(x !== null){
+                    if(x !== false){
                         //data.member_list.push(x);
                         let userAdd = this.getUserbyId(x.id);
                         var roleInRoom = x.permission;
@@ -348,7 +348,6 @@
                                 data.member_list.push(admin_user);
                                 this.$root.$emit('changed-list-room', data);
                                 this.$root.$emit('changed-id-rooms');
-                                this.$root.$emit('changed-group');
                                 this.$root.$emit('push-notice', {message:'insert success', alert: 'alert-success'});
                                 break;
                             case 1:

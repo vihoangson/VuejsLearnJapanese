@@ -1,7 +1,7 @@
 <template>
     <div id="room" class="room">
         <div class="room-header">
-            <div class="my-chat">
+            <div class="my-chat" @click="setIsMyChat">
                 <span>
                     <svg viewBox="0 0 10 10" id="icon_home" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -98,35 +98,15 @@
                     </svg>
                     <div class="add-option">
                         <span @click="addRooms">Create a new Group Chat</span>
-                        <span @click="settingRooms">Group Chat Setting</span>
-                        <span @click="leaveRooms">Leave this group chat</span>
-                        <span @click="deleteRooms">Delete this group chat</span>
+                        <span @click="deleteRooms" v-if="this.$store.getters.get_is_admin_room">Delete this group chat</span>
                     </div>
                 </span>
             </div>
         </div>
         <div class="room-body">
-            <ul v-if="this.items.length === 0">
+            <ul>
                 <li
-                    v-for="(item, index) in this.$store.getters.get_list_room"
-                    :key="`room-${index}`"
-                    @click="changeRoom(item)"
-                    :style="{backgroundColor: item.color}"
-                >
-                    <div class="name">
-                        <div class="room-image">
-                            <img :src="item.icon_img" :alt="item.room_name" />
-                        </div>
-                        <div class="room-name">
-                            <span>{{item.room_name}}</span>
-                            <span v-if="item.not_read > 0" class="not-read-number">{{item.not_read}}</span>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-            <ul v-else>
-                <li
-                    v-for="(item, index) in this.items"
+                    v-for="(item, index) in this.$store.getters.get_list_room_by_group"
                     :key="`room-${index}`"
                     @click="changeRoom(item)"
                     :style="{backgroundColor: item.color}"
@@ -161,8 +141,6 @@ export default {
             selectItems: 'All Chat',
             activeIndex: undefined,
             userId: 0,
-            items: [],
-            groupId: 0
         };
     },
 
@@ -191,11 +169,18 @@ export default {
                 this.isActive = false;
             }
         },
+        setIsMyChat(){
+            this.$store.getters.get_list_room_by_group.forEach(X=>{
+                if(X.is_mychat === 1){
+                    this.$root.$emit('change-room', X);
+                }
+            })
+        },
         getListAllChat() {
-            this.items = this.$store.getters.get_list_room;
+            this.$store.dispatch('setListRoomByGroup', this.$store.getters.get_list_room);
+            this.$store.dispatch('setCurrentGroup', 0);
             this.activeIndex = 0;
             this.selectItems = 'All Chat';
-            this.groupId = 0;
         },
         toggleOption: function() {
             if (this.isActive) {
@@ -218,8 +203,12 @@ export default {
         setActive(index, criptions, id) {
             this.activeIndex = index;
             this.selectItems = criptions;
-            this.groupId = id;
-            this.getDataGroup();
+            if(id != undefined){
+                this.$store.dispatch('setCurrentGroup', id);
+            }else{
+                this.$store.dispatch('setCurrentGroup', 0);
+            }
+            this.$root.$emit('changed-group');
         },
 
         getAllGroup(id) {
@@ -281,12 +270,11 @@ export default {
                                     message: 'Delete success',
                                     alert: 'alert-success'
                                 });
-                                let list_group = this.$store.getters
-                                    .get_list_group;
+                                let list_group = this.$store.getters.get_list_group;
                                 let list_group_delete = [];
                                 for (let i in list_group) {
                                     if (list_group[i].id !== response.data) {
-                                        list_group_delete[i] = list_group[i];
+                                        list_group_delete.push(list_group[i]);
                                     }
                                 }
 
@@ -294,6 +282,7 @@ export default {
                                     'setListGroup',
                                     list_group_delete
                                 );
+                                this.$store.dispatch('setCurrentGroup', 0);
                                 this.$root.$emit('changed-group');
 
                                 break;
@@ -314,8 +303,6 @@ export default {
                 return response;
             });
         },
-        leaveRooms() {},
-
         deleteRooms() {
             this.$root.$emit('open-modal-delete-room');
             this.$bvModal.show('modal-prevent-delete-room');
@@ -328,7 +315,6 @@ export default {
                 return response;
             });
         },
-
         changeRoom(room) {
             this.$root.$emit('change-room', room);
         },
@@ -540,7 +526,9 @@ export default {
 }
 .room-body {
     overflow: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
+    max-height: calc(100vh - 85px);
+    background: #f2f2f2;
 }
 .room-body ul {
     list-style: none;

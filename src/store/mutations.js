@@ -34,6 +34,9 @@ export default {
         //
         return (state.current_room = obj);
     },
+    set_current_group(state, obj) {
+        return (state.current_group = obj);
+    },
     set_list_room(state, obj) {
         return (state.list_room = obj);
     },
