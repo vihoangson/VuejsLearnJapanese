@@ -526,9 +526,8 @@ export default {
 }
 .room-body {
     overflow: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
     max-height: calc(100vh - 85px);
-    padding-bottom: 40px;
     background: #f2f2f2;
 }
 .room-body ul {
