@@ -394,7 +394,8 @@ export default {
                     }
                 }
                 for (let i in this.$store.getters.get_list_user_by_room_id) {
-                    if (
+                    if (this.$store.getters.get_list_user_by_room_id[i]
+                            .role_in_room !== undefined &&
                         this.$store.getters.get_list_user_by_room_id[i]
                             .role_in_room === 1 &&
                         this.$store.getters.get_list_user_by_room_id[i].id ===
@@ -421,28 +422,35 @@ export default {
                     }
                 }
                 this.$store.dispatch('setListNotUserByRoomId', list_not_exists);
+                this.getDataGroup();
             }
         },
+
         getDataGroup() {
             let list_group = this.$store.getters.get_list_group;
             let list_room = this.$store.getters.get_list_room;
-            let list_room_by_group = [];
+            let current_group_id = this.$store.getters.get_current_group;
 
-            list_group.forEach(X => {
-                if (X.id === this.groupId) {
-                    X.room_list.forEach(Y => {
-                        for (let i in list_room) {
-                            if (list_room[i].room_id === Y.id) {
-                                list_room_by_group.push(list_room[i]);
-                                break;
+            let list_room_by_group = [];
+            if(current_group_id === 0){
+                this.$store.dispatch('setListRoomByGroup', this.$store.getters.get_list_room);
+            }else{
+                list_group.forEach(X => {
+                    if (X.id === current_group_id) {
+                        X.room_list.forEach(Y => {
+                            for (let i in list_room) {
+                                if (list_room[i].room_id === Y.id) {
+                                    list_room_by_group.push(list_room[i]);
+                                    break;
+                                }
                             }
-                        }
-                    });
-                }
-            });
-            this.items = list_room_by_group;
-            this.$store.dispatch('setListRoomByGroup', list_room_by_group);
+                        });
+                    }
+                });
+                this.$store.dispatch('setListRoomByGroup', list_room_by_group);
+            }
         },
+
         pushNewRoom(room) {
             this.$store.dispatch('addNewRoom', room);
             this.$socket.emit(

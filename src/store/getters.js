@@ -8,6 +8,9 @@ export default {
     get_current_room: state => {
         return state.current_room;
     },
+    get_current_group: state => {
+        return state.current_group;
+    },
     get_list_room: state => {
         return state.list_room;
     },

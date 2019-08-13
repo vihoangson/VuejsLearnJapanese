@@ -17,6 +17,9 @@ export default {
     setCurrentRoom({ commit }, obj) {
         commit('set_current_room', obj);
     },
+    setCurrentGroup({ commit }, obj) {
+        commit('set_current_group', obj);
+    },
     setListRoom({ commit }, obj) {
         commit('set_list_room', obj);
     },

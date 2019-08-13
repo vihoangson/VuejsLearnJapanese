@@ -313,7 +313,7 @@
                 }
 
                 this.selected.forEach(x=>{
-                    if(x !== null){
+                    if(x !== false){
                         //data.member_list.push(x);
                         let userAdd = this.getUserbyId(x.id);
                         var roleInRoom = x.permission;

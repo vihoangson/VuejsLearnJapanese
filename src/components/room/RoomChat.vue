@@ -98,35 +98,15 @@
                     </svg>
                     <div class="add-option">
                         <span @click="addRooms">Create a new Group Chat</span>
-                        <span @click="settingRooms">Group Chat Setting</span>
-                        <span @click="leaveRooms">Leave this group chat</span>
                         <span @click="deleteRooms">Delete this group chat</span>
                     </div>
                 </span>
             </div>
         </div>
         <div class="room-body">
-            <ul v-if="this.items.length === 0">
+            <ul>
                 <li
-                    v-for="(item, index) in this.$store.getters.get_list_room"
-                    :key="`room-${index}`"
-                    @click="changeRoom(item)"
-                    :style="{backgroundColor: item.color}"
-                >
-                    <div class="name">
-                        <div class="room-image">
-                            <img :src="item.icon_img" :alt="item.room_name" />
-                        </div>
-                        <div class="room-name">
-                            <span>{{item.room_name}}</span>
-                            <span v-if="item.not_read > 0" class="not-read-number">{{item.not_read}}</span>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-            <ul v-else>
-                <li
-                    v-for="(item, index) in this.items"
+                    v-for="(item, index) in this.$store.getters.get_list_room_by_group"
                     :key="`room-${index}`"
                     @click="changeRoom(item)"
                     :style="{backgroundColor: item.color}"
@@ -161,8 +141,6 @@ export default {
             selectItems: 'All Chat',
             activeIndex: undefined,
             userId: 0,
-            items: [],
-            groupId: 0
         };
     },
 
@@ -192,10 +170,10 @@ export default {
             }
         },
         getListAllChat() {
-            this.items = this.$store.getters.get_list_room;
+            this.$store.dispatch('setListRoomByGroup', this.$store.getters.get_list_room);
+            this.$store.dispatch('setCurrentGroup', 0);
             this.activeIndex = 0;
             this.selectItems = 'All Chat';
-            this.groupId = 0;
         },
         toggleOption: function() {
             if (this.isActive) {
@@ -218,8 +196,8 @@ export default {
         setActive(index, criptions, id) {
             this.activeIndex = index;
             this.selectItems = criptions;
-            this.groupId = id;
-            this.getDataGroup();
+            this.$store.dispatch('setCurrentGroup', id);
+            this.$root.$emit('changed-group');
         },
 
         getAllGroup(id) {
@@ -314,8 +292,6 @@ export default {
                 return response;
             });
         },
-        leaveRooms() {},
-
         deleteRooms() {
             this.$root.$emit('open-modal-delete-room');
             this.$bvModal.show('modal-prevent-delete-room');
@@ -328,7 +304,6 @@ export default {
                 return response;
             });
         },
-
         changeRoom(room) {
             this.$root.$emit('change-room', room);
         },
