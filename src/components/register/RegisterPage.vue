@@ -76,6 +76,7 @@
                         >{{errors.pleaseTickRecaptchaMessage}}</div>
                     </div>
                     <div class="form-group register-button">
+                        <button type="button" class="btn btn-default" @click="btnBack" >Back</button>
                         <button class="btn btn-register" type="button" @click="save">Register</button>
                     </div>
                 </form>
@@ -117,6 +118,9 @@ export default {
     created() {},
     mounted() {},
     methods: {
+        btnBack(e){
+            this.$router.push({ name: 'login' });
+        },
         markRecaptchaAsVerified(response) {
             this.errors.pleaseTickRecaptchaMessage = '';
             this.recaptchaVerified = true;
@@ -208,6 +212,7 @@ export default {
 </script>
 
 <style scoped>
+
 header {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -284,5 +289,12 @@ header {
     width: 100%;
     padding: 7px;
     font-size: 18px;
+}
+
+.btn-default {
+
+    background-color: #ccc;
+    width: 200px;
+    font-size: 16px;
 }
 </style>

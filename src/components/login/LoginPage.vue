@@ -45,7 +45,7 @@
             </div>
 
             <div class="loader"  v-bind:style="{visibility: this.showLoader}">
-                <img src="https://appdata.chatwork.com/avatar/3431/3431235.gif">
+                <img src="http://oop.vn/img/loading.gif">
             </div>
         </section>
     </div>
