@@ -62,12 +62,21 @@
                         />
                     </svg>
                 </span>
-                <span class="icon-config-all">
+                <span class="icon-config-all"
+                    v-bind:class="{ active: isActive, 'setting-room': true }"
+                    @click="toggleOption"
+                    ref="toggleOption"
+                >
                     <svg viewBox="0 0 10 10" id="icon_setting" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M8.075 5.497a3.096 3.096 0 0 1-.548 1.327l.477.902-.277.277-.902-.477a3.102 3.102 0 0 1-1.327.548l-.301.977-.196.01-.196-.01-.302-.977a3.093 3.093 0 0 1-1.328-.548l-.902.477-.277-.277.478-.902a3.102 3.102 0 0 1-.548-1.327l-.977-.301L.939 5l.01-.196.977-.302c.079-.491.269-.941.548-1.328l-.478-.902.277-.277.902.478c.386-.28.837-.469 1.328-.548l.302-.977.196-.01.196.01.301.977c.491.079.941.268 1.327.548l.902-.478.277.277-.477.902a3.1 3.1 0 0 1 .548 1.328l.977.302.01.196-.01.196-.977.301zm1.856.3c.042-.26.069-.525.069-.798 0-.272-.027-.537-.069-.797l-1.014-.266a4.063 4.063 0 0 0-.394-.954l.529-.905A5.005 5.005 0 0 0 7.924.95l-.904.528a4.005 4.005 0 0 0-.955-.394L5.799.07a5.114 5.114 0 0 0-.798-.069 5.1 5.1 0 0 0-.797.069l-.266 1.014a4.021 4.021 0 0 0-.954.394L2.079.95A5.021 5.021 0 0 0 .952 2.077l.528.905c-.17.297-.302.616-.394.954l-1.014.266c-.042.26-.069.526-.069.797 0 .272.027.538.069.798l1.013.266c.092.338.225.657.395.954l-.528.905c.314.434.694.814 1.127 1.128l.905-.529c.296.171.617.303.954.394l.266 1.014c.261.042.526.069.797.069.272 0 .537-.027.798-.069l.266-1.014c.337-.091.658-.224.955-.394l.904.529a5.03 5.03 0 0 0 1.128-1.128l-.529-.905c.17-.297.303-.616.395-.954l1.013-.266zM5 6.25a1.25 1.25 0 1 1 0-2.5 1.25 1.25 0 0 1 0 2.5m0-3.438a2.188 2.188 0 1 0 0 4.376 2.188 2.188 0 0 0 0-4.376"
                         />
                     </svg>
+                    <div class="group-option" >
+                        <span @click="settingRooms">Group Chat Setting</span>
+                        <span @click="leaveRooms">Leave this group chat</span>
+                        <span @click="deleteRooms" v-if="this.$store.getters.get_is_admin_room">Delete this group chat</span>
+                    </div>
                 </span>
             </div>
             <div class="dropdown-content" v-if="showListFile">
@@ -94,6 +103,12 @@
 <script>
 export default {
     name: 'ChatHeaderInfo',
+    data() {
+        return {
+            isActive: false,
+            isActiveSelect: false,
+        };
+    },
     methods: {
         openModalShowUserRoom() {
             this.$root.$emit('open-modal-show-user');
@@ -106,14 +121,60 @@ export default {
         updateGroupChat() {
             this.$root.$emit('open-modal-add-user', 0);
             this.$bvModal.show('modal-prevent-add-user');
-        }
+        },
+        toggleOption: function() {
+            if (this.isActive) {
+                this.isActive = false;
+            } else {
+                this.isActive = true;
+            }
+            this.isActiveSelect = false;
+        },
+        settingRooms() {
+        },
+        leaveRooms() {
+        },
+        deleteRooms() {
+            this.$root.$emit('open-modal-delete-room');
+            this.$bvModal.show('modal-prevent-delete-room');
+        },
+
     }
 };
 </script>
 
-<style scoped>
-.icon-list-contain{
+<style>
+.setting-room .group-option{
+    position: absolute;
+    width: 250px;
+    top: 40px;
+    right: 5px;
+    padding-right: 30px;
+    font-size: 13px;
+    padding: 0;
+    display: none;
 }
+.setting-room .group-option span{
+    height: 35px;
+    border-radius: 4px;
+    color: #222;
+    border: 1px #ccc solid;
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+    line-height: 30px;
+    background: #f8f9fa;
+}
+.setting-room.active .group-option{
+    display: inline-block;
+}
+.group-option span:hover{
+    background: #0084b2;
+    color: #fff;
+    transition: 0.5s;
+    border: 1px #0084b2 solid;
+}
+
 .chat-room-header {
     box-sizing: border-box;
     height: 41px;
