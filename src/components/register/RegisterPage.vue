@@ -118,7 +118,7 @@ export default {
     created() {},
     mounted() {},
     methods: {
-        btnBack(e){
+        btnBack(e){d
             this.$router.push({ name: 'login' });
         },
         markRecaptchaAsVerified(response) {

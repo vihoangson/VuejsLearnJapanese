@@ -24,5 +24,6 @@ export const ApiConst = {
     FORGOT_PASS_CHECK_TOKEN: '/api/v1/user/forgot-password-check-token',
     FORGOT_PASS_CHANGE_PASS: '/api/v1/user/forgot-password-change-pass',
     GET_USER_INFO: '/api/v1/user/detail',
+    INVITE_BY_EMAILS: '/api/v1/contact/add-request-contact',
     UPDATE_USER_INFO: '/api/v1/user/update-user'
 };
