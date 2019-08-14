@@ -8,6 +8,7 @@ import VueSocketIO from 'vue-socket.io';
 import store from './store/store';
 import BootstrapVue from 'bootstrap-vue';
 import 'bootstrap/dist/css/bootstrap.css';
+import './assets/styles/sns-style.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import VModal from 'vue-js-modal';
 import { SocketService } from './services/socket';

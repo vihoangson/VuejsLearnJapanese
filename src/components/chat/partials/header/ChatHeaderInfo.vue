@@ -55,7 +55,7 @@
                 </span>
             </div>
             <div class="room-action">
-                <span class="icon-file-all">
+                <span class="icon-file-all disable-mark">
                     <svg viewBox="0 0 10 10" id="icon_menuFile" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M.417.417v2.5h9.167v-1.25H4.167L2.917.417h-2.5zM0 3.75l.417 5.833h9.167l.417-5.833h-10zm.781.73h8.438l-.313 4.375H1.093L.78 4.48z"
@@ -247,7 +247,6 @@ export default {
 .list_user .btn-more {
     height: 25px;
     padding: 0 4px;
-    width: 30px;
     background: #aaa;
     display: inline-block;
     border-radius: 20px;
@@ -259,6 +258,7 @@ export default {
     top: 1px;
 }
 .list_user .btn-persion {
+    cursor: pointer ;
     height: 25px;
     padding: 0 4px;
     width: 30px;
@@ -281,17 +281,18 @@ export default {
     fill: #fff
 }
 .list_user .btn-plus {
+    cursor: pointer;
     float: right;
     margin-left: 5px;
-    height: 25px;
+    height: 30px;
     width: 30px;
-    background: #b8daff;
+    background: #006a9c;
     display: block;
-    border-radius: 15px;
+    border-radius: 100%;
     color: #fff;
     text-align: center;
     font-size: 16px;
-    line-height: 19px;
+    line-height: 25px;
     position: relative;
     top: 1px;
 }

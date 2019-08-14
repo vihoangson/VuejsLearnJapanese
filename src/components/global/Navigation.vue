@@ -1,8 +1,8 @@
 <template>
     <div class="navigation">
         <div class="admin">
-            <ul class="menu-admin" role="navigation">
-                <li class="menu-admin-item">
+            <ul class="menu-admin  " role="navigation">
+                <li class="menu-admin-item disable-mark">
                     <span>
                         <svg
                             viewBox="0 0 10 10"
@@ -15,7 +15,7 @@
                         </svg>
                     </span>
                 </li>
-                <li class="menu-admin-item">
+                <li class="menu-admin-item disable-mark">
                     <span>
                         <svg
                             viewBox="0 0 10 10"
@@ -28,7 +28,7 @@
                         </svg>
                     </span>
                 </li>
-                <li class="menu-admin-item">
+                <li class="menu-admin-item disable-mark">
                     <span>
                         <svg
                             viewBox="0 0 10 10"
@@ -41,7 +41,7 @@
                         </svg>
                     </span>
                 </li>
-                <li class="menu-admin-item">
+                <li class="menu-admin-item disable-mark">
                     <span>
                         <svg
                             viewBox="0 0 10 10"
@@ -84,13 +84,13 @@
                 <li class="menu-item" id="profile">
                     <a @click="openProfile">Profile</a>
                 </li>
-                <li class="menu-item" id="personal">
+                <li class="menu-item  disable-mark" id="personal">
                     <a>Personal Settings</a>
                 </li>
                 <li class="menu-item" id="account">
                     <a @click="ShowFormEditRegister">Account Settings</a>
                 </li>
-                <li class="menu-item" id="api">
+                <li class="menu-item disable-mark" id="api">
                     <a>API Setting</a>
                 </li>
                 <li class="menu-item separate-top" id="logout">

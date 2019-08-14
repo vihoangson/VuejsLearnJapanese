@@ -1,6 +1,6 @@
 <template>
     <div class="search">
-        <form action class="search-form">
+        <form action class="search-form disable-mark">
             <span class="icon-search">
                 <svg viewBox="0 0 10 10" id="icon_search" xmlns="http://www.w3.org/2000/svg">
                     <path
@@ -8,7 +8,7 @@
                     />
                 </svg>
             </span>
-            <input
+            <input disabled
                 type="text"
                 placeholder="Type to search for chat/message"
                 autocomplete="off"
