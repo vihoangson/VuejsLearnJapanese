@@ -98,6 +98,10 @@
                                         <td>
                                             <p>
                                                 <span class="company">{{item.company}}</span>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p>        
                                                 <span class="selectRole" @click="itemRoleRoomClick($event)">
                                                     <div class="selectDefault" v-if="selected[item.id]">
                                                         <span class="selectbox">
@@ -383,6 +387,8 @@
         position: relative;
         display: block;
         width: 150px;
+        margin-bottom: -10px;
+        top: -2px;
     }
     .selectRole .selectDefault{
         border: 1px #ccc solid;
@@ -406,7 +412,7 @@
         border: 1px #ccc solid;
         padding: 0;
         list-style: none;
-        top: 22px;
+        top: 27px;
         z-index: 10;
         display: none;
     }

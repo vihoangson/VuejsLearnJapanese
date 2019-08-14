@@ -282,6 +282,7 @@ export default {
                                     'setListGroup',
                                     list_group_delete
                                 );
+                                this.selectItems = 'All Chat';
                                 this.$store.dispatch('setCurrentGroup', 0);
                                 this.$root.$emit('changed-group');
 

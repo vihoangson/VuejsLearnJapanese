@@ -123,6 +123,10 @@
                                         <td>
                                             <p>
                                                 <span class="company">{{item.company}}</span>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p>
                                                 <span
                                                     class="selectRole"
                                                     @click="itemRoleRoomClick($event)"
