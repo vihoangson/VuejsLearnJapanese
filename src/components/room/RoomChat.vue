@@ -112,7 +112,7 @@
                 >
                     <div class="name">
                         <div class="room-image">
-                            <img :src="item.icon_img" :alt="item.room_name" />
+                            <img :src="item.icon_img"/>
                         </div>
                         <div class="room-name">
                             <span>{{item.room_name}}</span>
