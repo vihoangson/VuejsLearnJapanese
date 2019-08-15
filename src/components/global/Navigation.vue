@@ -29,7 +29,7 @@
                     </span>
                 </li>
                 <li class="menu-admin-item disable-mark">
-                    <span>
+                    <span @click="openContact">
                         <svg
                             viewBox="0 0 10 10"
                             id="icon_menuContact"
