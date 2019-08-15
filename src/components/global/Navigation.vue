@@ -117,13 +117,11 @@ export default {
     },
     created() {
         let _user = localStorage.getItem(AppConst.LOCAL_USER);
-
         if (_user) this.user = JSON.parse(_user);
     },
     methods: {
         logout() {
-            this.$root.$off('changed-list-room');
-            this.$root.$off('changed-id-rooms');
+            this.$root.$off('changed-info-rooms');
             this.$root.$off('push-notice');
             this.$root.$off('open-modal-group');
             this.$root.$off('event-get-list-message');

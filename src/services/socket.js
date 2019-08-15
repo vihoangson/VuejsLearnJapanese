@@ -14,7 +14,7 @@ export const SocketService = {
                 roomIds
             );
         }
-        let user = this.$store.getters.get_current_user;
+        let user = JSON.parse(localStorage.getItem('user'));
         if (user.user_id !== null && user.user_id !== undefined) {
             this.$socket.emit(
                 AppConst.EVENT_MESSAGE.CHANNEL_NEW_ROOM,
@@ -54,6 +54,5 @@ export const SocketService = {
     },
     new_room: function(e) {
         this.$store.dispatch('addNewRoom', e);
-        this.$socket.emit(AppConst.EVENT_MESSAGE.JOIN_NEW_ROOM, e.room_id);
     }
 };

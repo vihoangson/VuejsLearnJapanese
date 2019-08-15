@@ -167,7 +167,7 @@ export default {
                     x.color = '';
                 }
             });
-            this.$root.$emit('changed-id-rooms');
+            this.$root.$emit('changed-info-rooms');
             let roomId = room.room_id;
             this.$router.push('/rid-' + roomId);
         },
