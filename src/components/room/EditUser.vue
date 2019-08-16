@@ -262,39 +262,15 @@ export default {
                                 message: 'Save success',
                                 alert: 'alert-success'
                             });
-                            var list_room = this.$store.getters.get_list_room;
-                            for(let i in list_room){
-                                if(list_room[i].room_id === this.roomId){
-                                    var member_list = list_room[i].member_list;
-                                    var member_update = [];
-                                    var check_is_room = false;
-                                    for(let key in this.selected){
-                                        if((this.selected[key] !== undefined) && (this.selected[key].id !== undefined)){
-                                            if(this.selected[key].id === this.$store.getters.get_current_user_info.id){
-                                                check_is_room = true;
-                                            }
-                                        }
-                                    }
-                                    if(check_is_room){
-                                        for(let key in member_list){
-                                            for(let i in this.selected){
-                                                if((this.selected[i] !== undefined) && (this.selected[i].id !== undefined)){
-                                                    if(member_list[key].id === this.selected[i].id){
-                                                        member_list[key].role_in_room = this.selected[i].permission;
-                                                        member_update.push(member_list[key]);
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        list_room[i].member_list = member_update;
-                                    }else{
-                                        list_room.splice(i, 1);
-                                    }
+                            var listRoom = this.$store.getters.get_list_room;
+                            for (let i in listRoom) {
+                                if (listRoom[i].room_id === this.roomId) {
+                                    listRoom[i].selected = this.selected;
+                                    listRoom[i].add = 0;
+                                    this.$root.$emit('change-list-room', listRoom[i]);
+                                    break;
                                 }
                             }
-                            this.$store.dispatch('setListRoom', list_room);
-                            this.$root.$emit('changed-info-rooms');
                             break;
                         case 1:
                             this.roomselectedError = response.data;
