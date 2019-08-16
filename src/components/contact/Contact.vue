@@ -19,7 +19,7 @@
             <div class="_cwFWHeader">
                 <div class="floatHeaderTab clearfix">
                     <ul id="_contactWindowTab">
-                        <li @click="tabIndex = index" v-for="(tab, index) in contactTabs" v-bind:id="tab.id"
+                        <li @click="changeTab(index)" v-for="(tab, index) in contactTabs" v-bind:id="tab.id"
                             :class="linkClass(index)" v-bind:data-type="tab.dataType" v-text="tab.text"
                             v-bind:style="{display: tab.display}"/>
                     </ul>
@@ -113,7 +113,7 @@
             </div>
             <div class="_cwFWContent" style="height: 600px;">
                 <div class="adminWindowAllList">
-                    <div id="_contactInviteMailArea" class="contactInviteMailArea">
+                    <div id="_contactInviteMailArea" class="contactInviteMailArea" v-bind:style="{display: contentInviteMailNew.display}">
                         <div v-bind:id="contentInviteMailNew.id" v-bind:class="contentInviteMailNew.class"
                              v-bind:style="{display: contentInviteMailNew.display}">
                             <div id="_contactInviteMailIndividual" class="contactInviteMailSection"
@@ -190,16 +190,16 @@
                         </div>
                     </div>
 
-                    <div id="_contactWindowBox" class="adminAllListArea" style="display: none;">
-                        <ul id="_contactWindowList" class="contactList">
-                            <div class="adminAllListArea__emptyContainer">
-                                <img src="https://assets.chatwork.com/images/empty/img_contact_empty.png"
-                                     class="adminAllListArea__emptyImage" alt="">
-                                <p class="adminAllListArea__emptyDescription">
+                    <div id="_contactWindowBox" class="adminAllListArea"  v-bind:style="{display: contentAddContact.display}">
+                        <add-contact></add-contact>
+                    </div>
 
-                                </p>
-                            </div>
-                        </ul>
+                    <div id="_contactWindowListContact" class="adminAllListArea"  v-bind:style="{display: contentListContact.display}">
+                        <list-contact></list-contact>
+                    </div>
+
+                    <div id="_contactWindowWaitForAccpet" class="adminAllListArea"  v-bind:style="{display: contentWaitForAccpet.display}">
+                        <list-wait-accept></list-wait-accept>
                     </div>
 
                     <div id="_contactDetailAreaWrapper" class="contactDetailInfo" style="display: none;">
@@ -294,11 +294,17 @@
     import {API} from '../../services/api';
     import {ApiConst} from '../../common/ApiConst';
     import Search from '../contact/tabs/Search'
+    import AddContact from '../contact/tabs/AddContact'
+    import ListContact from '../contact/tabs/ListContact'
+    import ListWaitAccept from '../contact/tabs/ListWaitAccept'
 
     export default {
         name: "Contact",
         components: {
-            Search
+            Search,
+            AddContact,
+            ListContact,
+            ListWaitAccept
         },
         data() {
             return {
@@ -336,6 +342,12 @@
                         dataType: 'contact'
                     },
                     {
+                        id: '_contactWindowTabWaitForAccept',
+                        text: 'Sent requests',
+                        display: 'block',
+                        number: 0,
+                        dataType: 'waitforaccept'
+                    },                    {
                         id: '_contactWindowTabMyRequest',
                         text: 'Sent Requests',
                         display: 'none',
@@ -348,13 +360,6 @@
                         display: 'none',
                         number: 0,
                         dataType: 'request'
-                    },
-                    {
-                        id: '_contactWindowTabNoRequest',
-                        text: 'Not in Contacts',
-                        display: 'block',
-                        number: 0,
-                        dataType: 'norequest'
                     },
                 ],
                 contactInviteMailSection:
@@ -388,6 +393,21 @@
                     id: '_contentInviteMailNew',
                     class: 'contactInviteMailContent',
                     display: 'block'
+                },
+                contentAddContact: {
+                    id: '_contentAddContact',
+                    class: 'contentAddContactContent',
+                    display: 'none'
+                },
+                contentListContact: {
+                    id: '_contentListContact',
+                    class: 'contentListContactContent',
+                    display: 'none'
+                },
+                contentWaitForAccpet: {
+                    id: '_contentWaitForAccpet',
+                    class: 'contentWaitForAccpetContent',
+                    display: 'none'
                 },
                 sampleResult:
                     {
@@ -448,6 +468,40 @@
             this.handleResizePopup();
         },
         methods: {
+            changeTab(index){
+                // Set index of tab
+                this.tabIndex = index
+
+                // switch tab
+                switch (index) {
+                    case 0:
+                        this.contentInviteMailNew.display = 'block';
+                        this.contentAddContact.display = 'none';
+                        this.contentListContact.display = 'none';
+                        this.contentWaitForAccpet.display = 'none';
+
+                        break;
+                    case 1:
+                        this.contentInviteMailNew.display = 'none';
+                        this.contentAddContact.display = 'block';
+                        this.contentListContact.display = 'none';
+                        this.contentWaitForAccpet.display = 'none';
+                        break;
+                    case 2:
+                        this.contentInviteMailNew.display = 'none';
+                        this.contentAddContact.display = 'none';
+                        this.contentListContact.display = 'block';
+                        this.contentWaitForAccpet.display = 'none';
+                        break;
+                    case 3:
+                        this.contentInviteMailNew.display = 'none';
+                        this.contentAddContact.display = 'none';
+                        this.contentListContact.display = 'none';
+                        this.contentWaitForAccpet.display = 'block';
+                        break;
+
+                }
+            },
             linkClass(index) {
                 if (this.tabIndex === index) {
                     return ['floatTabSelect'];

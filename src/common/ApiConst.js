@@ -25,5 +25,9 @@ export const ApiConst = {
     FORGOT_PASS_CHANGE_PASS: '/api/v1/user/forgot-password-change-pass',
     GET_USER_INFO: '/api/v1/user/detail',
     INVITE_BY_EMAILS: '/api/v1/contact/add-request-contact',
+    APPROVE_CONTACT: '/api/v1/contact/accept-request-contact',
+    DELETE_CONTACT: '/api/v1/contact/delete-contact',
+    CANCEL_REQUEST_CONTACT: '/api/v1/contact/cancel-request-contact',
+    SEARCH_CONTACT: '/api/v1/contact/search-contact',
     UPDATE_USER_INFO: '/api/v1/user/update-user'
 };
