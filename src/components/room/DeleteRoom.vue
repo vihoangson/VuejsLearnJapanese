@@ -85,16 +85,8 @@ export default {
                                     return d.room_id === data.id;
                                 }
                             );
-                            if (room !== undefined) {
-                                let idx = this.$store.getters.get_list_room.indexOf(
-                                    room
-                                );
-                                this.$store.getters.get_list_room.splice(
-                                    idx,
-                                    1
-                                );
-                            }
-                            this.$root.$emit('changed-group');
+                            this.$root.$emit('remove-list-room', room);
+                            //this.$root.$emit('changed-group');
                             this.$refs.modal.hide();
                             break;
                         default:

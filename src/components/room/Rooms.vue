@@ -98,6 +98,10 @@
                                         <td>
                                             <p>
                                                 <span class="company">{{item.company}}</span>
+                                            </p>
+                                        </td>
+                                        <td>
+                                            <p>        
                                                 <span class="selectRole" @click="itemRoleRoomClick($event)">
                                                     <div class="selectDefault" v-if="selected[item.id]">
                                                         <span class="selectbox">
@@ -335,7 +339,6 @@
                             case 0:
                                 data.room_id = response.data;
                                 this.$refs.modal.hide();
-
                                 let admin_user = {
                                     company: this.$store.getters.get_current_user_info.company,
                                     email: this.$store.getters.get_current_user_info.email,
@@ -346,8 +349,9 @@
                                 };
 
                                 data.member_list.push(admin_user);
-                                this.$root.$emit('changed-list-room', data);
-                                this.$root.$emit('changed-id-rooms');
+                                this.$root.$emit('push-list-room', data);
+                                this.$root.$emit('changed-info-rooms');
+                                this.$store.dispatch('setCurrentRoom', data);
                                 this.$root.$emit('push-notice', {message:'insert success', alert: 'alert-success'});
                                 break;
                             case 1:
@@ -383,6 +387,8 @@
         position: relative;
         display: block;
         width: 150px;
+        margin-bottom: -10px;
+        top: -2px;
     }
     .selectRole .selectDefault{
         border: 1px #ccc solid;
@@ -406,7 +412,7 @@
         border: 1px #ccc solid;
         padding: 0;
         list-style: none;
-        top: 22px;
+        top: 27px;
         z-index: 10;
         display: none;
     }

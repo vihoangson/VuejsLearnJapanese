@@ -98,22 +98,21 @@
                     </svg>
                     <div class="add-option">
                         <span @click="addRooms">Create a new Group Chat</span>
-                        <span @click="deleteRooms" v-if="this.$store.getters.get_is_admin_room">Delete this group chat</span>
                     </div>
                 </span>
             </div>
         </div>
         <div class="room-body">
-            <ul>
+            <ul >
                 <li
                     v-for="(item, index) in this.$store.getters.get_list_room_by_group"
                     :key="`room-${index}`"
                     @click="changeRoom(item)"
-                    :style="{backgroundColor: item.color}"
+                    v-bind:style="$store.getters.get_current_room.room_id === item.room_id? {background: '#ccc'}: {}"
                 >
                     <div class="name">
                         <div class="room-image">
-                            <img :src="item.icon_img" :alt="item.room_name" />
+                            <img :src="item.icon_img"/>
                         </div>
                         <div class="room-name">
                             <span>{{item.room_name}}</span>
@@ -282,6 +281,7 @@ export default {
                                     'setListGroup',
                                     list_group_delete
                                 );
+                                this.selectItems = 'All Chat';
                                 this.$store.dispatch('setCurrentGroup', 0);
                                 this.$root.$emit('changed-group');
 
@@ -303,10 +303,6 @@ export default {
                 return response;
             });
         },
-        deleteRooms() {
-            this.$root.$emit('open-modal-delete-room');
-            this.$bvModal.show('modal-prevent-delete-room');
-        },
 
         settingRooms() {
             API.POST(ApiConst.ROOM_SETTING, {
@@ -315,6 +311,7 @@ export default {
                 return response;
             });
         },
+
         changeRoom(room) {
             this.$root.$emit('change-room', room);
         },
@@ -583,22 +580,25 @@ export default {
     display: block;
 }
 .create-room .add-option span {
-    font-size: 12px;
+    font-size: 13px;
     background: #f8f9fa;
-    padding: 8px 10px;
+    padding: 10px 10px;
     border-radius: 4px;
     color: #13202f;
     position: relative;
-    top: 5px;
-    border: 1px #ccc solid;
+    top: 10px;
+    border: 1px #ccc solid; 
     width: 200px;
     display: block;
     text-align: center;
+    left: 3px;
+    height: 35px;
 }
 .create-room .add-option span:hover {
-    background: #6c757d;
+    background: #0084b2;
     color: #fff;
     transition: 0.5s;
+    border: 1px #0084b2 solid; 
 }
 
 span.not-read-number {

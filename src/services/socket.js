@@ -14,10 +14,18 @@ export const SocketService = {
                 roomIds
             );
         }
-        let user = this.$store.getters.get_current_user;
+        let user = JSON.parse(localStorage.getItem('user'));
         if (user.user_id !== null && user.user_id !== undefined) {
             this.$socket.emit(
                 AppConst.EVENT_MESSAGE.CHANNEL_NEW_ROOM,
+                user.user_id
+            );
+        }
+
+        if (user.user_id !== null && user.user_id !== undefined) {
+            console.log(AppConst.EVENT_MESSAGE.CHANNEL_REMOVE_ROOM+user.user_id);
+            this.$socket.emit(
+                AppConst.EVENT_MESSAGE.CHANNEL_REMOVE_ROOM,
                 user.user_id
             );
         }
@@ -52,8 +60,17 @@ export const SocketService = {
             }
         }
     },
-    new_room: function(e) {
-        this.$store.dispatch('addNewRoom', e);
-        this.$socket.emit(AppConst.EVENT_MESSAGE.JOIN_NEW_ROOM, e.room_id);
+    new_room: function(data) {
+        this.$store.dispatch('addNewRoom', data);
+    },
+    remove_room: function(data){
+        if (data !== undefined) {
+            let list = this.$store.getters.get_list_room;
+            for(let i in list){
+                if(list[i].room_id === data.room_id){
+                    this.$store.getters.get_list_room.splice(i, 1);
+                }
+            };
+        }
     }
 };
