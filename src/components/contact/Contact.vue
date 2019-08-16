@@ -1,7 +1,8 @@
 <template>
     <div class="_cwFWBase floatWindow" ref="floatWindow" @click.self="closeContactPopup" style="z-index: 1002;"
          v-bind:style="{display: this.$store.state.openContactDisplay, height: floatWindowHeight}">
-        <div id="_contactWindow" class="contactWindow _cwFWInner" v-bind:style="{left: marginPopup, right: marginPopup}" role="dialog"
+        <div id="_contactWindow" class="contactWindow _cwFWInner" v-bind:style="{left: marginPopup, right: marginPopup}"
+             role="dialog"
              aria-label="Contacts">
             <div class="_floatWindowHeader floatWindow__header">
                 <h1 class="_floatWindowTitle floatWindow__title"><span class="autotrim">Contacts</span></h1>
@@ -14,35 +15,132 @@
                     <span class="icoTextHide">Close</span>
                 </div>
             </div>
-
+            <!--<Search></Search>-->
             <div class="_cwFWHeader">
                 <div class="floatHeaderTab clearfix">
                     <ul id="_contactWindowTab">
-                        <li id="_contactWindowTabInviteEmail" data-type="invitemail" class="floatTabSelect" style="">
-                            Invite by Email
-                        </li>
-                        <li id="_contactWindowTabContact" data-type="addcontact">User Search</li>
-                        <li id="_contactWindowTabMyContact" data-type="contact">Contacts<span
-                                id="_contactWindowListNum">(114)</span></li>
-                        <li id="_contactWindowTabMyRequest" data-type="myrequest" style="display: none;">Sent
-                            Requests<span id="_contactWindowMyRequestNum"></span></li>
-                        <li id="_contactWindowTabRequest" data-type="request" style="display: none;">Incoming
-                            Requests<span id="_contactWindowRequestNum"></span></li>
-                        <li id="_contactWindowTabNoRequest" data-type="norequest">Not in Contacts<span
-                                id="_contactWindowNoRequestNum">(15)</span></li>
+                        <li @click="changeTab(index)" v-for="(tab, index) in contactTabs" v-bind:id="tab.id"
+                            :class="linkClass(index)" v-bind:data-type="tab.dataType" v-text="tab.text"
+                            v-bind:style="{display: tab.display}"/>
                     </ul>
                 </div>
-
+                <div id="_contactWindowNavigation" class="adminNavigation" style="display: none;">
+                    <div class="search">
+                      <span class="icSearch">
+                        <svg viewBox="0 0 10 10" class="icSearch__icon" width="16" height="16">
+                          <use fill-rule="evenodd" xlink:href="#icon_search"></use>
+                        </svg>
+                      </span>
+                        <span class="_cwSBCancel icSearchCancel" style="display:none">
+                            <svg viewBox="0 0 10 10" class="icSearchCancel__icon" width="16" height="16">
+                              <use fill-rule="evenodd" xlink:href="#icon_cancel"></use>
+                            </svg>
+                          </span>
+                        <input type="text" id="_contactWindowSearch" class="inputLong _cwSB searchBox" role="search"
+                               placeholder="Enter name, Chatwork ID, email address here"></div>
+                    <div id="_contactWindowSearchButton" class="contactWindow__searchButton _cwBN button" role="button">
+                        Search
+                    </div>
+                    <div class="btnCheckGroup" style="display: none;">
+                        <div id="_contactWindowCheckAllButton" class="_button btnLarge btnDisable _cwBN button"
+                             role="button" aria-disabled="true"><span role="checkbox" aria-checked="false"
+                                                                      type="checkbox" id="_contactWindowCheckAll"
+                                                                      class="_cwCB _cwCBUnchecked ico15Checkbox _checkBox disabled"><input
+                                type="hidden" value="on"></span>Check All
+                        </div>
+                        <div id="_contactWindowCheckActionArea" style="display:inline">
+                            <div id="_contactWindowAdd"
+                                 class="_contactWindowNavigationItem _button btnLarge btnDisable _cwBN button"
+                                 style="display: inline-block;" role="button" aria-disabled="true">Send Invitation
+                            </div>
+                            <div id="_contactWindowDelete"
+                                 class="_contactWindowNavigationItem _button btnLarge btnDisable _cwBN button"
+                                 style="display:none" role="button" aria-disabled="true">Delete from your contact
+                            </div>
+                            <div id="_contactWindowCancel"
+                                 class="_contactWindowNavigationItem _button btnLarge btnDisable _cwBN button"
+                                 style="display:none" role="button" aria-disabled="true">Cancel request
+                            </div>
+                            <div id="_contactWindowAccept"
+                                 class="_contactWindowNavigationItem _button btnLarge btnDisable _cwBN button"
+                                 style="display:none" role="button" aria-disabled="true">Accept
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contactWindowPagerContainer">
+                        <p id="_contactWindowPagerIndex" class="contactWindowPagerContainer__index"></p>
+                        <ul id="_contactWindowPager"
+                            class="cwTextUnselectable btnNavList fileWindowPagerContainer__pager _cwBB" role="menu">
+                            <li role="menuitemradio" class="_cwBBButton button btnDisable" data-cwui-bb-idx="0"
+                                aria-disabled="true">
+       <span class="contactWindowPagerContainer__pagerIconContainer">
+         <svg viewBox="0 0 10 10" class="contactWindowPagerContainer__pagerIcon" width="16" height="16">
+          <use fill-rule="evenodd" xlink:href="#icon_arrowDoubleLeft">
+        </use></svg>
+       </span>
+                                <span class="icoTextHide">Go to first page</span>
+                            </li>
+                            <li role="menuitemradio" class="_cwBBButton button btnDisable" data-cwui-bb-idx="1"
+                                aria-disabled="true">
+       <span class="contactWindowPagerContainer__pagerIconContainer">
+         <svg viewBox="0 0 10 10" class="contactWindowPagerContainer__pagerIcon" width="16" height="16">
+          <use fill-rule="evenodd" xlink:href="#icon_triangleLeft">
+        </use></svg>
+       </span>
+                                <span class="icoTextHide">Back to previous page</span>
+                            </li>
+                            <li role="menuitemradio" class="_cwBBButton button btnDisable" data-cwui-bb-idx="2"
+                                aria-disabled="true">
+       <span class="contactWindowPagerContainer__pagerIconContainer">
+         <svg viewBox="0 0 10 10" class="contactWindowPagerContainer__pagerIcon" width="16" height="16">
+          <use fill-rule="evenodd" xlink:href="#icon_triangleRight">
+        </use></svg>
+       </span>
+                                <span class="icoTextHide">Go to next page</span>
+                            </li>
+                            <li role="menuitemradio" class="_cwBBButton button btnDisable" data-cwui-bb-idx="3"
+                                aria-disabled="true">
+       <span class="contactWindowPagerContainer__pagerIconContainer">
+         <svg viewBox="0 0 10 10" class="contactWindowPagerContainer__pagerIcon" width="16" height="16">
+          <use fill-rule="evenodd" xlink:href="#icon_arrowDoubleRight">
+        </use></svg>
+       </span>
+                                <span class="icoTextHide">Go to last page</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <div class="_cwFWContent" style="height: 600px; width: 908px">
+            <div class="_cwFWContent" style="height: 600px;">
                 <div class="adminWindowAllList">
-                    <div id="_contactInviteMailArea" class="contactInviteMailArea">
-                        <div id="_contentInviteMailNew" class="contactInviteMailContent" style="">
+                    <div id="_contactInviteMailArea" class="contactInviteMailArea" v-bind:style="{display: contentInviteMailNew.display}">
+                        <div v-bind:id="contentInviteMailNew.id" v-bind:class="contentInviteMailNew.class"
+                             v-bind:style="{display: contentInviteMailNew.display}">
                             <div id="_contactInviteMailIndividual" class="contactInviteMailSection"
                                  v-bind:style="{display: individualAdd}">
-                                <div class="contactInviteErrorMessage alert alertDanger" style="display: none"></div>
+                                <div :class="contactInviteErrorMessage.class"
+                                     :style="{display: contactInviteErrorMessage.display}"
+                                     v-text="contactInviteErrorMessage.message"></div>
                                 <label class="contactInviteMailLabel">Email Address</label>
-
+                                <ul id="_contactInviteMailList" class="contactInviteMailList">
+                                    <li class="_mailAddressInput contactInviteMailList__item"
+                                        v-for="(itemEmail, index) in itemEmails">
+                                        <input type="email" name="email" placeholder="Enter email address"
+                                               @input="onChangeEmail(itemEmail, index)" v-model="itemEmail.text">
+                                        <span class="_cwFWButton _mailAddressInputCancel contactInviteMailList__cancelButton"
+                                              v-bind:style="{display: itemEmail.displayCloseIcon}"
+                                              @click="cancelEmailInput(itemEmail, index)">
+                                          <svg viewBox="0 0 10 10" class="invitationLinkEditorCancel__icon" width="16"
+                                               height="16">
+                                            <use fill-rule="evenodd" xlink:href="#icon_cancel">
+                                                <svg viewBox="0 0 10 10" id="icon_cancel"
+                                                     xmlns="http://www.w3.org/2000/svg"><path
+                                                        d="M6.831 2.5L4.997 4.335 3.163 2.5l-.663.663 1.834 1.834L2.5 6.831l.663.663L4.997 5.66l1.834 1.834.663-.663-1.835-1.834 1.835-1.834z"></path></svg>
+                                            </use>
+                                          </svg>
+                                        </span>
+                                    </li>
+                                </ul>
                                 <div class="formControlArea clear">
                                     <a href="#" id="_contactInviteMailAddAddress" class="addForm">
                                         <p class="AddFormIcon addForm__iconContainer" aria-hidden="true">
@@ -57,83 +155,51 @@
                             </div>
                             <div id="_contactInviteMailBulk" class="contactInviteMailSection"
                                  v-bind:style="{display: bulkAdd}">
-                                <div class="contactInviteErrorMessage alert alertDanger" style="display: none;"></div>
+                                <div :class="contactInviteErrorMessage.class"
+                                     :style="{display: contactInviteErrorMessage.display}"
+                                     v-text="contactInviteErrorMessage.message"></div>
                                 <label class="contactInviteMailLabel">Enter an e-mail address per line.</label>
-                                <textarea id="_addFromEmailContentEmails" name="emails"
-                                          placeholder="Enter an e-mail address per line."></textarea>
+                                <textarea v-bind:id="textareas.bulkEmails.id" v-bind:name="textareas.bulkEmails.name"
+                                          v-bind:placeholder="textareas.bulkEmails.placeholder"
+                                          v-model="textareas.bulkEmails.text"></textarea>
                                 <a href="#" class="changeFormIndividual" @click="toggleMailInvite">Add members
                                     individually</a>
                             </div>
                             <div class="contactInviteMailSection">
                                 <label class="contactInviteMailLabel">Message (optional)</label>
-                                <textarea id="_addFromEmailContent" name="message"
-                                          placeholder="Type a message"></textarea>
+                                <textarea v-bind:id="textareas.message.id" v-bind:name="textareas.message.name"
+                                          v-bind:placeholder="textareas.message.placeholder"
+                                          v-model="textareas.message.text"></textarea>
                             </div>
                         </div>
-                        <div id="_contentInviteMailFinished" class="contactInviteMailContent" style="display: none;">
+                        <div id="_contentInviteMailFinished" class="contactInviteMailContent"
+                             v-bind:style="{display: showResultData.display}">
                             <div class="contactInviteMailSection">
-                                <p class="alert alertSuccess">Invitation was sent successfully.</p>
-                                <p class="alert alertDanger">Invitation wasn't sent due to the following reasons.</p>
+                                <p v-for="(item) in contactInviteMailSection" v-bind:class="item.class"
+                                   v-bind:style="{display: item.display}">{{item.text}}</p>
                             </div>
-                            <div id="_contactInviteMailSentEmails" class="contactInviteMailResult">
-                                <p class="contactInviteMailResultTitle mailResultTitleSuccess">Invitation sent</p>
-                                <ul class="contactInviteMailResultList">
-                                </ul>
-                            </div>
-                            <div id="_contactInviteMailUnreachableEmailAddresses" class="contactInviteMailResult">
-                                <p class="contactInviteMailResultTitle mailResultTitleFailed">Invalid email address.</p>
-                                <ul class="contactInviteMailResultList">
-                                </ul>
-                            </div>
-                            <div id="_contactInviteMailAlreadyRequested" class="contactInviteMailResult">
-                                <p class="contactInviteMailResultTitle mailResultTitleFailed">Already sent contact
-                                    request.</p>
-                                <ul class="contactInviteMailResultList">
-                                </ul>
-                            </div>
-                            <div id="_contactInviteMailAlreadyConnected" class="contactInviteMailResult">
-                                <p class="contactInviteMailResultTitle mailResultTitleFailed">This person is already in
-                                    your contacts.</p>
-                                <ul class="contactInviteMailResultList">
-                                </ul>
-                            </div>
-                            <div id="_contactInviteMailRequestAlreadyReceived" class="contactInviteMailResult">
-                                <p class="contactInviteMailResultTitle mailResultTitleFailed">Already received contact
-                                    request.</p>
-                                <ul class="contactInviteMailResultList">
-                                </ul>
-                            </div>
-                            <div id="_contactInviteMailNotAllowedConnecting" class="contactInviteMailResult">
-                                <p class="contactInviteMailResultTitle mailResultTitleFailed">This person is restricted
-                                    to connect with members outside the orgaization.</p>
-                                <ul class="contactInviteMailResultList">
-                                </ul>
-                            </div>
-                            <div id="_contactInviteMailContactRequestLimitExceeded" class="contactInviteMailResult">
-                                <p class="contactInviteMailResultTitle mailResultTitleFailed">Reached maximum number of
-                                    contact requests.</p>
-                                <ul class="contactInviteMailResultList">
-                                </ul>
-                            </div>
-                            <div id="_contactInviteMailContactYourEmailAddress" class="contactInviteMailResult">
-                                <p class="contactInviteMailResultTitle mailResultTitleFailed">Unable to send invitation
-                                    to your account.</p>
-                                <ul class="contactInviteMailResultList">
+                            <div v-bind:key="content.key"
+                                 v-bind:id="content.id" v-bind:class="content.class"
+                                 v-bind:style="{display: content.display}"
+                                 v-for="(content) in contentInviteMailFinished">
+                                <p v-bind:class="content.classChild">{{content.text}}</p>
+                                <ul v-for="(emailData) in content.data" class="contactInviteMailResultList">
+                                    {{emailData}}
                                 </ul>
                             </div>
                         </div>
                     </div>
 
-                    <div id="_contactWindowBox" class="adminAllListArea" style="display: none;">
-                        <ul id="_contactWindowList" class="contactList">
-                            <div class="adminAllListArea__emptyContainer">
-                                <img src="https://assets.chatwork.com/images/empty/img_contact_empty.png"
-                                     class="adminAllListArea__emptyImage" alt="">
-                                <p class="adminAllListArea__emptyDescription">
+                    <div id="_contactWindowBox" class="adminAllListArea"  v-bind:style="{display: contentAddContact.display}">
+                        <add-contact></add-contact>
+                    </div>
 
-                                </p>
-                            </div>
-                        </ul>
+                    <div id="_contactWindowListContact" class="adminAllListArea"  v-bind:style="{display: contentListContact.display}">
+                        <list-contact></list-contact>
+                    </div>
+
+                    <div id="_contactWindowWaitForAccpet" class="adminAllListArea"  v-bind:style="{display: contentWaitForAccpet.display}">
+                        <list-wait-accept></list-wait-accept>
                     </div>
 
                     <div id="_contactDetailAreaWrapper" class="contactDetailInfo" style="display: none;">
@@ -209,11 +275,13 @@
             </div>
 
             <div class="_cwFWFooter contactInviteMailFooter" style="">
-                <div id="_contactInviteMail" class="_button btnPrimary btnLarge _cwBN button" role="button"
-                     @click="postInviteByEmail">Send
+                <div v-bind:key="buttons.send.key" v-bind:class="buttons.send.class" v-bind:role="buttons.send.role"
+                     v-bind:style="{display: buttons.send.display}"
+                     @click="postInviteByEmail">{{buttons.send.text}}
                 </div>
-                <div id="_contactOtherInviteMail" class="_button btnLarge _cwBN button" role="button"
-                     style="display: none;">Invite more
+                <div v-bind:key="buttons.inviteMore.key" v-bind:class="buttons.inviteMore.class"
+                     v-bind:role="buttons.inviteMore.role" v-bind:style="{display: buttons.inviteMore.display}"
+                     @click="inviteMoreClick">{{buttons.inviteMore.text}}
                 </div>
             </div>
             <div style="display:none" class="_cwFWButtonFooter floatWindow__footer"></div>
@@ -223,8 +291,21 @@
 
 
 <script>
+    import {API} from '../../services/api';
+    import {ApiConst} from '../../common/ApiConst';
+    import Search from '../contact/tabs/Search'
+    import AddContact from '../contact/tabs/AddContact'
+    import ListContact from '../contact/tabs/ListContact'
+    import ListWaitAccept from '../contact/tabs/ListWaitAccept'
+
     export default {
         name: "Contact",
+        components: {
+            Search,
+            AddContact,
+            ListContact,
+            ListWaitAccept
+        },
         data() {
             return {
                 isHidden: true,
@@ -236,7 +317,150 @@
                 emailInput: '',
                 itemEmails: [
                     {id: 'itemEmail1', text: '', displayCloseIcon: 'none'},
-                ]
+                ],
+                tabIndex: 0,
+                contactTabs: [
+                    {
+                        id: '_contactWindowTabInviteEmail',
+                        text: 'Invite by Email',
+                        display: 'block',
+                        number: 0,
+                        dataType: 'invitemail'
+                    },
+                    {
+                        id: '_contactWindowTabContact',
+                        text: 'User Search',
+                        display: 'block',
+                        number: 0,
+                        dataType: 'addcontact'
+                    },
+                    {
+                        id: '_contactWindowTabMyContact',
+                        text: 'Contacts',
+                        display: 'block',
+                        number: 0,
+                        dataType: 'contact'
+                    },
+                    {
+                        id: '_contactWindowTabWaitForAccept',
+                        text: 'Sent requests',
+                        display: 'block',
+                        number: 0,
+                        dataType: 'waitforaccept'
+                    },                    {
+                        id: '_contactWindowTabMyRequest',
+                        text: 'Sent Requests',
+                        display: 'none',
+                        number: 0,
+                        dataType: 'myrequest'
+                    },
+                    {
+                        id: '_contactWindowTabRequest',
+                        text: 'Incoming Requests',
+                        display: 'none',
+                        number: 0,
+                        dataType: 'request'
+                    },
+                ],
+                contactInviteMailSection:
+                    [
+                        {text: 'Invitation was sent successfully.', class: 'alert alertSuccess', display: 'none'},
+                        {
+                            text: 'Invitation wasn\'t sent due to the following reasons.',
+                            class: 'alert alertDanger',
+                            display: 'none'
+                        }
+                    ],
+                showResultData: {display: 'none'},
+                contentInviteMailFinished: [
+                    {
+                        key: 'SentEmails',
+                        id: '_contactInviteMailSentEmails',
+                        text: 'Invitation sent',
+                        display: 'none',
+                        class: 'contactInviteMailResult',
+                        classChild: 'contactInviteMailResultTitle mailResultTitleSuccess',
+                        data: []
+                    }
+                ],
+                contactInviteErrorMessage: {
+                    id: 'inviteErrorAlert',
+                    class: 'contactInviteErrorMessage alert alertDanger',
+                    message: 'Type the email addresses of members to invite',
+                    display: 'none'
+                },
+                contentInviteMailNew: {
+                    id: '_contentInviteMailNew',
+                    class: 'contactInviteMailContent',
+                    display: 'block'
+                },
+                contentAddContact: {
+                    id: '_contentAddContact',
+                    class: 'contentAddContactContent',
+                    display: 'none'
+                },
+                contentListContact: {
+                    id: '_contentListContact',
+                    class: 'contentListContactContent',
+                    display: 'none'
+                },
+                contentWaitForAccpet: {
+                    id: '_contentWaitForAccpet',
+                    class: 'contentWaitForAccpetContent',
+                    display: 'none'
+                },
+                sampleResult:
+                    {
+                        error_code: 0,
+                        error_msg: 'sample message',
+                        data: {
+                            emails_invited: [
+                                'bao_trung@lampart-vn.com',
+                                'tuan_vu@lampart-vn.com',
+                                'cong_chi@lampart-vn.com'
+                            ],
+                            emails_invalid: [
+                                'trong_nho@123-á',
+                                'sy_hung@xvideo-s123'
+                            ]
+                        }
+                    },
+                buttons: {
+                    send: {
+                        key: 'sendButton',
+                        id: '_contactInviteMail',
+                        class: '_button btnPrimary btnLarge _cwBN button',
+                        role: 'button',
+                        text: 'Send',
+                        display: 'inline-block'
+                    },
+                    inviteMore: {
+                        key: 'inviteMoreButton',
+                        id: '_contactOtherInviteMail',
+                        class: '_button btnLarge _cwBN button',
+                        role: 'button',
+                        text: 'Invite more',
+                        display: 'none'
+                    }
+                },
+                textareas: {
+                    message: {
+                        key: 'textareaMessage',
+                        id: '_addFromEmailContent',
+                        text: '',
+                        class: '',
+                        name: 'message',
+                        placeholder: 'Type a message'
+                    },
+                    bulkEmails: {
+                        key: 'bulkEmails',
+                        id: '_addFromEmailContentEmails',
+                        text: '',
+                        class: '',
+                        name: 'emails',
+                        placeholder: 'Enter an e-mail address per line.'
+                    }
+                }
             }
         },
         created() {
@@ -244,8 +468,49 @@
             this.handleResizePopup();
         },
         methods: {
+            changeTab(index){
+                // Set index of tab
+                this.tabIndex = index
+
+                // switch tab
+                switch (index) {
+                    case 0:
+                        this.contentInviteMailNew.display = 'block';
+                        this.contentAddContact.display = 'none';
+                        this.contentListContact.display = 'none';
+                        this.contentWaitForAccpet.display = 'none';
+
+                        break;
+                    case 1:
+                        this.contentInviteMailNew.display = 'none';
+                        this.contentAddContact.display = 'block';
+                        this.contentListContact.display = 'none';
+                        this.contentWaitForAccpet.display = 'none';
+                        break;
+                    case 2:
+                        this.contentInviteMailNew.display = 'none';
+                        this.contentAddContact.display = 'none';
+                        this.contentListContact.display = 'block';
+                        this.contentWaitForAccpet.display = 'none';
+                        break;
+                    case 3:
+                        this.contentInviteMailNew.display = 'none';
+                        this.contentAddContact.display = 'none';
+                        this.contentListContact.display = 'none';
+                        this.contentWaitForAccpet.display = 'block';
+                        break;
+
+                }
+            },
+            linkClass(index) {
+                if (this.tabIndex === index) {
+                    return ['floatTabSelect'];
+                } else {
+                    return [''];
+                }
+            },
             handleResizePopup() {
-                this.marginPopup = (window.innerWidth - 908)/2 + 'px';
+                this.marginPopup = (window.innerWidth*0.15) + 'px';
                 this.floatWindowHeight = window.innerHeight + 'px';
             },
             onChangeEmail(object, index) {
@@ -281,25 +546,97 @@
                     this.individualAdd = 'block';
                 }
             },
-            postInviteByEmail() {
-                // axios.post("API invite by email", {
-                //     username: this.username,
-                //     password: this.password,
-                //     only_token: true
-                // })
-                //     .then(res => {
-                //         let user = {
-                //             token: res.data.data.api_token,
-                //             email: res.data.data.email,
-                //             employee: res.data.data.employee
-                //         };
-                //         localStorage.setItem("user", user);
-                //         this.$router.push({path: "/"});
-                //     })
-                console.log("Send data to server");
+            inviteMoreClick() {
+                this.showResultData.display = 'none';
+                this.buttons.send.display = 'inline-block';
+                this.buttons.inviteMore.display = 'none';
+                this.contentInviteMailNew.display = 'block';
+                this.textareas.message.text = '';
+                this.itemEmails = [{id: 'itemEmail1', text: '', displayCloseIcon: 'none'}];
+                this.contentInviteMailFinished = [];
             },
-            floatWindowSetsize() {
-                this.marginPopup = (this.$refs.floatWindow.clientWidth - 908) / 2 + 'px';
+            appendToErrList(object) {
+                this.contentInviteMailFinished = this.contentInviteMailFinished.concat(object);
+            },
+            postInviteByEmail() {
+                /**
+                 * Client validation
+                 **/
+                let hasError = false;
+                let emails = [];
+                if (this.bulkAdd === 'block') {
+                    emails = this.textareas.bulkEmails.text.split('\n');
+                } else {
+                    for (let i = 0; i < this.itemEmails.length; i++) {
+                        if (this.itemEmails[i].text === '') {
+                            hasError = true;
+                            break;
+                        }
+                        emails.push(this.itemEmails[i].text);
+                    }
+                }
+
+                if (hasError || emails.length < 1) {
+                    this.contactInviteErrorMessage.display = 'block';
+                } else {
+                    this.contactInviteErrorMessage.display = 'none';
+                    /**
+                     * Call API
+                     */
+                    let requestData = {
+                        emails: emails,
+                        message: this.textareas.message.text
+                    };
+                    API.POST(ApiConst.INVITE_BY_EMAILS, requestData).then(response => {
+
+                        console.log(JSON.stringify(response));
+                        /**
+                         * Check data response
+                         */
+                        this.showResultData.display = 'block';
+                        this.buttons.send.display = 'none';
+                        this.buttons.inviteMore.display = 'inline-block';
+                        this.contentInviteMailNew.display = 'none';
+
+                        if (response.error_code === 0) {
+                            this.contactInviteMailSection[0].display = 'block';
+                            this.contactInviteMailSection[1].display = 'none';
+                            this.contentInviteMailFinished.push({
+                                key: 'SentEmails',
+                                id: '_contactInviteMailSentEmails',
+                                text: 'Invitation sent',
+                                display: 'block',
+                                class: 'contactInviteMailResult',
+                                classChild: 'contactInviteMailResultTitle mailResultTitleSuccess',
+                                data: response.data.emails
+                            });
+                        } else {
+                            this.contactInviteMailSection[1].display = 'block';
+                            this.contactInviteMailSection[0].display = 'none';
+                            var arr = Object.keys(response.data);
+                            var errList = [];
+                            arr.forEach(function (key, index) {
+                                var temp = key.split('.');
+                                console.log(response.data[key]);
+                                var tempData = response.data[key];
+                                tempData.forEach(function (k, index) {
+                                    tempData[index] = tempData[index].replace(key, emails[temp[1]]);
+                                });
+                                let error = {
+                                    key: 'UnreachableEmailAddresses',
+                                    id: '_contactInviteMailUnreachableEmailAddresses',
+                                    text: emails[temp[1]],
+                                    display: 'block',
+                                    class: 'contactInviteMailResult',
+                                    classChild: 'contactInviteMailResultTitle mailResultTitleFailed',
+                                    data: tempData
+                                };
+                                errList.push(error);
+                            });
+                            this.appendToErrList(errList);
+                        }
+                    })
+                }
             }
         }
     };
@@ -584,12 +921,6 @@
         margin-bottom: 30px;
     }
 
-    .alertDanger {
-        color: #dd0900;
-        border-color: #f9423a;
-        background-color: #fbefee;
-    }
-
     .alert {
         text-align: center;
         background: #fff;
@@ -597,6 +928,12 @@
         border: 1px solid #999;
         border-radius: 3px;
         margin-bottom: 20px;
+    }
+
+    .alertDanger {
+        color: #dd0900;
+        border-color: #f9423a;
+        background-color: #fbefee;
     }
 
     .contactInviteMailLabel {
@@ -639,6 +976,10 @@
     .invitationLinkEditorCancel__icon {
         width: 16px;
         height: 16px;
+    }
+
+    a:hover {
+        text-decoration: underline;
     }
 
     .formControlArea {
