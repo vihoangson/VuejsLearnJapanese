@@ -338,6 +338,7 @@
                         switch(response.error_code){
                             case 0:
                                 data.room_id = response.data;
+                                data.color = '#bfbab0';
                                 this.$refs.modal.hide();
 
                                 let admin_user = {
@@ -352,6 +353,8 @@
                                 data.member_list.push(admin_user);
                                 this.$root.$emit('push-list-room', data);
                                 this.$root.$emit('changed-info-rooms');
+
+                                this.$store.dispatch('setCurrentRoom', data);
                                 this.$root.$emit('push-notice', {message:'insert success', alert: 'alert-success'});
                                 break;
                             case 1:
