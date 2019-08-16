@@ -476,25 +476,33 @@
                 switch (index) {
                     case 0:
                         this.contentInviteMailNew.display = 'block';
+                        this.buttons.send.display = 'inline-block';
+                        this.buttons.inviteMore.display = 'none';
+
                         this.contentAddContact.display = 'none';
                         this.contentListContact.display = 'none';
                         this.contentWaitForAccpet.display = 'none';
-
                         break;
                     case 1:
                         this.contentInviteMailNew.display = 'none';
+                        this.buttons.send.display = 'none';
+                        this.buttons.inviteMore.display = 'none';
                         this.contentAddContact.display = 'block';
                         this.contentListContact.display = 'none';
                         this.contentWaitForAccpet.display = 'none';
                         break;
                     case 2:
                         this.contentInviteMailNew.display = 'none';
+                        this.buttons.send.display = 'none';
+                        this.buttons.inviteMore.display = 'none';
                         this.contentAddContact.display = 'none';
                         this.contentListContact.display = 'block';
                         this.contentWaitForAccpet.display = 'none';
                         break;
                     case 3:
                         this.contentInviteMailNew.display = 'none';
+                        this.buttons.send.display = 'none';
+                        this.buttons.inviteMore.display = 'none';
                         this.contentAddContact.display = 'none';
                         this.contentListContact.display = 'none';
                         this.contentWaitForAccpet.display = 'block';
@@ -596,7 +604,7 @@
                         this.showResultData.display = 'block';
                         this.buttons.send.display = 'none';
                         this.buttons.inviteMore.display = 'inline-block';
-                        this.contentInviteMailNew.display = 'none';
+                        this.contentInviteMailNew.display = 'block';
 
                         if (response.error_code === 0) {
                             this.contactInviteMailSection[0].display = 'block';
