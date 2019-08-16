@@ -28,7 +28,7 @@
                         </svg>
                     </span>
                 </li>
-                <li class="menu-admin-item disable-mark">
+                <li class="menu-admin-item">
                     <span @click="openContact">
                         <svg
                             viewBox="0 0 10 10"
