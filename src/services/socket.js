@@ -65,8 +65,12 @@ export const SocketService = {
     },
     remove_room: function(data){
         if (data !== undefined) {
-            let idx = this.$store.getters.get_list_room.indexOf(data);
-            this.$store.getters.get_list_room.splice(idx, 1);
+            let list = this.$store.getters.get_list_room;
+            for(let i in list){
+                if(list[i].room_id === data.room_id){
+                    this.$store.getters.get_list_room.splice(i, 1);
+                }
+            };
         }
     }
 };
