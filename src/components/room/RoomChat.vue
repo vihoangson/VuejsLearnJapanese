@@ -103,16 +103,16 @@
             </div>
         </div>
         <div class="room-body">
-            <ul>
+            <ul >
                 <li
                     v-for="(item, index) in this.$store.getters.get_list_room_by_group"
                     :key="`room-${index}`"
                     @click="changeRoom(item)"
-                    :style="{backgroundColor: item.color}"
+                    v-bind:style="$store.getters.get_current_room.room_id === item.room_id? {background: '#ccc'}: {}"
                 >
                     <div class="name">
                         <div class="room-image">
-                            <img :src="item.icon_img" :alt="item.room_name" />
+                            <img :src="item.icon_img"/>
                         </div>
                         <div class="room-name">
                             <span>{{item.room_name}}</span>

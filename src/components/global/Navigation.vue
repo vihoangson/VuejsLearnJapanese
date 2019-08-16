@@ -119,13 +119,13 @@ export default {
     },
     created() {
         let _user = localStorage.getItem(AppConst.LOCAL_USER);
-
         if (_user) this.user = JSON.parse(_user);
     },
     methods: {
         logout() {
-            this.$root.$off('changed-list-room');
-            this.$root.$off('changed-id-rooms');
+            this.$root.$off('push-list-room');
+            this.$root.$off('remove-list-room');
+            this.$root.$off('changed-info-rooms');
             this.$root.$off('push-notice');
             this.$root.$off('open-modal-group');
             this.$root.$off('event-get-list-message');
@@ -136,7 +136,6 @@ export default {
             this.$root.$off('add-new-room-from-socket');
             this.$root.$off('open-modal-room');
             this.$root.$off('open-modal-show-user');
-            this.$store.dispatch('setCurrentRoom', []);
             this.$store.dispatch('setListRoom', []);
             this.$store.dispatch('setListUser', []);
             localStorage.removeItem(AppConst.LOCAL_USER);

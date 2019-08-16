@@ -109,7 +109,21 @@ export default {
             isActiveSelect: false,
         };
     },
+    created: function() {
+        document.addEventListener('click', this.documentClick);
+    },
+    destroyed() {
+        document.removeEventListener('click', this.documentClick);
+    },
+
     methods: {
+        documentClick(e) {
+            let el2 = this.$refs.toggleOption;
+            let target = e.target;
+            if (el2 !== target && !el2.contains(target)) {
+                this.isActive = false;
+            }
+        },
         openModalShowUserRoom() {
             this.$root.$emit('open-modal-show-user');
             this.$bvModal.show('modal-prevent-show-user');
@@ -138,7 +152,6 @@ export default {
             this.$root.$emit('open-modal-delete-room');
             this.$bvModal.show('modal-prevent-delete-room');
         },
-
     }
 };
 </script>

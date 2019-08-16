@@ -81,13 +81,6 @@ export default {
         state.list_room.sort((a, b) => {
             return b.is_mychat - a.is_mychat;
         });
-        state.current_room = obj;
-        state.current_room.color = '#bfbab0';
-        state.list_room.forEach(x => {
-            if (obj.room_id !== x.room_id) {
-                x.color = '';
-            }
-        });
     },
     set_current_user_info(state, obj) {
         return (state.current_user_info = obj);

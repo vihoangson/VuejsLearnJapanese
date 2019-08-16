@@ -200,21 +200,23 @@ export default {
         };
     },
     mounted() {
-        this.$root.$on('changed-id-rooms', data => {
+        this.$root.$on('changed-info-rooms', data => {
             this.getUserByRoomId();
         });
         this.$root.$on('changed-group', data => {
             this.getDataGroup();
-        });
-        this.$root.$on('changed-list-room', data => {
-            this.pushNewRoom(data);
-            this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, data);
         });
         this.$root.$on('changed-list-user', data => {
             this.getListUser();
         });
         this.$root.$on('add-new-room-from-socket', data => {
             this.pushNewRoom(data);
+        });
+        this.$root.$on('push-list-room', data => {
+            this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, data);
+        });
+        this.$root.$on('remove-list-room', data => {
+            this.$socket.emit(AppConst.EVENT_MESSAGE.REMOVE_ROOM, data);
         });
     },
     created() {
@@ -449,14 +451,6 @@ export default {
                 });
                 this.$store.dispatch('setListRoomByGroup', list_room_by_group);
             }
-        },
-
-        pushNewRoom(room) {
-            this.$store.dispatch('addNewRoom', room);
-            this.$socket.emit(
-                AppConst.EVENT_MESSAGE.JOIN_NEW_ROOM,
-                room.room_id
-            );
         },
     },
     computed: {

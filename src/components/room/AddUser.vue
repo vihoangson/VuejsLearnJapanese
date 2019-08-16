@@ -390,7 +390,7 @@ export default {
                                 }
                             }
                             this.$store.dispatch('setListRoom', listRoom);
-                            this.$root.$emit('changed-id-rooms');
+                            this.$root.$emit('changed-info-rooms');
                             break;
                         case 1:
                             this.roomselectedError = response.data;
