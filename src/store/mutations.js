@@ -77,9 +77,6 @@ export default {
         }
     },
     new_room(state, obj) {
-        state.list_room.forEach(x => {
-            x.color = '';
-        });
         state.list_room.push(obj);
         state.list_room.sort((a, b) => {
             return b.is_mychat - a.is_mychat;
