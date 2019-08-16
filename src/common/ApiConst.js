@@ -19,6 +19,7 @@ export const ApiConst = {
     ROOM_DELETE: '/api/v1/room/delete',
     ROOM_SETTING: '/api/v1/room/setting',
     ROOM_ADD_USER_TO_ROOM: '/api/v1/room/add-user-to-room',
+    DELETE_USER_OF_ROOM: '/api/v1/room/delete-user-of-room',
     MY_LIST_FILE: '/api/v1/file/get-my-list-file',
     FORGOT_PASS_REQUEST: '/api/v1/user/forgot-password-request',
     FORGOT_PASS_CHECK_TOKEN: '/api/v1/user/forgot-password-check-token',

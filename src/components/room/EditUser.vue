@@ -266,7 +266,7 @@ export default {
                             for (let i in listRoom) {
                                 if (listRoom[i].room_id === this.roomId) {
                                     listRoom[i].selected = this.selected;
-                                    listRoom[i].add = 0;
+                                    listRoom[i].option = 0;
                                     this.$root.$emit('change-list-room', listRoom[i]);
                                     break;
                                 }
