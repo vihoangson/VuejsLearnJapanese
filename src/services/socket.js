@@ -20,12 +20,12 @@ export const SocketService = {
                 AppConst.EVENT_MESSAGE.CHANNEL_NEW_ROOM,
                 user.user_id
             );
-        }
-
-        if (user.user_id !== null && user.user_id !== undefined) {
-            console.log(AppConst.EVENT_MESSAGE.CHANNEL_REMOVE_ROOM+user.user_id);
             this.$socket.emit(
                 AppConst.EVENT_MESSAGE.CHANNEL_REMOVE_ROOM,
+                user.user_id
+            );
+            this.$socket.emit(
+                AppConst.EVENT_MESSAGE.CHANNEL_CHANGE_ROOM,
                 user.user_id
             );
         }
@@ -72,5 +72,35 @@ export const SocketService = {
                 }
             };
         }
+    },
+    change_room: function(room){
+        var listRoom = this.$store.getters.get_list_room;
+        for (let i in listRoom) {
+            if (listRoom[i].room_id === room.room_id) {
+                var userAdd = [];
+                var listAdd = [];
+                for (let j in room.selected) {
+                    var length = listRoom[i].member_list.length;
+                    if (room.selected[j] !== null && room.selected[j].id !== undefined) {
+                        for (let i in this.$store.getters.get_list_user) {
+                            if (this.$store.getters.get_list_user[i].id === room.selected[j].id) {
+                                userAdd = this.$store.getters.get_list_user[i];
+                            }
+                        }
+                        var roleInRoom = room.selected[j].permission;
+                        listRoom[i].member_list[length] = {
+                            company: userAdd.company,
+                            email: userAdd.email,
+                            icon_img: userAdd.icon_img,
+                            id: userAdd.id,
+                            name: userAdd.name,
+                            role_in_room: roleInRoom
+                        };
+                    }
+                }
+            }
+        }
+        this.$store.dispatch('setListRoom', listRoom);
+        this.$root.$emit('changed-info-rooms');
     }
 };

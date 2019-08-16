@@ -122,6 +122,7 @@ export default {
     methods: {
         logout() {
             this.$root.$off('push-list-room');
+            this.$root.$off('change-list-room');
             this.$root.$off('remove-list-room');
             this.$root.$off('changed-info-rooms');
             this.$root.$off('push-notice');

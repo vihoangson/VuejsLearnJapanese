@@ -215,6 +215,9 @@ export default {
         this.$root.$on('push-list-room', data => {
             this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, data);
         });
+        this.$root.$on('change-list-room', data => {
+            this.$socket.emit(AppConst.EVENT_MESSAGE.CHANGE_ROOM, data);
+        });
         this.$root.$on('remove-list-room', data => {
             this.$socket.emit(AppConst.EVENT_MESSAGE.REMOVE_ROOM, data);
         });
