@@ -63,7 +63,7 @@
             v-bind:class="{active: !isHidden}"
         >
             <div class="avatar">
-                <img :src="this.user.icon_img" alt />
+                <img :src="this.$store.getters.get_current_user_info.icon_img" alt />
             </div>
             <p class="status-name">
                 <!-- <span class="name">{{user_info.name}}</span> -->
