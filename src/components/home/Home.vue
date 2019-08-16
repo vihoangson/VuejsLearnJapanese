@@ -133,7 +133,6 @@ export default {
                         this.rooms
                     );
                     this.$store.dispatch('setListRoom', rooms);
-
                     let roomId = this.$route.params.pathMatch;
                     if (roomId === undefined) {
                         roomId = rooms[0].room_id;
@@ -147,6 +146,7 @@ export default {
                         this.changeRoom(room);
                         this.getListMessage(room);
                     }
+
                 }
             });
         },

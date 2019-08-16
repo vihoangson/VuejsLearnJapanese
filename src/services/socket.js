@@ -21,6 +21,14 @@ export const SocketService = {
                 user.user_id
             );
         }
+
+        if (user.user_id !== null && user.user_id !== undefined) {
+            console.log(AppConst.EVENT_MESSAGE.CHANNEL_REMOVE_ROOM+user.user_id);
+            this.$socket.emit(
+                AppConst.EVENT_MESSAGE.CHANNEL_REMOVE_ROOM,
+                user.user_id
+            );
+        }
     },
     broadcast: function(e) {
         var room = this.$store.getters.get_current_room;
@@ -52,7 +60,13 @@ export const SocketService = {
             }
         }
     },
-    new_room: function(e) {
-        this.$store.dispatch('addNewRoom', e);
+    new_room: function(data) {
+        this.$store.dispatch('addNewRoom', data);
+    },
+    remove_room: function(data){
+        if (data !== undefined) {
+            let idx = this.$store.getters.get_list_room.indexOf(data);
+            this.$store.getters.get_list_room.splice(idx, 1);
+        }
     }
 };
