@@ -183,7 +183,7 @@
                 this.roomId = id;
                 this.roomName = '';
                 this.description = '';
-                this.roomImage = 'https://appdata.chatwork.com/avatar/3094/3094762.rsz.gif';
+                this.roomImage = 'https://appdata.chatwork.com/icon/ico_group.png';
                 this.selected = [];
                 this.buttonName = "Create";
                 var listNotAdmin = [];

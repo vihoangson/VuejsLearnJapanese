@@ -15,7 +15,7 @@ export const SocketService = {
             );
         }
         let user = JSON.parse(localStorage.getItem('user'));
-        if (user.user_id !== null && user.user_id !== undefined) {
+        if (user !== null && user.user_id !== null && user.user_id !== undefined) {
             this.$socket.emit(
                 AppConst.EVENT_MESSAGE.CHANNEL_NEW_ROOM,
                 user.user_id
