@@ -139,10 +139,18 @@ export const SocketService = {
             case 2:
                 for (let i in listRoom) {
                     if (listRoom[i].room_id === room.room_id) {
-                        var length = listRoom[i].member_list.length;
-                        for(let key in listRoom[i].member_list){
-                            if(listRoom[i].member_list[key].id === room.selected){
-                                listRoom.splice(i, 1);
+                        if (listRoom[i].member_list !== undefined) {
+                            var length = listRoom[i].member_list.length;
+                            for(let key in listRoom[i].member_list){
+                                if (listRoom[i].member_list[key].id === room.selected.id) {
+                                    if (room.selected.id === this.$store.getters.get_current_user_info.id) {
+                                        listRoom.splice(i, 1);
+                                    } else {
+                                        this.$root.$emit('push-notice', { message: room.selected.name +' has left', alert: 'alert-success' });
+                                    }
+                                    
+                                    break;
+                                }
                             }
                         }
                     }
@@ -150,8 +158,8 @@ export const SocketService = {
                 break;
             default:
                 break;
-
         }
+        
         this.$store.dispatch('setListRoom', listRoom);
         this.$root.$emit('changed-info-rooms');
     },

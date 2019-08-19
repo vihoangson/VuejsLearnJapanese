@@ -171,7 +171,7 @@ export default {
                             switch (response.error_code) {
                                 case 0:
                                 var room = this.$store.getters.get_current_room;
-                                room.selected = this.$store.getters.get_current_user_info.id;
+                                room.selected = this.$store.getters.get_current_user_info;
                                 room.option = 2;
                                 this.$root.$emit('change-list-room', room);
                                 break;
