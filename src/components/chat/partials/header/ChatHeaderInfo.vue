@@ -148,6 +148,8 @@ export default {
             this.isActiveSelect = false;
         },
         settingRooms() {
+            this.$root.$emit('open-modal-setting-group');
+            this.$bvModal.show('modal-prevent-setting-group');
         },
         leaveRooms() {
             this.$bvModal.msgBoxConfirm(
