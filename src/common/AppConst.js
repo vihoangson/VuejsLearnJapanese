@@ -11,7 +11,11 @@ export const AppConst = {
         JOIN_BY_LIST_ROOM: 'join_by_list_rooms',
         JOIN_NEW_ROOM: 'join_by_new_room',
         CHANNEL_NEW_ROOM: 'channel_new_room',
-        ADD_NEW_ROOM: 'add_new_room'
+        ADD_NEW_ROOM: 'add_new_room',
+        REMOVE_ROOM: 'remove_room',
+        CHANNEL_REMOVE_ROOM: 'channel_remove_room',
+        CHANGE_ROOM: 'change_room',
+        CHANNEL_CHANGE_ROOM: 'channel_change_room'
     },
     SOCKET_ADDRESS: 'http://127.0.0.1:3000'
 };
