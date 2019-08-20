@@ -361,36 +361,12 @@ export default {
                             var listRoom = this.$store.getters.get_list_room;
                             for (let i in listRoom) {
                                 if (listRoom[i].room_id === this.roomId) {
-                                    var userAdd = [];
-                                    for (let j in this.selected) {
-                                        var length =
-                                            listRoom[i].member_list.length;
-                                        if (
-                                            this.selected[j] !== undefined &&
-                                            this.selected[j].id !== undefined
-                                        ) {
-                                            userAdd = this.getUserbyId(
-                                                this.selected[j].id
-                                            );
-                                            var roleInRoom = this.selected[j]
-                                                .permission;
-                                            this.listAdd = {
-                                                company: userAdd.company,
-                                                email: userAdd.email,
-                                                icon_img: userAdd.icon_img,
-                                                id: userAdd.id,
-                                                name: userAdd.name,
-                                                role_in_room: roleInRoom
-                                            };
-                                            listRoom[i].member_list[
-                                                length
-                                            ] = this.listAdd;
-                                        }
-                                    }
+                                    listRoom[i].selected = this.selected;
+                                    listRoom[i].option = 1;
+                                    this.$root.$emit('change-list-room', listRoom[i]);
+                                    break;
                                 }
                             }
-                            this.$store.dispatch('setListRoom', listRoom);
-                            this.$root.$emit('changed-info-rooms');
                             break;
                         case 1:
                             this.roomselectedError = response.data;

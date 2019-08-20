@@ -101,6 +101,9 @@
 </template>
 
 <script>
+import { API } from '../../../../services/api';
+import { ApiConst } from '../../../../common/ApiConst';
+import { AppConst } from '../../../../common/AppConst';
 export default {
     name: 'ChatHeaderInfo',
     data() {
@@ -145,8 +148,46 @@ export default {
             this.isActiveSelect = false;
         },
         settingRooms() {
+            this.$root.$emit('open-modal-setting-group');
+            this.$bvModal.show('modal-prevent-setting-group');
         },
         leaveRooms() {
+            this.$bvModal.msgBoxConfirm(
+                'If you leave the group chat, your tasks will be deleted, and there is a case where your files will be deleted.  (About file retention)',
+                {
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'success',
+                    centered: true
+                }
+            )
+            .then(value => {
+                if (value) {
+                    let data = {
+                        room_id: this.$store.getters.get_current_room.room_id,
+                        user_id: this.$store.getters.get_current_user_info.id,
+                        only_token: true
+                    };
+                    API.POST(ApiConst.DELETE_USER_OF_ROOM, data).then(response => {
+                        if(response !== undefined){
+                            switch (response.error_code) {
+                                case 0:
+                                var room = this.$store.getters.get_current_room;
+                                room.selected = this.$store.getters.get_current_user_info;
+                                room.option = 2;
+                                this.$root.$emit('change-list-room', room);
+                                break;
+                            default:
+                                this.$root.$emit('push-notice', {
+                                    message: response.data,
+                                    alert: 'alert-danger'
+                                });
+                                break;
+                            }
+                        }
+                    })
+                }
+            });
         },
         deleteRooms() {
             this.$root.$emit('open-modal-delete-room');
