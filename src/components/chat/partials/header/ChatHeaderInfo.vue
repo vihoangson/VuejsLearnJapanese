@@ -55,13 +55,9 @@
                 </span>
             </div>
             <div class="room-action">
-                <span class="icon-file-all disable-mark">
-                    <svg viewBox="0 0 10 10" id="icon_menuFile" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M.417.417v2.5h9.167v-1.25H4.167L2.917.417h-2.5zM0 3.75l.417 5.833h9.167l.417-5.833h-10zm.781.73h8.438l-.313 4.375H1.093L.78 4.48z"
-                        />
-                    </svg>
-                </span>
+
+
+                <list-file-in-room></list-file-in-room>
                 <span class="icon-config-all"
                     v-bind:class="{ active: isActive, 'setting-room': true }"
                     @click="toggleOption"
@@ -103,7 +99,10 @@
 <script>
 import { API } from '../../../../services/api';
 import { ApiConst } from '../../../../common/ApiConst';
+import ListFileInRoom from '../../../../files/ListFileInRoom';
+
 import { AppConst } from '../../../../common/AppConst';
+
 export default {
     name: 'ChatHeaderInfo',
     data() {
@@ -118,7 +117,9 @@ export default {
     destroyed() {
         document.removeEventListener('click', this.documentClick);
     },
-
+    components:{
+        ListFileInRoom
+    },
     methods: {
         documentClick(e) {
             let el2 = this.$refs.toggleOption;

@@ -72,12 +72,11 @@
                                 </span>
                             </li>
                             <li class="emoji">
-                                <span class="icon-container disable-mark">
+                                <span class="icon-container " @click="showDropzoneForm">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_sendfile"
                                         xmlns="http://www.w3.org/2000/svg"
-                                        @click="showDropzoneForm"
                                     >
                                         <path
                                             d="M8.534 5.884l.001-.001a3.126 3.126 0 0 0-4.42-4.418L.816 4.764A2.21 2.21 0 0 0 3.942 7.89l3.299-3.299a1.367 1.367 0 0 0-1.932-1.932L2.342 5.626a.469.469 0 0 0 .663.663l2.968-2.967v-.001a.43.43 0 0 1 .606.606h-.001L3.28 7.226a1.273 1.273 0 0 1-1.8-1.799h.001l3.298-3.299a2.188 2.188 0 0 1 3.094 3.093L4.574 8.52a.469.469 0 0 0 .663.663l3.299-3.299z"
