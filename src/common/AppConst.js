@@ -6,6 +6,9 @@ export const AppConst = {
         EDIT: 1,
         DELETE: 2
     },
+    ACCEPTED_FILES: '.jpg,.png',
+    MAX_FILE_SIZE: 100,
+    MAX_FILE: 10,
     EVENT_MESSAGE: {
         SEND: 'send_message',
         JOIN_BY_LIST_ROOM: 'join_by_list_rooms',

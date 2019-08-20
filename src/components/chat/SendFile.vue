@@ -2,7 +2,7 @@
     <div @mouseleave="hideDropzoneCheck" @mouseup="hideDropzoneCheck" class="dropzone-main-chat">
         <div class="box-chat-nd">
             <div>
-                <span>File Upload</span>
+                <span class="title-upload-file">File Upload</span>
                 <span class="icon-close" @click="hideDropzone">X</span>
             </div>
             <div>
@@ -58,7 +58,7 @@
             <div class="chat-textarea">
                 <textarea
                     ref="textarea"
-                    rows="10"
+                    rows="5"
                     placeholder="Enter your message here"
                     v-model="message"
                     @input="$emit('input', $event.target.value)"
@@ -88,6 +88,9 @@
 import vue2Dropzone from 'vue2-dropzone';
 import 'vue2-dropzone/dist/vue2Dropzone.min.css';
 import { authHeader } from '../../helpers/auth-header';
+import { ApiConst } from '../../common/ApiConst';
+import { AppConst } from '../../common/AppConst';
+
 export default {
     name: 'SendFile',
     components: { vueDropzone: vue2Dropzone },
@@ -97,21 +100,22 @@ export default {
         return {
             selectedComponent: '',
             dropzoneOptions: {
-                url: 'http://api.sns-tool.vn/api/v1/message/message-file',
+                url: process.env.ROOT_API + ApiConst.MESSAGE_UPLOAD_FILE,
                 // thumbnailWidth: 150,
-                maxFilesize: 100,
+                maxFilesize: AppConst.MAX_FILE_SIZE,
                 headers: {
                     Accept: 'application/json',
                     Authorization: authHeader()
                 },
-                maxFiles: 10,
+                maxFiles: AppConst.MAX_FILE,
                 uploadMultiple: true,
                 parallelUploads: 1,
-                // acceptedFiles: 'application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.csv,.xls,.xlsx',
+                acceptedFiles: AppConst.ACCEPTED_FILES,
                 autoProcessQueue: false,
                 addRemoveLinks: true,
                 dictDefaultMessage:
-                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' + 'Kéo file vào đây</div>'
+                    '<i class="fa fa-5x fa-cloud-upload"></i><div>' +
+                    'Click or drop the file here</div>'
             },
             message: ''
         };
@@ -123,20 +127,21 @@ export default {
     methods: {
         addEmoji(){},
         toggleEmojiPicker(){},
-        getFile(file) {
-            console.log(file);
-        },
-        successImport(file) {
-            console.log(file);
-        },
+        getFile(file) {},
+        successImport(file) {},
         showErrorMessage(file) {
-            // this.$refs['myVueDropzone'].removeFile(file);
+            this.$refs['myVueDropzone'].removeFile(file);
         },
         catchResponse(file, response) {
             this.message = '';
-            console.log(response);
-            if (response.success) {
-                this.$refs['myVueDropzone'].removeFile(file);
+            if (response.error_code === 0) {
+                alert('Upload successfully');
+            } else {
+                alert('Upload failed');
+            }
+            this.$refs['myVueDropzone'].removeFile(file);
+            if (this.$refs['myVueDropzone'].getAcceptedFiles().length === 0) {
+                this.hideDropzone();
             }
         },
         hideDropzoneCheck() {
@@ -150,9 +155,12 @@ export default {
             // this.$emit('close');
         },
         sendMessageFile() {
-            this.$refs.myVueDropzone.processQueue();
-            console.log(this.message);
-            this.message = 's';
+            if (this.$refs['myVueDropzone'].getAcceptedFiles().length === 0) {
+                alert('There are no files!');
+            } else {
+                this.$refs.myVueDropzone.processQueue();
+                this.message = '';
+            }
         },
         addSending(file, xhr, formData) {
             formData.append('message', this.message ? this.message : '');
@@ -163,11 +171,36 @@ export default {
 </script>
 
 <style scoped>
+.title-upload-file {
+    padding-left: 6px;
+}
 .dropzone-main-chat-input {
-    overflow: scroll;
+    overflow-y: scroll;
     height: 280px;
 }
 .icon-close {
     float: right;
+    padding-right: 6px;
+    cursor: pointer;
+}
+textarea {
+    width: 100%;
+}
+.box-chat-nd {
+    margin-left: 25%;
+    margin-top: 8%;
+    width: 50%;
+    background-color: white;
+    overflow: auto;
+}
+.dropzone-main-chat {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: 1111;
+    top: 0px;
+    left: 0px;
+    display: block;
+    overflow: visible;
 }
 </style>
