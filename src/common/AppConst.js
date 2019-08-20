@@ -13,5 +13,5 @@ export const AppConst = {
         CHANNEL_NEW_ROOM: 'channel_new_room',
         ADD_NEW_ROOM: 'add_new_room'
     },
-    SOCKET_ADDRESS: 'http://127.0.0.1:3001'
+    SOCKET_ADDRESS: 'http://127.0.0.1:3000'
 };

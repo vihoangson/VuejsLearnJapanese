@@ -81,6 +81,7 @@ export default {
         state.list_room.sort((a, b) => {
             return b.is_mychat - a.is_mychat;
         });
+        state.current_room = obj;
     },
     set_current_user_info(state, obj) {
         return (state.current_user_info = obj);

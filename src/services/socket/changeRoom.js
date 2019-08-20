@@ -1,5 +1,5 @@
-export function changeRoom(room) {
-    var listRoom = this.$store.getters.get_list_room;
+export function changeRoom(store, room) {
+    var listRoom = store.getters.get_list_room;
     switch (room.option) {
         case 0:
             for (let i in listRoom) {
@@ -14,7 +14,7 @@ export function changeRoom(room) {
                         ) {
                             if (
                                 room.selected[key].id ===
-                                this.$store.getters.get_current_user_info.id
+                                store.getters.get_current_user_info.id
                             ) {
                                 check_is_room = true;
                             }
@@ -56,9 +56,9 @@ export function changeRoom(room) {
                             room.selected[j] !== null &&
                             room.selected[j].id !== undefined
                         ) {
-                            for (let i in this.$store.getters.get_list_user) {
+                            for (let i in store.getters.get_list_user) {
                                 if (
-                                    this.$store.getters.get_list_user[i].id ===
+                                    store.getters.get_list_user[i].id ===
                                     room.selected[j].id
                                 ) {
                                     userAdd = this.$store.getters.get_list_user[
@@ -92,7 +92,7 @@ export function changeRoom(room) {
                             ) {
                                 if (
                                     room.selected.id ===
-                                    this.$store.getters.get_current_user_info.id
+                                    store.getters.get_current_user_info.id
                                 ) {
                                     listRoom.splice(i, 1);
                                 } else {
@@ -113,7 +113,5 @@ export function changeRoom(room) {
         default:
             break;
     }
-
-    this.$store.dispatch('setListRoom', listRoom);
-    this.$root.$emit('changed-info-rooms');
+    store.dispatch('setListRoom', listRoom);
 }

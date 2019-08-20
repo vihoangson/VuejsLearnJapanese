@@ -118,8 +118,20 @@
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <span class="icon_add_user" v-if="this.$store.getters.get_is_admin_room" @click="openModalAddUserRoom()" >
-                                <svg viewBox="0 0 10 10" id="icon_plus" xmlns="http://www.w3.org/2000/svg"><path d="M4.375.625v3.75H.625v1.25h3.75v3.75h1.25v-3.75h3.75v-1.25h-3.75V.625z"></path></svg> Add Member
+                            <span
+                                class="icon_add_user"
+                                v-if="this.$store.getters.get_is_admin_room"
+                                @click="openModalAddUserRoom()"
+                            >
+                                <svg
+                                    viewBox="0 0 10 10"
+                                    id="icon_plus"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M4.375.625v3.75H.625v1.25h3.75v3.75h1.25v-3.75h3.75v-1.25h-3.75V.625z"
+                                    />
+                                </svg> Add Member
                             </span>
                         </div>
                         <div class="error">{{roomselectedError}}</div>
@@ -187,7 +199,7 @@ export default {
             this.selected = selectTamp;
         });
     },
-    created: function() {    },
+    created: function() {},
     computed: {
         filteredItems() {
             if (this.$store.getters.get_list_user_by_room_id.length > 0) {
@@ -245,6 +257,7 @@ export default {
             }
 
             this.items = itemsTamp;
+            alert();
         },
         btnSaveRoom() {
             let data = {
@@ -254,7 +267,7 @@ export default {
             };
 
             API.POST(ApiConst.ROOM_UPDATE, data).then(response => {
-                if(response !== undefined){
+                if (response !== undefined) {
                     switch (response.error_code) {
                         case 0:
                             this.$refs.modal.hide();
@@ -267,7 +280,10 @@ export default {
                                 if (listRoom[i].room_id === this.roomId) {
                                     listRoom[i].selected = this.selected;
                                     listRoom[i].option = 0;
-                                    this.$root.$emit('change-list-room', listRoom[i]);
+                                    this.$root.$emit(
+                                        'change-list-room',
+                                        listRoom[i]
+                                    );
                                     break;
                                 }
                             }
@@ -276,8 +292,7 @@ export default {
                             this.roomselectedError = response.data;
                             break;
                         case 6:
-                            this.$bvModal
-                            .msgBoxOk( response.data, {
+                            this.$bvModal.msgBoxOk(response.data, {
                                 size: 'sm',
                                 buttonSize: 'sm',
                                 okVariant: 'success',
@@ -295,7 +310,7 @@ export default {
                 }
             });
         },
-        openModalAddUserRoom(){
+        openModalAddUserRoom() {
             this.$refs.modal.hide();
             this.$root.$emit('open-modal-add-user');
             this.$bvModal.show('modal-prevent-add-user');
@@ -309,11 +324,11 @@ export default {
     height: 16px;
     width: 16px;
 }
-.icon_add_user{
+.icon_add_user {
     margin-top: 10px;
     display: inline-block;
 }
-.icon_add_user svg{
+.icon_add_user svg {
     height: 15px;
     width: 15px;
     position: relative;
