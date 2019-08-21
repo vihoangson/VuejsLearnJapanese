@@ -1,5 +1,6 @@
 <template>
-    <div class="list-file-in-room" @click="toggleOption" ref="toggleOption">
+    <div class="list-file-in-room" ref="toggleOption">
+        <i class="fa fa-spin fa-refresh" v-if="isLoading"></i>
         <span class="icon-file-all" @click="toggleListFile">
             <svg viewBox="0 0 10 10" id="icon_menuFile" xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -7,10 +8,6 @@
                 />
             </svg>
         </span>
-
-
-
-
         <div class="dropdown-content" v-if="showListFile">
             <div v-for="file in ListFiles">
                 <show-file :file="file"></show-file>
@@ -32,6 +29,7 @@
 
         data() {
             return {
+                isLoading: false,
                 showListFile:false,
                 isActive: false,
                 isActiveSelect: false,
@@ -60,23 +58,28 @@
                 let el2 = this.$refs.toggleOption;
                 let target = e.target;
                 if (el2 !== target && !el2.contains(target)) {
-                    this.isActive = false;
+                    this.showListFile = false;
                 }
             },
             toggleListFile() {
                 if(this.showListFile === true){
                     this.showListFile = false;
                 }else{
-                    this.showListFile = true;
                     this.getFileInApi()
                 }
             },
             getFileInApi() {
-                API.GET(
+                this.isLoading = true;
+                this.ListFiles = [];
+                    API.GET(
                     ApiConst.MY_LIST_FILE + '/' + this.$store.getters.get_current_room.room_id
                 ).then(res => {
-                    if (res.error_code === 0) {
+                    this.isLoading = false;
+                    if (res.error_code === 0 && res.data.length > 0) {
+                        this.showListFile = true;
                         this.ListFiles = res.data;
+                    }else{
+                        this.showListFile = false;
                     }
                 });
             }
@@ -88,4 +91,11 @@
     .list-file-in-room {
         position: relative;
     }
+    .show-file button.btn.btn-success {
+        position: absolute;
+        top: 26px;
+        right: 17px;
+    }
+
+
 </style>

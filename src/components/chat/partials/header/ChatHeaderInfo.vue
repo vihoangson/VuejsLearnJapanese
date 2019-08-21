@@ -416,4 +416,5 @@ export default {
     width: 15px;
     fill: #fff
 }
+
 </style>
