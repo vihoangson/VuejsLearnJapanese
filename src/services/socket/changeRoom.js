@@ -61,7 +61,7 @@ export function changeRoom(store, room) {
                                     store.getters.get_list_user[i].id ===
                                     room.selected[j].id
                                 ) {
-                                    userAdd = this.$store.getters.get_list_user[
+                                    userAdd = store.getters.get_list_user[
                                         i
                                     ];
                                 }

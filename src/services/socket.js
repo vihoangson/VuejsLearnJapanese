@@ -31,7 +31,7 @@ export const SocketService = {
         }
     },
     change_room: function(e) {
-        changeRoom(e);
+        changeRoom(this.$store, e);
 
         this.$root.$emit('changed-info-rooms');
     }
