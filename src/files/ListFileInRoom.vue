@@ -99,6 +99,8 @@
         top: 26px;
         right: 17px;
     }
-
+    .list-file-in-room .alert.alert-danger {
+        margin-top: 50px;
+    }
 
 </style>
