@@ -257,7 +257,6 @@ export default {
             }
 
             this.items = itemsTamp;
-            alert();
         },
         btnSaveRoom() {
             let data = {
