@@ -17,5 +17,5 @@ export const AppConst = {
         CHANGE_ROOM: 'change_room',
         CHANNEL_CHANGE_ROOM: 'channel_change_room'
     },
-    SOCKET_ADDRESS:'localhost:3000'
+    SOCKET_ADDRESS: 'http://127.0.0.1:3000'
 };

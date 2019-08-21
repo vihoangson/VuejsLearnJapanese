@@ -46,7 +46,7 @@
                     <div>
                         <ul class="send-tool">
                             <li class="emoji" @click="toggleEmojiPicker">
-                                <span class="icon-container">
+                                <span class="icon-container disable-mark">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_emoticon"
@@ -59,7 +59,7 @@
                                 </span>
                             </li>
                             <li class="emoji">
-                                <span class="icon-container">
+                                <span class="icon-container disable-mark">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_mention"
@@ -72,7 +72,7 @@
                                 </span>
                             </li>
                             <li class="emoji">
-                                <span class="icon-container">
+                                <span class="icon-container disable-mark">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_sendfile"
@@ -86,7 +86,7 @@
                                 </span>
                             </li>
                             <li class="emoji">
-                                <span class="icon-container">
+                                <span class="icon-container disable-mark">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_live"
