@@ -9,6 +9,7 @@
             </svg>
         </span>
         <div class="dropdown-content" v-if="showListFile">
+            <div v-if="errorMessage.length > 0" class="alert alert-danger">{{errorMessage}}</div>
             <div v-for="file in ListFiles">
                 <show-file :file="file"></show-file>
             </div>
@@ -71,15 +72,17 @@
             getFileInApi() {
                 this.isLoading = true;
                 this.ListFiles = [];
-                    API.GET(
+                this.errorMessage = '';
+                API.GET(
                     ApiConst.MY_LIST_FILE + '/' + this.$store.getters.get_current_room.room_id
                 ).then(res => {
                     this.isLoading = false;
                     if (res.error_code === 0 && res.data.length > 0) {
                         this.showListFile = true;
                         this.ListFiles = res.data;
-                    }else{
-                        this.showListFile = false;
+                    } else {
+                        this.showListFile = true;
+                        this.errorMessage = "Don't have any file";
                     }
                 });
             }
