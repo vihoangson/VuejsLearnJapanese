@@ -46,54 +46,6 @@
                     if(response.error_code ===0){
                         this.status = null;
                     }
-                    console.log(response);
-                    /**
-                     * Check data response
-                     */
-                    if( 1 === 0 ){
-                        this.showResultData.display = 'block';
-                        this.buttons.send.display = 'none';
-                        this.buttons.inviteMore.display = 'inline-block';
-                        this.contentInviteMailNew.display = 'none';
-
-                        if (response.error_code === 0) {
-                            this.contactInviteMailSection[0].display = 'block';
-                            this.contactInviteMailSection[1].display = 'none';
-                            this.contentInviteMailFinished.push({
-                                key: 'SentEmails',
-                                id: '_contactInviteMailSentEmails',
-                                text: 'Invitation sent',
-                                display: 'block',
-                                class: 'contactInviteMailResult',
-                                classChild: 'contactInviteMailResultTitle mailResultTitleSuccess',
-                                data: response.data.emails
-                            });
-                        } else {
-                            this.contactInviteMailSection[1].display = 'block';
-                            this.contactInviteMailSection[0].display = 'none';
-                            var arr = Object.keys(response.data);
-                            var errList = [];
-                            arr.forEach(function (key, index) {
-                                var temp = key.split('.');
-                                console.log(response.data[key]);
-                                var tempData = response.data[key];
-                                tempData.forEach(function (k, index) {
-                                    tempData[index] = tempData[index].replace(key, emails[temp[1]]);
-                                });
-                                let error = {
-                                    key: 'UnreachableEmailAddresses',
-                                    id: '_contactInviteMailUnreachableEmailAddresses',
-                                    text: emails[temp[1]],
-                                    display: 'block',
-                                    class: 'contactInviteMailResult',
-                                    classChild: 'contactInviteMailResultTitle mailResultTitleFailed',
-                                    data: tempData
-                                };
-                                errList.push(error);
-                            });
-                            this.appendToErrList(errList);
-                        }
-                    }
                 })
             }
         }

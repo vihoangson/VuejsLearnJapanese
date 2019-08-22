@@ -102,11 +102,8 @@
 </template>
     
 <script>
-import BaseContact from '../contact/BaseContact.vue';
 import modalMixin from '@/mixins/modal';
 import { AppConst } from '../../common/AppConst';
-import { API } from '../../services/api';
-import { ApiConst } from '../../common/ApiConst';
 export default {
     name: 'Navigation',
     mixins: [modalMixin],

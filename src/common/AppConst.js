@@ -18,7 +18,8 @@ export const AppConst = {
         REMOVE_ROOM: 'remove_room',
         CHANNEL_REMOVE_ROOM: 'channel_remove_room',
         CHANGE_ROOM: 'change_room',
-        CHANNEL_CHANGE_ROOM: 'channel_change_room'
+        CHANNEL_CHANGE_ROOM: 'channel_change_room',
+        LEAVE_ROOM: 'leave_room'
     },
     SOCKET_ADDRESS: 'http://127.0.0.1:3000'
 };

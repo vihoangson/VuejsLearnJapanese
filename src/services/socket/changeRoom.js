@@ -1,4 +1,4 @@
-export function changeRoom(store, room) {
+export function changeRoom(socket, store, room) {
     var listRoom = store.getters.get_list_room;
     switch (room.option) {
         case 0: // Add
@@ -51,7 +51,7 @@ export function changeRoom(store, room) {
                 if (listRoom[i].room_id === room.room_id) {
                     var userAdd = [];
                     for (let j in room.selected) {
-                        var length = listRoom[i].member_list.length;
+                        let length = listRoom[i].member_list.length;
                         if (
                             room.selected[j] !== null &&
                             room.selected[j].id !== undefined
@@ -82,7 +82,6 @@ export function changeRoom(store, room) {
             for (let i in listRoom) {
                 if (listRoom[i].room_id === room.room_id) {
                     if (listRoom[i].member_list !== undefined) {
-                        var length = listRoom[i].member_list.length;
                         for (let key in listRoom[i].member_list) {
                             if (
                                 listRoom[i].member_list[key].id ===
@@ -93,9 +92,14 @@ export function changeRoom(store, room) {
                                     store.getters.get_current_user_info.id
                                 ) {
                                     listRoom.splice(i, 1);
+                                    store.dispatch(
+                                        'setCurrentRoom',
+                                        listRoom[0]
+                                    );
                                 } else {
                                     // TODO
-                                    // Push message user leaved
+                                    
+                                    
                                 }
 
                                 break;

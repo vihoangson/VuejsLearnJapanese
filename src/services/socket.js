@@ -32,7 +32,7 @@ export const SocketService = {
         }
     },
     change_room: function(e) {
-        changeRoom(this.$store, e);
+        changeRoom(this.$socket, this.$store, e);
 
         this.$root.$emit('changed-info-rooms');
     }

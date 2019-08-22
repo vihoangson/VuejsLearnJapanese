@@ -74,6 +74,8 @@
                         });
                     })
                     .catch(err => {
+                        if(err)
+                            console.log(err);
                         this.$root.$emit('push-notice', {
                             message: 'Open model error',
                             alert: 'alert-danger'

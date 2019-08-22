@@ -128,7 +128,6 @@
 <script>
 import { API } from '../../services/api';
 import { ApiConst } from '../../common/ApiConst';
-import { AppConst } from '../../common/AppConst';
 
 export default {
     name: 'Room',
@@ -147,7 +146,7 @@ export default {
 
     created: function() {
         this.userId = this.$store.getters.get_current_user_info.id;
-        var res = this.getAllGroup(this.userId);
+        this.getAllGroup(this.userId);
         document.addEventListener('click', this.documentClick);
         this.getListAllChat();
     },
@@ -202,7 +201,7 @@ export default {
         setActive(index, criptions, id) {
             this.activeIndex = index;
             this.selectItems = criptions;
-            if(id != undefined){
+            if(id !== undefined){
                 this.$store.dispatch('setCurrentGroup', id);
             }else{
                 this.$store.dispatch('setCurrentGroup', 0);
@@ -269,17 +268,17 @@ export default {
                                     message: 'Delete success',
                                     alert: 'alert-success'
                                 });
-                                let list_group = this.$store.getters.get_list_group;
-                                let list_group_delete = [];
-                                for (let i in list_group) {
-                                    if (list_group[i].id !== response.data) {
-                                        list_group_delete.push(list_group[i]);
+                                let listGroup = this.$store.getters.get_list_group;
+                                let listGroupDelete = [];
+                                for (let i in listGroup) {
+                                    if (listGroup[i].id !== response.data) {
+                                        listGroupDelete.push(listGroup[i]);
                                     }
                                 }
 
                                 this.$store.dispatch(
                                     'setListGroup',
-                                    list_group_delete
+                                    listGroupDelete
                                 );
                                 this.selectItems = 'All Chat';
                                 this.$store.dispatch('setCurrentGroup', 0);

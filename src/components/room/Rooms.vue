@@ -318,7 +318,7 @@
 
                 this.selected.forEach(x=>{
                     if(x !== false){
-                        //data.member_list.push(x);
+                        // data.member_list.push(x);
                         let userAdd = this.getUserbyId(x.id);
                         var roleInRoom = x.permission;
                         this.listAdd = {

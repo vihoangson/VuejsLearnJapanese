@@ -9,7 +9,7 @@
             </svg>
         </span>
         <div class="dropdown-content" v-if="showListFile">
-            <div v-for="file in ListFiles">
+            <div v-for="(file, index) in ListFiles" :key="index">
                 <show-file :file="file"></show-file>
             </div>
         </div>

@@ -386,7 +386,7 @@ export default {
                 API.GET(
                     ApiConst.MY_LIST_FILE + '/' + this.$store.getters.get_current_room.room_id
                 ).then(res => {
-                    if (res.data == 0) {
+                    if (res.data === 0) {
                         this.showListFile = false;
                         this.showFileDetail = false;
                         alert('There are no files!');
@@ -427,6 +427,8 @@ export default {
                     });
                 })
                 .catch(err => {
+                    if(err)
+                        console.log(err);
                     this.$root.$emit('push-notice', {
                         message: 'Open model error',
                         alert: 'alert-danger'
@@ -476,7 +478,7 @@ export default {
             });
         },
         getUserByRoomId() {
-            var list_not_exists = [];
+            var listNotExists = [];
             let roomId = this.$store.getters.get_current_room.room_id;
             this.$store.dispatch('setAdminRoom', false);
             this.$store.dispatch('setListUserByRoomId', []);
@@ -515,38 +517,38 @@ export default {
                         }
                     }
                     if (!has) {
-                        list_not_exists.push(
+                        listNotExists.push(
                             this.$store.getters.get_list_user[i]
                         );
                     }
                 }
-                this.$store.dispatch('setListNotUserByRoomId', list_not_exists);
+                this.$store.dispatch('setListNotUserByRoomId', listNotExists);
                 this.getDataGroup();
             }
         },
 
         getDataGroup() {
-            let list_group = this.$store.getters.get_list_group;
-            let list_room = this.$store.getters.get_list_room;
-            let current_group_id = this.$store.getters.get_current_group;
+            let listGroup = this.$store.getters.get_list_group;
+            let listRoom = this.$store.getters.get_list_room;
+            let currentGroupId = this.$store.getters.get_current_group;
 
-            let list_room_by_group = [];
-            if(current_group_id === 0){
+            let listRoomByGroup = [];
+            if(currentGroupId === 0){
                 this.$store.dispatch('setListRoomByGroup', this.$store.getters.get_list_room);
             }else{
-                list_group.forEach(X => {
-                    if (X.id === current_group_id) {
+                listGroup.forEach(X => {
+                    if (X.id === currentGroupId) {
                         X.room_list.forEach(Y => {
-                            for (let i in list_room) {
-                                if (list_room[i].room_id === Y.id) {
-                                    list_room_by_group.push(list_room[i]);
+                            for (let i in listRoom) {
+                                if (listRoom[i].room_id === Y.id) {
+                                    listRoomByGroup.push(listRoom[i]);
                                     break;
                                 }
                             }
                         });
                     }
                 });
-                this.$store.dispatch('setListRoomByGroup', list_room_by_group);
+                this.$store.dispatch('setListRoomByGroup', listRoomByGroup);
             }
         },
     },

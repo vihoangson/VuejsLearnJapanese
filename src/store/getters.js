@@ -44,8 +44,5 @@ export default {
 	},
     get_is_admin_room: state => {
         return state.is_admin_room;
-    },
-    getContactDisplay: state => {
-        return state.openContactDisplay
     }
 };

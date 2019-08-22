@@ -154,7 +154,6 @@
 <script>
 import { API } from '../../services/api';
 import { ApiConst } from '../../common/ApiConst';
-import { AppConst } from '../../common/AppConst';
 export default {
     name: 'Group',
     data() {
