@@ -68,4 +68,9 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    line-height: 1;
+}
 </style>

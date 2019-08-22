@@ -9,12 +9,7 @@ export default {
     },
     render(h) {
         const render = {
-            template: '<pre>' + this.string + '</pre>',
-            methods: {
-                test() {
-                    alert('OK');
-                }
-            }
+            template: '<pre>' + this.string + '</pre>'
         };
         return h(render);
     }
@@ -78,5 +73,19 @@ svg:not(:root) {
     color: #ffffff;
     font-weight: 750;
     font-size: 12px;
+}
+.chatInfo {
+    position: relative;
+    background: #fff;
+    border: 1px solid #b3b3b3;
+    border-radius: 3px;
+    margin-top: 5px;
+    padding: 4px 8px;
+}
+.quoteText {
+    border-left: 1px solid #666666;
+    padding: 5px 0 5px 5px;
+    margin-left: 20px;
+    word-wrap: break-word;
 }
 </style>

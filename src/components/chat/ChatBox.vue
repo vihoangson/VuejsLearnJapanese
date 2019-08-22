@@ -20,7 +20,9 @@
                         <div class="timeline-content">
                             <div class="timeline-content-header">
                                 <p class="timeline-content-header-username">{{item.user_info.name}}</p>
-                                <p class="timeline-content-header-organization">{{item.user_info.company}}</p>
+                                <p
+                                    class="timeline-content-header-organization"
+                                >{{item.user_info.company}}</p>
                             </div>
                             <div class="timeline-content-message">
                                 <ChatMessage :message-object="item" :message_content="item.message"></ChatMessage>
@@ -30,6 +32,7 @@
                                 @reply="onReply"
                                 @edit="onEdit"
                                 @delete="onDelete"
+                                @quoute="onQuoute"
                             ></ChatAction>
                         </div>
                     </div>
@@ -46,7 +49,7 @@
                     <div>
                         <ul class="send-tool">
                             <li class="emoji" @click="toggleEmojiPicker">
-                                <span class="icon-container disable-mark">
+                                <span class="icon-container">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_emoticon"
@@ -59,7 +62,7 @@
                                 </span>
                             </li>
                             <li class="emoji">
-                                <span class="icon-container disable-mark">
+                                <span class="icon-container">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_mention"
@@ -72,7 +75,7 @@
                                 </span>
                             </li>
                             <li class="emoji">
-                                <span class="icon-container " @click="showDropzoneForm">
+                                <span class="icon-container" @click="showDropzoneForm">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_sendfile"
@@ -85,7 +88,7 @@
                                 </span>
                             </li>
                             <li class="emoji">
-                                <span class="icon-container disable-mark">
+                                <span class="icon-container">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_live"
@@ -95,6 +98,33 @@
                                             d="M5.313 6.719c0 .259-.21.469-.469.469H1.406a.469.469 0 0 1-.469-.469V3.281c0-.259.21-.469.469-.469h3.438c.259 0 .469.21.469.469v3.438zm0-4.844H.938A.937.937 0 0 0 0 2.813v4.375c0 .518.42.938.938.938h4.375a.937.937 0 0 0 .938-.938V2.813a.938.938 0 0 0-.938-.938zm3.906 4.55l-.735-.276a.312.312 0 0 1-.203-.292V4.142c0-.13.081-.247.203-.293l.735-.276v2.851zm.148-3.687l-1.563.586a.47.47 0 0 0-.304.439v2.476c0 .196.121.37.304.439l1.563.586a.47.47 0 0 0 .634-.439V3.177a.469.469 0 0 0-.634-.439z"
                                         />
                                     </svg>
+                                </span>
+                            </li>
+                            <li
+                                class="emoji"
+                                style="width:45px;"
+                                @click="addMessageTypeToContent('info')"
+                            >
+                                <span class="icon-container">
+                                    <strong>[info]</strong>
+                                </span>
+                            </li>
+                            <li
+                                class="emoji"
+                                style="width:45px;"
+                                @click="addMessageTypeToContent('title')"
+                            >
+                                <span class="icon-container">
+                                    <strong>[title]</strong>
+                                </span>
+                            </li>
+                            <li
+                                class="emoji"
+                                style="width:45px;"
+                                @click="addMessageTypeToContent('code')"
+                            >
+                                <span class="icon-container">
+                                    <strong>[code]</strong>
                                 </span>
                             </li>
                         </ul>
@@ -241,7 +271,8 @@ export default {
             room_id: 1
         };
         API.POST(ApiConst.RECEIVE_MESSAGE, obj).then(res => {
-            if (res.error_code === 0) this.$store.dispatch('setListMessage', res.data);
+            if (res.error_code === 0)
+                this.$store.dispatch('setListMessage', res.data);
         });
     },
     methods: {
@@ -283,7 +314,10 @@ export default {
         addEmoji(emoji) {
             const textarea = this.$refs.textarea;
             const cursorPosition = textarea.selectionEnd;
-            const start = this.message.content.substring(0, textarea.selectionStart);
+            const start = this.message.content.substring(
+                0,
+                textarea.selectionStart
+            );
             const end = this.message.content.substring(textarea.selectionEnd);
             const text = start + emoji.native + end;
             this.$emit('input', text);
@@ -367,13 +401,26 @@ export default {
 
             this.editMessage = false;
         },
+        onQuoute(value) {
+            this.message.content =
+                '[Quote mid:' +
+                value.message_id +
+                ' to:' +
+                value.user_info.id +
+                '] ' +
+                value.message + '[/Quoute]';
+            this.message.content += '\n';
+            this.$refs.textarea.focus();
+        },
         showMyListFile() {
             this.showListFile = !this.showListFile;
             if (!this.showListFile) {
                 this.showFileDetail = false;
             }
             if (this.showListFile) {
-                if (this.roomId !== this.$store.getters.get_current_room.room_id) {
+                if (
+                    this.roomId !== this.$store.getters.get_current_room.room_id
+                ) {
                     this.listMyFile = [];
                     this.codeReviewPhoto = '';
                     this.fileDetailInfo.content = '';
@@ -384,7 +431,9 @@ export default {
                     this.fileDetailInfo.id = '';
                 }
                 API.GET(
-                    ApiConst.MY_LIST_FILE + '/' + this.$store.getters.get_current_room.room_id
+                    ApiConst.MY_LIST_FILE +
+                        '/' +
+                        this.$store.getters.get_current_room.room_id
                 ).then(res => {
                     if (res.data === 0) {
                         this.showListFile = false;
@@ -427,8 +476,7 @@ export default {
                     });
                 })
                 .catch(err => {
-                    if(err)
-                        console.log(err);
+                    if (err) console.log(err);
                     this.$root.$emit('push-notice', {
                         message: 'Open model error',
                         alert: 'alert-danger'
@@ -439,7 +487,8 @@ export default {
             this.showFileDetail = true;
             if (typeof this.reviewPhotoStore[id] === 'undefined') {
                 API.GET(ApiConst.GET_FILE_PREVIEW_MID + '/' + id).then(res => {
-                    this.codeReviewPhoto = 'data:image/png;base64, ' + res.data.base_64;
+                    this.codeReviewPhoto =
+                        'data:image/png;base64, ' + res.data.base_64;
                     this.fileDetailInfo.content = res.data.content;
                     this.fileDetailInfo.name = res.data[0].file_name;
                     this.fileDetailInfo.size = res.data[0].file_size
@@ -452,7 +501,8 @@ export default {
                 });
             } else {
                 this.codeReviewPhoto =
-                    'data:image/png;base64, ' + this.reviewPhotoStore[id].base_64;
+                    'data:image/png;base64, ' +
+                    this.reviewPhotoStore[id].base_64;
                 this.fileDetailInfo.content = this.reviewPhotoStore[id].content;
                 this.fileDetailInfo.name = this.reviewPhotoStore[id][0].file_name;
                 this.fileDetailInfo.size = this.reviewPhotoStore[id][0].file_size
@@ -495,7 +545,9 @@ export default {
                     }
                 }
                 for (let i in this.$store.getters.get_list_user_by_room_id) {
-                    if (this.$store.getters.get_list_user_by_room_id[i] !== undefined &&
+                    if (
+                        this.$store.getters.get_list_user_by_room_id[i] !==
+                            undefined &&
                         this.$store.getters.get_list_user_by_room_id[i]
                             .role_in_room === 1 &&
                         this.$store.getters.get_list_user_by_room_id[i].id ===
@@ -509,7 +561,8 @@ export default {
                     for (let j in this.$store.getters
                         .get_list_user_by_room_id) {
                         if (
-                            this.$store.getters.get_list_user_by_room_id[j] !== undefined &&
+                            this.$store.getters.get_list_user_by_room_id[j] !==
+                                undefined &&
                             this.$store.getters.get_list_user_by_room_id[j]
                                 .id === this.$store.getters.get_list_user[i].id
                         ) {
@@ -533,9 +586,12 @@ export default {
             let currentGroupId = this.$store.getters.get_current_group;
 
             let listRoomByGroup = [];
-            if(currentGroupId === 0){
-                this.$store.dispatch('setListRoomByGroup', this.$store.getters.get_list_room);
-            }else{
+            if (currentGroupId === 0) {
+                this.$store.dispatch(
+                    'setListRoomByGroup',
+                    this.$store.getters.get_list_room
+                );
+            } else {
                 listGroup.forEach(X => {
                     if (X.id === currentGroupId) {
                         X.room_list.forEach(Y => {
@@ -551,6 +607,38 @@ export default {
                 this.$store.dispatch('setListRoomByGroup', listRoomByGroup);
             }
         },
+        addMessageTypeToContent(type) {
+            let contentType = '';
+            let cursorContentPositon = 0;
+            switch (type) {
+                case 'info':
+                    contentType = '[info][/info]';
+                    cursorContentPositon = 6;
+                    break;
+                case 'title':
+                    contentType = '[title][/title]';
+                    cursorContentPositon = 7;
+                    break;
+                case 'code':
+                    contentType = '[code][/code]';
+                    cursorContentPositon = 6;
+                    break;
+            }
+            const textarea = this.$refs.textarea;
+            const cursorPosition = textarea.selectionEnd;
+            const start = this.message.content.substring(
+                0,
+                textarea.selectionStart
+            );
+            const end = this.message.content.substring(textarea.selectionEnd);
+            const text = start + contentType + end;
+            this.$emit('input', text);
+            this.message.content = text;
+            textarea.focus();
+            this.$nextTick(() => {
+                textarea.selectionEnd = cursorPosition + cursorContentPositon;
+            });
+        }
     },
     computed: {
         myStyles() {
@@ -688,7 +776,6 @@ export default {
     text-decoration: none;
     display: block;
 }
-
 
 #chat-box {
     position: absolute;
