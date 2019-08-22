@@ -1,5 +1,5 @@
 <template>
-    <div id="chat-box" @dragover="showDropzoneForm">
+    <div id="chat-box" @dragover="showDropzoneForm" @dragend="hideDropzoneForm">
         <div class="chat-box-header">
             <ChatHeaderInfo></ChatHeaderInfo>
         </div>
@@ -46,7 +46,7 @@
                     <div>
                         <ul class="send-tool">
                             <li class="emoji" @click="toggleEmojiPicker">
-                                <span class="icon-container">
+                                <span class="icon-container disable-mark">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_emoticon"
@@ -59,7 +59,7 @@
                                 </span>
                             </li>
                             <li class="emoji">
-                                <span class="icon-container">
+                                <span class="icon-container disable-mark">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_mention"
@@ -72,12 +72,11 @@
                                 </span>
                             </li>
                             <li class="emoji">
-                                <span class="icon-container">
+                                <span class="icon-container " @click="showDropzoneForm">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_sendfile"
                                         xmlns="http://www.w3.org/2000/svg"
-                                        @click="showDropzoneForm"
                                     >
                                         <path
                                             d="M8.534 5.884l.001-.001a3.126 3.126 0 0 0-4.42-4.418L.816 4.764A2.21 2.21 0 0 0 3.942 7.89l3.299-3.299a1.367 1.367 0 0 0-1.932-1.932L2.342 5.626a.469.469 0 0 0 .663.663l2.968-2.967v-.001a.43.43 0 0 1 .606.606h-.001L3.28 7.226a1.273 1.273 0 0 1-1.8-1.799h.001l3.298-3.299a2.188 2.188 0 0 1 3.094 3.093L4.574 8.52a.469.469 0 0 0 .663.663l3.299-3.299z"
@@ -86,7 +85,7 @@
                                 </span>
                             </li>
                             <li class="emoji">
-                                <span class="icon-container">
+                                <span class="icon-container disable-mark">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_live"
@@ -183,6 +182,18 @@ export default {
         return {
             enterToSendMessage: true,
             showListFile: false,
+            showFileDetail: false,
+            codeReviewPhoto: '',
+            roomId: null,
+            fileDetailInfo: {
+                id: '',
+                name: '',
+                size: '',
+                uploadDate: '',
+                owner: '',
+                content: ''
+            },
+            reviewPhotoStore: [],
             height: 0,
             message: {
                 id: 0,
@@ -200,8 +211,26 @@ export default {
         };
     },
     mounted() {
-        this.$root.$on('changed-id-rooms', data => {
+        this.$root.$on('changed-info-rooms', data => {
             this.getUserByRoomId();
+        });
+        this.$root.$on('changed-group', data => {
+            this.getDataGroup();
+        });
+        this.$root.$on('changed-list-user', data => {
+            this.getListUser();
+        });
+        this.$root.$on('add-new-room-from-socket', data => {
+            this.pushNewRoom(data);
+        });
+        this.$root.$on('push-list-room', data => {
+            this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, data);
+        });
+        this.$root.$on('change-list-room', data => {
+            this.$socket.emit(AppConst.EVENT_MESSAGE.CHANGE_ROOM, data);
+        });
+        this.$root.$on('remove-list-room', data => {
+            this.$socket.emit(AppConst.EVENT_MESSAGE.REMOVE_ROOM, data);
         });
     },
     created() {
@@ -212,8 +241,7 @@ export default {
             room_id: 1
         };
         API.POST(ApiConst.RECEIVE_MESSAGE, obj).then(res => {
-            if (res.error_code === 0)
-                this.$store.dispatch('setListMessage', res.data);
+            if (res.error_code === 0) this.$store.dispatch('setListMessage', res.data);
         });
     },
     methods: {
@@ -255,10 +283,7 @@ export default {
         addEmoji(emoji) {
             const textarea = this.$refs.textarea;
             const cursorPosition = textarea.selectionEnd;
-            const start = this.message.content.substring(
-                0,
-                textarea.selectionStart
-            );
+            const start = this.message.content.substring(0, textarea.selectionStart);
             const end = this.message.content.substring(textarea.selectionEnd);
             const text = start + emoji.native + end;
             this.$emit('input', text);
@@ -284,9 +309,8 @@ export default {
                 );
             }
         },
-        hideDropzone() {
-            this.$refs['myVueDropzone'].removeAllFiles();
-            this.$emit('close');
+        hideDropzoneForm() {
+            this.$modal.hide('SendFile');
         },
         pressEnterToSendMessage() {
             if (this.message.content !== '') {
@@ -345,26 +369,116 @@ export default {
         },
         showMyListFile() {
             this.showListFile = !this.showListFile;
+            if (!this.showListFile) {
+                this.showFileDetail = false;
+            }
             if (this.showListFile) {
-                API.GET(ApiConst.MY_LIST_FILE).then(res => {
+                if (this.roomId !== this.$store.getters.get_current_room.room_id) {
+                    this.listMyFile = [];
+                    this.codeReviewPhoto = '';
+                    this.fileDetailInfo.content = '';
+                    this.fileDetailInfo.name = '';
+                    this.fileDetailInfo.size = '';
+                    this.fileDetailInfo.owner = '';
+                    this.fileDetailInfo.uploadDate = '';
+                    this.fileDetailInfo.id = '';
+                }
+                API.GET(
+                    ApiConst.MY_LIST_FILE + '/' + this.$store.getters.get_current_room.room_id
+                ).then(res => {
+                    if (res.data === 0) {
+                        this.showListFile = false;
+                        this.showFileDetail = false;
+                        alert('There are no files!');
+                    }
                     this.listMyFile = res.data;
                 });
             }
         },
         downloadFile(id) {
-            API.GET('/api/v1/file/download-file/' + id).then(res => {
+            API.GET(ApiConst.GET_LINK_DOWNLOAD_FILE + '/' + id).then(res => {
                 window.open(
-                    'http://api.sns-tool.vn/api/v1/download-file/' +
+                    process.env.ROOT_API +
+                        ApiConst.DOWNLOAD_FILE +
+                        '/' +
                         id +
                         '/' +
-                        res.token_file +
+                        res.data.token_file +
                         '/' +
-                        res.user_id
+                        res.data.user_id
+                );
+            });
+        },
+        deleteFile(id) {
+            this.$bvModal
+                .msgBoxConfirm('Do you really want to delete file ?', {
+                    size: 'sm',
+                    buttonSize: 'sm',
+                    okVariant: 'success',
+                    centered: true
+                })
+                .then(value => {
+                    let obj = {
+                        delete_id: id
+                    };
+                    API.POST(ApiConst.DELETE_FILE, obj).then(res => {
+                        this.showListFile = !this.showListFile;
+                        this.showMyListFile();
+                    });
+                })
+                .catch(err => {
+                    if(err)
+                        console.log(err);
+                    this.$root.$emit('push-notice', {
+                        message: 'Open model error',
+                        alert: 'alert-danger'
+                    });
+                });
+        },
+        getReviewPhoto(id) {
+            this.showFileDetail = true;
+            if (typeof this.reviewPhotoStore[id] === 'undefined') {
+                API.GET(ApiConst.GET_FILE_PREVIEW_MID + '/' + id).then(res => {
+                    this.codeReviewPhoto = 'data:image/png;base64, ' + res.data.base_64;
+                    this.fileDetailInfo.content = res.data.content;
+                    this.fileDetailInfo.name = res.data[0].file_name;
+                    this.fileDetailInfo.size = res.data[0].file_size
+                        .toString()
+                        .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                    this.fileDetailInfo.owner = res.data[0].name;
+                    this.fileDetailInfo.uploadDate = res.data[0].created_at;
+                    this.fileDetailInfo.id = res.data[0].id;
+                    this.reviewPhotoStore[id] = res.data;
+                });
+            } else {
+                this.codeReviewPhoto =
+                    'data:image/png;base64, ' + this.reviewPhotoStore[id].base_64;
+                this.fileDetailInfo.content = this.reviewPhotoStore[id].content;
+                this.fileDetailInfo.name = this.reviewPhotoStore[id][0].file_name;
+                this.fileDetailInfo.size = this.reviewPhotoStore[id][0].file_size
+                    .toString()
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+                this.fileDetailInfo.owner = this.reviewPhotoStore[id][0].name;
+                this.fileDetailInfo.uploadDate = this.reviewPhotoStore[id][0].created_at;
+                this.fileDetailInfo.id = this.reviewPhotoStore[id][0].id;
+            }
+        },
+        getLinkDetailImage(id) {
+            API.POST(ApiConst.GET_TOKEN_IMAGE_DETAIL + '/' + id).then(res => {
+                window.open(
+                    process.env.ROOT_API +
+                        ApiConst.DETAIL_IMAGE +
+                        '/' +
+                        id +
+                        '/' +
+                        res.data.token +
+                        '/' +
+                        res.data.user_id
                 );
             });
         },
         getUserByRoomId() {
-            var list_not_exists = [];
+            var listNotExists = [];
             let roomId = this.$store.getters.get_current_room.room_id;
             this.$store.dispatch('setAdminRoom', false);
             this.$store.dispatch('setListUserByRoomId', []);
@@ -381,7 +495,7 @@ export default {
                     }
                 }
                 for (let i in this.$store.getters.get_list_user_by_room_id) {
-                    if (
+                    if (this.$store.getters.get_list_user_by_room_id[i] !== undefined &&
                         this.$store.getters.get_list_user_by_room_id[i]
                             .role_in_room === 1 &&
                         this.$store.getters.get_list_user_by_room_id[i].id ===
@@ -395,6 +509,7 @@ export default {
                     for (let j in this.$store.getters
                         .get_list_user_by_room_id) {
                         if (
+                            this.$store.getters.get_list_user_by_room_id[j] !== undefined &&
                             this.$store.getters.get_list_user_by_room_id[j]
                                 .id === this.$store.getters.get_list_user[i].id
                         ) {
@@ -402,14 +517,40 @@ export default {
                         }
                     }
                     if (!has) {
-                        list_not_exists.push(
+                        listNotExists.push(
                             this.$store.getters.get_list_user[i]
                         );
                     }
                 }
-                this.$store.dispatch('setListNotUserByRoomId', list_not_exists);
+                this.$store.dispatch('setListNotUserByRoomId', listNotExists);
+                this.getDataGroup();
             }
-        }
+        },
+
+        getDataGroup() {
+            let listGroup = this.$store.getters.get_list_group;
+            let listRoom = this.$store.getters.get_list_room;
+            let currentGroupId = this.$store.getters.get_current_group;
+
+            let listRoomByGroup = [];
+            if(currentGroupId === 0){
+                this.$store.dispatch('setListRoomByGroup', this.$store.getters.get_list_room);
+            }else{
+                listGroup.forEach(X => {
+                    if (X.id === currentGroupId) {
+                        X.room_list.forEach(Y => {
+                            for (let i in listRoom) {
+                                if (listRoom[i].room_id === Y.id) {
+                                    listRoomByGroup.push(listRoom[i]);
+                                    break;
+                                }
+                            }
+                        });
+                    }
+                });
+                this.$store.dispatch('setListRoomByGroup', listRoomByGroup);
+            }
+        },
     },
     computed: {
         myStyles() {
@@ -450,6 +591,105 @@ export default {
     overflow: scroll;
     height: 280px;
 }
+
+.file-emoji {
+    display: inline-block;
+}
+.detail-info-file {
+    background-color: #cccccc;
+}
+.content-file {
+    height: 80%;
+    overflow-y: scroll;
+}
+.content-image {
+    height: 80%;
+}
+.file-name {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.file-detail {
+    height: 60vh;
+    width: 65vh;
+    opacity: 1;
+    position: absolute;
+    z-index: 5;
+    top: 23px;
+    right: 60vh;
+    background-color: darkgrey;
+}
+.content-image img {
+    cursor: pointer;
+    display: block;
+    margin: auto;
+    vertical-align: center;
+    max-width: 100%;
+    max-height: 100%;
+}
+.action-icon {
+    text-align: center;
+    width: 30%;
+    height: 100%;
+    opacity: 1;
+    position: absolute;
+    padding-top: 12px;
+    z-index: 4;
+    top: 0;
+    right: 0;
+    background-color: greenyellow;
+    display: none;
+}
+.item-file {
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.item-file:hover .action-file {
+    display: block;
+}
+.item-file:hover .action-icon {
+    display: block;
+}
+.action-file {
+    height: 100%;
+    width: 60vh;
+    top: 0;
+    left: 0;
+    position: absolute;
+    background-color: greenyellow;
+    z-index: 2;
+    opacity: 0.5;
+    display: none;
+}
+.dropdown {
+    float: right;
+    position: relative;
+    display: inline-block;
+}
+
+.dropdown-content {
+    max-height: 80vh;
+    min-height: 30vh;
+    width: 60vh;
+    overflow-y: scroll;
+    right: 0px;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-content div.item-file {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+
 #chat-box {
     position: absolute;
     top: 0;

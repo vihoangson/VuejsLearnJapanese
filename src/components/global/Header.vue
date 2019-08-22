@@ -1,7 +1,7 @@
 <template>
     <div class="header">
         <div class="inner">
-            <div class="branding">
+            <div class="branding" @click="goHome">
                 <img
                     class="logo"
                     src="https://lampart-vn.com/wp-content/uploads/2019/02/logo.png"
@@ -53,6 +53,17 @@ export default {
     components: {
         HeaderSearch,
         Navigation
+    },
+    created(){
+    },
+    methods: {
+        goHome(){
+            if(this.$store.getters.get_current_user_info.id !== undefined){
+                this.$router.push({ path: '/' });
+            }else{
+                this.$router.push({ path: '/login' });
+            }
+        }
     }
 };
 </script>

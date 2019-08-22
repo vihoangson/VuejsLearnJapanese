@@ -121,7 +121,6 @@
 <script>
 import { API } from '../../services/api';
 import { ApiConst } from '../../common/ApiConst';
-import { AppConst } from '../../common/AppConst';
 export default {
     name: 'Group',
     mounted() {
@@ -234,15 +233,15 @@ export default {
 
         getRoomByGroupId(id){
             this.$store.getters.get_list_group.forEach(x =>{
-                let list_room = [];
+                let listRoom = [];
                 if(x !== null && x.id === id){
                     x.list_room.forEach( y=>{
                         if(y !== null){
-                            list_room.push(y);
+                            listRoom.push(y);
                         }
                     })
                 }
-                return list_room;
+                return listRoom;
             })
         },
 
@@ -310,9 +309,9 @@ export default {
                                     }
                                 });
 
-                                let list_add = this.$store.getters.get_list_group;
-                                list_add.push(pushData);
-                                this.$store.dispatch('setListGroup', list_add);
+                                let listAdd = this.$store.getters.get_list_group;
+                                listAdd.push(pushData);
+                                this.$store.dispatch('setListGroup', listAdd);
                                 this.$root.$emit('changed-group');
 
                                 break;
@@ -354,7 +353,7 @@ export default {
                                 alert: 'alert-success'
                             });
 
-                            let room_list = [];
+                            let roomList = [];
 
                             this.selected.forEach( x =>{
                                 if(x !== null && x !== undefined){
@@ -364,21 +363,20 @@ export default {
                                         icon_img: data.icon_img,
                                         name: data.room_name
                                     }
-                                    room_list.push(roomData);
+                                    roomList.push(roomData);
                                 }
                             });
 
-                            let list_update = this.$store.getters.get_list_group;
-                            for (let i in list_update) {
-                                if(list_update[i].id == this.groupId){
-                                    list_update[i].name = this.groupName;
-                                    list_update[i].room_list = room_list;
+                            let listUpdate = this.$store.getters.get_list_group;
+                            for (let i in listUpdate) {
+                                if(listUpdate[i].id === this.groupId){
+                                    listUpdate[i].name = this.groupName;
+                                    listUpdate[i].room_list = roomList;
                                 }
                             }
 
-                            this.$store.dispatch('setListGroup', list_update);
+                            this.$store.dispatch('setListGroup', listUpdate);
                             this.$root.$emit('changed-group');
-
                             break;
                         case 1:
                             this.groupNameError = response.data.error_msg;

@@ -118,8 +118,20 @@
                             </div>
                         </div>
                         <div class="col-md-12">
-                            <span class="icon_add_user" v-if="this.$store.getters.get_is_admin_room" @click="openModalAddUserRoom()" >
-                                <svg viewBox="0 0 10 10" id="icon_plus" xmlns="http://www.w3.org/2000/svg"><path d="M4.375.625v3.75H.625v1.25h3.75v3.75h1.25v-3.75h3.75v-1.25h-3.75V.625z"></path></svg> Add Member
+                            <span
+                                class="icon_add_user"
+                                v-if="this.$store.getters.get_is_admin_room"
+                                @click="openModalAddUserRoom()"
+                            >
+                                <svg
+                                    viewBox="0 0 10 10"
+                                    id="icon_plus"
+                                    xmlns="http://www.w3.org/2000/svg"
+                                >
+                                    <path
+                                        d="M4.375.625v3.75H.625v1.25h3.75v3.75h1.25v-3.75h3.75v-1.25h-3.75V.625z"
+                                    />
+                                </svg> Add Member
                             </span>
                         </div>
                         <div class="error">{{roomselectedError}}</div>
@@ -142,7 +154,6 @@
 <script>
 import { API } from '../../services/api';
 import { ApiConst } from '../../common/ApiConst';
-import { AppConst } from '../../common/AppConst';
 export default {
     name: 'Group',
     data() {
@@ -187,7 +198,7 @@ export default {
             this.selected = selectTamp;
         });
     },
-    created: function() {    },
+    created: function() {},
     computed: {
         filteredItems() {
             if (this.$store.getters.get_list_user_by_room_id.length > 0) {
@@ -254,7 +265,7 @@ export default {
             };
 
             API.POST(ApiConst.ROOM_UPDATE, data).then(response => {
-                if(response !== undefined){
+                if (response !== undefined) {
                     switch (response.error_code) {
                         case 0:
                             this.$refs.modal.hide();
@@ -262,46 +273,24 @@ export default {
                                 message: 'Save success',
                                 alert: 'alert-success'
                             });
-                            var list_room = this.$store.getters.get_list_room;
-                            for(let i in list_room){
-                                if(list_room[i].room_id === this.roomId){
-                                    var member_list = list_room[i].member_list;
-                                    var member_update = [];
-                                    var check_is_room = false;
-                                    for(let key in this.selected){
-                                        if((this.selected[key] !== undefined) && (this.selected[key].id !== undefined)){
-                                            if(this.selected[key].id === this.$store.getters.get_current_user_info.id){
-                                                check_is_room = true;
-                                            }
-                                        }
-                                    }
-                                    if(check_is_room){
-                                        for(let key in member_list){
-                                            for(let i in this.selected){
-                                                if((this.selected[i] !== undefined) && (this.selected[i].id !== undefined)){
-                                                    if(member_list[key].id === this.selected[i].id){
-                                                        member_list[key].role_in_room = this.selected[i].permission;
-                                                        member_update.push(member_list[key]);
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        list_room[i].member_list = member_update;
-                                    }else{
-                                        list_room.splice(i, 1);
-                                    }
+                            var listRoom = this.$store.getters.get_list_room;
+                            for (let i in listRoom) {
+                                if (listRoom[i].room_id === this.roomId) {
+                                    listRoom[i].selected = this.selected;
+                                    listRoom[i].option = 0;
+                                    this.$root.$emit(
+                                        'change-list-room',
+                                        listRoom[i]
+                                    );
+                                    break;
                                 }
                             }
-                            this.$store.dispatch('setListRoom', list_room);
-                            this.$root.$emit('changed-id-rooms');
                             break;
                         case 1:
                             this.roomselectedError = response.data;
                             break;
                         case 6:
-                            this.$bvModal
-                            .msgBoxOk( response.data, {
+                            this.$bvModal.msgBoxOk(response.data, {
                                 size: 'sm',
                                 buttonSize: 'sm',
                                 okVariant: 'success',
@@ -319,7 +308,7 @@ export default {
                 }
             });
         },
-        openModalAddUserRoom(){
+        openModalAddUserRoom() {
             this.$refs.modal.hide();
             this.$root.$emit('open-modal-add-user');
             this.$bvModal.show('modal-prevent-add-user');
@@ -333,11 +322,11 @@ export default {
     height: 16px;
     width: 16px;
 }
-.icon_add_user{
+.icon_add_user {
     margin-top: 10px;
     display: inline-block;
 }
-.icon_add_user svg{
+.icon_add_user svg {
     height: 15px;
     width: 15px;
     position: relative;

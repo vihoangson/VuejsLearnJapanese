@@ -1,8 +1,8 @@
 <template>
     <div class="navigation">
         <div class="admin">
-            <ul class="menu-admin" role="navigation">
-                <li class="menu-admin-item">
+            <ul class="menu-admin  " role="navigation">
+                <li class="menu-admin-item disable-mark">
                     <span>
                         <svg
                             viewBox="0 0 10 10"
@@ -15,7 +15,7 @@
                         </svg>
                     </span>
                 </li>
-                <li class="menu-admin-item">
+                <li class="menu-admin-item disable-mark">
                     <span>
                         <svg
                             viewBox="0 0 10 10"
@@ -41,7 +41,7 @@
                         </svg>
                     </span>
                 </li>
-                <li class="menu-admin-item">
+                <li class="menu-admin-item disable-mark">
                     <span>
                         <svg
                             viewBox="0 0 10 10"
@@ -63,7 +63,7 @@
             v-bind:class="{active: !isHidden}"
         >
             <div class="avatar">
-                <img :src="this.user.icon_img" alt />
+                <img :src="this.$store.getters.get_current_user_info.icon_img" alt />
             </div>
             <p class="status-name">
                 <!-- <span class="name">{{user_info.name}}</span> -->
@@ -84,13 +84,13 @@
                 <li class="menu-item" id="profile">
                     <a @click="openProfile">Profile</a>
                 </li>
-                <li class="menu-item" id="personal">
+                <li class="menu-item  disable-mark" id="personal">
                     <a>Personal Settings</a>
                 </li>
                 <li class="menu-item" id="account">
                     <a @click="ShowFormEditRegister">Account Settings</a>
                 </li>
-                <li class="menu-item" id="api">
+                <li class="menu-item disable-mark" id="api">
                     <a>API Setting</a>
                 </li>
                 <li class="menu-item separate-top" id="logout">
@@ -102,7 +102,6 @@
 </template>
     
 <script>
-// import BaseContact from '../contact/BaseContact.vue';
 import modalMixin from '@/mixins/modal';
 import { AppConst } from '../../common/AppConst';
 export default {
@@ -117,13 +116,14 @@ export default {
     },
     created() {
         let _user = localStorage.getItem(AppConst.LOCAL_USER);
-
         if (_user) this.user = JSON.parse(_user);
     },
     methods: {
         logout() {
-            this.$root.$off('changed-list-room');
-            this.$root.$off('changed-id-rooms');
+            this.$root.$off('push-list-room');
+            this.$root.$off('change-list-room');
+            this.$root.$off('remove-list-room');
+            this.$root.$off('changed-info-rooms');
             this.$root.$off('push-notice');
             this.$root.$off('open-modal-group');
             this.$root.$off('event-get-list-message');
@@ -134,6 +134,8 @@ export default {
             this.$root.$off('add-new-room-from-socket');
             this.$root.$off('open-modal-room');
             this.$root.$off('open-modal-show-user');
+            this.$store.dispatch('setListRoom', []);
+            this.$store.dispatch('setListUser', []);
             localStorage.removeItem(AppConst.LOCAL_USER);
             this.$router.push({ path: '/login' });
         },

@@ -1,7 +1,7 @@
 <template>
     <div id="room" class="room">
         <div class="room-header">
-            <div class="my-chat">
+            <div class="my-chat" @click="setIsMyChat">
                 <span>
                     <svg viewBox="0 0 10 10" id="icon_home" xmlns="http://www.w3.org/2000/svg">
                         <path
@@ -98,42 +98,21 @@
                     </svg>
                     <div class="add-option">
                         <span @click="addRooms">Create a new Group Chat</span>
-                        <span @click="settingRooms">Group Chat Setting</span>
-                        <span @click="leaveRooms">Leave this group chat</span>
-                        <span @click="deleteRooms">Delete this group chat</span>
                     </div>
                 </span>
             </div>
         </div>
         <div class="room-body">
-            <ul v-if="this.items.length === 0">
+            <ul >
                 <li
-                    v-for="(item, index) in this.$store.getters.get_list_room"
+                    v-for="(item, index) in this.$store.getters.get_list_room_by_group"
                     :key="`room-${index}`"
                     @click="changeRoom(item)"
-                    :style="{backgroundColor: item.color}"
+                    v-bind:style="$store.getters.get_current_room.room_id === item.room_id? {background: '#ccc'}: {}"
                 >
                     <div class="name">
                         <div class="room-image">
-                            <img :src="item.icon_img" :alt="item.room_name" />
-                        </div>
-                        <div class="room-name">
-                            <span>{{item.room_name}}</span>
-                            <span v-if="item.not_read > 0" class="not-read-number">{{item.not_read}}</span>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-            <ul v-else>
-                <li
-                    v-for="(item, index) in this.items"
-                    :key="`room-${index}`"
-                    @click="changeRoom(item)"
-                    :style="{backgroundColor: item.color}"
-                >
-                    <div class="name">
-                        <div class="room-image">
-                            <img :src="item.icon_img" :alt="item.room_name" />
+                            <img :src="item.icon_img"/>
                         </div>
                         <div class="room-name">
                             <span>{{item.room_name}}</span>
@@ -149,7 +128,6 @@
 <script>
 import { API } from '../../services/api';
 import { ApiConst } from '../../common/ApiConst';
-import { AppConst } from '../../common/AppConst';
 
 export default {
     name: 'Room',
@@ -161,30 +139,14 @@ export default {
             selectItems: 'All Chat',
             activeIndex: undefined,
             userId: 0,
-            items: [],
-            groupId: 0
         };
     },
 
-    mounted() {
-        this.$root.$on('changed-group', data => {
-            this.getDataGroup();
-        });
-        this.$root.$on('changed-list-room', data => {
-            this.pushNewRoom(data);
-            this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, data);
-        });
-        this.$root.$on('changed-list-user', data => {
-            this.getListUser();
-        });
-        this.$root.$on('add-new-room-from-socket', data => {
-            this.pushNewRoom(data);
-        });
-    },
+    mounted() {},
 
     created: function() {
         this.userId = this.$store.getters.get_current_user_info.id;
-        var res = this.getAllGroup(this.userId);
+        this.getAllGroup(this.userId);
         document.addEventListener('click', this.documentClick);
         this.getListAllChat();
     },
@@ -205,11 +167,18 @@ export default {
                 this.isActive = false;
             }
         },
+        setIsMyChat(){
+            this.$store.getters.get_list_room_by_group.forEach(X=>{
+                if(X.is_mychat === 1){
+                    this.$root.$emit('change-room', X);
+                }
+            })
+        },
         getListAllChat() {
-            this.items = this.$store.getters.get_list_room;
+            this.$store.dispatch('setListRoomByGroup', this.$store.getters.get_list_room);
+            this.$store.dispatch('setCurrentGroup', 0);
             this.activeIndex = 0;
             this.selectItems = 'All Chat';
-            this.groupId = 0;
         },
         toggleOption: function() {
             if (this.isActive) {
@@ -232,8 +201,12 @@ export default {
         setActive(index, criptions, id) {
             this.activeIndex = index;
             this.selectItems = criptions;
-            this.groupId = id;
-            this.getDataGroup();
+            if(id !== undefined){
+                this.$store.dispatch('setCurrentGroup', id);
+            }else{
+                this.$store.dispatch('setCurrentGroup', 0);
+            }
+            this.$root.$emit('changed-group');
         },
 
         getAllGroup(id) {
@@ -295,19 +268,20 @@ export default {
                                     message: 'Delete success',
                                     alert: 'alert-success'
                                 });
-                                let list_group = this.$store.getters
-                                    .get_list_group;
-                                let list_group_delete = [];
-                                for (let i in list_group) {
-                                    if (list_group[i].id !== response.data) {
-                                        list_group_delete[i] = list_group[i];
+                                let listGroup = this.$store.getters.get_list_group;
+                                let listGroupDelete = [];
+                                for (let i in listGroup) {
+                                    if (listGroup[i].id !== response.data) {
+                                        listGroupDelete.push(listGroup[i]);
                                     }
                                 }
 
                                 this.$store.dispatch(
                                     'setListGroup',
-                                    list_group_delete
+                                    listGroupDelete
                                 );
+                                this.selectItems = 'All Chat';
+                                this.$store.dispatch('setCurrentGroup', 0);
                                 this.$root.$emit('changed-group');
 
                                 break;
@@ -328,71 +302,6 @@ export default {
                 return response;
             });
         },
-        leaveRooms() {},
-
-        deleteRooms() {
-            this.boxOne = '';
-            this.$bvModal
-                .msgBoxConfirm(
-                    'If you leave the group chat, your tasks will be deleted, and there is a case where your files will be deleted.  (About file retention)',
-                    {
-                        size: 'sm',
-                        buttonSize: 'sm',
-                        okVariant: 'success',
-                        centered: true
-                    }
-                )
-                .then(value => {
-                    if (value) {
-                        let data = {
-                            id: this.$store.getters.get_current_room.room_id
-                        };
-                        API.POST(ApiConst.ROOM_DELETE, data).then(response => {
-                            if (response !== undefined) {
-                                switch (parseInt(response.error_code)) {
-                                    case 0:
-                                        this.$root.$emit('push-notice', {
-                                            message: 'Delete success',
-                                            alert: 'alert-success'
-                                        });
-                                        let room = this.$store.getters.get_list_room.find(
-                                            d => {
-                                                return d.room_id === data.id;
-                                            }
-                                        );
-                                        if (room !== undefined) {
-                                            let idx = this.$store.getters.get_list_room.indexOf(
-                                                room
-                                            );
-                                            this.$store.getters.get_list_room.splice(
-                                                idx,
-                                                1
-                                            );
-                                        }
-                                        this.changeRoom(
-                                            this.$store.getters.get_list_room[0]
-                                        );
-                                        this.$root.$emit('changed-group');
-                                        break;
-                                    default:
-                                        this.$root.$emit('push-notice', {
-                                            message: response.data,
-                                            alert: 'alert-danger'
-                                        });
-                                        break;
-                                }
-                            }
-                        });
-                    }
-                })
-                .catch(err => {
-                    if (err !== null) console.log(err);
-                    this.$root.$emit('push-notice', {
-                        message: 'Open model error',
-                        alert: 'alert-danger'
-                    });
-                });
-        },
 
         settingRooms() {
             API.POST(ApiConst.ROOM_SETTING, {
@@ -405,37 +314,6 @@ export default {
         changeRoom(room) {
             this.$root.$emit('change-room', room);
         },
-
-        pushNewRoom(room) {
-            this.$store.dispatch('addNewRoom', room);
-            this.changeRoom(room);
-
-            this.$socket.emit(
-                AppConst.EVENT_MESSAGE.JOIN_NEW_ROOM,
-                room.room_id
-            );
-        },
-
-        getDataGroup() {
-            let list_group = this.$store.getters.get_list_group;
-            let list_room = this.$store.getters.get_list_room;
-            let list_room_by_group = [];
-
-            list_group.forEach(X => {
-                if (X.id === this.groupId) {
-                    X.room_list.forEach(Y => {
-                        for (let i in list_room) {
-                            if (list_room[i].room_id === Y.id) {
-                                list_room_by_group.push(list_room[i]);
-                                break;
-                            }
-                        }
-                    });
-                }
-            });
-            this.items = list_room_by_group;
-            this.$store.dispatch('setListRoomByGroup', list_room_by_group);
-        }
     }
 };
 </script>
@@ -538,9 +416,19 @@ export default {
     color: #fff;
     transition: 0.5s;
 }
+.room-header .selectboxContent li svg{
+    line-height: 16px;
+    margin-right: 2px;
+}
+
+.room-header .selectboxContent li span:hover svg{
+    fill: #ffffff;
+}
+
 .room-header .selectboxContent li {
     padding: 8px;
     position: relative;
+    margin-right: 3px;
 }
 
 .room-header .selectboxContent li > span {
@@ -598,20 +486,25 @@ export default {
     text-decoration: none;
     cursor: pointer;
     user-select: none;
-    width: 24px;
-    height: 24px;
+    width: 25px;
+    height: 28px;
     padding: 0;
     border-color: transparent;
     background-color: transparent;
     color: #1a1a1a;
     fill: #1a1a1a;
+    margin-top: 1px;
+    line-height: 11px;
+    padding: 12px;
+    border-radius: 5px;
 }
 .create-room:hover,
 .my-chat:hover {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: #0a8abd;
     border-color: transparent;
-    color: #1a1a1a;
-    fill: #1a1a1a;
+    color: #fff;
+    fill: #fff;
+    height: 28px;
 }
 .create-room svg,
 .my-chat svg {
@@ -629,7 +522,9 @@ export default {
 }
 .room-body {
     overflow: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
+    max-height: calc(100vh - 85px);
+    background: #f2f2f2;
 }
 .room-body ul {
     list-style: none;
@@ -684,22 +579,25 @@ export default {
     display: block;
 }
 .create-room .add-option span {
-    font-size: 12px;
+    font-size: 13px;
     background: #f8f9fa;
-    padding: 8px 10px;
+    padding: 10px 10px;
     border-radius: 4px;
     color: #13202f;
     position: relative;
-    top: 5px;
-    border: 1px #ccc solid;
+    top: 10px;
+    border: 1px #ccc solid; 
     width: 200px;
     display: block;
     text-align: center;
+    left: 3px;
+    height: 35px;
 }
 .create-room .add-option span:hover {
-    background: #6c757d;
+    background: #0084b2;
     color: #fff;
     transition: 0.5s;
+    border: 1px #0084b2 solid; 
 }
 
 span.not-read-number {

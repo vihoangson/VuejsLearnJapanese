@@ -34,6 +34,9 @@ export default {
         //
         return (state.current_room = obj);
     },
+    set_current_group(state, obj) {
+        return (state.current_group = obj);
+    },
     set_list_room(state, obj) {
         return (state.list_room = obj);
     },
@@ -79,12 +82,6 @@ export default {
             return b.is_mychat - a.is_mychat;
         });
         state.current_room = obj;
-        state.current_room.color = '#bfbab0';
-        state.list_room.forEach(x => {
-            if (obj.room_id !== x.room_id) {
-                x.color = '';
-            }
-        });
     },
     set_current_user_info(state, obj) {
         return (state.current_user_info = obj);

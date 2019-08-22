@@ -27,6 +27,7 @@
                     <span class="error">{{errors.pleaseTickRecaptchaMessage}}</span>
 
                     <div class="login-form-row login-button">
+                        <button type="button" class="btn btn-default" @click="btnBack" >Back</button>
                         <input type="submit" value="Change password" class="btn btn-login" />
                     </div>
                 </form>
@@ -59,6 +60,9 @@ export default {
         };
     },
     methods: {
+        btnBack(e){
+            this.$router.push({ name: 'login' });
+        },
         mchangePassword(e) {
             e.preventDefault();
             let isValid = false;
@@ -203,6 +207,12 @@ header {
     padding: 20px 20px;
     -webkit-box-shadow: none;
     box-shadow: none;
+}
+
+.btn-default {
+    background-color: #ccc;
+    width: 200px;
+    font-size: 16px;
 }
 .btn-login {
     background-color: #f9423a;

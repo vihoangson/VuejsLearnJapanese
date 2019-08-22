@@ -4,7 +4,7 @@
             id="modal-prevent-show-user"
             ref="modal"
             size="lg"
-            title="Add user to room"
+            v-bind:title="'Member details ('+this.$store.getters.get_list_user_by_room_id.length+')'"
             @show="resetModal"
             @hidden="resetModal"
             @ok="handleOk"
