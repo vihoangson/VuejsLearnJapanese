@@ -1,7 +1,7 @@
 <template>
     <div @mouseleave="hideDropzoneCheck" @mouseup="hideDropzoneCheck" class="dropzone-main-chat">
         <div class="box-chat-nd">
-            <div>
+            <div class="header-box">
                 <span class="title-upload-file">File Upload</span>
                 <span class="icon-close" @click="hideDropzone">X</span>
             </div>
@@ -66,7 +66,7 @@
             </div>
             <div class="submit-container">
                 <div
-                    class="chatInput__submit _cwBN button"
+                    class="btnPrimary chatInput__submit _cwBN"
                     role="button"
                     tabindex="2"
                     aria-disabled="false"
@@ -74,7 +74,7 @@
                 >Send</div>
                 <div
                     @click="hideDropzone"
-                    class="chatInput__submit _cwBN button"
+                    class="chatInput__submit button cancel-btn _cwBN"
                     role="button"
                     tabindex="2"
                     aria-disabled="false"
@@ -171,6 +171,9 @@ export default {
 </script>
 
 <style scoped>
+    .chat-textarea{
+        border:none;
+    }
 .title-upload-file {
     padding-left: 6px;
 }
@@ -178,10 +181,15 @@ export default {
     overflow-y: scroll;
     height: 280px;
 }
+.header-box{
+    position:relative;
+}
 .icon-close {
-    float: right;
-    padding-right: 6px;
+
+    position: absolute;
     cursor: pointer;
+    top: 0px;
+    right: 0px;
 }
 textarea {
     width: 100%;
@@ -202,5 +210,39 @@ textarea {
     left: 0px;
     display: block;
     overflow: visible;
+}
+
+
+span.title-upload-file {
+    font-weight: bold;
+    display: block;
+    padding-bottom: 13px;
+}
+.box-chat-nd {
+    padding: 15px;
+}
+
+.submit-container {
+    text-align: center;
+    padding-top: 10px;
+}
+
+.chatInput__submit._cwBN.button {
+
+}
+
+.chatInput__submit._cwBN.button.cancel-btn {
+}
+
+.btnPrimary {
+    border-color: #006a9c;
+    color: #fff;
+    background-color: #006a9c;
+}
+.button {
+    border-color: #999999;
+    color: #000000;
+    fill: #676863;
+    background-color: #eaeae8;
 }
 </style>

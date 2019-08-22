@@ -65,13 +65,16 @@
                         centered: true
                     })
                     .then(value => {
-                        let obj = {
-                            delete_id: id
-                        };
-                        API.POST(ApiConst.DELETE_FILE, obj).then(res => {
-                            this.showListFile = !this.showListFile;
-                            // this.showMyListFile();
-                        });
+                        if(value === true){
+                            let obj = {
+                                delete_id: id
+                            };
+                            API.POST(ApiConst.DELETE_FILE, obj).then(res => {
+                                this.showListFile = !this.showListFile;
+                                // this.showMyListFile();
+                            });
+                        }
+
                     })
                     .catch(err => {
                         if(err)
