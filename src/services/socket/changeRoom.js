@@ -61,9 +61,7 @@ export function changeRoom(store, room) {
                                     store.getters.get_list_user[i].id ===
                                     room.selected[j].id
                                 ) {
-                                    userAdd = store.getters.get_list_user[
-                                        i
-                                    ];
+                                    userAdd = store.getters.get_list_user[i];
                                 }
                             }
                             var roleInRoom = room.selected[j].permission;
@@ -96,11 +94,8 @@ export function changeRoom(store, room) {
                                 ) {
                                     listRoom.splice(i, 1);
                                 } else {
-                                    this.$root.$emit('push-notice', {
-                                        message:
-                                            room.selected.name + ' has left',
-                                        alert: 'alert-success'
-                                    });
+                                    // TODO
+                                    // Push message user leaved
                                 }
 
                                 break;

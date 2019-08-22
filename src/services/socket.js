@@ -26,6 +26,7 @@ export const SocketService = {
             for (let i in list) {
                 if (list[i].room_id === data.room_id) {
                     this.$store.getters.get_list_room.splice(i, 1);
+                    this.$store.dispatch('setCurrentRoom', list[0]);
                 }
             }
         }
