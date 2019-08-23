@@ -139,6 +139,8 @@ export default {
             } else {
                 alert('Upload failed');
             }
+            this.$store.dispatch('setLoadingPage',false);
+
             this.$refs['myVueDropzone'].removeFile(file);
             if (this.$refs['myVueDropzone'].getAcceptedFiles().length === 0) {
                 this.hideDropzone();
@@ -163,6 +165,8 @@ export default {
             }
         },
         addSending(file, xhr, formData) {
+            this.$store.dispatch('setLoadingPage',true);
+
             formData.append('message', this.message ? this.message : '');
             formData.append('room_id', this.$store.getters.get_current_room.room_id);
         }

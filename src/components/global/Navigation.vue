@@ -100,7 +100,7 @@
         </div>
     </div>
 </template>
-    
+
 <script>
 import modalMixin from '@/mixins/modal';
 import { AppConst } from '../../common/AppConst';
@@ -136,8 +136,10 @@ export default {
             this.$root.$off('open-modal-show-user');
             this.$store.dispatch('setListRoom', []);
             this.$store.dispatch('setListUser', []);
+            this.$store.dispatch("setContactDisplay", 'none');
             localStorage.removeItem(AppConst.LOCAL_USER);
             this.$router.push({ path: '/login' });
+
         },
         // ShowPopUpModalContact() {
         //     this.showPageInModal(

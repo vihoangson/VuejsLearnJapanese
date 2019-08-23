@@ -191,11 +191,12 @@
                     </div>
 
                     <div id="_contactWindowBox" class="adminAllListArea"  v-bind:style="{display: contentAddContact.display}">
-                        <add-contact></add-contact>
+<!--                        <add-contact></add-contact>-->
+                        <list-contact v-bind:type="'AddContact'"></list-contact>
                     </div>
 
                     <div id="_contactWindowListContact" class="adminAllListArea"  v-bind:style="{display: contentListContact.display}">
-                        <list-contact></list-contact>
+                        <list-contact v-bind:type="'MyContact'"></list-contact>
                     </div>
 
                     <div id="_contactWindowWaitForAccpet" class="adminAllListArea"  v-bind:style="{display: contentWaitForAccpet.display}">
