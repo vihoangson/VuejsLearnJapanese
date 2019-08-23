@@ -44,9 +44,7 @@
                 </form>
             </div>
 
-            <div class="loader"  v-bind:style="{visibility: this.showLoader}">
-                <img src="http://oop.vn/img/loading.gif">
-            </div>
+
         </section>
     </div>
 
@@ -87,6 +85,7 @@ export default {
         },
         login(e) {
             e.preventDefault();
+            this.errors.login_fail = '';
             this.showLoader = 'visible';
             if (this.email === '') this.errors.email = '* Userame required!';
 
@@ -107,7 +106,7 @@ export default {
                     password: this.password,
                     only_token: true
                 };
-
+                this.$store.dispatch('setLoadingPage',true);
                 API.POST(ApiConst.LOGIN, data).then(res => {
                     if (res.error_code === 0) {
                         let user = {
@@ -134,6 +133,7 @@ export default {
                         let targetUser = {
                             id: res.data.id,
                         };
+
                         API.POST(ApiConst.GET_USER_INFO, targetUser).then(res => {
                             if (res.error_code === 0) {
 
@@ -149,22 +149,24 @@ export default {
                                     JSON.stringify(userInfo)
                                 );
 
-                                // let dataUserInfo = localStorage.getItem(AppConst.LOCAL_USER_INFO);
-                                //
-                                // this.$store.dispatch('setCurrentUserInfo', JSON.parse(dataUserInfo));
-
                                 this.$router.push({ path: '/' });
 
+                                this.$store.dispatch('setLoadingPage',false);
                             }
+                            // Can't get user info
                             else {
+                                this.$store.dispatch('setLoadingPage',false);
                                 this.errors.login_fail = '* ' + res.error_msg;
                             }
                         });
 
-                    } else {
+                    }
+                    // Can't login
+                    else {
+                        this.$store.dispatch('setLoadingPage',false);
                         this.errors.login_fail = '* ' + res.error_msg;
                     }
-                    this.showLoader = 'hidden';
+
                 });
 
             }
