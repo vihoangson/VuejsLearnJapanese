@@ -1,4 +1,10 @@
 export default {
+    setAllUser({ commit }, message) {
+        commit('set_all_user', message);
+    },
+    setListContact({ commit }, message) {
+        commit('set_list_contact', message);
+    },
     setLoadingPage({ commit }, message) {
         commit('set_loading_page', message);
     },

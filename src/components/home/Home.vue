@@ -72,6 +72,7 @@ export default {
         };
     },
     mounted() {
+        this.getAllUser()
         this.$root.$on('change-room', data => {
             this.changeRoom(data);
         });
@@ -129,6 +130,9 @@ export default {
         let userInfo = localStorage.getItem(AppConst.LOCAL_USER_INFO);
         if (userInfo)
             this.$store.dispatch('setCurrentUserInfo', JSON.parse(userInfo));
+
+
+
     },
     // beforeRouteUpdate(to, from, next) {
     //     let room = this.$route.params.room_id;
@@ -136,6 +140,14 @@ export default {
     //     next();
     // },
     methods: {
+        getAllUser(){
+            let requestData = [];
+            API.GET(ApiConst.ALL_USER, requestData).then(response => {
+                if (response.error_code === 0) {
+                    this.$store.dispatch('setAllUser', {list_user: response.data});
+                }
+            })
+        },
         changeRoomEvent() {
             let chatBox = this.$refs.chat;
             chatBox.editMessage = false;
@@ -158,7 +170,7 @@ export default {
             return API.GET(ApiConst.ALL_ROOM).then(res => {
                 if (res.error_code === 0) {
                     return res.data;
-                    
+
 
                 }
             });

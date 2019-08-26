@@ -1,4 +1,10 @@
 export default {
+    get_all_user:state =>{
+        return state.all_user;
+    },
+    get_data_contact:state =>{
+        return state.data_contact;
+    },
     get_loading_page: state => {
         return state.loading_page;
     },

@@ -176,6 +176,21 @@
             </div>
             <div class="sideContentResizeCtrlArea cwResizeHandleCol"></div>
         </div>
+        <div class="chat-box-detail">
+            <div v-if="false">
+
+                content column right
+                <div v-for="user in $store.getters.get_all_user.list_user">
+    <!--                <div>{{user}}</div>-->
+                    <div>{{user.name}}</div>
+                    <div>{{user.email}}</div>
+                    <div>{{user.contact_status}}</div>
+                    <br>
+                    <hr>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
@@ -813,6 +828,16 @@ export default {
     box-sizing: border-box;
     max-width: 100%;
     padding-right: 24px;
+}
+.chat-box-detail {
+    position: absolute;
+    right: 0px;
+    min-width: 300px;
+    width: 300px;
+    background: #ccc;
+    border-right: 1px solid #b3b3b3;
+    border-left: 1px solid #cccccc;
+    z-index: -1;
 }
 .chat-box-content {
     position: absolute;
