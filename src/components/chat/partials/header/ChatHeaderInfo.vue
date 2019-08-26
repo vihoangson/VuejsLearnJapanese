@@ -71,7 +71,7 @@
                         />
                     </svg>
                     <div class="group-option">
-                        <span @click="settingRooms">Group Chat Setting</span>
+                        <span class="disable-mark"><span>Group Chat Setting</span></span>
                         <span @click="leaveRooms">Leave this group chat</span>
                         <span
                             @click="deleteRooms"
