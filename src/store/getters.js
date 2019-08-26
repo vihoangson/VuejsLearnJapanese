@@ -1,4 +1,16 @@
 export default {
+    get_all_user:state =>{
+        return state.all_user;
+    },
+    get_data_contact:state =>{
+        return state.data_contact;
+    },
+    get_loading_page: state => {
+        return state.loading_page;
+    },
+    get_list_my_contact: state => {
+        return state.list_my_contact;
+    },
     get_list_message: state => {
         return state.list_message;
     },
@@ -44,8 +56,5 @@ export default {
 	},
     get_is_admin_room: state => {
         return state.is_admin_room;
-    },
-    getContactDisplay: state => {
-        return state.openContactDisplay
     }
 };

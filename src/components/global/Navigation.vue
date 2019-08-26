@@ -100,13 +100,10 @@
         </div>
     </div>
 </template>
-    
+
 <script>
-import BaseContact from '../contact/BaseContact.vue';
 import modalMixin from '@/mixins/modal';
 import { AppConst } from '../../common/AppConst';
-import { API } from '../../services/api';
-import { ApiConst } from '../../common/ApiConst';
 export default {
     name: 'Navigation',
     mixins: [modalMixin],
@@ -124,6 +121,7 @@ export default {
     methods: {
         logout() {
             this.$root.$off('push-list-room');
+            this.$root.$off('change-list-room');
             this.$root.$off('remove-list-room');
             this.$root.$off('changed-info-rooms');
             this.$root.$off('push-notice');
@@ -138,8 +136,11 @@ export default {
             this.$root.$off('open-modal-show-user');
             this.$store.dispatch('setListRoom', []);
             this.$store.dispatch('setListUser', []);
+            this.$store.dispatch('setCurrentRoom', {});
+            this.$store.dispatch("setContactDisplay", 'none');
             localStorage.removeItem(AppConst.LOCAL_USER);
             this.$router.push({ path: '/login' });
+
         },
         // ShowPopUpModalContact() {
         //     this.showPageInModal(

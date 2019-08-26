@@ -1,4 +1,5 @@
 export const ApiConst = {
+    ALL_USER: '/api/v1/user/get-all',
     LOGIN: '/api/v1/user/login',
     LOGOUT: '/api/v1/user/logout',
     REGISTER: '/api/v1/user/register',
@@ -18,7 +19,9 @@ export const ApiConst = {
     ROOM_UPDATE: '/api/v1/room/update',
     ROOM_DELETE: '/api/v1/room/delete',
     ROOM_SETTING: '/api/v1/room/setting',
+    ROOM_GET_ALL_USER: '/api/v1/user/get-all-user',
     ROOM_ADD_USER_TO_ROOM: '/api/v1/room/add-user-to-room',
+    DELETE_USER_OF_ROOM: '/api/v1/room/delete-user-of-room',
     MY_LIST_FILE: '/api/v1/file/get-my-list-file',
     FORGOT_PASS_REQUEST: '/api/v1/user/forgot-password-request',
     FORGOT_PASS_CHECK_TOKEN: '/api/v1/user/forgot-password-check-token',
@@ -29,5 +32,13 @@ export const ApiConst = {
     DELETE_CONTACT: '/api/v1/contact/delete-contact',
     CANCEL_REQUEST_CONTACT: '/api/v1/contact/cancel-request-contact',
     SEARCH_CONTACT: '/api/v1/contact/search-contact',
-    UPDATE_USER_INFO: '/api/v1/user/update-user'
+    UPDATE_USER_INFO: '/api/v1/user/update-user',
+    GET_LINK_DOWNLOAD_FILE: '/api/v1/file/download-file',
+    DELETE_FILE: '/api/v1/file/delete-file',
+    GET_FILE_PREVIEW_MID: '/api/v1/file/preview-photo/mid',
+    GET_TOKEN_IMAGE_DETAIL: '/api/v1/file/get-token',
+    MESSAGE_UPLOAD_FILE: '/api/v1/message/message-file',
+    DOWNLOAD_FILE: '/api/v1/download-file',
+    DETAIL_IMAGE: '/api/v1/view-image',
+
 };

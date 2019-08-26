@@ -19,7 +19,7 @@
             <div class="_cwFWHeader">
                 <div class="floatHeaderTab clearfix">
                     <ul id="_contactWindowTab">
-                        <li @click="changeTab(index)" v-for="(tab, index) in contactTabs" v-bind:id="tab.id"
+                        <li @click="changeTab(index)" v-for="(tab, index) in contactTabs" :key="index" v-bind:id="tab.id"
                             :class="linkClass(index)" v-bind:data-type="tab.dataType" v-text="tab.text"
                             v-bind:style="{display: tab.display}"/>
                     </ul>
@@ -124,7 +124,7 @@
                                 <label class="contactInviteMailLabel">Email Address</label>
                                 <ul id="_contactInviteMailList" class="contactInviteMailList">
                                     <li class="_mailAddressInput contactInviteMailList__item"
-                                        v-for="(itemEmail, index) in itemEmails">
+                                        v-for="(itemEmail, index) in itemEmails" :key="index">
                                         <input type="email" name="email" placeholder="Enter email address"
                                                @input="onChangeEmail(itemEmail, index)" v-model="itemEmail.text">
                                         <span class="_cwFWButton _mailAddressInputCancel contactInviteMailList__cancelButton"
@@ -175,7 +175,7 @@
                         <div id="_contentInviteMailFinished" class="contactInviteMailContent"
                              v-bind:style="{display: showResultData.display}">
                             <div class="contactInviteMailSection">
-                                <p v-for="(item) in contactInviteMailSection" v-bind:class="item.class"
+                                <p v-for="(item, index) in contactInviteMailSection" :key="index" v-bind:class="item.class"
                                    v-bind:style="{display: item.display}">{{item.text}}</p>
                             </div>
                             <div v-bind:key="content.key"
@@ -183,7 +183,7 @@
                                  v-bind:style="{display: content.display}"
                                  v-for="(content) in contentInviteMailFinished">
                                 <p v-bind:class="content.classChild">{{content.text}}</p>
-                                <ul v-for="(emailData) in content.data" class="contactInviteMailResultList">
+                                <ul v-for="(emailData, index) in content.data" :key="index" class="contactInviteMailResultList">
                                     {{emailData}}
                                 </ul>
                             </div>
@@ -191,11 +191,12 @@
                     </div>
 
                     <div id="_contactWindowBox" class="adminAllListArea"  v-bind:style="{display: contentAddContact.display}">
-                        <add-contact></add-contact>
+<!--                        <add-contact></add-contact>-->
+                        <list-contact v-bind:type="'AddContact'"></list-contact>
                     </div>
 
                     <div id="_contactWindowListContact" class="adminAllListArea"  v-bind:style="{display: contentListContact.display}">
-                        <list-contact></list-contact>
+                        <list-contact v-bind:type="'MyContact'"></list-contact>
                     </div>
 
                     <div id="_contactWindowWaitForAccpet" class="adminAllListArea"  v-bind:style="{display: contentWaitForAccpet.display}">

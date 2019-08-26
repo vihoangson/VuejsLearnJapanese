@@ -7,7 +7,7 @@
                 <button type="submit">Search</button>
                 </form>
                 <div class="adminNavigation">
-                    <div v-for="item in listContact">
+                    <div v-for="(item, index) in listContact" :key="index">
                         <box-contact v-bind:item="item"></box-contact>
                     </div>
                 </div>

@@ -183,7 +183,7 @@
                 this.roomId = id;
                 this.roomName = '';
                 this.description = '';
-                this.roomImage = 'https://appdata.chatwork.com/avatar/3094/3094762.rsz.gif';
+                this.roomImage = 'https://appdata.chatwork.com/icon/ico_group.png';
                 this.selected = [];
                 this.buttonName = "Create";
                 var listNotAdmin = [];
@@ -318,7 +318,7 @@
 
                 this.selected.forEach(x=>{
                     if(x !== false){
-                        //data.member_list.push(x);
+                        // data.member_list.push(x);
                         let userAdd = this.getUserbyId(x.id);
                         var roleInRoom = x.permission;
                         this.listAdd = {
@@ -339,19 +339,12 @@
                             case 0:
                                 data.room_id = response.data;
                                 this.$refs.modal.hide();
-                                let admin_user = {
-                                    company: this.$store.getters.get_current_user_info.company,
-                                    email: this.$store.getters.get_current_user_info.email,
-                                    icon_img: this.$store.getters.get_current_user_info.icon_img,
-                                    id: this.$store.getters.get_current_user_info.id,
-                                    name: this.$store.getters.get_current_user_info.name,
-                                    role_in_room: 1,
-                                };
-
-                                data.member_list.push(admin_user);
+                                let adminUser = this.$store.getters.get_current_user_info;
+                                adminUser.role_in_room = 1;
+                                data.member_list.push(adminUser);
                                 this.$root.$emit('push-list-room', data);
                                 this.$root.$emit('changed-info-rooms');
-                                this.$store.dispatch('setCurrentRoom', data);
+                                // this.$store.dispatch('setCurrentRoom', data);
                                 this.$root.$emit('push-notice', {message:'insert success', alert: 'alert-success'});
                                 break;
                             case 1:

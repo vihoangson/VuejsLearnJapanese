@@ -5,6 +5,7 @@
         <AddUser></AddUser>
         <EditUser></EditUser>
         <ShowUser></ShowUser>
+        <ChatSetting></ChatSetting>
         <DeleteRoom></DeleteRoom>
         <div class="content">
             <Room @changeRoomEvent="changeRoomEvent"></Room>
@@ -42,6 +43,7 @@ import Group from '../group/Group';
 import AddUser from '../room/AddUser';
 import EditUser from '../room/EditUser';
 import ShowUser from '../room/ShowUser';
+import ChatSetting from '../room/ChatSetting';
 import Contact from '../contact/Contact';
 import PersonalInfo from '../personal_info/PersonalInfo';
 import EditPersonalInfo from '../personal_info/EditPersonalInfo';
@@ -57,6 +59,7 @@ export default {
         AddUser,
         EditUser,
         ShowUser,
+        ChatSetting,
         Notice,
         Contact,
         PersonalInfo,
@@ -69,14 +72,48 @@ export default {
         };
     },
     mounted() {
+        this.getAllUser()
         this.$root.$on('change-room', data => {
             this.changeRoom(data);
         });
     },
     created() {
-        this.getListRoom();
-        this.getListUser();
+        this.getListRoom().then(data => {
+            let rooms = data;
+            rooms.forEach(x => {
+                x.color = '';
+                this.rooms.push(x.room_id);
+            });
+            rooms.sort((a, b) => {
+                return b.is_mychat - a.is_mychat;
+            });
+
+            this.$socket.emit(
+                AppConst.EVENT_MESSAGE.JOIN_BY_LIST_ROOM,
+                this.rooms
+            );
+            this.$store.dispatch('setListRoom', rooms);
+            let roomId = this.$route.params.pathMatch;
+            if (roomId === undefined) {
+                roomId = rooms[0].room_id;
+                this.$router.push('/rid-' + roomId);
+                this.changeRoom(rooms[0]);
+                this.getListMessage(rooms[0]);
+            } else {
+                let room = rooms.find(function (d) {
+                    return d.room_id === parseInt(roomId);
+                });
+                this.changeRoom(room);
+                this.getListMessage(room);
+            }
+        });
+
+        this.getListUser().then(data => {
+            this.$store.dispatch('setListUser', data);
+        });
+
         let user = localStorage.getItem('user');
+
         if (user) {
             this.$socket.emit(
                 AppConst.EVENT_MESSAGE.CHANNEL_NEW_ROOM,
@@ -85,12 +122,17 @@ export default {
             this.$store.dispatch('setCurrentUser', JSON.parse(user));
             this.setNotification();
         }
+
         this.$root.$on('event-get-list-message', () => {
             this.changeRoomEvent();
         });
+
         let userInfo = localStorage.getItem(AppConst.LOCAL_USER_INFO);
         if (userInfo)
             this.$store.dispatch('setCurrentUserInfo', JSON.parse(userInfo));
+
+
+
     },
     // beforeRouteUpdate(to, from, next) {
     //     let room = this.$route.params.room_id;
@@ -98,6 +140,14 @@ export default {
     //     next();
     // },
     methods: {
+        getAllUser(){
+            let requestData = [];
+            API.GET(ApiConst.ALL_USER, requestData).then(response => {
+                if (response.error_code === 0) {
+                    this.$store.dispatch('setAllUser', {list_user: response.data});
+                }
+            })
+        },
         changeRoomEvent() {
             let chatBox = this.$refs.chat;
             chatBox.editMessage = false;
@@ -117,43 +167,18 @@ export default {
             }
         },
         getListRoom() {
-            API.GET(ApiConst.ALL_ROOM).then(res => {
+            return API.GET(ApiConst.ALL_ROOM).then(res => {
                 if (res.error_code === 0) {
-                    let rooms = res.data;
-                    rooms.forEach(x => {
-                        x.color = '';
-                        this.rooms.push(x.room_id);
-                    });
-                    rooms.sort((a, b) => {
-                        return b.is_mychat - a.is_mychat;
-                    });
+                    return res.data;
 
-                    this.$socket.emit(
-                        AppConst.EVENT_MESSAGE.JOIN_BY_LIST_ROOM,
-                        this.rooms
-                    );
-                    this.$store.dispatch('setListRoom', rooms);
-                    let roomId = this.$route.params.pathMatch;
-                    if (roomId === undefined) {
-                        roomId = rooms[0].room_id;
-                        this.$router.push('/rid-' + roomId);
-                        this.changeRoom(rooms[0]);
-                        this.getListMessage(rooms[0]);
-                    } else {
-                        let room = rooms.find(function(d) {
-                            return d.room_id === parseInt(roomId);
-                        });
-                        this.changeRoom(room);
-                        this.getListMessage(room);
-                    }
 
                 }
             });
         },
         getListUser() {
-            API.GET(ApiConst.GET_ALL_USER).then(res => {
+            return API.GET(ApiConst.GET_ALL_USER).then(res => {
                 if (res.error_code === 0)
-                    this.$store.dispatch('setListUser', res.data);
+                    return res.data;
             });
         },
         changeRoom(room) {

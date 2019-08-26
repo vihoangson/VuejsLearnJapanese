@@ -1,13 +1,14 @@
 <template>
     <div id="_contactWindowNavigation" class="adminNavigation" style="display: block;">
         <ul id="_contactWindowList" class="contactList">
-            <div class="adminAllListArea__emptyContainer" >
-                <form @submit="addContact"  class="box-input-search-contact">
-                    <input type="text" v-model="contactName">
-                    <button type="submit" >Search</button>
+            <div class="adminAllListArea__emptyContainer">
+                <form @submit="addContact" class="box-input-search-contact">
+                    <input type="text" v-model="contactName" />
+                    <button type="submit">Search</button>
+                    <button type="button" class="" style="background: #ccc;border-color: #ccc;" @click="resetSearch">Cancel</button>
                 </form>
                 <div class="adminNavigation">
-                    <div v-for="item in listContact">
+                    <div v-for="(item, index) in listContact" :key="index">
                         <box-contact v-bind:item="item"></box-contact>
                     </div>
                 </div>
@@ -17,58 +18,72 @@
 </template>
 
 <script>
-    import {API} from '../../../services/api';
-    import {ApiConst} from '../../../common/ApiConst';
-    import BoxContact from '../elements/BoxContact';
-    export default {
-        name: "AddContact.vue",
-        components: {BoxContact},
-        data(){
-            return {
-                contactName : '',
-                listContact:[]
-            }
+import { API } from '../../../services/api';
+import { ApiConst } from '../../../common/ApiConst';
+import BoxContact from '../elements/BoxContact';
+export default {
+    name: 'AddContact.vue',
+    components: { BoxContact },
+    props:["type"],
+    data() {
+        return {
+            contactName: '',
+            listContact: []
+        };
+    },
+    component: {
+        BoxContact
+    },
+    mounted() {
+        let valueDefault = this.searchContact()
+        this.$store.dispatch('setMyContact',valueDefault);
+        this.listContact = valueDefault;
+    },
+    methods: {
+        resetSearch(e){
+            e.preventDefault();
+            this.contactName = "";
+            this.listContact = this.searchContact();
         },
-        mounted (){
-            this.searchContact();
+        addContact(e) {
+            e.preventDefault();
+            this.listContact = this.searchContact();
         },
-        component:{
-            BoxContact
-        },
-        methods:{
-            addContact(e){
-                e.preventDefault();
-                this.searchContact();
-            },
-            searchContact(){
-                let requestData = {
-                    query :this.contactName,
-                    options: 1
+        searchContact() {
+            let requestData = {
+                query: this.contactName,
+                options: 1
+            };
+            var tmpList = [];
+            API.POST(ApiConst.SEARCH_CONTACT, requestData).then(response => {
+                if (response.error_code === 0) {
+                    let contacts = response.data.rows;
+                    contacts.forEach(x => {
+                        switch (this.type) {
+                            case 'AddContact':
+                                if (x.contact_status === null) {
+                                    tmpList.push(x);
+                                }
+                                break;
+                            default:
+                                if (x.contact_status === 1) {
+                                    tmpList.push(x);
+                                }
+                                break;
+                        }
+
+                    });
                 }
-                API.POST(ApiConst.SEARCH_CONTACT, requestData).then(response => {
-
-                    if (response.error_code === 0) {
-                        let contacts = response.data.rows;
-                        this.listContact = [];
-                        contacts.forEach(x => {
-                            if(x.contact_status === 1){
-                                this.listContact.push(x);
-                            }
-                        });
-                    }
-
-                });
-            }
+            });
+            return tmpList;
         }
-
     }
-
+};
 </script>
 
 <style scoped>
-    .adminNavigation{
-        overflow: overlay;
-        height: 570px;
-    }
-
+.adminNavigation {
+    overflow: overlay;
+    height: 570px;
+}
 </style>

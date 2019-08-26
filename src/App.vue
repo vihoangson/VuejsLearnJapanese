@@ -2,13 +2,14 @@
     <div id="app">
         <router-view @authenticated="setAuthenticated" />
         <modals-container />
+        <div class="loader"  v-if="$store.getters.get_loading_page">
+            <img src="/static/img/loading.gif">
+        </div>
     </div>
 </template>
 
 <script>
-import { API } from './services/api';
-import { ApiConst } from './common/ApiConst';
-import { AppConst } from './common/AppConst';
+
 export default {
     name: 'App',
     data() {
@@ -40,6 +41,23 @@ export default {
 </script>
 
 <style>
+
+
+    .loader {
+        position: fixed;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        height: 100%;
+        z-index: 9999;
+        background-color: #ffffffcf;
+    }
+    .loader img{
+        position: relative;
+        left: 40%;
+        top: 40%;
+    }
+
 body {
     margin: 0px;
     font-family: Arial, Helvetica, sans-serif;
@@ -69,5 +87,10 @@ body {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
+}
+pre {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    line-height: 1;
 }
 </style>

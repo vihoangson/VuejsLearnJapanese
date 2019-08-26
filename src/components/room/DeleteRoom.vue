@@ -86,7 +86,7 @@ export default {
                                 }
                             );
                             this.$root.$emit('remove-list-room', room);
-                            //this.$root.$emit('changed-group');
+                            // this.$root.$emit('changed-group');
                             this.$refs.modal.hide();
                             break;
                         default:
