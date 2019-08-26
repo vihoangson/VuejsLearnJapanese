@@ -1,5 +1,5 @@
 <template>
-    <div id="_contactElementButtonAdd" class="button-contact" style="">
+    <div id="_contactElementButtonAdd" class="button-contact" style="">        
         <button v-if="status === null" class="btn btn-sm btn-primary" @click="addContact">Add contact</button>
         <button v-if="status === 0" class="btn btn-sm btn-warning" @click="removeContact">Cancel request</button>
         <button v-if="status === 2" class="btn btn-sm btn-success" @click="Approve">Approve</button>
@@ -10,6 +10,8 @@
 <script>
     import {API} from '../../../services/api';
     import {ApiConst} from '../../../common/ApiConst';
+    import {AppConst} from '../../../common/AppConst';
+
 
     export default {
         name: "ButtonAddContact.vue",
@@ -23,6 +25,40 @@
                     if(response.error_code ===0){
                         this.status = 1;
                         this.$parent.isActive = false;
+
+
+                        // todo: send me
+                        let data = {
+                            room_name: response.data.partner.name,
+                            description: response.data.room_info.description,
+                            room_id: response.data.room_info.id,
+                            icon_img: response.data.partner.icon_img,
+                            member_list: [response.data.me],
+                            only_token: true,
+                            not_read: 0,
+                            list_message: [],
+                            can_add_user: 0
+                        }
+
+                        this.$store.dispatch('addNewRoom', data);
+                        this.$root.$emit('changed-info-rooms');
+                        this.$socket.emit(AppConst.EVENT_MESSAGE.JOIN_NEW_ROOM, data.room_id);
+
+                        // todo: send partner
+                        let data2 = {
+                            room_name: response.data.me.name,
+                            description: response.data.room_info.description,
+                            icon_img: response.data.me.icon_img,
+                            room_id: response.data.room_info.id,
+                            member_list: [response.data.partner],
+                            only_token: true,
+                            not_read: 0,
+                            list_message: [],
+                            can_add_user: 0
+                        }
+                        this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, data2);
+
+
                     }
                     console.log(response);
                 })
