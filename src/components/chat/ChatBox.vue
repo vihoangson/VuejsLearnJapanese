@@ -41,16 +41,10 @@
             </div>
             <div class="chat-input">
                 <div class="chat-tool">
-                    <picker
-                        v-show="showEmojiPicker"
-                        title="Pick your emoji..."
-                        emoji="point_up"
-                        @select="addEmoji"
-                    />
                     <div>
                         <ul class="send-tool">
-                            <li class="emoji" @click="toggleEmojiPicker">
-                                <span class="icon-container">
+                            <li class="emoji">
+                                <span id="showEmojiList" class="icon-container">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_emoticon"
@@ -61,6 +55,7 @@
                                         />
                                     </svg>
                                 </span>
+                                <Emoji class="popup"></Emoji>
                             </li>
                             <li
                                 class="emoji"
@@ -93,7 +88,7 @@
                                 </span>
                             </li>
                             <li class="emoji">
-                                <span class="icon-container">
+                                <span class="icon-container disable-mark">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_live"
@@ -183,12 +178,24 @@
             </div>
             <div class="sideContentResizeCtrlArea cwResizeHandleCol"></div>
         </div>
+        <div class="chat-box-detail">
+            <div v-if="false">
+
+                content column right
+                <div v-for="(user, index) in $store.getters.get_all_user.list_user" :key="index">
+                    <div>{{user.name}}</div>
+                    <div>{{user.email}}</div>
+                    <div>{{user.contact_status}}</div>
+                    <br>
+                    <hr>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
 <script>
-import { Picker } from 'emoji-mart-vue';
-import TextareaEmojiPicker from '../global/TextareaEmojiPicker';
 import { API } from '../../services/api';
 import { AppConst } from '../../common/AppConst';
 import { ApiConst } from '../../common/ApiConst';
@@ -199,18 +206,19 @@ import SendFile from './SendFile';
 import ChatMessage from './partials/ChatMessage';
 import ChatHeaderInfo from './partials/header/ChatHeaderInfo';
 import ListTo from './partials/ListTo';
+import Emoji from './partials/Emoji';
+import { setTimeout } from 'timers';
 
 export default {
     name: 'ChatBox',
     mixins: [modalMixin],
     components: {
-        Picker,
-        TextareaEmojiPicker,
         ChatAction,
         ChatEdit,
         ChatMessage,
         ChatHeaderInfo,
-        ListTo
+        ListTo,
+        Emoji
     },
     props: {
         value: {
@@ -287,7 +295,7 @@ export default {
             this.message.content = text;
             textarea.focus();
             this.$nextTick(() => {
-                textarea.selectionEnd = cursorPosition + cursorContentPositon;
+                textarea.selectionEnd = cursorPosition + data.length;
             });
         })
     },
@@ -681,11 +689,9 @@ export default {
         },
         showListToMember() {
             document.getElementById('toMemberList').style.display = 'block';
-            this.$nextTick(() => {
-                let x = document.getElementById('searchListUser');
-                x.value = '';
-                x.focus();
-            });
+            setTimeout(function(){
+                document.getElementById('searchListUser').focus();
+            }, 1000)
         },
         onBlurChatBoxMessage() {
             let localMessageByRooms = localStorage.getItem(
@@ -793,7 +799,6 @@ export default {
     cursor: pointer;
     display: block;
     margin: auto;
-    vertical-align: middle;
     max-width: 100%;
     max-height: 100%;
 }
@@ -894,6 +899,16 @@ export default {
     box-sizing: border-box;
     max-width: 100%;
     padding-right: 24px;
+}
+.chat-box-detail {
+    position: absolute;
+    right: 0px;
+    min-width: 300px;
+    width: 300px;
+    background: #ccc;
+    border-right: 1px solid #b3b3b3;
+    border-left: 1px solid #cccccc;
+    z-index: -1;
 }
 .chat-box-content {
     position: absolute;

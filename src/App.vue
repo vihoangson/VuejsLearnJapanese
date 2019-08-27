@@ -10,7 +10,8 @@ export default {
     name: 'App',
     data() {
         return {
-            authenticated: false
+            authenticated: false,
+            isMultiSelectEmoji: false
         };
     },
     created() {
@@ -28,15 +29,21 @@ export default {
     },
     mounted() {
         document.addEventListener('click', function(e) {
-            let popups = document.getElementsByClassName('popup');
-            for (let i = 0; i < popups.length; i++)
-                popups[i].style.display = 'none';
-
-            if(e.target.id === 'my-account'){
-                document.getElementById('menu-my-account').style.display = 'block';
+            if (!this.isMultiSelectEmoji) {
+                let popups = document.getElementsByClassName('popup');
+                for (let i = 0; i < popups.length; i++)
+                    popups[i].style.display = 'none';
+                document.removeEventListener('keydown', function(e) {});
+                document.removeEventListener('keyup', function(e) {});
             }
-            if(e.target.id === 'create-room'){
-                document.getElementById('menu-create-new-room').style.display = 'block';
+
+            if (e.target.id === 'my-account') {
+                document.getElementById('menu-my-account').style.display =
+                    'block';
+            }
+            if (e.target.id === 'create-room') {
+                document.getElementById('menu-create-new-room').style.display =
+                    'block';
             }
             if (e.target.id === 'icon-config-all') {
                 document.getElementById('listFile').style.display = 'block';
@@ -44,6 +51,16 @@ export default {
 
             if (e.target.id === 'showToMemberList') {
                 document.getElementById('toMemberList').style.display = 'block';
+            }
+
+            if (e.target.id === 'showEmojiList') {
+                document.getElementById('emojiList').style.display = 'block';
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Shift') this.isMultiSelectEmoji = true;
+                });
+                document.addEventListener('keyup', function(e) {
+                    if (e.key === 'Shift') this.isMultiSelectEmoji = false;
+                });
             }
         });
     },
@@ -96,5 +113,10 @@ pre {
 }
 .popup {
     display: 'block' !important;
+}
+pre img.ui_emoticon {
+    width: 20px;
+    height: 20px;
+    margin: 0 3px 3px 3px;
 }
 </style>
