@@ -104,7 +104,7 @@
 import { API } from '../../../../services/api';
 import { ApiConst } from '../../../../common/ApiConst';
 import { AppConst } from '../../../../common/AppConst';
-import ListFileInRoom from '../../../../files/ListFileInRoom';
+import ListFileInRoom from '../../../files/ListFileInRoom';
 
 export default {
     name: 'ChatHeaderInfo',

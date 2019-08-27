@@ -20,8 +20,8 @@
 </template>
 
 <script>
-import { API } from '../services/api';
-import { ApiConst } from '../common/ApiConst';
+import { API } from '../../services/api';
+import { ApiConst } from '../../common/ApiConst';
 
 import showFile from './showFile';
 

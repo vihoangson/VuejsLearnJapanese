@@ -807,7 +807,6 @@ export default {
     cursor: pointer;
     display: block;
     margin: auto;
-    vertical-align: middle;
     max-width: 100%;
     max-height: 100%;
 }

@@ -22,8 +22,8 @@
 <script>
 
 
-    import { API } from '../services/api';
-    import { ApiConst } from '../common/ApiConst';
+    import { API } from '../../services/api';
+    import { ApiConst } from '../../common/ApiConst';
 
     export default {
         name: 'showFile',
