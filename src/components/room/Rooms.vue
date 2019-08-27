@@ -195,8 +195,6 @@
                 this.items = listNotAdmin;
             });
         },
-        created: function(){
-        },
         computed: {
             filteredItems() {
                 if(this.items.length > 0){

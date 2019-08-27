@@ -1,6 +1,8 @@
 export const AppConst = {
+    SOCKET_ADDRESS: 'http://172.16.100.35:3001',
     LOCAL_USER: 'user',
     LOCAL_USER_INFO: 'user_info',
+    LOCAL_MESSAGE_BY_ROOM: 'message_by_room',
     MESSAGE_TYPE: {
         CREATE: 0,
         EDIT: 1,
@@ -21,5 +23,16 @@ export const AppConst = {
         CHANNEL_CHANGE_ROOM: 'channel_change_room',
         LEAVE_ROOM: 'leave_room'
     },
-    SOCKET_ADDRESS: 'http://127.0.0.1:3000'
+    REGULAR: {
+        TO_ALL: /(\[toall])/g,
+        TO: /(\[to:([0-9])+])/g,
+        REPY: /(\[reply mid:([0-9]+) to:([0-9]+)\])/g,
+        REPLY_TO_ID: /(?<=to:)([0-9]+)/g,
+        TAG_INFO: /(?<=\[info\])(.|\n)*?(?=\[\/info\])/g,
+        TAG_CODE: /(?<=\[code\])(.|\n)*?(?=\[\/code\])/g,
+        TAG_TITLE: /(?<=\[title\])(.|\n)*?(?=\[\/title\])/g,
+        ALL_TAG: /(\[\/?\w+)(.*?\])/g,
+        PREVIEW: /(\[preview:([0-9])+])/g,
+        TAG_SCRIPT: /(<script)|(<\/script>)/g
+    }
 };

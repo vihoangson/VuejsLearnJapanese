@@ -70,5 +70,8 @@ export default {
     },
     setProfileEdit({ commit }, style) {
         commit('setProfileEdit', style);
+    },
+    setIsShowToMemberList({ commit }, isShow) {
+        commit('setIsShowToMemberList', isShow);
     }
 };

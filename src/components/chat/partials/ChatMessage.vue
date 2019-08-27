@@ -1,13 +1,12 @@
 <template>
-    <div v-bind:class="getClass()">
-        <div class="message">
-            <Dynamic :string="content" />
-        </div>
+    <div class="message">
+        <Dynamic :string="content" />
     </div>
 </template>
 <script>
 import Dynamic from './message/DynamicType';
-
+import { processQuote } from '../../../helpers/process-quote';
+import { AppConst } from '../../../common/AppConst';
 export default {
     name: 'ChatMessage',
     components: {
@@ -19,11 +18,15 @@ export default {
     },
     data() {
         return {
+            listUsers: this.$store.getters.get_list_user,
             user: this.$store.getters.get_current_user,
             content: '',
             listContent: [],
-            reply: `<div class="message-badge"><div class="reply-message"> <span class="reply-message-icon"> <svg viewBox="0 0 10 10" id="icon_chatTimeLineReplyBadge" xmlns="http://www.w3.org/2000/svg" > <path d="M6.67 3.336H3.192l1.818-1.819a.415.415 0 0 0 0-.589L4.42.34a.415.415 0 0 0-.589 0L.297 3.874a.416.416 0 0 0 0 .59L3.832 8a.415.415 0 0 0 .59 0l.589-.589a.415.415 0 0 0 0-.59L3.192 5.003H6.67c.92 0 1.667.746 1.667 1.667v2.083c0 .23.186.417.416.417h.834c.23 0 .416-.187.416-.417V6.67A3.333 3.333 0 0 0 6.67 3.336"/> </svg> </span> <span class="reply-message-txticon">RE</span> </div><img class="message-badge-avatar" data-aid="2647483" src="https://appdata.chatwork.com/icon/ico_group.png"> </div>`,
-            to: `<div class="message-badge"> <div class="to-message"> <span class="to-message-txticon">TO</span> </div><img class="message-badge-avatar" src="https://appdata.chatwork.com/icon/ico_group.png"/> </div>`,
+            toAllText: `<div class="message-badge">
+<div class="reply-message">
+    <span class="reply-message-txticon">TO ALL</span>
+</div>
+</div>`,
             titleText: `<div class="title"><svg viewBox="0 0 10 10" id="icon_info" xmlns="http://www.w3.org/2000/svg"><path d="M5 0a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0 9.22A4.22 4.22 0 1 1 9.22 5 4.22 4.22 0 0 1 5 9.22z"></path><path d="M4.38 3.75h1.25v4.38H4.38zm0-1.87h1.25v1.25H4.38z"></path></svg>`,
             quoteText: `<div class="dev_quote chatQuote">
     <div class="chatQuote__title">
@@ -41,42 +44,118 @@ export default {
         this.formatMessage();
     },
     methods: {
-        getClass(to) {
-            if (to === this.user.id) return 'mention';
-        },
         formatMessage() {
             this.content = this.messageObject.message;
+            this.content = this.content.replace(
+                AppConst.REGULAR.ALL_TAG,
+                function(matchs) {
+                    return matchs.toLowerCase();
+                }
+            );
 
-            let regExpTo = /(\[to:([0-9])+])/g;
-            let regExpReply = /(\[reply mid:([0-9]+) to:([0-9]+)\])/g;
-            let regExpInfo = /(?<=\[info\])(.|\n)*?(?=\[\/info\])/g;
-            let regExpCode = /(?<=\[code\])(.|\n)*?(?=\[\/code\])/g;
-            let regExpTitle = /(?<=\[title\])(.|\n)*?(?=\[\/title\])/g;
-            let regExpQuote = /(?<=\[quote\])(.|\n)*?(?=\[\/quote\])/g;
-            let regExpAllTag = /(\[\/?\w+)(.*?\])/g;
+            this.content = this.processReplyMessage(
+                this.listUsers,
+                this.content
+            );
 
-            this.content = this.content.replace(regExpAllTag, function(matchs) {
-                return matchs.toLowerCase();
-            });
+            this.content = this.content.replace(
+                AppConst.REGULAR.TO_ALL,
+                this.toAllText
+            );
+            this.content = this.content.replace(
+                AppConst.REGULAR.PREVIEW,
+                function(matchs) {
+                    let fileId = matchs.match(/\d+/g);
+                    if (fileId) {
+                        return (
+                            '<img src="/api/v1/file/preview-photo/mid/' +
+                            fileId[0] +
+                            '?option=base64"'
+                        );
+                    }
+                }
+            );
 
-            this.content = this.content.replace(regExpTo, this.to);
-            this.content = this.content.replace(regExpReply, this.reply);
-            this.content = this.content.replace(regExpInfo, function(matchs) {
-                return `<div class="chatInfo">` + matchs + `</div>`;
-            });
-            this.content = this.content.replace(regExpCode, function(matchs) {
-                return `<div class="chatCode hljs">` + matchs + `</div>`;
-            });
+            this.content = this.processToMessage(this.listUsers, this.content);
+
+            this.content = this.content.replace(
+                AppConst.REGULAR.TAG_INFO,
+                function(matchs) {
+                    return `<div class="chatInfo">` + matchs + `</div>`;
+                }
+            );
+            this.content = this.content.replace(
+                AppConst.REGULAR.TAG_CODE,
+                function(matchs) {
+                    return `<div class="chatCode hljs">` + matchs + `</div>`;
+                }
+            );
             let titleText = this.titleText;
-            this.content = this.content.replace(regExpTitle, function(matchs) {
-                return titleText + matchs + `</div>`;
-            });
-            let qoute = this.quoteText;
-            this.content = this.content.replace(regExpQuote, function(matchs) {
-                return qoute + matchs + `</div></div>`;
-            });
+            this.content = this.content.replace(
+                AppConst.REGULAR.TAG_TITLE,
+                function(matchs) {
+                    return titleText + matchs + `</div>`;
+                }
+            );
+            this.content = processQuote(this.content);
 
-            this.content = this.content.replace(regExpAllTag,'');
+            this.content = this.content.replace(AppConst.REGULAR.ALL_TAG, '');
+        },
+        processToMessage(listUsers, content) {
+            let html = content.replace(AppConst.REGULAR.TO, function(matchs) {
+                let to =
+                    '<div class="message-badge"> <div class="to-message"> <span class="to-message-txticon">TO</span> </div>{img} </div>';
+                let toId = matchs.match(AppConst.REGULAR.REPLY_TO_ID);
+                console.log(toId);
+                let user = listUsers.find(function(x) {
+                    return x.id === parseInt(toId[0]);
+                });
+                if (user !== undefined) {
+                    let img =
+                        '<img class="message-badge-avatar" src="' +
+                        user.icon_img +
+                        '"/>';
+                    console.log(img);
+                    to = to.replace(/{img}/g, img);
+                    console.log(to);
+                } else {
+                    let img =
+                        '<img class="message-badge-avatar" src="https://appdata.chatwork.com/avatar/ico_avatar_notfound.png"/>';
+                    to = to.replace(/{img}/g, img);
+                }
+                return to;
+            });
+            return html;
+        },
+        processReplyMessage(listUsers, content) {
+            let html = content.replace(AppConst.REGULAR.REPY, function(matchs) {
+                let reply = `<div class="message-badge">
+<div class="reply-message">
+    <span class="reply-message-icon">
+        <svg viewBox="0 0 10 10" id="icon_chatTimeLineReplyBadge" xmlns="http://www.w3.org/2000/svg" > <path d="M6.67 3.336H3.192l1.818-1.819a.415.415 0 0 0 0-.589L4.42.34a.415.415 0 0 0-.589 0L.297 3.874a.416.416 0 0 0 0 .59L3.832 8a.415.415 0 0 0 .59 0l.589-.589a.415.415 0 0 0 0-.59L3.192 5.003H6.67c.92 0 1.667.746 1.667 1.667v2.083c0 .23.186.417.416.417h.834c.23 0 .416-.187.416-.417V6.67A3.333 3.333 0 0 0 6.67 3.336"/> </svg>
+    </span>
+    <span class="reply-message-txticon">RE</span>
+</div>
+    {img}
+</div>`;
+                let toId = matchs.match(AppConst.REGULAR.REPLY_TO_ID);
+                let user = listUsers.find(function(x) {
+                    return x.id === parseInt(toId[0]);
+                });
+                if (user !== undefined) {
+                    let img =
+                        '<img class="message-badge-avatar" src="' +
+                        user.icon_img +
+                        '"/>';
+                    reply = reply.replace(/{img}/g, img);
+                } else {
+                    let img =
+                        '<img class="message-badge-avatar" src="https://appdata.chatwork.com/avatar/ico_avatar_notfound.png"/>';
+                    reply = reply.replace(/{img}/g, img);
+                }
+                return reply;
+            });
+            return html;
         }
     },
     mounted() {
@@ -84,7 +163,6 @@ export default {
     },
     watch: {
         message_content: function(val) {
-            console.log(val);
             this.formatMessage();
         }
     }
@@ -163,23 +241,17 @@ svg:not(:root) {
     fill: #ffffff;
     margin-right: 3px;
 }
-svg:not(:root) {
-    overflow: hidden;
-}
+
 .to-message-txticon {
     color: #ffffff;
     font-weight: 750;
     font-size: 12px;
 }
-pre {
-    display: block;
-    font-family: monospace;
-    white-space: pre;
-    margin: 1em 0px;
-}
+
 pre {
     white-space: pre-wrap;
     word-wrap: break-word;
+    overflow-y: hidden;
 }
 .chatInfo {
     position: relative;
@@ -213,17 +285,17 @@ pre {
     overflow-wrap: break-word;
     white-space: pre-wrap;
 }
-.title svg{
+.title svg {
     width: 16px;
     height: 16px;
 }
-.chatCode svg{
-    fill: #FFF !important;
+.chatCode svg {
+    fill: #fff !important;
 }
-.chatQuote{
+.chatQuote {
     line-height: 0;
 }
-.chatQuote__quoteLeftArea svg{
+.chatQuote__quoteLeftArea svg {
     width: 16px;
     height: 16px;
 }
@@ -231,16 +303,19 @@ pre {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    display: inline-flex;
+    display: flex;
     align-items: center;
     max-width: calc(100% - 24px);
     height: 24px;
     color: #999999;
     font-size: 11px;
 }
-.chatQuote__title .icon-quote{
+.chatQuote__title .icon-quote {
     width: 18px;
     height: 18px;
+    margin-top: -10px;
+    margin-right: 5px;
+    fill: #4d4d4d;
 }
 .chatQuote__title > .piconname {
     white-space: nowrap;
@@ -266,5 +341,7 @@ pre {
     padding: 5px 0 5px 5px;
     margin-left: 20px;
     word-wrap: break-word;
+    min-height: 20px;
+    line-height: 20px;
 }
 </style>
