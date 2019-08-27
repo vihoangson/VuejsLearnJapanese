@@ -109,5 +109,8 @@ export default {
     },
     setProfileEdit(state, style) {
         state.openProfileEdit = style;
+    },
+    setIsShowToMemberList(state, isShow) {
+        state.is_show_to_member_list = isShow;
     }
 };
