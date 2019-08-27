@@ -6,33 +6,54 @@
 </template>
 
 <script>
-
 export default {
     name: 'App',
     data() {
         return {
-            authenticated: false,
+            authenticated: false
         };
     },
     created() {
         let user = localStorage.getItem('user');
         if (user === null) {
             let pathname = window.location.pathname;
-            if(pathname.match('forgot-password') != null || pathname.match('changepass') != null){
-
-            }else{
+            if (
+                pathname.match('forgot-password') != null ||
+                pathname.match('changepass') != null
+            ) {
+            } else {
                 this.$router.push({ path: 'login' });
             }
         }
     },
-    mounted() {},
+    mounted() {
+        document.addEventListener('click', function(e) {
+            let popups = document.getElementsByClassName('popup');
+            for (let i = 0; i < popups.length; i++)
+                popups[i].style.display = 'none';
+
+            if(e.target.id === 'my-account'){
+                document.getElementById('menu-my-account').style.display = 'block';
+            }
+            if(e.target.id === 'create-room'){
+                document.getElementById('menu-create-new-room').style.display = 'block';
+            }
+            if (e.target.id === 'icon-config-all') {
+                document.getElementById('listFile').style.display = 'block';
+            }
+
+            if (e.target.id === 'showToMemberList') {
+                document.getElementById('toMemberList').style.display = 'block';
+            }
+        });
+    },
     methods: {
         setAuthenticated(status) {
             this.authenticated = status;
         },
         logout() {
             this.authenticated = false;
-        },
+        }
     }
 };
 </script>
@@ -72,5 +93,8 @@ pre {
     white-space: pre-wrap;
     word-wrap: break-word;
     line-height: 1;
+}
+.popup {
+    display: 'block' !important;
 }
 </style>

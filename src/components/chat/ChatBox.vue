@@ -66,7 +66,7 @@
                                 class="emoji"
                                 v-if="this.$store.getters.get_current_room.is_mychat !== 1"
                             >
-                                <span class="icon-container" @click="showListToMember">
+                                <span id="showToMemberList" class="icon-container">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_mention"
@@ -77,7 +77,7 @@
                                         />
                                     </svg>
                                 </span>
-                                <ListTo></ListTo>
+                                <ListTo class="popup"></ListTo>
                             </li>
                             <li class="emoji">
                                 <span class="icon-container" @click="showDropzoneForm">
@@ -223,7 +223,7 @@ export default {
             enterToSendMessage: true,
             showListFile: false,
             showFileDetail: false,
-            isShowToMember: false,
+            is_show_to_member_list: false,
             codeReviewPhoto: '',
             roomId: null,
             fileDetailInfo: {
@@ -273,8 +273,22 @@ export default {
             this.$socket.emit(AppConst.EVENT_MESSAGE.REMOVE_ROOM, data);
         });
         this.$root.$on('set-content-message', data => {
-            this.message.content = data;
+
             this.message.type = AppConst.MESSAGE_TYPE.CREATE;
+
+            const textarea = this.$refs.textarea;
+            const cursorPosition = textarea.selectionEnd;
+            const start = this.message.content.substring(
+                0,
+                textarea.selectionStart
+            );
+            const end = this.message.content.substring(textarea.selectionEnd);
+            const text = start + data + end;
+            this.message.content = text;
+            textarea.focus();
+            this.$nextTick(() => {
+                textarea.selectionEnd = cursorPosition + cursorContentPositon;
+            });
         })
     },
     created() {
@@ -403,11 +417,6 @@ export default {
             this.editMessage = true;
             this.$refs.textarea.focus();
 
-            let roomId = this.$store.getters.get_current_room.room_id;
-            localStorage.setItem('id', value.message_id);
-            localStorage.setItem('content', value.message);
-            localStorage.setItem('type', AppConst.MESSAGE_TYPE.EDIT);
-            localStorage.setItem('roomId', roomId);
         },
         onDelete(value) {
             let con = confirm('Do you want to delete it!?');
@@ -671,7 +680,7 @@ export default {
             });
         },
         showListToMember() {
-            this.$store.dispatch('setIsShowToMemberList', true);
+            document.getElementById('toMemberList').style.display = 'block';
             this.$nextTick(() => {
                 let x = document.getElementById('searchListUser');
                 x.value = '';
@@ -682,7 +691,6 @@ export default {
             let localMessageByRooms = localStorage.getItem(
                 AppConst.LOCAL_MESSAGE_BY_ROOM
             );
-            console.log(localMessageByRooms);
             let currentRoom = this.$store.getters.get_current_room;
             if (localMessageByRooms) {
                 localMessageByRooms = JSON.parse(localMessageByRooms);

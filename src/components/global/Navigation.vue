@@ -1,7 +1,7 @@
 <template>
     <div class="navigation">
         <div class="admin">
-            <ul class="menu-admin  " role="navigation">
+            <ul class="menu-admin" role="navigation">
                 <li class="menu-admin-item disable-mark">
                     <span>
                         <svg
@@ -84,7 +84,7 @@
                 <li class="menu-item" id="profile">
                     <a @click="openProfile">Profile</a>
                 </li>
-                <li class="menu-item  disable-mark" id="personal">
+                <li class="menu-item disable-mark" id="personal">
                     <a>Personal Settings</a>
                 </li>
                 <li class="menu-item" id="account">
@@ -139,6 +139,7 @@ export default {
             this.$store.dispatch('setListUser', []);
             localStorage.removeItem(AppConst.LOCAL_USER);
             this.$router.push({ path: '/login' });
+            document.removeEventListener('click');
         },
         // ShowPopUpModalContact() {
         //     this.showPageInModal(

@@ -168,7 +168,6 @@ export default {
             });
         },
         changeRoom(room) {
-            console.log(room);
             this.$store.dispatch('setCurrentRoom', room);
             this.getListMessage(room);
             room.color = '#bfbab0';

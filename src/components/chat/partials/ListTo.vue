@@ -1,6 +1,6 @@
 <template>
-    <div class="list-to" v-show="this.$store.getters.get_is_show_to_member_list">
-        <div class="list-user-to" ref="isShowToMemberList">
+    <div id="toMemberList" class="list-to" v-show="isShow">
+        <div class="list-user-to">
             <div class="list-user-to-header">
                 <div class="search-to">
                     <span class="icSearch">
@@ -24,14 +24,13 @@
                         type="text"
                         role="search"
                         placeholder="Search by name"
-                        @blur="onBlurListUser"
                     />
                 </div>
-                <a class="select-all-text" @click="selectAll111($event)">Select All</a>
+                <a class="select-all-text" @click="selectAll">Select All</a>
             </div>
 
             <ul>
-                <li>
+                <li @click="toAll">
                     <div class="message-badge">
                         <div class="reply-message">
                             <span class="reply-message-txticon">ALL</span>
@@ -40,6 +39,7 @@
                     <span>TO ALL</span>
                 </li>
                 <li
+                    @click="selectItem(item)"
                     v-for="(item, index) in this.$store.getters.get_current_room.member_list"
                     :key="index"
                 >
@@ -69,22 +69,36 @@ export default {
             isShow: false
         };
     },
+    created() {
+        this.$root.$on('show', x => {
+            this.isShow = x;
+        });
+    },
     methods: {
-        onBlurListUser(){
-            if(this.content === '')
-                this.$store.dispatch('setIsShowToMemberList', false);
-        },
         onFocusListUserTo() {
             return this.isShow;
         },
-        selectAll111(event) {
-            event.preventDefault();
+        selectAll() {
             let memberList = this.$store.getters.get_current_room.member_list;
             this.content = '';
             memberList.forEach(x => {
                 this.content += '[To:' + x.id + '] ' + x.name + '\n';
             });
             this.$root.$emit('set-content-message', this.content);
+        },
+        toAll() {
+            this.content = '[TOALL]' + '\n';
+            this.$root.$emit('set-content-message', this.content);
+        },
+        selectItem(item) {
+            this.content = '[To:' + item.id + '] ' + item.name + '\n';
+            this.$root.$emit('set-content-message', this.content);
+        }
+    },
+    watch: {
+        isShow: function() {
+            if (this.$store.getters.get_is_show_to_member_list) return 'popup';
+            return '';
         }
     }
 };
@@ -125,6 +139,7 @@ export default {
     top: 1px;
 }
 .list-to {
+    display: none;
     position: absolute;
     width: 230px;
     height: 280px;
@@ -188,6 +203,7 @@ export default {
 .select-all-text {
     font-size: 12px;
     color: black;
+    cursor: pointer;
 }
 .list-user-to-header {
     padding: 5px;
