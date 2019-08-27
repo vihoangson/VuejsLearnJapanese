@@ -145,6 +145,20 @@ export default {
             if (this.$refs['myVueDropzone'].getAcceptedFiles().length === 0) {
                 this.hideDropzone();
             }
+
+            response.data.forEach((v)=>{
+                let msg = {
+                    room_id: this.$store.getters.get_current_room.room_id,
+                    message: '[preview id='+v.id+'] [download:'+v.id+']Download[/download]',
+                    type: 0,
+                    token: this.$store.getters.get_current_user.token,
+                    user_id: this.$store.getters.get_current_user.id
+                };
+
+                if (msg.message !== '') {
+                    this.$socket.emit(AppConst.EVENT_MESSAGE.SEND, msg);
+                }
+            })
         },
         hideDropzoneCheck() {
             // if (this.$refs['myVueDropzone'].getAcceptedFiles().length === 0) {
