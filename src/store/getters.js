@@ -41,8 +41,11 @@ export default {
     },
     getProfileEdit: state => {
         return state.openProfileEdit;
-	},
+    },
     get_is_admin_room: state => {
         return state.is_admin_room;
+    },
+    get_is_show_to_member_list: state => {
+        return state.is_show_to_member_list;
     }
 };

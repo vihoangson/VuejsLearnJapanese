@@ -63,7 +63,7 @@ export default {
         Notice,
         Contact,
         PersonalInfo,
-        EditPersonalInfo,
+        EditPersonalInfo
     },
     data() {
         return {
@@ -82,6 +82,7 @@ export default {
             rooms.forEach(x => {
                 x.color = '';
                 this.rooms.push(x.room_id);
+                this.setCurrentMessage(x);
             });
             rooms.sort((a, b) => {
                 return b.is_mychat - a.is_mychat;
@@ -99,7 +100,7 @@ export default {
                 this.changeRoom(rooms[0]);
                 this.getListMessage(rooms[0]);
             } else {
-                let room = rooms.find(function (d) {
+                let room = rooms.find(function(d) {
                     return d.room_id === parseInt(roomId);
                 });
                 this.changeRoom(room);
@@ -138,10 +139,10 @@ export default {
     methods: {
         changeRoomEvent() {
             let chatBox = this.$refs.chat;
-            chatBox.editMessage = false;
-            chatBox.message.content = '';
-            chatBox.message.id = 0;
-            chatBox.message.type = AppConst.MESSAGE_TYPE.CREATE;
+            // chatBox.editMessage = false;
+            // chatBox.message.content = '';
+            // chatBox.message.id = 0;
+            // chatBox.message.type = AppConst.MESSAGE_TYPE.CREATE;
             var container = this.$el.querySelector('.timeline-message');
             container.scrollTop = container.scrollHeight;
         },
@@ -158,18 +159,16 @@ export default {
             return API.GET(ApiConst.ALL_ROOM).then(res => {
                 if (res.error_code === 0) {
                     return res.data;
-                    
-
                 }
             });
         },
         getListUser() {
             return API.GET(ApiConst.GET_ALL_USER).then(res => {
-                if (res.error_code === 0)
-                    return res.data;
+                if (res.error_code === 0) return res.data;
             });
         },
         changeRoom(room) {
+            console.log(room);
             this.$store.dispatch('setCurrentRoom', room);
             this.getListMessage(room);
             room.color = '#bfbab0';
@@ -194,6 +193,29 @@ export default {
                     this.$root.$emit('event-get-list-message');
                 }, 1);
             });
+        },
+        setCurrentMessage(room) {
+            let localMessageByRooms = localStorage.getItem(
+                AppConst.LOCAL_MESSAGE_BY_ROOM
+            );
+
+            if (localMessageByRooms) {
+                localMessageByRooms = JSON.parse(localMessageByRooms);
+            } else localMessageByRooms = [];
+            let roomMsg = localMessageByRooms.find(x => {
+                return x.room_id === room.room_id;
+            });
+            if (roomMsg) {
+                room.current_message = roomMsg;
+            } else {
+                room.current_message = {
+                    message: {
+                        content: '',
+                        type: AppConst.MESSAGE_TYPE.CREATE
+                    },
+                    room_id: room.room_id
+                };
+            }
         }
     }
 };

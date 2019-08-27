@@ -11,6 +11,7 @@
                 >
                     <div
                         class="timeline-message-body"
+                        v-bind:class="getClass(item.message)"
                         v-for="item in this.$store.getters.get_current_room.list_message"
                         :key="item.message_id"
                     >
@@ -61,8 +62,11 @@
                                     </svg>
                                 </span>
                             </li>
-                            <li class="emoji">
-                                <span class="icon-container">
+                            <li
+                                class="emoji"
+                                v-if="this.$store.getters.get_current_room.is_mychat !== 1"
+                            >
+                                <span class="icon-container" @click="showListToMember">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_mention"
@@ -73,6 +77,7 @@
                                         />
                                     </svg>
                                 </span>
+                                <ListTo></ListTo>
                             </li>
                             <li class="emoji">
                                 <span class="icon-container" @click="showDropzoneForm">
@@ -138,11 +143,11 @@
                         </label>
                         <div
                             id="_sendButton"
-                            class="chatInput__submit _cwBN button"
+                            class="chatInput__submit _cwBN"
                             role="button"
                             tabindex="2"
                             aria-disabled="false"
-                            @click="onSend()"
+                            @click="sendMessage()"
                         >Send</div>
                     </div>
                 </div>
@@ -159,6 +164,7 @@
                         v-if="this.enterToSendMessage"
                         @keydown.enter.exact.prevent
                         @keyup.enter.exact="pressEnterToSendMessage($event)"
+                        @blur="onBlurChatBoxMessage"
                     ></textarea>
                     <textarea
                         id="chat-text2"
@@ -171,6 +177,7 @@
                         v-if="!this.enterToSendMessage"
                         @keydown.enter.shift.prevent
                         @keydown.enter.shift.exact="sendMessage()"
+                        @blur="onBlurChatBoxMessage"
                     ></textarea>
                 </div>
             </div>
@@ -191,6 +198,8 @@ import modalMixin from '@/mixins/modal';
 import SendFile from './SendFile';
 import ChatMessage from './partials/ChatMessage';
 import ChatHeaderInfo from './partials/header/ChatHeaderInfo';
+import ListTo from './partials/ListTo';
+
 export default {
     name: 'ChatBox',
     mixins: [modalMixin],
@@ -200,7 +209,8 @@ export default {
         ChatAction,
         ChatEdit,
         ChatMessage,
-        ChatHeaderInfo
+        ChatHeaderInfo,
+        ListTo
     },
     props: {
         value: {
@@ -213,6 +223,7 @@ export default {
             enterToSendMessage: true,
             showListFile: false,
             showFileDetail: false,
+            isShowToMember: false,
             codeReviewPhoto: '',
             roomId: null,
             fileDetailInfo: {
@@ -235,7 +246,6 @@ export default {
             user: this.$store.getters.get_current_user,
             editMessage: false,
             listMyFile: [],
-            // list_user_room: this.$store.getters.get_current_room.member_list,
             is_admin_room: false,
             room_length: 0
         };
@@ -262,6 +272,10 @@ export default {
         this.$root.$on('remove-list-room', data => {
             this.$socket.emit(AppConst.EVENT_MESSAGE.REMOVE_ROOM, data);
         });
+        this.$root.$on('set-content-message', data => {
+            this.message.content = data;
+            this.message.type = AppConst.MESSAGE_TYPE.CREATE;
+        })
     },
     created() {
         window.addEventListener('resize', this.handleResize);
@@ -276,6 +290,16 @@ export default {
         });
     },
     methods: {
+        getClass(content) {
+            let toall = content.match(AppConst.REGULAR.TO_ALL);
+            if (toall) return 'mention';
+            let toId = content.match(AppConst.REGULAR.REPLY_TO_ID);
+            if (toId) {
+                if (parseInt(toId[0]) === this.user.user_id) {
+                    return 'mention';
+                }
+            }
+        },
         handleResize() {
             this.height = window.innerHeight - 45;
         },
@@ -407,8 +431,9 @@ export default {
                 value.message_id +
                 ' to:' +
                 value.user_info.id +
-                '] ' +
-                value.message + '[/Quoute]';
+                ']' +
+                value.message +
+                '[/Quote]';
             this.message.content += '\n';
             this.$refs.textarea.focus();
         },
@@ -504,12 +529,18 @@ export default {
                     'data:image/png;base64, ' +
                     this.reviewPhotoStore[id].base_64;
                 this.fileDetailInfo.content = this.reviewPhotoStore[id].content;
-                this.fileDetailInfo.name = this.reviewPhotoStore[id][0].file_name;
-                this.fileDetailInfo.size = this.reviewPhotoStore[id][0].file_size
+                this.fileDetailInfo.name = this.reviewPhotoStore[
+                    id
+                ][0].file_name;
+                this.fileDetailInfo.size = this.reviewPhotoStore[
+                    id
+                ][0].file_size
                     .toString()
                     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 this.fileDetailInfo.owner = this.reviewPhotoStore[id][0].name;
-                this.fileDetailInfo.uploadDate = this.reviewPhotoStore[id][0].created_at;
+                this.fileDetailInfo.uploadDate = this.reviewPhotoStore[
+                    id
+                ][0].created_at;
                 this.fileDetailInfo.id = this.reviewPhotoStore[id][0].id;
             }
         },
@@ -638,6 +669,48 @@ export default {
             this.$nextTick(() => {
                 textarea.selectionEnd = cursorPosition + cursorContentPositon;
             });
+        },
+        showListToMember() {
+            this.$store.dispatch('setIsShowToMemberList', true);
+            this.$nextTick(() => {
+                let x = document.getElementById('searchListUser');
+                x.value = '';
+                x.focus();
+            });
+        },
+        onBlurChatBoxMessage() {
+            let localMessageByRooms = localStorage.getItem(
+                AppConst.LOCAL_MESSAGE_BY_ROOM
+            );
+            console.log(localMessageByRooms);
+            let currentRoom = this.$store.getters.get_current_room;
+            if (localMessageByRooms) {
+                localMessageByRooms = JSON.parse(localMessageByRooms);
+            } else localMessageByRooms = [];
+            let room = localMessageByRooms.find(x => {
+                return x.id === currentRoom.id;
+            });
+
+            if (room === undefined) {
+                room = {
+                    message: {
+                        content: this.message.content,
+                        type: this.message.type
+                    },
+                    room_id: currentRoom.room_id
+                };
+
+                localMessageByRooms.push(room);
+            } else {
+                room.message.content = this.message.content;
+                room.message.type = this.message.type;
+                room.room_id = currentRoom.id;
+            }
+
+            localStorage.setItem(
+                AppConst.LOCAL_MESSAGE_BY_ROOM,
+                JSON.stringify(localMessageByRooms)
+            );
         }
     },
     computed: {
@@ -712,7 +785,7 @@ export default {
     cursor: pointer;
     display: block;
     margin: auto;
-    vertical-align: center;
+    vertical-align: middle;
     max-width: 100%;
     max-height: 100%;
 }
@@ -846,6 +919,11 @@ export default {
     border: 1px solid transparent;
     margin: 15px 0px;
 }
+.timeline-message-body.mention {
+    border-top: 1px solid #ddebd7;
+    border-bottom: 1px solid #ddebd7;
+    background-color: #ddebd7;
+}
 
 .timeline-avatar {
     float: left;
@@ -950,6 +1028,7 @@ textarea:focus:-webkit-placeholder {
     margin-right: 8px;
     border-radius: 2px;
     cursor: pointer;
+    position: relative;
 }
 .emoji:hover {
     background-color: rgba(0, 0, 0, 0.1);

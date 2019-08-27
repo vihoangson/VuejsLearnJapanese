@@ -115,7 +115,7 @@ export default {
     display: none;
     position: absolute;
     right: 40px;
-    bottom: -15px;
+    bottom: -13px;
     text-align: right;
     z-index: 3;
 }

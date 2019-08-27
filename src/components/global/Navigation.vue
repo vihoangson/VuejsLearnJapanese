@@ -134,6 +134,7 @@ export default {
             this.$root.$off('add-new-room-from-socket');
             this.$root.$off('open-modal-room');
             this.$root.$off('open-modal-show-user');
+            this.$root.$off('set-content-message');
             this.$store.dispatch('setListRoom', []);
             this.$store.dispatch('setListUser', []);
             localStorage.removeItem(AppConst.LOCAL_USER);

@@ -24,6 +24,7 @@ export default new Vuex.Store({
         list_user_by_room_id: [],
         list_not_user_by_room_id: [],
         is_admin_room: false,
+        is_show_to_member_list: false
     },
     getters,
     mutations,
