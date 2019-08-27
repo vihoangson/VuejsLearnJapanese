@@ -100,13 +100,18 @@ export default {
             this.content = processQuote(this.content);
 
             this.content = this.content.replace(AppConst.REGULAR.ALL_TAG, '');
+            this.content = this.content.replace(AppConst.REGULAR.EMOJI, function(x){
+                let emoji = AppConst.EMOJI.find(d => {return d.code === x});
+                return '<img class="ui_emoticon" src="' +
+                        emoji.src +
+                        '"/>';
+            });
         },
         processToMessage(listUsers, content) {
             let html = content.replace(AppConst.REGULAR.TO, function(matchs) {
                 let to =
                     '<div class="message-badge"> <div class="to-message"> <span class="to-message-txticon">TO</span> </div>{img} </div>';
                 let toId = matchs.match(AppConst.REGULAR.REPLY_TO_ID);
-                console.log(toId);
                 let user = listUsers.find(function(x) {
                     return x.id === parseInt(toId[0]);
                 });
@@ -115,9 +120,7 @@ export default {
                         '<img class="message-badge-avatar" src="' +
                         user.icon_img +
                         '"/>';
-                    console.log(img);
                     to = to.replace(/{img}/g, img);
-                    console.log(to);
                 } else {
                     let img =
                         '<img class="message-badge-avatar" src="https://appdata.chatwork.com/avatar/ico_avatar_notfound.png"/>';

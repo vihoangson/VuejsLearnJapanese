@@ -433,7 +433,6 @@ export default {
     width: 256px;
     height: 100%;
     background-color: #f2f2f2;
-    z-index: 2;
 }
 .room-header {
     display: flex;

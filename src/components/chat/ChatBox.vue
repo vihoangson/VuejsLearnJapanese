@@ -41,16 +41,10 @@
             </div>
             <div class="chat-input">
                 <div class="chat-tool">
-                    <picker
-                        v-show="showEmojiPicker"
-                        title="Pick your emoji..."
-                        emoji="point_up"
-                        @select="addEmoji"
-                    />
                     <div>
                         <ul class="send-tool">
-                            <li class="emoji disable-mark" @click="toggleEmojiPicker ">
-                                <span class="icon-container">
+                            <li class="emoji">
+                                <span id="showEmojiList" class="icon-container">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_emoticon"
@@ -61,6 +55,7 @@
                                         />
                                     </svg>
                                 </span>
+                                <Emoji class="popup"></Emoji>
                             </li>
                             <li
                                 class="emoji"
@@ -201,8 +196,6 @@
 </template>
 
 <script>
-import { Picker } from 'emoji-mart-vue';
-import TextareaEmojiPicker from '../global/TextareaEmojiPicker';
 import { API } from '../../services/api';
 import { AppConst } from '../../common/AppConst';
 import { ApiConst } from '../../common/ApiConst';
@@ -213,18 +206,19 @@ import SendFile from './SendFile';
 import ChatMessage from './partials/ChatMessage';
 import ChatHeaderInfo from './partials/header/ChatHeaderInfo';
 import ListTo from './partials/ListTo';
+import Emoji from './partials/Emoji';
+import { setTimeout } from 'timers';
 
 export default {
     name: 'ChatBox',
     mixins: [modalMixin],
     components: {
-        Picker,
-        TextareaEmojiPicker,
         ChatAction,
         ChatEdit,
         ChatMessage,
         ChatHeaderInfo,
-        ListTo
+        ListTo,
+        Emoji
     },
     props: {
         value: {
@@ -301,7 +295,7 @@ export default {
             this.message.content = text;
             textarea.focus();
             this.$nextTick(() => {
-                textarea.selectionEnd = cursorPosition + cursorContentPositon;
+                textarea.selectionEnd = cursorPosition + data.length;
             });
         })
     },
@@ -695,11 +689,9 @@ export default {
         },
         showListToMember() {
             document.getElementById('toMemberList').style.display = 'block';
-            this.$nextTick(() => {
-                let x = document.getElementById('searchListUser');
-                x.value = '';
-                x.focus();
-            });
+            setTimeout(function(){
+                document.getElementById('searchListUser').focus();
+            }, 1000)
         },
         onBlurChatBoxMessage() {
             let localMessageByRooms = localStorage.getItem(
