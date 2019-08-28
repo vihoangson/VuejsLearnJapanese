@@ -85,18 +85,15 @@
                 </div>
             </div>
             <div
-                id="create-room"
                 v-bind:class="{ active: isActive, 'create-room': true }"
-                @click="toggleOption"
-                ref="toggleOption"
             >
-                <span>
+                <span id="create-room">
                     <svg viewBox="0 0 10 10" id="icon_plus" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M4.375.625v3.75H.625v1.25h3.75v3.75h1.25v-3.75h3.75v-1.25h-3.75V.625z"
                         />
                     </svg>
-                    <div class="add-option">
+                    <div id="menu-create-new-room" class="add-option popup">
                         <span @click="addRooms">Create a new Group Chat</span>
                     </div>
                 </span>
@@ -147,12 +144,7 @@ export default {
     created: function() {
         this.userId = this.$store.getters.get_current_user_info.id;
         this.getAllGroup(this.userId);
-        document.addEventListener('click', this.documentClick);
         this.getListAllChat();
-    },
-
-    destroyed() {
-        document.removeEventListener('click', this.documentClick);
     },
 
     methods: {
@@ -441,7 +433,6 @@ export default {
     width: 256px;
     height: 100%;
     background-color: #f2f2f2;
-    z-index: 2;
 }
 .room-header {
     display: flex;

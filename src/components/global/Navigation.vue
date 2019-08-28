@@ -1,7 +1,7 @@
 <template>
     <div class="navigation">
         <div class="admin">
-            <ul class="menu-admin  " role="navigation">
+            <ul class="menu-admin" role="navigation">
                 <li class="menu-admin-item disable-mark">
                     <span>
                         <svg
@@ -84,7 +84,7 @@
                 <li class="menu-item" id="profile">
                     <a @click="openProfile">Profile</a>
                 </li>
-                <li class="menu-item  disable-mark" id="personal">
+                <li class="menu-item disable-mark" id="personal">
                     <a>Personal Settings</a>
                 </li>
                 <li class="menu-item" id="account">
@@ -134,13 +134,14 @@ export default {
             this.$root.$off('add-new-room-from-socket');
             this.$root.$off('open-modal-room');
             this.$root.$off('open-modal-show-user');
+            this.$root.$off('set-content-message');
             this.$store.dispatch('setListRoom', []);
             this.$store.dispatch('setListUser', []);
             this.$store.dispatch('setCurrentRoom', {});
             this.$store.dispatch("setContactDisplay", 'none');
             localStorage.removeItem(AppConst.LOCAL_USER);
             this.$router.push({ path: '/login' });
-
+            document.removeEventListener('click');
         },
         // ShowPopUpModalContact() {
         //     this.showPageInModal(
@@ -295,9 +296,5 @@ export default {
     text-decoration: none;
     cursor: pointer;
 }
-.menu-item.separate-top {
-    /*border-top: solid 1px #13202f;*/
-    /*padding-top: 8px;*/
-    /*margin-top: 8px;*/
-}
+
 </style>

@@ -11,6 +11,7 @@
                 >
                     <div
                         class="timeline-message-body"
+                        v-bind:class="getClass(item.message)"
                         v-for="item in this.$store.getters.get_current_room.list_message"
                         :key="item.message_id"
                     >
@@ -40,16 +41,10 @@
             </div>
             <div class="chat-input">
                 <div class="chat-tool">
-                    <picker
-                        v-show="showEmojiPicker"
-                        title="Pick your emoji..."
-                        emoji="point_up"
-                        @select="addEmoji"
-                    />
                     <div>
                         <ul class="send-tool">
-                            <li class="emoji disable-mark" @click="toggleEmojiPicker ">
-                                <span class="icon-container">
+                            <li class="emoji">
+                                <span id="showEmojiList" class="icon-container">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_emoticon"
@@ -60,9 +55,13 @@
                                         />
                                     </svg>
                                 </span>
+                                <Emoji class="popup"></Emoji>
                             </li>
-                            <li class="emoji">
-                                <span class="icon-container disable-mark">
+                            <li
+                                class="emoji"
+                                v-if="this.$store.getters.get_current_room.is_mychat !== 1"
+                            >
+                                <span id="showToMemberList" class="icon-container">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_mention"
@@ -73,6 +72,7 @@
                                         />
                                     </svg>
                                 </span>
+                                <ListTo class="popup"></ListTo>
                             </li>
                             <li class="emoji">
                                 <span class="icon-container" @click="showDropzoneForm">
@@ -138,11 +138,11 @@
                         </label>
                         <div
                             id="_sendButton"
-                            class="chatInput__submit _cwBN button"
+                            class="chatInput__submit _cwBN"
                             role="button"
                             tabindex="2"
                             aria-disabled="false"
-                            @click="onSend()"
+                            @click="sendMessage()"
                         >Send</div>
                     </div>
                 </div>
@@ -159,6 +159,7 @@
                         v-if="this.enterToSendMessage"
                         @keydown.enter.exact.prevent
                         @keyup.enter.exact="pressEnterToSendMessage($event)"
+                        @blur="onBlurChatBoxMessage"
                     ></textarea>
                     <textarea
                         id="chat-text2"
@@ -171,6 +172,7 @@
                         v-if="!this.enterToSendMessage"
                         @keydown.enter.shift.prevent
                         @keydown.enter.shift.exact="sendMessage()"
+                        @blur="onBlurChatBoxMessage"
                     ></textarea>
                 </div>
             </div>
@@ -180,8 +182,7 @@
             <div v-if="false">
 
                 content column right
-                <div v-for="user in $store.getters.get_all_user.list_user">
-    <!--                <div>{{user}}</div>-->
+                <div v-for="(user, index) in $store.getters.get_all_user.list_user" :key="index">
                     <div>{{user.name}}</div>
                     <div>{{user.email}}</div>
                     <div>{{user.contact_status}}</div>
@@ -195,8 +196,6 @@
 </template>
 
 <script>
-import { Picker } from 'emoji-mart-vue';
-import TextareaEmojiPicker from '../global/TextareaEmojiPicker';
 import { API } from '../../services/api';
 import { AppConst } from '../../common/AppConst';
 import { ApiConst } from '../../common/ApiConst';
@@ -206,16 +205,20 @@ import modalMixin from '@/mixins/modal';
 import SendFile from './SendFile';
 import ChatMessage from './partials/ChatMessage';
 import ChatHeaderInfo from './partials/header/ChatHeaderInfo';
+import ListTo from './partials/ListTo';
+import Emoji from './partials/Emoji';
+import { setTimeout } from 'timers';
+
 export default {
     name: 'ChatBox',
     mixins: [modalMixin],
     components: {
-        Picker,
-        TextareaEmojiPicker,
         ChatAction,
         ChatEdit,
         ChatMessage,
-        ChatHeaderInfo
+        ChatHeaderInfo,
+        ListTo,
+        Emoji
     },
     props: {
         value: {
@@ -228,6 +231,7 @@ export default {
             enterToSendMessage: true,
             showListFile: false,
             showFileDetail: false,
+            is_show_to_member_list: false,
             codeReviewPhoto: '',
             roomId: null,
             fileDetailInfo: {
@@ -250,7 +254,6 @@ export default {
             user: this.$store.getters.get_current_user,
             editMessage: false,
             listMyFile: [],
-            // list_user_room: this.$store.getters.get_current_room.member_list,
             is_admin_room: false,
             room_length: 0
         };
@@ -277,6 +280,24 @@ export default {
         this.$root.$on('remove-list-room', data => {
             this.$socket.emit(AppConst.EVENT_MESSAGE.REMOVE_ROOM, data);
         });
+        this.$root.$on('set-content-message', data => {
+
+            this.message.type = AppConst.MESSAGE_TYPE.CREATE;
+
+            const textarea = this.$refs.textarea;
+            const cursorPosition = textarea.selectionEnd;
+            const start = this.message.content.substring(
+                0,
+                textarea.selectionStart
+            );
+            const end = this.message.content.substring(textarea.selectionEnd);
+            const text = start + data + end;
+            this.message.content = text;
+            textarea.focus();
+            this.$nextTick(() => {
+                textarea.selectionEnd = cursorPosition + data.length;
+            });
+        })
     },
     created() {
         window.addEventListener('resize', this.handleResize);
@@ -291,6 +312,16 @@ export default {
         });
     },
     methods: {
+        getClass(content) {
+            let toall = content.match(AppConst.REGULAR.TO_ALL);
+            if (toall) return 'mention';
+            let toId = content.match(AppConst.REGULAR.REPLY_TO_ID);
+            if (toId) {
+                if (parseInt(toId[0]) === this.user.user_id) {
+                    return 'mention';
+                }
+            }
+        },
         handleResize() {
             this.height = window.innerHeight - 45;
         },
@@ -394,11 +425,6 @@ export default {
             this.editMessage = true;
             this.$refs.textarea.focus();
 
-            let roomId = this.$store.getters.get_current_room.room_id;
-            localStorage.setItem('id', value.message_id);
-            localStorage.setItem('content', value.message);
-            localStorage.setItem('type', AppConst.MESSAGE_TYPE.EDIT);
-            localStorage.setItem('roomId', roomId);
         },
         onDelete(value) {
             let con = confirm('Do you want to delete it!?');
@@ -422,8 +448,9 @@ export default {
                 value.message_id +
                 ' to:' +
                 value.user_info.id +
-                '] ' +
-                value.message + '[/Quoute]';
+                ']' +
+                value.message +
+                '[/Quote]';
             this.message.content += '\n';
             this.$refs.textarea.focus();
         },
@@ -519,12 +546,18 @@ export default {
                     'data:image/png;base64, ' +
                     this.reviewPhotoStore[id].base_64;
                 this.fileDetailInfo.content = this.reviewPhotoStore[id].content;
-                this.fileDetailInfo.name = this.reviewPhotoStore[id][0].file_name;
-                this.fileDetailInfo.size = this.reviewPhotoStore[id][0].file_size
+                this.fileDetailInfo.name = this.reviewPhotoStore[
+                    id
+                ][0].file_name;
+                this.fileDetailInfo.size = this.reviewPhotoStore[
+                    id
+                ][0].file_size
                     .toString()
                     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 this.fileDetailInfo.owner = this.reviewPhotoStore[id][0].name;
-                this.fileDetailInfo.uploadDate = this.reviewPhotoStore[id][0].created_at;
+                this.fileDetailInfo.uploadDate = this.reviewPhotoStore[
+                    id
+                ][0].created_at;
                 this.fileDetailInfo.id = this.reviewPhotoStore[id][0].id;
             }
         },
@@ -653,6 +686,45 @@ export default {
             this.$nextTick(() => {
                 textarea.selectionEnd = cursorPosition + cursorContentPositon;
             });
+        },
+        showListToMember() {
+            document.getElementById('toMemberList').style.display = 'block';
+            setTimeout(function(){
+                document.getElementById('searchListUser').focus();
+            }, 1000)
+        },
+        onBlurChatBoxMessage() {
+            let localMessageByRooms = localStorage.getItem(
+                AppConst.LOCAL_MESSAGE_BY_ROOM
+            );
+            let currentRoom = this.$store.getters.get_current_room;
+            if (localMessageByRooms) {
+                localMessageByRooms = JSON.parse(localMessageByRooms);
+            } else localMessageByRooms = [];
+            let room = localMessageByRooms.find(x => {
+                return x.id === currentRoom.id;
+            });
+
+            if (room === undefined) {
+                room = {
+                    message: {
+                        content: this.message.content,
+                        type: this.message.type
+                    },
+                    room_id: currentRoom.room_id
+                };
+
+                localMessageByRooms.push(room);
+            } else {
+                room.message.content = this.message.content;
+                room.message.type = this.message.type;
+                room.room_id = currentRoom.id;
+            }
+
+            localStorage.setItem(
+                AppConst.LOCAL_MESSAGE_BY_ROOM,
+                JSON.stringify(localMessageByRooms)
+            );
         }
     },
     computed: {
@@ -727,7 +799,6 @@ export default {
     cursor: pointer;
     display: block;
     margin: auto;
-    vertical-align: center;
     max-width: 100%;
     max-height: 100%;
 }
@@ -871,6 +942,11 @@ export default {
     border: 1px solid transparent;
     margin: 15px 0px;
 }
+.timeline-message-body.mention {
+    border-top: 1px solid #ddebd7;
+    border-bottom: 1px solid #ddebd7;
+    background-color: #ddebd7;
+}
 
 .timeline-avatar {
     float: left;
@@ -975,6 +1051,7 @@ textarea:focus:-webkit-placeholder {
     margin-right: 8px;
     border-radius: 2px;
     cursor: pointer;
+    position: relative;
 }
 .emoji:hover {
     background-color: rgba(0, 0, 0, 0.1);
