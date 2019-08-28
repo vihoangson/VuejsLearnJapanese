@@ -14,6 +14,8 @@
                         <b-tabs content-class="mt-3">
                             <b-tab title="Group Chat Setting" active>
                                 <form id="" @submit="btnSaveSetting">
+                                    <input v-model="inputfile" type="file" @change="selectImg">
+                                    <div ><img width="200" height="200" id="output" src="http://via.placeholder.com/200x200"></div>
                                     <fieldset>
                                         <div class="container">
                                             <div class="row">
@@ -132,12 +134,35 @@ export default {
         resetModal(){
             this.roomName = this.$store.getters.get_current_room.room_name;
             this.roomDescription = this.$store.getters.get_current_room.room_description;
+            this.roomIconImg = this.$store.getters.get_current_room.room_description;
+
+        },
+        selectImg(event){
+
+                var input = event.target;
+
+                var reader = new FileReader();
+                reader.onload = function(){
+                    var dataURL = reader.result;
+                    var output = document.getElementById('output');
+                    output.src = dataURL;
+                };
+                reader.readAsDataURL(input.files[0]);
+
+
+                let data = new FormData;
+                data.append(this.inputfile);
+                API.POSTFILE(ApiConst.MESSAGE_UPLOAD_FILE,data).then(response=>{
+                    console.log(response);
+                })
+
         },
         handleSubmit(){
             this.error_msgs.room_name = '';
             let data = {
                 room_name : this.roomName,
                 room_description : this.roomDescription,
+                room_icon_img : this.roomIconImg,
                 room_id : this.$store.getters.get_current_room.room_id,
             }
             API.POST(ApiConst.ROOM_SETTING, data).then(response => {
