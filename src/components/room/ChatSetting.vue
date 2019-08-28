@@ -6,13 +6,61 @@
             size="lg"
             title="Group Chat Setting"
             @show="resetModal"
-            @hidden="resetModal"
+            @hidden="hiddenModal"
             @ok="handleOk"
         >
             <div class="row">
                 <div class="col-md-12">
                         <b-tabs content-class="mt-3">
-                            <b-tab title="Mute" active>
+                            <b-tab title="Group Chat Setting" active>
+                                <form id="" @submit="btnSaveSetting">
+                                    <fieldset>
+                                        <div class="container">
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <span class="roomText">
+                                                        Room name
+                                                    </span>
+                                                    <a href="https://chatworken.zendesk.com/hc/en-us/articles/115002982686">
+                                                        <svg class="roomMute" viewBox="0 0 10 10" width="16" height="16">
+                                                            <use fill-rule="evenodd" xlink:href="#icon_help"></use>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <span class="roomName">
+                                                        <input v-model="roomName" required>
+                                                    </span>
+                                                </div>
+                                                <div v-if="error_msgs.room_name.length" v-for="err in error_msgs.room_name" class="alert-danger">
+                                                    <div>{{err}}</div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-2">
+                                                    <span class="roomText">
+                                                        Room description
+                                                    </span>
+                                                    <a href="https://chatworken.zendesk.com/hc/en-us/articles/115002982686">
+                                                        <svg class="roomMute" viewBox="0 0 10 10" width="16" height="16">
+                                                            <use fill-rule="evenodd" xlink:href="#icon_help"></use>
+                                                        </svg>
+                                                    </a>
+                                                </div>
+                                                <div class="col-md-10">
+                                                    <span class="roomName">
+                                                        <textarea placeholder="Add multiple lines" v-model="roomDescription"></textarea>
+                                                    </span>
+                                                </div>
+                                                <div v-if="error_msgs.room_description.length" v-for="err in error_msgs.room_description" class="alert-danger">
+                                                    <div>{{err}}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </form>
+                            </b-tab>
+                            <b-tab title="Mute" >
                                 <form id="">
                                     <fieldset>
                                         <div class="container">
@@ -43,7 +91,7 @@
                 </div>
             </div>
             <div slot="modal-footer" class="w-100">
-                <b-button variant="outline-secondary" size="md" @click="btnSaveSetting">Save</b-button>
+                <b-button variant="outline-secondary" size="md" @click="handleSubmit" >Save</b-button>
                 <b-button variant="outline-secondary" size="md" @click="btnCancel"> Cancel </b-button>
             </div>
         </b-modal>
@@ -51,8 +99,10 @@
 </template>
 
 <script>
+    import { API } from '../../services/api';
+    import { ApiConst } from '../../common/ApiConst';
 export default {
-    name: 'Group',
+    name: 'ChatSetting',
     data() {
         return {
             roomId : 0,
@@ -60,19 +110,60 @@ export default {
             listAdmin : [],
             listMember : [],
             listReadOnly : [],
+            error_msgs:{
+                room_name:"",
+                room_description:""
+            },
+            roomName: this.$store.getters.get_current_room.name
         };
     },
     mounted() {
         this.$root.$on('open-modal-setting-group', () => {
-           
         });
     },
     created: function() {
     },
     computed: {
     },
+
     methods: {
-        btnSaveSetting() {
+        hiddenModal(){
+        },
+        resetModal(){
+            this.roomName = this.$store.getters.get_current_room.room_name;
+            this.roomDescription = this.$store.getters.get_current_room.room_description;
+        },
+        handleSubmit(){
+            this.error_msgs.room_name = '';
+            let data = {
+                room_name : this.roomName,
+                room_description : this.roomDescription,
+                room_id : this.$store.getters.get_current_room.room_id,
+            }
+            API.POST(ApiConst.ROOM_SETTING, data).then(response => {
+                switch (response.error_code) {
+                    case 0:
+                        let prmCurrentRoom = this.$store.getters.get_current_room;
+                        prmCurrentRoom.room_name = response.data.name;
+                        prmCurrentRoom.room_description = response.data.description;
+                        this.$store.dispatch("setCurrentRoom",prmCurrentRoom);
+                        this.$root.$emit('push-notice', {
+                            message: 'insert success',
+                            alert: 'alert-success'
+                        });
+                        this.roomName = '';
+                        this.roomDescription = null;
+                        this.$refs.modal.hide();
+
+                        break;
+                    case 1:
+                        this.error_msgs = response.error_msg;
+                        break;
+                }
+            });
+        },
+        btnSaveSetting(e) {
+            e.preventDefault();
             this.handleSubmit();
         },
         btnCancel() {
