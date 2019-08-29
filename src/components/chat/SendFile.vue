@@ -135,7 +135,7 @@ export default {
         catchResponse(file, response) {
             this.message = '';
             if (response.error_code === 0) {
-                alert('Upload successfully');
+                this.$root.$emit('push-notice', {message:'Upload successfully', alert: 'alert-success'});
 
                 let canSendMessage = true;
                 if(canSendMessage){
@@ -163,7 +163,7 @@ export default {
                 }
 
             } else {
-                alert('Upload failed');
+                this.$root.$emit('push-notice', {message:'Upload failed', alert: 'alert-danger'});
             }
             this.$store.dispatch('setLoadingPage',false);
 

@@ -9,6 +9,7 @@ export const AppConst = {
                DELETE: 2
            },
            ACCEPTED_FILES: '.jpg,.png,.sql',
+           ACCEPTED_IMG_FILES: '.jpg,.png',
            MAX_FILE_SIZE: 100,
            MAX_FILE: 10,
            EVENT_MESSAGE: {

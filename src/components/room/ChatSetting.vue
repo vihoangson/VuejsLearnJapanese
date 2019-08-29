@@ -94,6 +94,8 @@
 <script>
     import { API } from '../../services/api';
     import { ApiConst } from '../../common/ApiConst';
+    import { AppConst } from '../../common/AppConst';
+
 export default {
     name: 'ChatSetting',
     data() {
@@ -133,6 +135,20 @@ export default {
                 var input = event.target;
 
                 var reader = new FileReader();
+                let fileName = input.files[0].name
+                var extension = fileName.match(/\.[0-9a-z]+$/i);
+
+                let acceptedfile = AppConst.ACCEPTED_IMG_FILES.split(',');
+
+                if(!acceptedfile.includes(extension[0])){
+                    this.$root.$emit('push-notice', {
+                        message: 'Can\'t choose this file',
+                        alert: 'alert-danger'
+                    });
+                    return;
+                }
+
+
                 reader.onload = function(){
                     var dataURL = reader.result;
                     var output = document.getElementById('output');
@@ -151,18 +167,21 @@ export default {
                 room_id : this.$store.getters.get_current_room.room_id,
             }
 
-            this.inputfile = this.$refs.file.files[0];
-            let dataImg = new FormData();
-            let i=0;
-            dataImg.append('file[' + i + ']',this.inputfile);
-            dataImg.append('room_id',this.$store.getters.get_current_room.room_id);
-            API.POSTFILE(ApiConst.ROOM_UPLOAD_ICON_IMG,dataImg).then(response=>{
-                if(response.error_code === 0){
-                    let prmCurrentRoom = this.$store.getters.get_current_room;
-                    prmCurrentRoom.icon_img = response.data.icon_img;
-                    this.$store.dispatch("setCurrentRoom",prmCurrentRoom);
-                }
-            })
+            let canUploadImg = true;
+            if(canUploadImg){
+                this.inputfile = this.$refs.file.files[0];
+                let dataImg = new FormData();
+                let i=0;
+                dataImg.append('file[' + i + ']',this.inputfile);
+                dataImg.append('room_id',this.$store.getters.get_current_room.room_id);
+                API.POSTFILE(ApiConst.ROOM_UPLOAD_ICON_IMG,dataImg).then(response=>{
+                    if(response.error_code === 0){
+                        let prmCurrentRoom = this.$store.getters.get_current_room;
+                        prmCurrentRoom.icon_img = response.data.icon_img;
+                        this.$store.dispatch("setCurrentRoom",prmCurrentRoom);
+                    }
+                })
+            }
 
 
             API.POST(ApiConst.ROOM_SETTING, data).then(response => {
