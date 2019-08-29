@@ -50,7 +50,6 @@ export function processQuote(listUsers, content) {
             content = content.replace(AppConst.REGULAR.QUOTE_CONTENT, function(
                 matchs
             ) {
-                console.log(quoteInfo);
                 return quoteInfo + processQuote(listUsers, matchs) + '</div></div>';
             });
         }

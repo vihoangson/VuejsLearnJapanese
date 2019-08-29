@@ -147,10 +147,7 @@ export default {
     fill: #444444;
     cursor: pointer;
 }
-.actionNav__item:hover svg,
-.actionNav__item:hover span {
-    color: #b1d6ed;
-}
+
 .actionNav__itemLabel {
     margin-left: 3px;
     line-height: 2px;
@@ -158,5 +155,11 @@ export default {
 .actionNav__item svg {
     width: 18px;
     height: 18px;
+}
+.linkStatus:hover,
+.linkStatus:hover svg {
+    opacity: 1;
+    color: #0084b2;
+    fill: #0084b2;
 }
 </style>
