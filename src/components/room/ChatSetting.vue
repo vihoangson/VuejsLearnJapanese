@@ -13,7 +13,9 @@
                 <div class="col-md-12">
                         <b-tabs content-class="mt-3">
                             <b-tab title="Group Chat Setting" active>
-                                <form id="" @submit="btnSaveSetting">
+                                <form @submit="btnSaveSetting">
+                                    <input type="file"  ref="file" @change="selectImg">
+                                    <div ><img width="200" height="200" id="output" src="http://via.placeholder.com/200x200"></div>
                                     <fieldset>
                                         <div class="container">
                                             <div class="row">
@@ -29,7 +31,7 @@
                                                 </div>
                                                 <div class="col-md-10">
                                                     <span class="roomName">
-                                                        <input v-model="roomName" required>
+                                                        <input v-model="roomName"  required>
                                                     </span>
                                                 </div>
                                                 <div v-if="error_msgs.room_name.length" v-for="err in error_msgs.room_name" class="alert-danger">
@@ -132,12 +134,39 @@ export default {
         resetModal(){
             this.roomName = this.$store.getters.get_current_room.room_name;
             this.roomDescription = this.$store.getters.get_current_room.room_description;
+            this.roomIconImg = this.$store.getters.get_current_room.room_description;
+
+        },
+        selectImg(event){
+
+                var input = event.target;
+
+                var reader = new FileReader();
+                reader.onload = function(){
+                    var dataURL = reader.result;
+                    var output = document.getElementById('output');
+                    output.src = dataURL;
+                };
+                reader.readAsDataURL(input.files[0]);
+console.log('in');
+            console.log(this.$refs.file);
+
+                this.inputfile = this.$refs.file.files[0];
+                let data = new FormData();
+                let i=0;
+                data.append('file[' + i + ']',this.inputfile);
+                data.append('room_id',this.$store.getters.get_current_room.room_id);
+                API.POSTFILE(ApiConst.ROOM_UPLOAD_ICON_IMG,data).then(response=>{
+                    console.log(response);
+                })
+
         },
         handleSubmit(){
             this.error_msgs.room_name = '';
             let data = {
                 room_name : this.roomName,
                 room_description : this.roomDescription,
+                room_icon_img : this.roomIconImg,
                 room_id : this.$store.getters.get_current_room.room_id,
             }
             API.POST(ApiConst.ROOM_SETTING, data).then(response => {

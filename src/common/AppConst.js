@@ -388,5 +388,6 @@ export const AppConst = {
                        'https://assets.chatwork.com/images/emoticon2x/emo_yes.gif',
                    code: '(y)'
                }
-           ]
+           ],
+           HEIGHT_IMG_PREVIEW:30
        };
