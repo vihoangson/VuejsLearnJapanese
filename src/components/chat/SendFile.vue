@@ -136,6 +136,32 @@ export default {
             this.message = '';
             if (response.error_code === 0) {
                 alert('Upload successfully');
+
+                let canSendMessage = true;
+                if(canSendMessage){
+                    response.data.forEach((v)=>{
+                        let strMessage = "";
+
+                        if( v.is_img === true){
+                            strMessage ='[info][title] New file uploaded[/title][preview id:'+v.id+' ht:'+AppConst.HEIGHT_IMG_PREVIEW+'][download id:'+v.id+']image_name.png[/download][/info]';
+                        }else{
+                            strMessage ='[info][title] New file uploaded[/title][download id:'+v.id+']'+v.file_name+'[/download][/info]';
+                        }
+
+                        let msg = {
+                            room_id: this.$store.getters.get_current_room.room_id,
+                            message: strMessage,
+                            type: 0,
+                            token: this.$store.getters.get_current_user.token,
+                            user_id: this.$store.getters.get_current_user.id
+                        };
+
+                        if (msg.message !== '') {
+                            this.$socket.emit(AppConst.EVENT_MESSAGE.SEND, msg);
+                        }
+                    })
+                }
+
             } else {
                 alert('Upload failed');
             }
@@ -146,26 +172,7 @@ export default {
                 this.hideDropzone();
             }
 
-            response.data.forEach((v)=>{
-                let strMessage = "";
 
-                // if(v.is_img !== undefined && v.is_img === true){
-                //    message ='[preview id:'+v.id+' ht:'+AppConst.HEIGHT_IMG_PREVIEW+'] [download:'+v.id+']Download[/download]';
-                // }
-                strMessage ='[info][title] New file uploaded[/title][preview id:'+v.id+' ht:'+AppConst.HEIGHT_IMG_PREVIEW+'][download id:'+v.id+']image_name.png[/download][/info]';
-
-                let msg = {
-                    room_id: this.$store.getters.get_current_room.room_id,
-                    message: strMessage,
-                    type: 0,
-                    token: this.$store.getters.get_current_user.token,
-                    user_id: this.$store.getters.get_current_user.id
-                };
-
-                if (msg.message !== '') {
-                    this.$socket.emit(AppConst.EVENT_MESSAGE.SEND, msg);
-                }
-            })
         },
         hideDropzoneCheck() {
             // if (this.$refs['myVueDropzone'].getAcceptedFiles().length === 0) {
