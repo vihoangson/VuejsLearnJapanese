@@ -141,7 +141,7 @@ export default {
             return html;
         },
         processPreviewMessage(content) {
-            let file = 'http://172.16.100.37/api/v1/file/show-file/';
+            let file = process.env.ROOT_API +'/api/v1/file/show-file/';
             let html = content.replace(AppConst.REGULAR.PREVIEW, function(
                 matches
             ) {
