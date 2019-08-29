@@ -109,10 +109,12 @@
                 >
                     <div class="name">
                         <div class="room-image">
-                            <img :src="item.icon_img"/>
+                            <img v-if="item.is_mychat !== 1" :src="item.icon_img"/>
+                            <img v-if="item.is_mychat === 1" :src="$store.getters.get_current_user_info.icon_img"/>
                         </div>
                         <div class="room-name">
-                            <span>{{item.room_name}}</span>
+                            <span v-if="item.is_mychat !== 1">{{item.room_name}}</span>
+                            <span v-if="item.is_mychat === 1">My Chat</span>
                             <span v-if="item.not_read > 0" class="not-read-number">{{item.not_read}}</span>
                         </div>
                     </div>

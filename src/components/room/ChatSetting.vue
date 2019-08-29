@@ -13,23 +13,22 @@
                 <div class="col-md-12">
                         <b-tabs content-class="mt-3">
                             <b-tab title="Group Chat Setting" active>
-                                <form @submit="btnSaveSetting">
-                                    <input type="file"  ref="file" @change="selectImg">
-                                    <div ><img width="200" height="200" id="output" :src="$store.getters.get_current_room.icon_img"></div>
-                                    <fieldset>
+                                <form @submit="btnSaveSetting" id="saveSetting">
+                                    <fieldset class="avatar-room">
+                                        <div>
+                                            <img width="200" height="200" id="output" :src="$store.getters.get_current_room.icon_img">
+                                            <div @click="$refs.file.click()">Change</div>
+                                        </div>
+                                        <input type="file"  ref="file" @change="selectImg" style="display: none">
+
+
+                                    </fieldset>
+                                    <fieldset class="info-room">
                                         <div class="container">
                                             <div class="row">
-                                                <div class="col-md-2">
-                                                    <span class="roomText">
-                                                        Room name
-                                                    </span>
-                                                    <a href="https://chatworken.zendesk.com/hc/en-us/articles/115002982686">
-                                                        <svg class="roomMute" viewBox="0 0 10 10" width="16" height="16">
-                                                            <use fill-rule="evenodd" xlink:href="#icon_help"></use>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                                <div class="col-md-10">
+
+                                                <div class="col-md-12">
+                                                    <span>Group Chat Name:</span>
                                                     <span class="roomName">
                                                         <input v-model="roomName"  required>
                                                     </span>
@@ -39,17 +38,9 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-2">
-                                                    <span class="roomText">
-                                                        Room description
-                                                    </span>
-                                                    <a href="https://chatworken.zendesk.com/hc/en-us/articles/115002982686">
-                                                        <svg class="roomMute" viewBox="0 0 10 10" width="16" height="16">
-                                                            <use fill-rule="evenodd" xlink:href="#icon_help"></use>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                                <div class="col-md-10">
+
+                                                <div class="col-md-12">
+                                                    <span>Description:</span>
                                                     <span class="roomName">
                                                         <textarea placeholder="Add multiple lines" v-model="roomDescription"></textarea>
                                                     </span>
@@ -211,6 +202,36 @@ export default {
 </script>
 
 <style>
+    fieldset.info-room span {
+        font-weight: 500;
+        color: #888;
+        margin-top: 6px;
+        display: block;
+    }
+    .info-room input, .info-room textarea {
+        width: 100%;
+        PADDING: 5PX;
+    }
+    .info-room textarea{
+        height:200px;
+    }
+    .avatar-room > div{
+        position:relative;
+    }
+    .avatar-room > div:hover div{
+        display: block;
+    }
+    .avatar-room div div {
+        display: none;
+        background: #4c4c4c;
+        position: absolute;
+        bottom: -10px;
+        color: white;
+        width: 100%;
+        font-weight: bold;
+        text-align: center;
+        cursor: pointer;
+    }
 .list-icon img {
     width: 30px;
     border-radius: 50%;
@@ -227,5 +248,18 @@ export default {
 .icon_edit svg{
     height: 15px;
     width: 15px;
+}
+    #saveSetting>fieldset:nth-child(1) {
+        float: left;
+        width: 20%;
+        MARGIN-TOP: 12PX;
+    }
+#saveSetting>fieldset:nth-child(1) img{
+    width: 100%;
+    height: auto;
+}
+#saveSetting>fieldset:nth-child(2){
+    float:left;
+    width:80%;
 }
 </style>
