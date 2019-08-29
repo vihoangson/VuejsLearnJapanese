@@ -147,6 +147,13 @@ export default {
             }
 
             response.data.forEach((v)=>{
+                let message = "";
+
+                //if(v.is_img !== undefined && v.is_img === true){
+                    message ='[preview id:'+v.id+' ht:'+AppConst.HEIGHT_IMG_PREVIEW+'] [download:'+v.id+']Download[/download]';
+                //}
+                message +=' [download:'+v.id+']Download[/download]';
+
                 let msg = {
                     room_id: this.$store.getters.get_current_room.room_id,
                     message: '[preview id='+v.id+'] [download:'+v.id+']Download[/download]',
