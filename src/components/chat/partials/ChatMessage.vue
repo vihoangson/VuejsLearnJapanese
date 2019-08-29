@@ -22,22 +22,8 @@ export default {
             user: this.$store.getters.get_current_user,
             content: '',
             listContent: [],
-            toAllText: `<div class="message-badge">
-<div class="reply-message">
-    <span class="reply-message-txticon">TO ALL</span>
-</div>
-</div>`,
-            titleText: `<div class="title"><svg viewBox="0 0 10 10" id="icon_info" xmlns="http://www.w3.org/2000/svg"><path d="M5 0a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0 9.22A4.22 4.22 0 1 1 9.22 5 4.22 4.22 0 0 1 5 9.22z"></path><path d="M4.38 3.75h1.25v4.38H4.38zm0-1.87h1.25v1.25H4.38z"></path></svg>`,
-            quoteText: `<div class="dev_quote chatQuote">
-    <div class="chatQuote__title">
-    <span class="icon-quote"> <svg viewBox="0 0 10 10" id="icon_quote" xmlns="http://www.w3.org/2000/svg"><path d="M3.863 2.5a2.388 2.388 0 0 0-2.388 2.387c0 .191.031.372.076.549a1.476 1.476 0 1 1 .837 2.69l-.297-.03a2.38 2.38 0 0 1-2.09-2.358 3.862 3.862 0 0 1 3.862-3.862.313.313 0 0 1 0 .626zm5.825 0a2.387 2.387 0 0 0-2.387 2.387c0 .191.031.372.075.549a1.476 1.476 0 1 1 .837 2.69l-.298-.03a2.38 2.38 0 0 1-2.09-2.358 3.862 3.862 0 0 1 3.862-3.862.313.313 0 0 1 0 .626z"></path></svg></span>
-        <span class="piconname">
-            <img class=" _avatarHoverTip _avatarClickTip avatarClickTip avatarTiny _avatar _avatarAid3127618" data-aid="3127618" src="https://appdata.chatwork.com/avatar/3484/3484555.gif" data-cwtag="[picon:3127618]">
-            <span>Hoang Sy Hung [PG]</span>
-        </span>
-        <time class="quoteTimeStamp chatQuote__timeStamp"><span data-cwtag="[date:1566463714]">22/8/2019 15:48</span></time>
-    </div>
-    <div class="quoteText">`
+            toAllText: `<div class="message-badge"><div class="reply-message"><span class="reply-message-txticon">TO ALL</span></div></div>`,
+            titleText: `<div class="title"><svg viewBox="0 0 10 10" id="icon_info" xmlns="http://www.w3.org/2000/svg"><path d="M5 0a5 5 0 1 0 5 5 5 5 0 0 0-5-5zm0 9.22A4.22 4.22 0 1 1 9.22 5 4.22 4.22 0 0 1 5 9.22z"></path><path d="M4.38 3.75h1.25v4.38H4.38zm0-1.87h1.25v1.25H4.38z"></path></svg>`
         };
     },
     create() {
@@ -97,15 +83,21 @@ export default {
                     return titleText + matchs + `</div>`;
                 }
             );
-            this.content = processQuote(this.content);
+            this.content = processQuote(this.listUsers, this.content);
 
             this.content = this.content.replace(AppConst.REGULAR.ALL_TAG, '');
-            this.content = this.content.replace(AppConst.REGULAR.EMOJI, function(x){
-                let emoji = AppConst.EMOJI.find(d => {return d.code === x});
-                return '<img class="ui_emoticon" src="' +
-                        emoji.src +
-                        '"/>';
-            });
+            this.content = this.content.replace(
+                AppConst.REGULAR.EMOJI,
+                function(x) {
+                    let emoji = AppConst.EMOJI.find(d => {
+                        return d.code === x;
+                    });
+                    if (emoji !== undefined)
+                        return (
+                            '<img class="ui_emoticon" src="' + emoji.src + '"/>'
+                        );
+                }
+            );
         },
         processToMessage(listUsers, content) {
             let html = content.replace(AppConst.REGULAR.TO, function(matchs) {
@@ -132,15 +124,7 @@ export default {
         },
         processReplyMessage(listUsers, content) {
             let html = content.replace(AppConst.REGULAR.REPY, function(matchs) {
-                let reply = `<div class="message-badge">
-<div class="reply-message">
-    <span class="reply-message-icon">
-        <svg viewBox="0 0 10 10" id="icon_chatTimeLineReplyBadge" xmlns="http://www.w3.org/2000/svg" > <path d="M6.67 3.336H3.192l1.818-1.819a.415.415 0 0 0 0-.589L4.42.34a.415.415 0 0 0-.589 0L.297 3.874a.416.416 0 0 0 0 .59L3.832 8a.415.415 0 0 0 .59 0l.589-.589a.415.415 0 0 0 0-.59L3.192 5.003H6.67c.92 0 1.667.746 1.667 1.667v2.083c0 .23.186.417.416.417h.834c.23 0 .416-.187.416-.417V6.67A3.333 3.333 0 0 0 6.67 3.336"/> </svg>
-    </span>
-    <span class="reply-message-txticon">RE</span>
-</div>
-    {img}
-</div>`;
+                let reply = `<div class="message-badge"><div class="reply-message"><span class="reply-message-icon"><svg viewBox="0 0 10 10" id="icon_chatTimeLineReplyBadge" xmlns="http://www.w3.org/2000/svg" > <path d="M6.67 3.336H3.192l1.818-1.819a.415.415 0 0 0 0-.589L4.42.34a.415.415 0 0 0-.589 0L.297 3.874a.416.416 0 0 0 0 .59L3.832 8a.415.415 0 0 0 .59 0l.589-.589a.415.415 0 0 0 0-.59L3.192 5.003H6.67c.92 0 1.667.746 1.667 1.667v2.083c0 .23.186.417.416.417h.834c.23 0 .416-.187.416-.417V6.67A3.333 3.333 0 0 0 6.67 3.336"/> </svg></span><span class="reply-message-txticon">RE</span></div>{img}</div>`;
                 let toId = matchs.match(AppConst.REGULAR.REPLY_TO_ID);
                 let user = listUsers.find(function(x) {
                     return x.id === parseInt(toId[0]);
@@ -197,7 +181,7 @@ export default {
     box-sizing: border-box;
     height: 18px;
     background-color: #66a300;
-    border-radius: 2px 0 0 2px;
+    border-radius: 2px;
     padding: 2px 4px 2px 3px;
     cursor: pointer;
 }
@@ -316,7 +300,6 @@ pre {
 .chatQuote__title .icon-quote {
     width: 18px;
     height: 18px;
-    margin-top: -10px;
     margin-right: 5px;
     fill: #4d4d4d;
 }
@@ -338,6 +321,7 @@ pre {
     height: 20px;
     border-radius: 50%;
     flex-shrink: 0;
+    margin-right: 5px;
 }
 .quoteText {
     border-left: 1px solid #666666;

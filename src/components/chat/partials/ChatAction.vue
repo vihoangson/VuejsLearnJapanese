@@ -104,7 +104,7 @@ export default {
         onDelete() {
             this.$emit('delete', this.message);
         },
-        onQuote(){
+        onQuote() {
             this.$emit('quoute', this.message);
         }
     }
@@ -119,6 +119,7 @@ export default {
     text-align: right;
     z-index: 3;
 }
+
 .timelineMessage .actionNav {
     background-color: #ffffff;
 }
@@ -128,7 +129,7 @@ export default {
 .actionNav {
     height: 23px;
     padding: 0 4px;
-    background: #ffffff;
+    background: #f8fbff;
     border-right: 1px solid #b1d6ed;
     border-bottom: 1px solid #b1d6ed;
     border-left: 1px solid #b1d6ed;
