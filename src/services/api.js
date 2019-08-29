@@ -31,5 +31,20 @@ export const API = {
             .catch(err => {
                 console.log(err);
             });
+    },
+    POSTFILE: function(api, data) {
+        return axios
+            .post(process.env.ROOT_API + api, data, {
+                headers: {
+                    Accept: "multipart/form-data",
+                    Authorization: authHeader()
+                }
+            })
+            .then(res => {
+                return res.data;
+            })
+            .catch(err => {
+                console.log(err);
+            });
     }
 };

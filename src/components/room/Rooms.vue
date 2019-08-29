@@ -10,13 +10,13 @@
             @ok="handleOk">
             <form ref="form" class="form-rooms">
                 <div class="row">
-                    <div class="col-md-3">
-                        <div class="roomInfo">
+                    <div class="col-md-3 " style="display: none;" >
+                        <div class="roomInfo ">
                             <img id="roomInfoImage" class="roomInfoImage" v-bind:src="roomImage" alt="">
                             <div id="roomIconChange" class="roomIconChange">Change</div>
                         </div>
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-md-12">
                         <div class="form-group">
                             <label>Room Chat Name:</label><div class="error">{{roomNameError}}</div>
                             <input type="text" name="roomName" v-model="roomName" class="form-control" placeholder="Group name">

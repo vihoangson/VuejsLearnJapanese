@@ -135,9 +135,35 @@ export default {
         catchResponse(file, response) {
             this.message = '';
             if (response.error_code === 0) {
-                alert('Upload successfully');
+                this.$root.$emit('push-notice', {message:'Upload successfully', alert: 'alert-success'});
+
+                let canSendMessage = true;
+                if(canSendMessage){
+                    response.data.forEach((v)=>{
+                        let strMessage = "";
+
+                        if( v.is_img === true){
+                            strMessage ='[info][title] New file uploaded[/title][preview id:'+v.id+' ht:'+AppConst.HEIGHT_IMG_PREVIEW+'][download id:'+v.id+']'+v.file_name+'[/download][/info]';
+                        }else{
+                            strMessage ='[info][title] New file uploaded[/title][download id:'+v.id+']'+v.file_name+'[/download][/info]';
+                        }
+
+                        let msg = {
+                            room_id: this.$store.getters.get_current_room.room_id,
+                            message: strMessage,
+                            type: 0,
+                            token: this.$store.getters.get_current_user.token,
+                            user_id: this.$store.getters.get_current_user.id
+                        };
+
+                        if (msg.message !== '') {
+                            this.$socket.emit(AppConst.EVENT_MESSAGE.SEND, msg);
+                        }
+                    })
+                }
+
             } else {
-                alert('Upload failed');
+                this.$root.$emit('push-notice', {message:'Upload failed', alert: 'alert-danger'});
             }
             this.$store.dispatch('setLoadingPage',false);
 
@@ -146,19 +172,7 @@ export default {
                 this.hideDropzone();
             }
 
-            response.data.forEach((v)=>{
-                let msg = {
-                    room_id: this.$store.getters.get_current_room.room_id,
-                    message: '[preview id='+v.id+'] [download:'+v.id+']Download[/download]',
-                    type: 0,
-                    token: this.$store.getters.get_current_user.token,
-                    user_id: this.$store.getters.get_current_user.id
-                };
 
-                if (msg.message !== '') {
-                    this.$socket.emit(AppConst.EVENT_MESSAGE.SEND, msg);
-                }
-            })
         },
         hideDropzoneCheck() {
             // if (this.$refs['myVueDropzone'].getAcceptedFiles().length === 0) {

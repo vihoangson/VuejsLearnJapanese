@@ -444,10 +444,10 @@ export default {
         },
         onQuoute(value) {
             this.message.content =
-                '[Quote mid:' +
+                '[Quote uid:' +
                 value.message_id +
-                ' to:' +
-                value.user_info.id +
+                ' time:' +
+                value.timestamp +
                 ']' +
                 value.message +
                 '[/Quote]';
@@ -732,7 +732,7 @@ export default {
             return this.height - 45;
         },
         timelineMessage() {
-            return this.height - 245;
+            return this.height - 225;
         }
     }
 };
@@ -883,6 +883,7 @@ export default {
 }
 .room-logo img {
     width: 25px;
+    height: 25px;
     border-radius: 50%;
 }
 .chat-box-header .title {
@@ -928,6 +929,11 @@ export default {
     border-bottom: 1px solid transparent;
     margin-bottom: 10px;
 }
+.timeline-message-body.mention {
+    border-top: 1px solid #ddebd7;
+    border-bottom: 1px solid #ddebd7;
+    background-color: #ddebd7;
+}
 .timeline-message-body:hover {
     border-top: 1px solid #b1d6ed;
     border-bottom: 1px solid #b1d6ed;
@@ -940,13 +946,11 @@ export default {
     padding: 8px 16px;
     position: relative;
     border: 1px solid transparent;
-    margin: 15px 0px;
 }
-.timeline-message-body.mention {
-    border-top: 1px solid #ddebd7;
-    border-bottom: 1px solid #ddebd7;
-    background-color: #ddebd7;
+.timeline-message-body:last-child{
+    margin-bottom: 20px;
 }
+
 
 .timeline-avatar {
     float: left;
@@ -1120,7 +1124,6 @@ textarea:focus:-webkit-placeholder {
 }
 .timeline-content-message pre {
     font-size: 14px;
-    font-family: arial;
     margin-top: 3px;
     margin-bottom: 0px;
 }
