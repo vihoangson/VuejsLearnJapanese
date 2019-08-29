@@ -15,7 +15,7 @@
                             <b-tab title="Group Chat Setting" active>
                                 <form @submit="btnSaveSetting">
                                     <input type="file"  ref="file" @change="selectImg">
-                                    <div ><img width="200" height="200" id="output" src="http://via.placeholder.com/200x200"></div>
+                                    <div ><img width="200" height="200" id="output" :src="$store.getters.get_current_room.icon_img"></div>
                                     <fieldset>
                                         <div class="container">
                                             <div class="row">
@@ -148,20 +148,10 @@ export default {
                     output.src = dataURL;
                 };
                 reader.readAsDataURL(input.files[0]);
-console.log('in');
-            console.log(this.$refs.file);
-
-                this.inputfile = this.$refs.file.files[0];
-                let data = new FormData();
-                let i=0;
-                data.append('file[' + i + ']',this.inputfile);
-                data.append('room_id',this.$store.getters.get_current_room.room_id);
-                API.POSTFILE(ApiConst.ROOM_UPLOAD_ICON_IMG,data).then(response=>{
-                    console.log(response);
-                })
 
         },
         handleSubmit(){
+            this.$store.dispatch('setLoadingPage',true);
             this.error_msgs.room_name = '';
             let data = {
                 room_name : this.roomName,
@@ -169,12 +159,30 @@ console.log('in');
                 room_icon_img : this.roomIconImg,
                 room_id : this.$store.getters.get_current_room.room_id,
             }
+
+            this.inputfile = this.$refs.file.files[0];
+            let dataImg = new FormData();
+            let i=0;
+            dataImg.append('file[' + i + ']',this.inputfile);
+            dataImg.append('room_id',this.$store.getters.get_current_room.room_id);
+            API.POSTFILE(ApiConst.ROOM_UPLOAD_ICON_IMG,dataImg).then(response=>{
+                if(response.error_code === 0){
+                    let prmCurrentRoom = this.$store.getters.get_current_room;
+                    prmCurrentRoom.icon_img = response.data.icon_img;
+                    this.$store.dispatch("setCurrentRoom",prmCurrentRoom);
+                }
+            })
+
+
             API.POST(ApiConst.ROOM_SETTING, data).then(response => {
+                this.$store.dispatch('setLoadingPage',false);
+
                 switch (response.error_code) {
                     case 0:
                         let prmCurrentRoom = this.$store.getters.get_current_room;
                         prmCurrentRoom.room_name = response.data.name;
                         prmCurrentRoom.room_description = response.data.description;
+                        prmCurrentRoom.icon_img = response.data.icon_img;
                         this.$store.dispatch("setCurrentRoom",prmCurrentRoom);
                         this.$root.$emit('push-notice', {
                             message: 'insert success',

@@ -143,7 +143,7 @@ export default {
                         let strMessage = "";
 
                         if( v.is_img === true){
-                            strMessage ='[info][title] New file uploaded[/title][preview id:'+v.id+' ht:'+AppConst.HEIGHT_IMG_PREVIEW+'][download id:'+v.id+']image_name.png[/download][/info]';
+                            strMessage ='[info][title] New file uploaded[/title][preview id:'+v.id+' ht:'+AppConst.HEIGHT_IMG_PREVIEW+'][download id:'+v.id+']'+v.file_name+'[/download][/info]';
                         }else{
                             strMessage ='[info][title] New file uploaded[/title][download id:'+v.id+']'+v.file_name+'[/download][/info]';
                         }
