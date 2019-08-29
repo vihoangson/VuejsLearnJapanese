@@ -147,16 +147,16 @@ export default {
             }
 
             response.data.forEach((v)=>{
-                let message = "";
+                let strMessage = "";
 
-                //if(v.is_img !== undefined && v.is_img === true){
-                    message ='[preview id:'+v.id+' ht:'+AppConst.HEIGHT_IMG_PREVIEW+'] [download:'+v.id+']Download[/download]';
-                //}
-                message +=' [download:'+v.id+']Download[/download]';
+                // if(v.is_img !== undefined && v.is_img === true){
+                //    message ='[preview id:'+v.id+' ht:'+AppConst.HEIGHT_IMG_PREVIEW+'] [download:'+v.id+']Download[/download]';
+                // }
+                strMessage ='[info][title] New file uploaded[/title][preview id:'+v.id+' ht:'+AppConst.HEIGHT_IMG_PREVIEW+'][download id:'+v.id+']image_name.png[/download][/info]';
 
                 let msg = {
                     room_id: this.$store.getters.get_current_room.room_id,
-                    message: '[preview id='+v.id+'] [download:'+v.id+']Download[/download]',
+                    message: strMessage,
                     type: 0,
                     token: this.$store.getters.get_current_user.token,
                     user_id: this.$store.getters.get_current_user.id
