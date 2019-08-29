@@ -389,5 +389,5 @@ export const AppConst = {
                    code: '(y)'
                }
            ],
-           HEIGHT_IMG_PREVIEW:30
+           HEIGHT_IMG_PREVIEW:120
        };
