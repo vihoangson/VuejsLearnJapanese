@@ -181,11 +181,14 @@ export default {
                         let prmCurrentRoom = this.$store.getters.get_current_room;
                         prmCurrentRoom.icon_img = response.data.icon_img;
                         this.$store.dispatch("setCurrentRoom",prmCurrentRoom);
-                    }else{
-                        this.$root.$emit('push-notice', {
-                            message: 'Can\'t upload file',
-                            alert: 'alert-danger'
-                        });
+
+                        prmCurrentRoom.option = 1;
+                        prmCurrentRoom.changeMemberListInfo = false;
+
+                        this.$root.$emit(
+                            'change-list-room',
+                            prmCurrentRoom
+                        );
                     }
                 })
             }
@@ -205,6 +208,15 @@ export default {
                             message: 'Insert success',
                             alert: 'alert-success'
                         });
+
+                        prmCurrentRoom.option = 1;
+                        prmCurrentRoom.changeMemberListInfo = false;
+
+                        this.$root.$emit(
+                            'change-list-room',
+                            prmCurrentRoom
+                        );
+
                         this.roomName = '';
                         this.roomDescription = null;
                         this.$refs.modal.hide();
