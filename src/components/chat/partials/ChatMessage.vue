@@ -366,4 +366,9 @@ pre {
     border-bottom: 1px solid #cccccc;
     border-radius: 2px 2px 0 0;
 }
+.chatInfo div {
+    padding: 8px 0;
+}
+
+.chatInfo {margin-bottom: 14px;}
 </style>

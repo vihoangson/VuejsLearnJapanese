@@ -651,7 +651,7 @@
     };
 </script>
 
-<style>
+<style scoped>
 
     .floatWindow {
         position: absolute;

@@ -27,7 +27,7 @@
                 <div>
                     <ul class="send-tool">
                         <li class="emoji" @click="toggleEmojiPicker">
-                            <span class="icon-container">
+                            <span class="icon-container disable-mark">
                                 <svg
                                     viewBox="0 0 10 10"
                                     id="icon_emoticon"
@@ -39,8 +39,8 @@
                                 </svg>
                             </span>
                         </li>
-                        <li class="emoji">
-                            <span class="icon-container">
+                        <li class="emoji ">
+                            <span class="icon-container disable-mark">
                                 <svg
                                     viewBox="0 0 10 10"
                                     id="icon_mention"
@@ -133,7 +133,7 @@ export default {
             this.$refs['myVueDropzone'].removeFile(file);
         },
         catchResponse(file, response) {
-            this.message = '';
+
             if (response.error_code === 0) {
                 this.$root.$emit('push-notice', {message:'Upload successfully', alert: 'alert-success'});
 
@@ -148,6 +148,9 @@ export default {
                             strMessage ='[info][title] New file uploaded[/title][download id:'+v.id+']'+v.file_name+'[/download][/info]';
                         }
 
+                        // Add message while send file
+                        strMessage += this.message;
+
                         let msg = {
                             room_id: this.$store.getters.get_current_room.room_id,
                             message: strMessage,
@@ -158,6 +161,7 @@ export default {
 
                         if (msg.message !== '') {
                             this.$socket.emit(AppConst.EVENT_MESSAGE.SEND, msg);
+                            this.message = '';
                         }
                     })
                 }
@@ -189,7 +193,7 @@ export default {
                 alert('There are no files!');
             } else {
                 this.$refs.myVueDropzone.processQueue();
-                this.message = '';
+                // this.message = '';
             }
         },
         addSending(file, xhr, formData) {

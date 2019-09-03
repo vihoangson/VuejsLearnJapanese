@@ -19,7 +19,8 @@
                                             <img width="200" height="200" id="output" :src="$store.getters.get_current_room.icon_img">
                                             <div @click="$refs.file.click()">Change</div>
                                         </div>
-                                        <input type="file"  ref="file" @change="selectImg" style="display: none">
+                                        <small>(JPEG, GIF, and PNG files up to 5mb)</small>
+                                        <input type="file"  ref="file" @change="selectImg" style="display: none" :accept="acceptImgFiles">
 
 
                                     </fieldset>
@@ -109,6 +110,7 @@ export default {
                 room_name:"",
                 room_description:""
             },
+            acceptImgFiles:AppConst.ACCEPTED_IMG_FILES,
             roomName: this.$store.getters.get_current_room.name
         };
     },
@@ -179,6 +181,14 @@ export default {
                         let prmCurrentRoom = this.$store.getters.get_current_room;
                         prmCurrentRoom.icon_img = response.data.icon_img;
                         this.$store.dispatch("setCurrentRoom",prmCurrentRoom);
+
+                        prmCurrentRoom.option = 1;
+                        prmCurrentRoom.changeMemberListInfo = false;
+
+                        this.$root.$emit(
+                            'change-list-room',
+                            prmCurrentRoom
+                        );
                     }
                 })
             }
@@ -195,9 +205,18 @@ export default {
                         prmCurrentRoom.icon_img = response.data.icon_img;
                         this.$store.dispatch("setCurrentRoom",prmCurrentRoom);
                         this.$root.$emit('push-notice', {
-                            message: 'insert success',
+                            message: 'Insert success',
                             alert: 'alert-success'
                         });
+
+                        prmCurrentRoom.option = 1;
+                        prmCurrentRoom.changeMemberListInfo = false;
+
+                        this.$root.$emit(
+                            'change-list-room',
+                            prmCurrentRoom
+                        );
+
                         this.roomName = '';
                         this.roomDescription = null;
                         this.$refs.modal.hide();
@@ -220,7 +239,8 @@ export default {
 };
 </script>
 
-<style>
+<style
+>
     fieldset.info-room span {
         font-weight: 500;
         color: #888;
@@ -236,6 +256,9 @@ export default {
     }
     .avatar-room > div{
         position:relative;
+    }
+    .avatar-room small{
+        font-size: 60%;
     }
     .avatar-room > div:hover div{
         display: block;
