@@ -2,8 +2,8 @@
     <div class="navigation">
         <div class="admin">
             <ul class="menu-admin" role="navigation">
-                <li class="menu-admin-item disable-mark">
-                    <span>
+                <li class="menu-admin-item ">
+                    <span class="disable-mark">
                         <svg
                             viewBox="0 0 10 10"
                             id="icon_menuTask"
@@ -15,8 +15,8 @@
                         </svg>
                     </span>
                 </li>
-                <li class="menu-admin-item disable-mark">
-                    <span>
+                <li class="menu-admin-item ">
+                    <span  class="disable-mark">
                         <svg
                             viewBox="0 0 10 10"
                             id="icon_menuFile"
@@ -41,8 +41,8 @@
                         </svg>
                     </span>
                 </li>
-                <li class="menu-admin-item disable-mark">
-                    <span>
+                <li class="menu-admin-item">
+                    <span  class="disable-mark">
                         <svg
                             viewBox="0 0 10 10"
                             id="icon_menuInfo"
