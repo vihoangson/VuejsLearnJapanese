@@ -181,7 +181,7 @@
         <div class="chat-box-detail">
             <div v-if="true">
                 <h2>Description</h2>
-                <pre><span v-if="$store.getters.get_current_room.room_description==''">No description</span><div v-if="$store.getters.get_current_room.room_description!=''">{{$store.getters.get_current_room.room_description?$store.getters.get_current_room.room_description:''}}</div></pre>
+                <pre><span v-if="$store.getters.get_current_room.room_description===''|| $store.getters.get_current_room.room_description===null">No description</span><div v-else>{{$store.getters.get_current_room.room_description?$store.getters.get_current_room.room_description:''}}</div></pre>
 
 
                 <div v-for="(user, index) in $store.getters.get_all_user.list_user" :key="index">
