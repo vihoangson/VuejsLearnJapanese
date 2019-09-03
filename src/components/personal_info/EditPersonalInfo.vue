@@ -217,7 +217,7 @@
     };
 </script>
 
-<style>
+<style scoped>
 
     .loader {
         position: fixed;
