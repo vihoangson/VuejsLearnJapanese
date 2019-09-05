@@ -23,17 +23,19 @@
                 <div class="profileShowDialog__dialogHeader">
 
                     <div class="_profileCover profileShowDialog__coverContainer">
-                        <img class=" _coverImage _coverAid2571977 coverImage" data-aid="2571977" src="https://appdata.chatwork.com/cover/1345/1345682.jpg">
-                        <div id="_profileEditCoverControl" class="_profilePhotoEditBar profileEditDialog__editCoverButton" style="display: block;">
+                        <img class=" _coverImage _coverAid2571977 coverImage" data-aid="2571977" :src="$store.getters.get_current_user_info.cover_img">
+                        <div id="_profileEditCoverControl" @click="changeImgOption='cover';$refs.file.click();"  class="_profilePhotoEditBar profileEditDialog__editCoverButton" style="display: block;">
                             Edit cover photo
                         </div>
 
+
                     </div>
                     <div class="_profileAvatar profileShowDialog__avatarContainer">
-                        <img class=" avatarHuge _avatar _avatarAid2571977" data-aid="2571977" src="https://appdata.chatwork.com/avatar/3431/3431235.gif">
-                        <div id="_profileEditAvatarControl" class="_profilePhotoEditBar profileEditDialog__editAvatarButton" style="display: block;">
+                        <img class=" avatarHuge _avatar _avatarAid2571977" data-aid="2571977" :src="$store.getters.get_current_user_info.icon_img">
+                        <div @click="changeImgOption='avatar';$refs.file.click();" ref="file" id="_profileEditAvatarControl" class="_profilePhotoEditBar profileEditDialog__editAvatarButton" style="display: block;">
                             Edit
                         </div>
+                        <input type="file"  ref="file" @change="uploadImagePersonalInfo" style="display: none" :accept="acceptImgFiles">
                     </div>
 
                 </div>
@@ -47,17 +49,6 @@
 
                             <ul class="profileShowDialog__profileBodyItemList">
 
-                                <!--<li class="profileShowDialog__profileBodyItem" v-for="item in itemProfile" :key="item">-->
-
-                                    <!--<span class="profileShowDialog__profileBodyItemLabel">-->
-                                        <!--{{item.content}}-->
-                                    <!--</span>-->
-
-                                    <!--<span class="_profileDepartment profileShowDialog__profileBodyItemContent">-->
-                                        <!--<input  class="profileShowDialog__profileBodyInput" v-bind:name="item.input_name" type="text" v-model="item.input_name">-->
-                                    <!--</span>-->
-
-                                <!--</li>-->
 
                                 <li class="profileShowDialog__profileBodyItem" >
 
@@ -131,6 +122,8 @@
         waitForData: true,
         data() {
             return {
+                changeImgOption:'avatar',
+                acceptImgFiles:AppConst.ACCEPTED_IMG_FILES,
                 errors: {
                     required_name: '',
                     update_fail: ''
@@ -160,6 +153,37 @@
         },
 
         methods: {
+            uploadImagePersonalInfo(option){
+                // Turn on screen loading
+                this.$store.dispatch('setLoadingPage',true);
+
+                let canUploadImg = true;
+                if(canUploadImg){
+
+                    this.inputfile = this.$refs.file.files[0];
+                    let dataImg = new FormData();
+                    let i=0;
+                    dataImg.append('file[' + i + ']',this.inputfile);
+                    dataImg.append('user_id',this.$store.getters.get_current_user_info.id);
+                    dataImg.append('option',this.changeImgOption);
+
+                    API.POSTFILE(ApiConst.USER_UPLOAD_ICON_IMG,dataImg).then(response=>{
+                        // Turn off screen loading
+                        this.$store.dispatch('setLoadingPage',false);
+
+                        if(response.error_code === 0){
+                            this.$root.$emit('push-notice', {message:'Upload successfully', alert: 'alert-success'});
+
+                            let prmCurrentUser = this.$store.getters.get_current_user_info;
+                            prmCurrentUser.icon_img = response.data.icon_img;
+                            prmCurrentUser.cover_img = response.data.cover_img;
+                            this.$store.dispatch("setCurrentUserInfo",prmCurrentUser);
+
+                        }
+                    })
+                }
+            },
+
             handleResizePopup() {
                 this.marginPopup = (window.innerWidth - 908)/2 + 'px';
                 this.floatWindowHeight = window.innerHeight + 'px';
@@ -172,7 +196,7 @@
             floatWindowSetsize() {
                 this.marginPopup = (this.$refs.floatWindow.clientWidth - 908) / 2 + 'px';
             },
-
+    
             submit_update_info(e) {
 
                 this.errors.required_name = '';
@@ -184,22 +208,21 @@
                         company: this.input_values.company,
                     };
                     API.POST(ApiConst.UPDATE_USER_INFO, data).then(res => {
-
                         if (res.error_code === 0) {
-
                             let userInfo = {
                                 id : res.data.id,
                                 email: res.data.email,
                                 name: res.data.name,
                                 company: res.data.company,
-                                icon_img: res.data.icon_img,
+                                icon_img: this.$store.getters.get_current_user_info.icon_img,
+                                cover_img: this.$store.getters.get_current_user_info.cover_img,
                             };
                             localStorage.setItem(
                                 AppConst.LOCAL_USER_INFO,
                                 JSON.stringify(userInfo)
                             );
 
-                            let newUserInfo = localStorage.getItem(AppConst.LOCAL_USER_INFO,);
+                            let newUserInfo = localStorage.getItem(AppConst.LOCAL_USER_INFO);
                             this.$store.dispatch('setCurrentUserInfo', JSON.parse(newUserInfo));
                             this.$store.dispatch('setProfileEdit', 'none');
                         }

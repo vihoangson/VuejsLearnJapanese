@@ -129,8 +129,13 @@ export default {
         });
 
         let userInfo = localStorage.getItem(AppConst.LOCAL_USER_INFO);
-        if (userInfo)
-            this.$store.dispatch('setCurrentUserInfo', JSON.parse(userInfo));
+        if (userInfo){
+            let userInfoJson = JSON.parse(userInfo);
+            userInfoJson.icon_img = userInfoJson.icon_img;
+            userInfoJson.cover_img = userInfoJson.cover_img;
+            this.$store.dispatch('setCurrentUserInfo', userInfoJson);
+
+        }
 
 
 
