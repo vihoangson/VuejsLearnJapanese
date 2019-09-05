@@ -31,9 +31,11 @@
 
                     </div>
                     <div class="_profileAvatar profileShowDialog__avatarContainer">
-                        <img class=" avatarHuge _avatar _avatarAid2571977" data-aid="2571977" :src="$store.getters.get_current_user_info.icon_img">
-                        <div @click="changeImgOption='avatar';$refs.file.click();" ref="file" id="_profileEditAvatarControl" class="_profilePhotoEditBar profileEditDialog__editAvatarButton" style="display: block;">
-                            Edit
+                        <div class="p-relative">
+                            <img class=" avatarHuge _avatar _avatarAid2571977" data-aid="2571977" :src="$store.getters.get_current_user_info.icon_img">
+                            <div @click="changeImgOption='avatar';$refs.file.click();" ref="file" id="_profileEditAvatarControl" class="_profilePhotoEditBar profileEditDialog__editAvatarButton" style="display: block;">
+                                Edit
+                            </div>
                         </div>
                         <input type="file"  ref="file" @change="uploadImagePersonalInfo" style="display: none" :accept="acceptImgFiles">
                     </div>
@@ -352,7 +354,7 @@
         position: absolute;
         bottom: 0;
         left: 0;
-        width: 800px;
+        width: 100%;
         height: 30px;
         line-height: 30px;
         text-align: center;
@@ -362,10 +364,17 @@
         cursor: pointer;
     }
 
+    .p-relative{
+        position:relative;
+        width:100%;
+    }
+    img.avatarHuge._avatar._avatarAid2571977 {
+        width: 100%;
+    }
     .profileEditDialog__editAvatarButton {
         position: absolute;
-        left: -5px;
-        bottom: -5px;
+        left: -11px;
+        bottom: 12px;
         height: 30px;
         width: 140px;
         line-height: 30px;
@@ -480,9 +489,8 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 800px;
         height: 250px;
-        background: #f2f2f2 url(https://assets.chatwork.com/images/background/bg_wrapper.png);
+        background: #f2f2f2;
         border-bottom: 1px solid #cccccc;
     }
 

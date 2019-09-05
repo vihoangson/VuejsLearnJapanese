@@ -257,12 +257,15 @@
 
     .profileShowDialog__coverContainer {
         display: flex;
+        overflow: hidden;
         align-items: center;
         justify-content: center;
-        width: 800px;
         height: 250px;
-        background: #f2f2f2 url(https://assets.chatwork.com/images/background/bg_wrapper.png);
+        background: #f2f2f2;
         border-bottom: 1px solid #cccccc;
+    }
+    .profileShowDialog__coverContainer img{
+        width:100%;
     }
 
     .profileShowDialog__bodyContainer{
