@@ -344,13 +344,13 @@
                     },
                     {
                         id: '_contactWindowTabWaitForAccept',
-                        text: 'Sent requests',
+                        text: 'Approve',
                         display: 'block',
                         number: 0,
                         dataType: 'waitforaccept'
                     },                    {
                         id: '_contactWindowTabMyRequest',
-                        text: 'Sent Requests',
+                        text: 'Approve',
                         display: 'none',
                         number: 0,
                         dataType: 'myrequest'
