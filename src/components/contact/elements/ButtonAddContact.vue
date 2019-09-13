@@ -58,6 +58,9 @@
                             can_add_user: 0
                         }
                         this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, data2);
+
+                        this.$parent.$parent.$parent.contactTabs.find((e)=>{return e.id === '_contactWindowTabWaitForAccept'}).subtext  = '';
+
                     }
                     console.log(response);
                 })
