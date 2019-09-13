@@ -25,7 +25,7 @@
                 API.POST(ApiConst.APPROVE_CONTACT, requestData).then(response => {
                     if(response.error_code ===0){
                         this.status = 1;
-                        this.$parent.isActive = false;
+                        // this.$parent.isActive = false;
 
 
                         // todo: send me
@@ -58,8 +58,6 @@
                             can_add_user: 0
                         }
                         this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, data2);
-
-
                     }
                     console.log(response);
                 })
@@ -74,7 +72,7 @@
                 API.POST(ApiConst.INVITE_BY_EMAILS, requestData).then(response => {
                     if(response.error_code ===0){
                         this.status = 0;
-                        this.$parent.isActive = false;
+                        // this.$parent.isActive = false;
                     }
                     console.log(response);
                 })
@@ -88,7 +86,7 @@
                 API.POST(ApiConst.CANCEL_REQUEST_CONTACT, requestData).then(response => {
                     if(response.error_code ===0){
                         this.status = null;
-                        this.$parent.isActive = false;
+                        // this.$parent.isActive = false;
                     }
                 })
             }

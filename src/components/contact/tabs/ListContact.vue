@@ -24,7 +24,7 @@ import BoxContact from '../elements/BoxContact';
 export default {
     name: 'AddContact.vue',
     components: { BoxContact },
-    props:["type"],
+    props:["type","evebtChangeTabEvent"],
     data() {
         return {
             contactName: '',
@@ -34,12 +34,22 @@ export default {
     component: {
         BoxContact
     },
+    watch:{
+        evebtChangeTabEvent (value){
+            this.setInitValue();
+        }
+    },
     mounted() {
-        let valueDefault = this.searchContact()
-        this.$store.dispatch('setMyContact',valueDefault);
-        this.listContact = valueDefault;
+        this.setInitValue();
     },
     methods: {
+        setInitValue(){
+
+
+            let valueDefault = this.searchContact()
+            this.$store.dispatch('setMyContact',valueDefault);
+            this.listContact = valueDefault;
+        },
         resetSearch(e){
             e.preventDefault();
             this.contactName = "";

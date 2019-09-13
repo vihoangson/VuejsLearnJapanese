@@ -29,6 +29,12 @@ export default {
             listContact: []
         };
     },
+    props:["evebtChangeTabEvent"],
+    watch:{
+        evebtChangeTabEvent (value){
+            this.searchContact();
+        }
+    },
     mounted() {
         this.searchContact();
     },
@@ -42,6 +48,7 @@ export default {
                 query: this.contactName,
                 options: 2
             };
+
 
             API.POST(ApiConst.SEARCH_CONTACT, requestData).then(response => {
 
@@ -58,7 +65,9 @@ export default {
                             this.listContact.push(x);
                         }
                     });
-
+                    if(this.listContact.length !== 0){
+                        this.$parent.contactTabs.find((e)=>{return e.id === '_contactWindowTabWaitForAccept'}).subtext  =' ('+this.listContact.length+')';
+                    }
                 }else{
                     this.$root.$emit('push-notice', {
                         message: 'Can\'t search',
