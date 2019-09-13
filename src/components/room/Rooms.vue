@@ -101,7 +101,7 @@
                                             </p>
                                         </td>
                                         <td>
-                                            <p>        
+                                            <p>
                                                 <span class="selectRole" @click="itemRoleRoomClick($event)">
                                                     <div class="selectDefault" v-if="selected[item.id]">
                                                         <span class="selectbox">
@@ -295,7 +295,7 @@
                 this.disableButton = true;
                 this.selectAll = false;
                 if(this.roomName === ''){
-                    this.roomName = this.$store.getters.get_current_user_info.name
+                    this.roomName = '[Group] '+this.$store.getters.get_current_user_info.name
                 }
 
                 if (!this.checkFormValidity()) {
