@@ -67,6 +67,8 @@ export default {
                     });
                     if(this.listContact.length !== 0){
                         this.$parent.contactTabs.find((e)=>{return e.id === '_contactWindowTabWaitForAccept'}).subtext  =' ('+this.listContact.length+')';
+                    }else{
+                        this.$parent.contactTabs.find((e)=>{return e.id === '_contactWindowTabWaitForAccept'}).subtext  ='';
                     }
                 }else{
                     this.$root.$emit('push-notice', {
