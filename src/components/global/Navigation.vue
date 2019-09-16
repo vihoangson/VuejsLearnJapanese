@@ -234,6 +234,7 @@ export default {
 }
 .avatar {
     height: 32px;
+    width: 32px;
     margin-right: 5px;
     vertical-align: top;
     cursor: pointer;
