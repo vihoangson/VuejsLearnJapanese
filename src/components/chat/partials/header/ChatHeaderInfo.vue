@@ -63,6 +63,7 @@
                     id="icon-config-all"
                     class="icon-config-all"
                     v-bind:class="{ active: isActive, 'setting-room': true }"
+                    v-if="($store.getters.get_current_room.can_add_user !== 0)"
                 >
                     <svg viewBox="0 0 10 10" id="icon_setting" xmlns="http://www.w3.org/2000/svg">
                         <path

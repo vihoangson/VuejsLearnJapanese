@@ -1,5 +1,5 @@
 <template>
-    <div id="_contactElementButtonAdd" class="button-contact" style="">        
+    <div id="_contactElementButtonAdd" class="button-contact" style="">
         <button v-if="status === null" class="btn btn-sm btn-primary" @click="addContact">Add contact</button>
         <button v-if="status === 0" class="btn btn-sm btn-warning" @click="removeContact">Cancel request</button>
         <button v-if="status === 2" class="btn btn-sm btn-success" @click="Approve">Approve</button>
@@ -17,6 +17,7 @@
         name: "ButtonAddContact.vue",
         props:['status','email','id'],
         methods:{
+            // ACTION APPROVE
             Approve(){
                 let requestData = {
                     contact_user_id: this.id
@@ -24,7 +25,7 @@
                 API.POST(ApiConst.APPROVE_CONTACT, requestData).then(response => {
                     if(response.error_code ===0){
                         this.status = 1;
-                        this.$parent.isActive = false;
+                        // this.$parent.isActive = false;
 
 
                         // todo: send me
@@ -58,11 +59,14 @@
                         }
                         this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, data2);
 
+                        this.$parent.$parent.$parent.contactTabs.find((e)=>{return e.id === '_contactWindowTabWaitForAccept'}).subtext  = '';
 
                     }
                     console.log(response);
                 })
             },
+
+            // ACTION ADD CONTECT
             addContact(){
                 let requestData = {
                     emails: [this.email],
@@ -71,11 +75,13 @@
                 API.POST(ApiConst.INVITE_BY_EMAILS, requestData).then(response => {
                     if(response.error_code ===0){
                         this.status = 0;
-                        this.$parent.isActive = false;
+                        // this.$parent.isActive = false;
                     }
                     console.log(response);
                 })
             },
+
+            // ACTION REMOVE
             removeContact(){
                 let requestData = {
                     id: this.id
@@ -83,7 +89,7 @@
                 API.POST(ApiConst.CANCEL_REQUEST_CONTACT, requestData).then(response => {
                     if(response.error_code ===0){
                         this.status = null;
-                        this.$parent.isActive = false;
+                        // this.$parent.isActive = false;
                     }
                 })
             }

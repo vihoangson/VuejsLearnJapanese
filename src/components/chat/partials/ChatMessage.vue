@@ -141,7 +141,7 @@ export default {
             return html;
         },
         processPreviewMessage(content) {
-            let file = 'http://172.16.100.37/api/v1/file/show-file/';
+            let file = process.env.ROOT_API +'/api/v1/file/show-file/';
             let html = content.replace(AppConst.REGULAR.PREVIEW, function(
                 matches
             ) {
@@ -366,4 +366,9 @@ pre {
     border-bottom: 1px solid #cccccc;
     border-radius: 2px 2px 0 0;
 }
+.chatInfo div {
+    padding: 8px 0;
+}
+
+.chatInfo {margin-bottom: 14px;}
 </style>

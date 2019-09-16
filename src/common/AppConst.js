@@ -8,7 +8,8 @@ export const AppConst = {
                EDIT: 1,
                DELETE: 2
            },
-           ACCEPTED_FILES: '.jpg,.png',
+           ACCEPTED_FILES: '.jpg,.png,.sql,.jpeg,.gif',
+           ACCEPTED_IMG_FILES: '.jpg,.png,.jpeg,.gif',
            MAX_FILE_SIZE: 100,
            MAX_FILE: 10,
            EVENT_MESSAGE: {
@@ -389,5 +390,5 @@ export const AppConst = {
                    code: '(y)'
                }
            ],
-           HEIGHT_IMG_PREVIEW:30
+           HEIGHT_IMG_PREVIEW:120
        };

@@ -143,6 +143,7 @@ export default {
                                     name: res.data.name,
                                     company: res.data.company,
                                     icon_img: res.data.icon_img,
+                                    cover_img: res.data.cover_img,
                                 };
                                 localStorage.setItem(
                                     AppConst.LOCAL_USER_INFO,

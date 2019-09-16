@@ -10,13 +10,13 @@
             @ok="handleOk">
             <form ref="form" class="form-rooms">
                 <div class="row">
-                    <div class="col-md-3">
-                        <div class="roomInfo">
+                    <div class="col-md-3 " style="display: none;" >
+                        <div class="roomInfo ">
                             <img id="roomInfoImage" class="roomInfoImage" v-bind:src="roomImage" alt="">
                             <div id="roomIconChange" class="roomIconChange">Change</div>
                         </div>
                     </div>
-                    <div class="col-md-9">
+                    <div class="col-md-12">
                         <div class="form-group">
                             <label>Room Chat Name:</label><div class="error">{{roomNameError}}</div>
                             <input type="text" name="roomName" v-model="roomName" class="form-control" placeholder="Group name">
@@ -101,7 +101,7 @@
                                             </p>
                                         </td>
                                         <td>
-                                            <p>        
+                                            <p>
                                                 <span class="selectRole" @click="itemRoleRoomClick($event)">
                                                     <div class="selectDefault" v-if="selected[item.id]">
                                                         <span class="selectbox">
@@ -295,7 +295,7 @@
                 this.disableButton = true;
                 this.selectAll = false;
                 if(this.roomName === ''){
-                    this.roomName = this.$store.getters.get_current_user_info.name
+                    this.roomName = '[Group] '+this.$store.getters.get_current_user_info.name
                 }
 
                 if (!this.checkFormValidity()) {

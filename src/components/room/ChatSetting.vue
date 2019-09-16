@@ -13,23 +13,23 @@
                 <div class="col-md-12">
                         <b-tabs content-class="mt-3">
                             <b-tab title="Group Chat Setting" active>
-                                <form @submit="btnSaveSetting">
-                                    <input type="file"  ref="file" @change="selectImg">
-                                    <div ><img width="200" height="200" id="output" src="http://via.placeholder.com/200x200"></div>
-                                    <fieldset>
+                                <form @submit="btnSaveSetting" id="saveSetting">
+                                    <fieldset class="avatar-room">
+                                        <div>
+                                            <img width="200" height="200" id="output" :src="$store.getters.get_current_room.icon_img">
+                                            <div @click="$refs.file.click()">Change</div>
+                                        </div>
+                                        <small>(JPEG, GIF, and PNG files up to 5mb)</small>
+                                        <input type="file"  ref="file" @change="selectImg" style="display: none" :accept="acceptImgFiles">
+
+
+                                    </fieldset>
+                                    <fieldset class="info-room">
                                         <div class="container">
                                             <div class="row">
-                                                <div class="col-md-2">
-                                                    <span class="roomText">
-                                                        Room name
-                                                    </span>
-                                                    <a href="https://chatworken.zendesk.com/hc/en-us/articles/115002982686">
-                                                        <svg class="roomMute" viewBox="0 0 10 10" width="16" height="16">
-                                                            <use fill-rule="evenodd" xlink:href="#icon_help"></use>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                                <div class="col-md-10">
+
+                                                <div class="col-md-12">
+                                                    <span>Group Chat Name:</span>
                                                     <span class="roomName">
                                                         <input v-model="roomName"  required>
                                                     </span>
@@ -39,17 +39,9 @@
                                                 </div>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-2">
-                                                    <span class="roomText">
-                                                        Room description
-                                                    </span>
-                                                    <a href="https://chatworken.zendesk.com/hc/en-us/articles/115002982686">
-                                                        <svg class="roomMute" viewBox="0 0 10 10" width="16" height="16">
-                                                            <use fill-rule="evenodd" xlink:href="#icon_help"></use>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                                <div class="col-md-10">
+
+                                                <div class="col-md-12">
+                                                    <span>Description:</span>
                                                     <span class="roomName">
                                                         <textarea placeholder="Add multiple lines" v-model="roomDescription"></textarea>
                                                     </span>
@@ -103,6 +95,8 @@
 <script>
     import { API } from '../../services/api';
     import { ApiConst } from '../../common/ApiConst';
+    import { AppConst } from '../../common/AppConst';
+
 export default {
     name: 'ChatSetting',
     data() {
@@ -116,6 +110,7 @@ export default {
                 room_name:"",
                 room_description:""
             },
+            acceptImgFiles:AppConst.ACCEPTED_IMG_FILES,
             roomName: this.$store.getters.get_current_room.name
         };
     },
@@ -142,26 +137,30 @@ export default {
                 var input = event.target;
 
                 var reader = new FileReader();
+                let fileName = input.files[0].name
+                var extension = fileName.match(/\.[0-9a-z]+$/i);
+
+                let acceptedfile = AppConst.ACCEPTED_IMG_FILES.split(',');
+
+                if(!acceptedfile.includes(extension[0])){
+                    this.$root.$emit('push-notice', {
+                        message: 'Can\'t choose this file',
+                        alert: 'alert-danger'
+                    });
+                    return;
+                }
+
+
                 reader.onload = function(){
                     var dataURL = reader.result;
                     var output = document.getElementById('output');
                     output.src = dataURL;
                 };
                 reader.readAsDataURL(input.files[0]);
-console.log('in');
-            console.log(this.$refs.file);
-
-                this.inputfile = this.$refs.file.files[0];
-                let data = new FormData();
-                let i=0;
-                data.append('file[' + i + ']',this.inputfile);
-                data.append('room_id',this.$store.getters.get_current_room.room_id);
-                API.POSTFILE(ApiConst.ROOM_UPLOAD_ICON_IMG,data).then(response=>{
-                    console.log(response);
-                })
 
         },
         handleSubmit(){
+            this.$store.dispatch('setLoadingPage',true);
             this.error_msgs.room_name = '';
             let data = {
                 room_name : this.roomName,
@@ -169,17 +168,55 @@ console.log('in');
                 room_icon_img : this.roomIconImg,
                 room_id : this.$store.getters.get_current_room.room_id,
             }
+
+            let canUploadImg = true;
+            if(canUploadImg){
+                this.inputfile = this.$refs.file.files[0];
+                let dataImg = new FormData();
+                let i=0;
+                dataImg.append('file[' + i + ']',this.inputfile);
+                dataImg.append('room_id',this.$store.getters.get_current_room.room_id);
+                API.POSTFILE(ApiConst.ROOM_UPLOAD_ICON_IMG,dataImg).then(response=>{
+                    if(response.error_code === 0){
+                        let prmCurrentRoom = this.$store.getters.get_current_room;
+                        prmCurrentRoom.icon_img = response.data.icon_img;
+                        this.$store.dispatch("setCurrentRoom",prmCurrentRoom);
+
+                        prmCurrentRoom.option = 1;
+                        prmCurrentRoom.changeMemberListInfo = false;
+
+                        this.$root.$emit(
+                            'change-list-room',
+                            prmCurrentRoom
+                        );
+                    }
+                })
+            }
+
+
             API.POST(ApiConst.ROOM_SETTING, data).then(response => {
+                this.$store.dispatch('setLoadingPage',false);
+
                 switch (response.error_code) {
                     case 0:
                         let prmCurrentRoom = this.$store.getters.get_current_room;
                         prmCurrentRoom.room_name = response.data.name;
                         prmCurrentRoom.room_description = response.data.description;
+                        prmCurrentRoom.icon_img = response.data.icon_img;
                         this.$store.dispatch("setCurrentRoom",prmCurrentRoom);
                         this.$root.$emit('push-notice', {
-                            message: 'insert success',
+                            message: 'Insert success',
                             alert: 'alert-success'
                         });
+
+                        prmCurrentRoom.option = 1;
+                        prmCurrentRoom.changeMemberListInfo = false;
+
+                        this.$root.$emit(
+                            'change-list-room',
+                            prmCurrentRoom
+                        );
+
                         this.roomName = '';
                         this.roomDescription = null;
                         this.$refs.modal.hide();
@@ -202,7 +239,41 @@ console.log('in');
 };
 </script>
 
-<style>
+<style
+>
+    fieldset.info-room span {
+        font-weight: 500;
+        color: #888;
+        margin-top: 6px;
+        display: block;
+    }
+    .info-room input, .info-room textarea {
+        width: 100%;
+        PADDING: 5PX;
+    }
+    .info-room textarea{
+        height:200px;
+    }
+    .avatar-room > div{
+        position:relative;
+    }
+    .avatar-room small{
+        font-size: 60%;
+    }
+    .avatar-room > div:hover div{
+        display: block;
+    }
+    .avatar-room div div {
+        display: none;
+        background: #4c4c4c;
+        position: absolute;
+        bottom: -10px;
+        color: white;
+        width: 100%;
+        font-weight: bold;
+        text-align: center;
+        cursor: pointer;
+    }
 .list-icon img {
     width: 30px;
     border-radius: 50%;
@@ -219,5 +290,18 @@ console.log('in');
 .icon_edit svg{
     height: 15px;
     width: 15px;
+}
+    #saveSetting>fieldset:nth-child(1) {
+        float: left;
+        width: 20%;
+        MARGIN-TOP: 12PX;
+    }
+#saveSetting>fieldset:nth-child(1) img{
+    width: 100%;
+    height: auto;
+}
+#saveSetting>fieldset:nth-child(2){
+    float:left;
+    width:80%;
 }
 </style>

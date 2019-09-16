@@ -24,7 +24,7 @@ import BoxContact from '../elements/BoxContact';
 export default {
     name: 'AddContact.vue',
     components: { BoxContact },
-    props:["type"],
+    props:["type","evebtChangeTabEvent"],
     data() {
         return {
             contactName: '',
@@ -34,12 +34,22 @@ export default {
     component: {
         BoxContact
     },
+    watch:{
+        evebtChangeTabEvent (value){
+            this.setInitValue();
+        }
+    },
     mounted() {
-        let valueDefault = this.searchContact()
-        this.$store.dispatch('setMyContact',valueDefault);
-        this.listContact = valueDefault;
+        this.setInitValue();
     },
     methods: {
+        setInitValue(){
+
+
+            let valueDefault = this.searchContact()
+            this.$store.dispatch('setMyContact',valueDefault);
+            this.listContact = valueDefault;
+        },
         resetSearch(e){
             e.preventDefault();
             this.contactName = "";
@@ -50,28 +60,22 @@ export default {
             this.listContact = this.searchContact();
         },
         searchContact() {
+            let optionsApi = null;
+            if(this.type === 'AddContact'){
+                optionsApi = 0;
+            }else{
+                optionsApi = 1;
+            }
             let requestData = {
                 query: this.contactName,
-                options: 1
+                options: optionsApi
             };
             var tmpList = [];
             API.POST(ApiConst.SEARCH_CONTACT, requestData).then(response => {
                 if (response.error_code === 0) {
                     let contacts = response.data.rows;
                     contacts.forEach(x => {
-                        switch (this.type) {
-                            case 'AddContact':
-                                if (x.contact_status === null) {
-                                    tmpList.push(x);
-                                }
-                                break;
-                            default:
-                                if (x.contact_status === 1) {
-                                    tmpList.push(x);
-                                }
-                                break;
-                        }
-
+                        tmpList.push(x);
                     });
                 }
             });

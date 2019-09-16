@@ -29,6 +29,12 @@ export default {
             listContact: []
         };
     },
+    props:["evebtChangeTabEvent"],
+    watch:{
+        evebtChangeTabEvent (value){
+            this.searchContact();
+        }
+    },
     mounted() {
         this.searchContact();
     },
@@ -37,18 +43,37 @@ export default {
     },
     methods: {
         searchContact() {
+            // Prepare data for api
             let requestData = {
                 query: this.contactName,
                 options: 2
             };
+
+
             API.POST(ApiConst.SEARCH_CONTACT, requestData).then(response => {
+
                 if (response.error_code === 0) {
+
                     let contacts = response.data.rows;
+
                     this.listContact = [];
+
+                    // push data to list
                     contacts.forEach(x => {
-                        if (x.contact_status === 0 || x.contact_status === 2) {
+                        // contact_status:2 => wait for accept
+                        if ( x.contact_status === 2) {
                             this.listContact.push(x);
                         }
+                    });
+                    if(this.listContact.length !== 0){
+                        this.$parent.contactTabs.find((e)=>{return e.id === '_contactWindowTabWaitForAccept'}).subtext  =' ('+this.listContact.length+')';
+                    }else{
+                        this.$parent.contactTabs.find((e)=>{return e.id === '_contactWindowTabWaitForAccept'}).subtext  ='';
+                    }
+                }else{
+                    this.$root.$emit('push-notice', {
+                        message: 'Can\'t search',
+                        alert: 'alert-danger'
                     });
                 }
             });

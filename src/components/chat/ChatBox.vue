@@ -179,10 +179,12 @@
             <div class="sideContentResizeCtrlArea cwResizeHandleCol"></div>
         </div>
         <div class="chat-box-detail">
-            <div v-if="false">
+            <div v-if="true">
+                <h2>Description</h2>
+                <pre><span v-if="$store.getters.get_current_room.room_description===''|| $store.getters.get_current_room.room_description===null">No description</span><div v-else>{{$store.getters.get_current_room.room_description?$store.getters.get_current_room.room_description:''}}</div></pre>
 
-                content column right
-                <div v-for="(user, index) in $store.getters.get_all_user.list_user" :key="index">
+
+                <div v-for="(user, index) in $store.getters.get_all_user.list_user" :key="index" v-if="false">
                     <div>{{user.name}}</div>
                     <div>{{user.email}}</div>
                     <div>{{user.contact_status}}</div>
@@ -883,6 +885,7 @@ export default {
 }
 .room-logo img {
     width: 25px;
+    height: 25px;
     border-radius: 50%;
 }
 .chat-box-header .title {
@@ -905,11 +908,29 @@ export default {
     right: 0px;
     min-width: 300px;
     width: 300px;
-    background: #ccc;
     border-right: 1px solid #b3b3b3;
     border-left: 1px solid #cccccc;
     z-index: -1;
 }
+.chat-box-detail span{
+    color:#909090;
+}
+.chat-box-detail h2 {
+    padding: 7px;
+    background: #ccc;
+    font-weight: bold;
+    color: #7b7b7b;
+    font-size: 100%;
+    margin:0px;
+
+}
+.chat-box-detail pre{
+    padding: 7px;
+    font-size: 100%;
+    line-height: normal;
+    margin:0px;
+}
+
 .chat-box-content {
     position: absolute;
     right: 300px;
