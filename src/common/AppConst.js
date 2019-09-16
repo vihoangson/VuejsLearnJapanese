@@ -8,7 +8,7 @@ export const AppConst = {
                EDIT: 1,
                DELETE: 2
            },
-           ACCEPTED_FILES: '.jpg,.png,.sql,.jpeg,.gif',
+           ACCEPTED_FILES: '.jpg,.jpeg,.png,.gif,.sql,.txt,.zip,.rar,.doc,.docx,.docm,.xls,.xlsx,.xlsm,.ppt,.pptx,.pptm,.pdf,.pps',
            ACCEPTED_IMG_FILES: '.jpg,.png,.jpeg,.gif',
            MAX_FILE_SIZE: 100,
            MAX_FILE: 10,
