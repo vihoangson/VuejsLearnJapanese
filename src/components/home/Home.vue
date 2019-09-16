@@ -116,9 +116,14 @@ export default {
         let user = localStorage.getItem('user');
 
         if (user) {
+            let userLogged = JSON.parse(user);
             this.$socket.emit(
                 AppConst.EVENT_MESSAGE.CHANNEL_NEW_ROOM,
-                user.user_id
+                userLogged.user_id
+            );
+            this.$socket.emit(
+                AppConst.EVENT_MESSAGE.CHANNEL_CHANGE_ROOM,
+                userLogged.user_id
             );
             this.$store.dispatch('setCurrentUser', JSON.parse(user));
             this.setNotification();
@@ -155,7 +160,7 @@ export default {
             })
         },
         changeRoomEvent() {
-            let chatBox = this.$refs.chat;
+            // let chatBox = this.$refs.chat;
             // chatBox.editMessage = false;
             // chatBox.message.content = '';
             // chatBox.message.id = 0;

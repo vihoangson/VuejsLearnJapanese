@@ -1,3 +1,5 @@
+import { AppConst } from "../../common/AppConst";
+
 export function changeRoom(socket, store, room) {
     var listRoom = store.getters.get_list_room;
     switch (room.option) {
@@ -38,7 +40,6 @@ export function changeRoom(socket, store, room) {
                                 }
                             }
                         }
-
                         listRoom[i].member_list = memberUpdate;
                     } else {
                         listRoom.splice(i, 1);
@@ -88,6 +89,10 @@ export function changeRoom(socket, store, room) {
                             }
                         }
                     }
+                    socket.emit(
+                        AppConst.EVENT_MESSAGE.ADD_NEW_ROOM,
+                        listRoom[i]
+                    );
                 }
             }
             break;
@@ -109,10 +114,10 @@ export function changeRoom(socket, store, room) {
                                         'setCurrentRoom',
                                         listRoom[0]
                                     );
+                                    socket.emit(AppConst.EVENT_MESSAGE.LEAVE_ROOM, room.room_id);
                                 } else {
                                     // TODO
-                                    
-                                    
+                                    listRoom[i].member_list.splice(key, 1);
                                 }
 
                                 break;

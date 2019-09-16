@@ -34,8 +34,10 @@
                                                         <input v-model="roomName"  required>
                                                     </span>
                                                 </div>
-                                                <div v-if="error_msgs.room_name.length" v-for="err in error_msgs.room_name" class="alert-danger">
-                                                    <div>{{err}}</div>
+                                                <div v-if="error_msgs.room_name.length">
+                                                    <div v-for="(err, index) in error_msgs.room_name" :key="index" class="alert-danger">
+                                                        <div>{{err}}</div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="row">
@@ -46,8 +48,10 @@
                                                         <textarea placeholder="Add multiple lines" v-model="roomDescription"></textarea>
                                                     </span>
                                                 </div>
-                                                <div v-if="error_msgs.room_description.length" v-for="err in error_msgs.room_description" class="alert-danger">
-                                                    <div>{{err}}</div>
+                                                <div v-if="error_msgs.room_description.length">
+                                                    <div v-for="(err, index) in error_msgs.room_description" :key="index" class="alert-danger">
+                                                        <div>{{err}}</div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
