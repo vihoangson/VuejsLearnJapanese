@@ -658,19 +658,19 @@ export default {
             }
         },
         addMessageTypeToContent(type) {
-            let contentType = '';
+            let contentType = [];
             let cursorContentPositon = 0;
             switch (type) {
                 case 'info':
-                    contentType = '[info][/info]';
+                    contentType = ['[info]','[/info]'];
                     cursorContentPositon = 6;
                     break;
                 case 'title':
-                    contentType = '[title][/title]';
+                    contentType = ['[title]','[/title]'];
                     cursorContentPositon = 7;
                     break;
                 case 'code':
-                    contentType = '[code][/code]';
+                    contentType = ['[code]','[/code]'];
                     cursorContentPositon = 6;
                     break;
             }
@@ -680,8 +680,13 @@ export default {
                 0,
                 textarea.selectionStart
             );
+            const middle = this.message.content.substring(
+                textarea.selectionStart,
+                textarea.selectionEnd
+            );
             const end = this.message.content.substring(textarea.selectionEnd);
-            const text = start + contentType + end;
+
+            const text = start + contentType[0] + middle + contentType[1] +end;
             this.$emit('input', text);
             this.message.content = text;
             textarea.focus();
