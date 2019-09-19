@@ -201,9 +201,10 @@ export default {
             };
             API.POST(ApiConst.REGISTER, data).then(res => {
                 if (res.error_code === 0) {
+                    alert("Thank you created new user !");
                     this.$router.push({ name: 'login' });
                 } else {
-                    this.msg = 'Duplicate email.';
+                    this.msg = res.error_msg;
                 }
             });
         }
