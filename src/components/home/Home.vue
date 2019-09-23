@@ -7,6 +7,7 @@
         <ShowUser></ShowUser>
         <ChatSetting></ChatSetting>
         <DeleteRoom></DeleteRoom>
+        <RemoveUser></RemoveUser>
         <div class="content">
             <Room @changeRoomEvent="changeRoomEvent"></Room>
             <Chat ref="chat"></Chat>
@@ -47,6 +48,7 @@ import ChatSetting from '../room/ChatSetting';
 import Contact from '../contact/Contact';
 import PersonalInfo from '../personal_info/PersonalInfo';
 import EditPersonalInfo from '../personal_info/EditPersonalInfo';
+import RemoveUser from '../contact/RemoveUser';
 export default {
     name: 'Home',
     components: {
@@ -63,7 +65,8 @@ export default {
         Notice,
         Contact,
         PersonalInfo,
-        EditPersonalInfo
+        EditPersonalInfo,
+        RemoveUser
     },
     data() {
         return {

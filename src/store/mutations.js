@@ -112,5 +112,8 @@ export default {
     },
     setIsShowToMemberList(state, isShow) {
         state.is_show_to_member_list = isShow;
-    }
+    },
+    setUserIdToDelete(state, id) {
+        state.UserIdToDelete = id;
+    },
 };

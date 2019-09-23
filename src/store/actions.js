@@ -73,5 +73,8 @@ export default {
     },
     setIsShowToMemberList({ commit }, isShow) {
         commit('setIsShowToMemberList', isShow);
-    }
+    },
+    setUserIdToDelete({ commit }, id) {
+        commit('setUserIdToDelete', id);
+    },
 };
