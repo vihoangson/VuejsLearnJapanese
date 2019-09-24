@@ -2,8 +2,8 @@
     <div class="navigation">
         <div class="admin">
             <ul class="menu-admin" role="navigation">
-                <li class="menu-admin-item disable-mark">
-                    <span>
+                <li class="menu-admin-item ">
+                    <span class="disable-mark">
                         <svg
                             viewBox="0 0 10 10"
                             id="icon_menuTask"
@@ -15,8 +15,8 @@
                         </svg>
                     </span>
                 </li>
-                <li class="menu-admin-item disable-mark">
-                    <span>
+                <li class="menu-admin-item ">
+                    <span  class="disable-mark">
                         <svg
                             viewBox="0 0 10 10"
                             id="icon_menuFile"
@@ -41,8 +41,8 @@
                         </svg>
                     </span>
                 </li>
-                <li class="menu-admin-item disable-mark">
-                    <span>
+                <li class="menu-admin-item">
+                    <span  class="disable-mark">
                         <svg
                             viewBox="0 0 10 10"
                             id="icon_menuInfo"
@@ -100,7 +100,7 @@
         </div>
     </div>
 </template>
-    
+
 <script>
 import modalMixin from '@/mixins/modal';
 import { AppConst } from '../../common/AppConst';
@@ -137,6 +137,8 @@ export default {
             this.$root.$off('set-content-message');
             this.$store.dispatch('setListRoom', []);
             this.$store.dispatch('setListUser', []);
+            this.$store.dispatch('setCurrentRoom', {});
+            this.$store.dispatch("setContactDisplay", 'none');
             localStorage.removeItem(AppConst.LOCAL_USER);
             this.$router.push({ path: '/login' });
             document.removeEventListener('click');
@@ -232,6 +234,7 @@ export default {
 }
 .avatar {
     height: 32px;
+    width: 32px;
     margin-right: 5px;
     vertical-align: top;
     cursor: pointer;
@@ -294,9 +297,5 @@ export default {
     text-decoration: none;
     cursor: pointer;
 }
-.menu-item.separate-top {
-    /*border-top: solid 1px #13202f;*/
-    /*padding-top: 8px;*/
-    /*margin-top: 8px;*/
-}
+
 </style>

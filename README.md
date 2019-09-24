@@ -28,3 +28,13 @@ npm test
 ```
 
 For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+
+## Template code
+```javascript
+this.$root.$emit('push-notice', {message:'Upload successfully', alert: 'alert-success'});
+
+this.$root.$emit('push-notice', {message:'Upload Fail', alert: 'alert-danger'});
+
+this.$store.dispatch('setLoadingPage',true);
+this.$store.dispatch('setLoadingPage',false);
+```

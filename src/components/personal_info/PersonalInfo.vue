@@ -26,10 +26,10 @@
                 <div class="profileShowDialog__dialogHeader">
 
                     <div class="_profileCover profileShowDialog__coverContainer">
-                        <img class=" _coverImage _coverAid2571977 coverImage" data-aid="2571977" src="https://appdata.chatwork.com/cover/1345/1345682.jpg">
+                        <img class=" _coverImage _coverAid2571977 coverImage" data-aid="2571977" :src="$store.getters.get_current_user_info.cover_img">
                     </div>
                     <div class="_profileAvatar profileShowDialog__avatarContainer">
-                        <img class=" avatarHuge _avatar _avatarAid2571977" data-aid="2571977" src="https://appdata.chatwork.com/avatar/3431/3431235.gif">
+                        <img class=" avatarHuge _avatar _avatarAid2571977" data-aid="2571977" :src="$store.getters.get_current_user_info.icon_img">
                     </div>
 
                 </div>
@@ -252,16 +252,20 @@
         width: 130px;
         height: 130px;
         border: 5px solid #fff;
+        overflow: hidden;
     }
 
     .profileShowDialog__coverContainer {
         display: flex;
+        overflow: hidden;
         align-items: center;
         justify-content: center;
-        width: 800px;
         height: 250px;
-        background: #f2f2f2 url(https://assets.chatwork.com/images/background/bg_wrapper.png);
+        background: #f2f2f2;
         border-bottom: 1px solid #cccccc;
+    }
+    .profileShowDialog__coverContainer img{
+        width:100%;
     }
 
     .profileShowDialog__bodyContainer{

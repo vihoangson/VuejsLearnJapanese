@@ -1,5 +1,5 @@
 export const AppConst = {
-           SOCKET_ADDRESS: 'http://172.16.100.35:3001',
+           SOCKET_ADDRESS: 'http://172.16.218.254:3000',
            LOCAL_USER: 'user',
            LOCAL_USER_INFO: 'user_info',
            LOCAL_MESSAGE_BY_ROOM: 'message_by_room',
@@ -8,7 +8,8 @@ export const AppConst = {
                EDIT: 1,
                DELETE: 2
            },
-           ACCEPTED_FILES: '.jpg,.png',
+           ACCEPTED_FILES: '.jpg,.jpeg,.png,.gif,.sql,.txt,.zip,.rar,.doc,.docx,.docm,.xls,.xlsx,.xlsm,.ppt,.pptx,.pptm,.pdf,.pps',
+           ACCEPTED_IMG_FILES: '.jpg,.png,.jpeg,.gif',
            MAX_FILE_SIZE: 100,
            MAX_FILE: 10,
            EVENT_MESSAGE: {
@@ -32,9 +33,17 @@ export const AppConst = {
                TAG_CODE: /(?<=\[code\])(.|\n)*?(?=\[\/code\])/g,
                TAG_TITLE: /(?<=\[title\])(.|\n)*?(?=\[\/title\])/g,
                ALL_TAG: /(\[\/?\w+)(.*?\])/g,
-               PREVIEW: /(\[preview:([0-9])+])/g,
+               PREVIEW: /(\[preview id:([0-9]+) ht:([0-9]+)\])/g,
+               ATTRIBUTE_ID: /(?<=id:)([0-9]+)/g,
+               PREVIEW_HEIGHT: /(?<=ht:)([0-9]+)/g,
+               DOWNLOAD: /(\[download id:([0-9]+)\])(.|\n)*?(?=\[\/download\])/g,
+               QUOTE_CONTENT: /(?<=\[quote uid:([0-9]+) time:([0-9]+)\])(.|\n)*?(?=\[\/quote\])/g,
+               QUOTE_TAG: /(\[quote uid:([0-9]+) time:([0-9]+)\])/g,
+               QUOTE_TAG_USER_ID: /(?<=uid:)([0-9]+)/g,
+               QUOTE_TAG_TIME: /(?<=time:)([0-9]+)/g,
+               LINK: /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/g,
                TAG_SCRIPT: /(<script)|(<\/script>)/g,
-               EMOJI: /:\)|:\(|:D|8-\)|:o|;\)|;\(|\(sweat\)|:\||:\*|:p|\(blush\)|:\^\)|\|-\)|\(inlove\)|\]:\)|\(talk\)|\(yawn\)|\(puke\)|\(emo\)|8-\||:#\)|\(nod\)|\(shake\)|\(\^\^;\)|\(whew\)|\(clap\)|\(bow\)|\(roger\)|\(flex\)|\(dance\)|\(:\/\)|\(gogo\)|\(think\)|\(please\)|\(quick\)|\(anger\)|\(devil\)|\(lightbulb\)|\(*\)|\(h\)|\(F\)|\(cracker\)|\(eat\)|\(^\)|\(coffee\)|\(beer\)|\(handshake\)|\(y\)/g
+               EMOJI: /:\)|:\(|:D|8-\)|:o|;\)|;\(|\(sweat\)|:\||:\*|:p|\(blush\)|:\^\)|\|-\)|\(inlove\)|\]:\)|\(talk\)|\(yawn\)|\(puke\)|\(emo\)|8-\||:#\)|\(nod\)|\(shake\)|\(\^\^;\)|\(whew\)|\(clap\)|\(bow\)|\(roger\)|\(flex\)|\(dance\)|\(:\/\)|\(gogo\)|\(think\)|\(please\)|\(quick\)|\(anger\)|\(devil\)|\(lightbulb\)|\(\*\)|\(h\)|\(F\)|\(cracker\)|\(eat\)|\(\^\)|\(coffee\)|\(beer\)|\(handshake\)|\(y\)/g
            },
            EMOJI: [
                {
@@ -380,5 +389,6 @@ export const AppConst = {
                        'https://assets.chatwork.com/images/emoticon2x/emo_yes.gif',
                    code: '(y)'
                }
-           ]
+           ],
+           HEIGHT_IMG_PREVIEW: 120
        };

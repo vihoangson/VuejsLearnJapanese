@@ -1,4 +1,16 @@
 export default {
+    set_all_user(state, message) {
+        return (state.all_user = message);
+    },
+    set_list_contact(state, message) {
+        return (state.data_contact = message);
+    },
+    set_loading_page(state, message) {
+        return (state.loading_page = message);
+    },
+    set_my_contact(state, message) {
+        return (state.list_my_contact = message);
+    },
     add_message(state, message) {
         return state.current_room.list_message.push(message);
     },

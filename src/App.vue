@@ -2,6 +2,9 @@
     <div id="app">
         <router-view @authenticated="setAuthenticated" />
         <modals-container />
+        <div class="loader" v-if="$store.getters.get_loading_page">
+            <img src="/static/img/loading.gif" />
+        </div>
     </div>
 </template>
 
@@ -76,6 +79,21 @@ export default {
 </script>
 
 <style>
+.loader {
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    background-color: #ffffffcf;
+}
+.loader img {
+    position: relative;
+    left: 40%;
+    top: 40%;
+}
+
 body {
     margin: 0px;
     font-family: Arial, Helvetica, sans-serif;
@@ -110,6 +128,12 @@ pre {
     white-space: pre-wrap;
     word-wrap: break-word;
     line-height: 1;
+    font-family: -apple-system, BlinkMacSystemFont, '.SFNSDisplay-Regular',
+        'Segoe UI', 'Helvetica Neue', 'Hiragino Sans',
+        '\30D2\30E9\30AE\30CE\89D2\30B4\30B7\30C3\30AF',
+        'Hiragino Kaku Gothic ProN', '\30D2\30E9\30AE\30CE\89D2\30B4   ProN W3',
+        Meiryo, '\30E1\30A4\30EA\30AA', 'MS PGothic',
+        '\FF2D\FF33   \FF30\30B4\30B7\30C3\30AF', sans-serif;
 }
 .popup {
     display: 'block' !important;

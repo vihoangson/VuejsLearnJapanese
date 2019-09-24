@@ -72,6 +72,7 @@ export default {
         };
     },
     mounted() {
+        this.getAllUser()
         this.$root.$on('change-room', data => {
             this.changeRoom(data);
         });
@@ -115,9 +116,14 @@ export default {
         let user = localStorage.getItem('user');
 
         if (user) {
+            let userLogged = JSON.parse(user);
             this.$socket.emit(
                 AppConst.EVENT_MESSAGE.CHANNEL_NEW_ROOM,
-                user.user_id
+                userLogged.user_id
+            );
+            this.$socket.emit(
+                AppConst.EVENT_MESSAGE.CHANNEL_CHANGE_ROOM,
+                userLogged.user_id
             );
             this.$store.dispatch('setCurrentUser', JSON.parse(user));
             this.setNotification();
@@ -128,8 +134,16 @@ export default {
         });
 
         let userInfo = localStorage.getItem(AppConst.LOCAL_USER_INFO);
-        if (userInfo)
-            this.$store.dispatch('setCurrentUserInfo', JSON.parse(userInfo));
+        if (userInfo){
+            let userInfoJson = JSON.parse(userInfo);
+            userInfoJson.icon_img = userInfoJson.icon_img;
+            userInfoJson.cover_img = userInfoJson.cover_img;
+            this.$store.dispatch('setCurrentUserInfo', userInfoJson);
+
+        }
+
+
+
     },
     // beforeRouteUpdate(to, from, next) {
     //     let room = this.$route.params.room_id;
@@ -137,8 +151,16 @@ export default {
     //     next();
     // },
     methods: {
+        getAllUser(){
+            let requestData = [];
+            API.GET(ApiConst.ALL_USER, requestData).then(response => {
+                if (response.error_code === 0) {
+                    this.$store.dispatch('setAllUser', {list_user: response.data});
+                }
+            })
+        },
         changeRoomEvent() {
-            let chatBox = this.$refs.chat;
+            // let chatBox = this.$refs.chat;
             // chatBox.editMessage = false;
             // chatBox.message.content = '';
             // chatBox.message.id = 0;

@@ -1,5 +1,5 @@
 <template>
-  <div v-bind:class="{active: isActive, notice: true}">
+  <div v-bind:class="{active: isActive, notice: true}"  style="z-index: 10000;">
       <div v-bind:class="[alertClass, alertStatus]">
         {{message}}
      </div>

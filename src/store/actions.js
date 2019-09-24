@@ -1,4 +1,16 @@
 export default {
+    setAllUser({ commit }, message) {
+        commit('set_all_user', message);
+    },
+    setListContact({ commit }, message) {
+        commit('set_list_contact', message);
+    },
+    setLoadingPage({ commit }, message) {
+        commit('set_loading_page', message);
+    },
+    setMyContact({ commit }, message) {
+        commit('set_my_contact', message);
+    },
     addMessage({ commit }, message) {
         commit('add_message', message);
     },

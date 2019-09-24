@@ -1,5 +1,5 @@
 <template>
-    <div id="_contactElement" class="" style="">
+    <div id="_contactElement" class="" style=""  v-if="isActive">
 
         <div class="ele-box-contact">
             <div class="contain-header">
@@ -30,6 +30,11 @@
 
     export default {
         name: "BoxContact.vue",
+        data(){
+            return {
+                isActive: true
+            }
+        },
         components: {ButtonAddContact},
         component:{
             ButtonAddContact

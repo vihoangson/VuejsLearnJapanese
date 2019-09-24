@@ -10,11 +10,14 @@
 <script>
     import {API} from '../../../services/api';
     import {ApiConst} from '../../../common/ApiConst';
+    import {AppConst} from '../../../common/AppConst';
+
 
     export default {
         name: "ButtonAddContact.vue",
         props:['status','email','id'],
         methods:{
+            // ACTION APPROVE
             Approve(){
                 let requestData = {
                     contact_user_id: this.id
@@ -22,10 +25,48 @@
                 API.POST(ApiConst.APPROVE_CONTACT, requestData).then(response => {
                     if(response.error_code ===0){
                         this.status = 1;
+                        // this.$parent.isActive = false;
+
+
+                        // todo: send me
+                        let data = {
+                            room_name: response.data.partner.name,
+                            description: response.data.room_info.description,
+                            room_id: response.data.room_info.id,
+                            icon_img: response.data.partner.icon_img,
+                            member_list: [response.data.me],
+                            only_token: true,
+                            not_read: 0,
+                            list_message: [],
+                            can_add_user: 0
+                        }
+
+                        this.$store.dispatch('addNewRoom', data);
+                        this.$root.$emit('changed-info-rooms');
+                        this.$socket.emit(AppConst.EVENT_MESSAGE.JOIN_NEW_ROOM, data.room_id);
+
+                        // todo: send partner
+                        let data2 = {
+                            room_name: response.data.me.name,
+                            description: response.data.room_info.description,
+                            icon_img: response.data.me.icon_img,
+                            room_id: response.data.room_info.id,
+                            member_list: [response.data.partner],
+                            only_token: true,
+                            not_read: 0,
+                            list_message: [],
+                            can_add_user: 0
+                        }
+                        this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, data2);
+
+                        this.$parent.$parent.$parent.contactTabs.find((e)=>{return e.id === '_contactWindowTabWaitForAccept'}).subtext  = '';
+
                     }
                     console.log(response);
                 })
             },
+
+            // ACTION ADD CONTECT
             addContact(){
                 let requestData = {
                     emails: [this.email],
@@ -34,10 +75,13 @@
                 API.POST(ApiConst.INVITE_BY_EMAILS, requestData).then(response => {
                     if(response.error_code ===0){
                         this.status = 0;
+                        // this.$parent.isActive = false;
                     }
                     console.log(response);
                 })
             },
+
+            // ACTION REMOVE
             removeContact(){
                 let requestData = {
                     id: this.id
@@ -45,6 +89,7 @@
                 API.POST(ApiConst.CANCEL_REQUEST_CONTACT, requestData).then(response => {
                     if(response.error_code ===0){
                         this.status = null;
+                        // this.$parent.isActive = false;
                     }
                 })
             }

@@ -5,6 +5,7 @@
                 <form @submit="addContact" class="box-input-search-contact">
                     <input type="text" v-model="contactName" />
                     <button type="submit">Search</button>
+                    <button type="button" class="" style="background: #ccc;border-color: #ccc;" @click="resetSearch">Cancel</button>
                 </form>
                 <div class="adminNavigation">
                     <div v-for="(item, index) in listContact" :key="index">
@@ -23,39 +24,62 @@ import BoxContact from '../elements/BoxContact';
 export default {
     name: 'AddContact.vue',
     components: { BoxContact },
+    props:["type","evebtChangeTabEvent"],
     data() {
         return {
             contactName: '',
             listContact: []
         };
     },
-    mounted() {
-        this.searchContact();
-    },
     component: {
         BoxContact
     },
+    watch:{
+        evebtChangeTabEvent (value){
+            this.setInitValue();
+        }
+    },
+    mounted() {
+        this.setInitValue();
+    },
     methods: {
+        setInitValue(){
+
+
+            let valueDefault = this.searchContact()
+            this.$store.dispatch('setMyContact',valueDefault);
+            this.listContact = valueDefault;
+        },
+        resetSearch(e){
+            e.preventDefault();
+            this.contactName = "";
+            this.listContact = this.searchContact();
+        },
         addContact(e) {
             e.preventDefault();
-            this.searchContact();
+            this.listContact = this.searchContact();
         },
         searchContact() {
+            let optionsApi = null;
+            if(this.type === 'AddContact'){
+                optionsApi = 0;
+            }else{
+                optionsApi = 1;
+            }
             let requestData = {
                 query: this.contactName,
-                options: 1
+                options: optionsApi
             };
+            var tmpList = [];
             API.POST(ApiConst.SEARCH_CONTACT, requestData).then(response => {
                 if (response.error_code === 0) {
                     let contacts = response.data.rows;
-                    this.listContact = [];
                     contacts.forEach(x => {
-                        if (x.contact_status === 1) {
-                            this.listContact.push(x);
-                        }
+                        tmpList.push(x);
                     });
                 }
             });
+            return tmpList;
         }
     }
 };

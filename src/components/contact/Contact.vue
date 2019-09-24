@@ -20,7 +20,7 @@
                 <div class="floatHeaderTab clearfix">
                     <ul id="_contactWindowTab">
                         <li @click="changeTab(index)" v-for="(tab, index) in contactTabs" :key="index" v-bind:id="tab.id"
-                            :class="linkClass(index)" v-bind:data-type="tab.dataType" v-text="tab.text"
+                            :class="linkClass(index)" v-bind:data-type="tab.dataType" v-text="tab.text+tab.subtext"
                             v-bind:style="{display: tab.display}"/>
                     </ul>
                 </div>
@@ -191,15 +191,16 @@
                     </div>
 
                     <div id="_contactWindowBox" class="adminAllListArea"  v-bind:style="{display: contentAddContact.display}">
-                        <add-contact></add-contact>
+<!--                        <add-contact></add-contact>-->
+                        <list-contact v-bind:type="'AddContact'" :evebtChangeTabEvent="changeTabEvent"></list-contact>
                     </div>
 
                     <div id="_contactWindowListContact" class="adminAllListArea"  v-bind:style="{display: contentListContact.display}">
-                        <list-contact></list-contact>
+                        <list-contact v-bind:type="'MyContact'"></list-contact>
                     </div>
 
                     <div id="_contactWindowWaitForAccpet" class="adminAllListArea"  v-bind:style="{display: contentWaitForAccpet.display}">
-                        <list-wait-accept></list-wait-accept>
+                        <list-wait-accept :evebtChangeTabEvent="changeTabEvent"></list-wait-accept>
                     </div>
 
                     <div id="_contactDetailAreaWrapper" class="contactDetailInfo" style="display: none;">
@@ -308,6 +309,7 @@
         },
         data() {
             return {
+                changeTabEvent:1,
                 isHidden: true,
                 displayCloseIcon: 'none',
                 individualAdd: 'block',
@@ -323,6 +325,7 @@
                     {
                         id: '_contactWindowTabInviteEmail',
                         text: 'Invite by Email',
+                        subtext: '',
                         display: 'block',
                         number: 0,
                         dataType: 'invitemail'
@@ -330,6 +333,7 @@
                     {
                         id: '_contactWindowTabContact',
                         text: 'User Search',
+                        subtext: '',
                         display: 'block',
                         number: 0,
                         dataType: 'addcontact'
@@ -337,19 +341,22 @@
                     {
                         id: '_contactWindowTabMyContact',
                         text: 'Contacts',
+                        subtext: '',
                         display: 'block',
                         number: 0,
                         dataType: 'contact'
                     },
                     {
                         id: '_contactWindowTabWaitForAccept',
-                        text: 'Sent requests',
+                        text: 'Approve',
+                        subtext: '',
                         display: 'block',
                         number: 0,
                         dataType: 'waitforaccept'
                     },                    {
                         id: '_contactWindowTabMyRequest',
-                        text: 'Sent Requests',
+                        text: 'Approve',
+                        subtext: '',
                         display: 'none',
                         number: 0,
                         dataType: 'myrequest'
@@ -357,6 +364,7 @@
                     {
                         id: '_contactWindowTabRequest',
                         text: 'Incoming Requests',
+                        subtext: '',
                         display: 'none',
                         number: 0,
                         dataType: 'request'
@@ -469,6 +477,7 @@
         },
         methods: {
             changeTab(index){
+                this.changeTabEvent = Math.random();
                 // Set index of tab
                 this.tabIndex = index
 
@@ -650,7 +659,7 @@
     };
 </script>
 
-<style>
+<style scoped>
 
     .floatWindow {
         position: absolute;

@@ -104,7 +104,7 @@ export default {
         onDelete() {
             this.$emit('delete', this.message);
         },
-        onQuote(){
+        onQuote() {
             this.$emit('quoute', this.message);
         }
     }
@@ -119,6 +119,7 @@ export default {
     text-align: right;
     z-index: 3;
 }
+
 .timelineMessage .actionNav {
     background-color: #ffffff;
 }
@@ -128,7 +129,7 @@ export default {
 .actionNav {
     height: 23px;
     padding: 0 4px;
-    background: #ffffff;
+    background: #f8fbff;
     border-right: 1px solid #b1d6ed;
     border-bottom: 1px solid #b1d6ed;
     border-left: 1px solid #b1d6ed;
@@ -146,10 +147,7 @@ export default {
     fill: #444444;
     cursor: pointer;
 }
-.actionNav__item:hover svg,
-.actionNav__item:hover span {
-    color: #b1d6ed;
-}
+
 .actionNav__itemLabel {
     margin-left: 3px;
     line-height: 2px;
@@ -157,5 +155,11 @@ export default {
 .actionNav__item svg {
     width: 18px;
     height: 18px;
+}
+.linkStatus:hover,
+.linkStatus:hover svg {
+    opacity: 1;
+    color: #0084b2;
+    fill: #0084b2;
 }
 </style>

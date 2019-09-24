@@ -179,10 +179,12 @@
             <div class="sideContentResizeCtrlArea cwResizeHandleCol"></div>
         </div>
         <div class="chat-box-detail">
-            <div v-if="false">
+            <div v-if="true">
+                <h2>Description</h2>
+                <pre><span v-if="$store.getters.get_current_room.room_description===''|| $store.getters.get_current_room.room_description===null">No description</span><div v-else>{{$store.getters.get_current_room.room_description?$store.getters.get_current_room.room_description:''}}</div></pre>
 
-                content column right
-                <div v-for="(user, index) in $store.getters.get_all_user.list_user" :key="index">
+
+                <div v-for="(user, index) in $store.getters.get_all_user.list_user" :key="index" v-if="false">
                     <div>{{user.name}}</div>
                     <div>{{user.email}}</div>
                     <div>{{user.contact_status}}</div>
@@ -444,10 +446,10 @@ export default {
         },
         onQuoute(value) {
             this.message.content =
-                '[Quote mid:' +
+                '[Quote uid:' +
                 value.message_id +
-                ' to:' +
-                value.user_info.id +
+                ' time:' +
+                value.timestamp +
                 ']' +
                 value.message +
                 '[/Quote]';
@@ -656,19 +658,19 @@ export default {
             }
         },
         addMessageTypeToContent(type) {
-            let contentType = '';
+            let contentType = [];
             let cursorContentPositon = 0;
             switch (type) {
                 case 'info':
-                    contentType = '[info][/info]';
+                    contentType = ['[info]','[/info]'];
                     cursorContentPositon = 6;
                     break;
                 case 'title':
-                    contentType = '[title][/title]';
+                    contentType = ['[title]','[/title]'];
                     cursorContentPositon = 7;
                     break;
                 case 'code':
-                    contentType = '[code][/code]';
+                    contentType = ['[code]','[/code]'];
                     cursorContentPositon = 6;
                     break;
             }
@@ -678,8 +680,13 @@ export default {
                 0,
                 textarea.selectionStart
             );
+            const middle = this.message.content.substring(
+                textarea.selectionStart,
+                textarea.selectionEnd
+            );
             const end = this.message.content.substring(textarea.selectionEnd);
-            const text = start + contentType + end;
+
+            const text = start + contentType[0] + middle + contentType[1] +end;
             this.$emit('input', text);
             this.message.content = text;
             textarea.focus();
@@ -732,7 +739,7 @@ export default {
             return this.height - 45;
         },
         timelineMessage() {
-            return this.height - 245;
+            return this.height - 225;
         }
     }
 };
@@ -883,6 +890,7 @@ export default {
 }
 .room-logo img {
     width: 25px;
+    height: 25px;
     border-radius: 50%;
 }
 .chat-box-header .title {
@@ -905,11 +913,29 @@ export default {
     right: 0px;
     min-width: 300px;
     width: 300px;
-    background: #ccc;
     border-right: 1px solid #b3b3b3;
     border-left: 1px solid #cccccc;
     z-index: -1;
 }
+.chat-box-detail span{
+    color:#909090;
+}
+.chat-box-detail h2 {
+    padding: 7px;
+    background: #ccc;
+    font-weight: bold;
+    color: #7b7b7b;
+    font-size: 100%;
+    margin:0px;
+
+}
+.chat-box-detail pre{
+    padding: 7px;
+    font-size: 100%;
+    line-height: normal;
+    margin:0px;
+}
+
 .chat-box-content {
     position: absolute;
     right: 300px;
@@ -928,6 +954,11 @@ export default {
     border-bottom: 1px solid transparent;
     margin-bottom: 10px;
 }
+.timeline-message-body.mention {
+    border-top: 1px solid #ddebd7;
+    border-bottom: 1px solid #ddebd7;
+    background-color: #ddebd7;
+}
 .timeline-message-body:hover {
     border-top: 1px solid #b1d6ed;
     border-bottom: 1px solid #b1d6ed;
@@ -940,13 +971,11 @@ export default {
     padding: 8px 16px;
     position: relative;
     border: 1px solid transparent;
-    margin: 15px 0px;
 }
-.timeline-message-body.mention {
-    border-top: 1px solid #ddebd7;
-    border-bottom: 1px solid #ddebd7;
-    background-color: #ddebd7;
+.timeline-message-body:last-child{
+    margin-bottom: 20px;
 }
+
 
 .timeline-avatar {
     float: left;
@@ -1120,7 +1149,6 @@ textarea:focus:-webkit-placeholder {
 }
 .timeline-content-message pre {
     font-size: 14px;
-    font-family: arial;
     margin-top: 3px;
     margin-bottom: 0px;
 }

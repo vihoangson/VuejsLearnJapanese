@@ -1,4 +1,5 @@
 export const ApiConst = {
+    ALL_USER: '/api/v1/user/get-all',
     LOGIN: '/api/v1/user/login',
     LOGOUT: '/api/v1/user/logout',
     REGISTER: '/api/v1/user/register',
@@ -39,5 +40,6 @@ export const ApiConst = {
     MESSAGE_UPLOAD_FILE: '/api/v1/message/message-file',
     DOWNLOAD_FILE: '/api/v1/download-file',
     DETAIL_IMAGE: '/api/v1/view-image',
-    
+    ROOM_UPLOAD_ICON_IMG: '/api/v1/room/upload-icon-img',
+    USER_UPLOAD_ICON_IMG: '/api/v1/user/upload-icon-img',
 };
