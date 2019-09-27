@@ -17,6 +17,11 @@
     export default {
         name: "ButtonAddContact.vue",
         props:['status','email','id'],
+        created(){
+            this.$root.$on('EVENT_BUTTON_'+this.id,data => {
+                this.$parent.isActive = false;
+            })
+        },
         methods:{
             // ACTION APPROVE
             Approve(){
@@ -82,8 +87,10 @@
                 })
             },
             deleteContact(){
+                this.$root.$emit('open-modal-delete-room');
                 this.$store.dispatch('setUserIdToDelete',this.id);
                 this.$bvModal.show('modal-prevent-remove-user');
+
             },
             // ACTION REMOVE
             removeContact(){

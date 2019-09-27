@@ -83,13 +83,9 @@ export default {
                                     message: 'Delete success',
                                     alert: 'alert-success'
                                 });
-                                let room = this.$store.getters.get_list_room.find(
-                                    d => {
-                                        return d.room_id === data.id;
-                                    }
-                                );
-                                this.$root.$emit('remove-list-room', room);
-                                // this.$root.$emit('changed-group');
+
+                                this.$root.$emit('EVENT_BUTTON_'+this.$store.state.UserIdToDelete, {id:123});
+
                                 this.$refs.modal.hide();
                                 break;
                             default:
