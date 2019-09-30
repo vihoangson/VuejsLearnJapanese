@@ -89,10 +89,6 @@ export function changeRoom(socket, store, room) {
                             }
                         }
                     }
-                    socket.emit(
-                        AppConst.EVENT_MESSAGE.ADD_NEW_ROOM,
-                        listRoom[i]
-                    );
                 }
             }
             break;
