@@ -187,9 +187,17 @@
                 this.selected = [];
                 this.buttonName = "Create";
                 var listNotAdmin = [];
+
                 for(let i in this.$store.getters.get_list_user){
+
+                    // Do not show yourself on the list
                     if(this.$store.getters.get_list_user[i].id !== this.$store.getters.get_current_user_info.id){
-                        listNotAdmin.push(this.$store.getters.get_list_user[i]);
+
+                        // Logic show only friend in list
+                        if(this.$store.getters.get_list_user[i].contact_status === 1){
+                            listNotAdmin.push(this.$store.getters.get_list_user[i]);
+                        }
+
                     }
                 }
                 this.items = listNotAdmin;
