@@ -14,7 +14,8 @@ export default {
     data() {
         return {
             authenticated: false,
-            isMultiSelectEmoji: false
+            isMultiSelectEmoji: false,
+            isMultiSelectToMember: false
         };
     },
     created() {
@@ -32,10 +33,13 @@ export default {
     },
     mounted() {
         document.addEventListener('click', function(e) {
-            if (!this.isMultiSelectEmoji) {
+            if (!(this.isMultiSelectEmoji || this.isMultiSelectToMember)) {
                 let popups = document.getElementsByClassName('popup');
-                for (let i = 0; i < popups.length; i++)
-                    popups[i].style.display = 'none';
+                 for (let i = 0; i < popups.length; i++){
+                     if (!(this.isMultiSelectEmoji || this.isMultiSelectToMember)) {
+                         popups[i].style.display = 'none';
+                     }
+                }
                 document.removeEventListener('keydown', function(e) {});
                 document.removeEventListener('keyup', function(e) {});
             }
@@ -54,6 +58,12 @@ export default {
 
             if (e.target.id === 'showToMemberList') {
                 document.getElementById('toMemberList').style.display = 'block';
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Control') this.isMultiSelectToMember = true;
+                });
+                document.addEventListener('keyup', function(e) {
+                    if (e.key === 'Control') this.isMultiSelectToMember = false;
+                });
             }
 
             if (e.target.id === 'showEmojiList') {
