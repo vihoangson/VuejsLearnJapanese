@@ -44,6 +44,10 @@ export default {
     setListUser({ commit }, obj) {
         commit('set_list_user', obj);
     },
+    saveToListMember({ commit }, obj) {
+        commit('set_to_list_member', obj);
+    },
+
     setListUserByRoomId({ commit }, obj) {
         commit('set_list_user_by_room_id', obj);
     },

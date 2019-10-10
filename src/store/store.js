@@ -9,6 +9,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
     state: {
+        to_list_member:[],
         all_user: [],
         loading_page: false,
         current_user: {},

@@ -1,4 +1,12 @@
 export default {
+    set_to_list_member(state, message) {
+        if(message !== ""){
+            return (state.to_list_member.push(message) );
+        }else{
+            //alert('in');
+            return (state.to_list_member = [] );
+        }
+    },
     set_all_user(state, message) {
         return (state.all_user = message);
     },

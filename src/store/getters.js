@@ -1,4 +1,7 @@
 export default {
+    get_to_list_member:state =>{
+        return state.to_list_member;
+    },
     get_all_user:state =>{
         return state.all_user;
     },

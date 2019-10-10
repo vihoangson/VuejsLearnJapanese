@@ -62,7 +62,11 @@ export default {
                     if (e.key === 'Control') this.isMultiSelectToMember = true;
                 });
                 document.addEventListener('keyup', function(e) {
-                    if (e.key === 'Control') this.isMultiSelectToMember = false;
+                    if (e.key === 'Control') {
+                        this.isMultiSelectToMember = false;
+                        this.removeToListMember();
+
+                    }
                 });
             }
 
@@ -73,11 +77,16 @@ export default {
                 });
                 document.addEventListener('keyup', function(e) {
                     if (e.key === 'Shift') this.isMultiSelectEmoji = false;
+
                 });
             }
         });
     },
     methods: {
+        removeToListMember(){
+            this.$store.dispatch('saveToListMember',"x");
+        },
+
         setAuthenticated(status) {
             this.authenticated = status;
         },
