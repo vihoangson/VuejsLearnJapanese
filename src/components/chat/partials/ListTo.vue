@@ -27,6 +27,8 @@
                     />
                 </div>
                 <a class="select-all-text" @click="selectAll">Select All</a>
+                <a class="select-all-text" @click="saveContact">Save contact</a>
+
             </div>
 
             <ul>
@@ -61,6 +63,8 @@
 </template>
 
 <script>
+import {API} from "../../../services/api";
+
 export default {
     name: 'ListTo',
     data() {
@@ -78,6 +82,25 @@ export default {
         onFocusListUserTo() {
             return this.isShow;
         },
+        saveContact(){
+            var listName = prompt("Please enter your name", "");
+            if(listName === ""){
+                alert('Please enter name !');
+                return false;
+            }
+            if (listName != null) {
+
+                let get_to_list_members = this.$store.getters.get_to_list_member;
+                let room_id = this.$store.getters.get_current_room.room_id;
+
+                API.POST('/api/v1/contact/save_list_to',{'room_id': room_id,'list_name':listName,'list_to':get_to_list_members},function(data){
+                    if(data.error_code === 0){
+                        console.log(data);
+                    }
+                })
+
+            }
+        },
         selectAll() {
             let memberList = this.$store.getters.get_current_room.member_list;
             this.content = '';
@@ -93,6 +116,11 @@ export default {
         selectItem(item) {
             this.content = '[To:' + item.id + '] ' + item.name + '\n';
             this.$root.$emit('set-content-message', this.content);
+
+            // Add to store content
+            this.$store.dispatch('saveToListMember',this.content);
+
+            console.log(this.$store.getters.get_to_list_member);
         }
     },
     watch: {

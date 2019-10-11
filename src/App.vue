@@ -64,8 +64,6 @@ export default {
                 document.addEventListener('keyup', function(e) {
                     if (e.key === 'Control') {
                         this.isMultiSelectToMember = false;
-                        this.removeToListMember();
-
                     }
                 });
             }
