@@ -3,7 +3,7 @@
         <div class="admin">
             <ul class="menu-admin" role="navigation">
                 <li class="menu-admin-item ">
-                    <span class="disable-mark">
+                    <span @click="openTaskManagement">
                         <svg
                             viewBox="0 0 10 10"
                             id="icon_menuTask"
@@ -162,7 +162,10 @@ export default {
         },
         openProfile() {
             this.$store.dispatch('setProfileDisplay', 'block');
-        }
+        },
+        openTaskManagement() {
+            this.$store.dispatch('setTaskDisplay', 'block');
+        },
     }
 };
 </script>

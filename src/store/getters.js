@@ -62,5 +62,8 @@ export default {
     },
     get_is_show_to_member_list: state => {
         return state.is_show_to_member_list;
-    }
+    },
+    getTaskDisplay: state => {
+        return state.openTaskDisplay;
+    },
 };

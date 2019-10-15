@@ -124,4 +124,7 @@ export default {
     setUserIdToDelete(state, id) {
         state.UserIdToDelete = id;
     },
+    setTaskDisplay(state, style) {
+        state.openTaskDisplay = style;
+    },
 };
