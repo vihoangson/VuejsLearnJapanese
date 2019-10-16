@@ -8,7 +8,7 @@
 
             <div class="_floatWindowHeader floatWindow__header">
                 <h1 class="_floatWindowTitle floatWindow__title">
-                    <span class="autotrim">Tasks</span>
+                    <span class="autotrim" style="font-weight: 700;">Tasks</span>
                 </h1>
                 <div class="floatWindow__closeButtonContainer">
                   <span class="_cwFWButton floatWindow__closeButton" data-cwui-fw-idx="-1" @click="closeTaskListPopup">
@@ -125,23 +125,21 @@
                                         <span class="taskActions__iconContainer">
                                             <svg viewBox="0 0 10 10" class="taskActions__icon" width="16" height="16">
                                                 <use fill-rule="evenodd" xlink:href="#icon_move"></use>
-                                            </svg>
+                                            </svg>x1
                                         </span>
                                         <span class="icoTextHide">Jump to assignment</span>
                                     </div>
                                     <div class="_editTask taskActions__button">
                                         <span class="taskActions__iconContainer">
-                                            <svg class="taskActions__icon" viewBox="0 0 10 10" width="16" height="16">
-                                                <use fill-rule="evenodd" xlink:href="#icon_edit"></use>
-                                            </svg>
+
+                                            <i class="taskActions__iconContainer fa fa-pencil-square-o" aria-hidden="true"></i>
+
                                         </span>
                                         <span class="icoTextHide">Edit</span>
                                     </div>
                                     <div class="_deleteTask taskActions__button">
                                         <span class="taskActions__iconContainer">
-                                            <svg class="taskActions__icon" viewBox="0 0 10 10" width="16" height="16">
-                                                <use fill-rule="evenodd" xlink:href="#icon_delete"></use>
-                                            </svg>
+                                            <i class="taskActions__icon fa fa-trash-o" aria-hidden="true"></i>
                                         </span>
                                         <span class="icoTextHide">Delete</span>
                                     </div>
@@ -287,7 +285,55 @@
 </script>
 
 <style>
+    svg, use {
+        pointer-events: none;
+    }
+    .taskActions__icon {
+        width: 16px;
+        height: 16px;
 
+    }
+    .icoTextHide {
+        height: 1px;
+        width: 1px;
+        position: absolute;
+        overflow: hidden;
+        top: -10px;
+    }
+    .taskActions__iconContainer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+    }
+    .taskActions__button {
+        box-sizing: border-box;
+        display: inline-flex;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+        border-style: solid;
+        border-width: 1px;
+        border-radius: 2px;
+        text-decoration: none;
+        cursor: pointer;
+        user-select: none;
+        width: 24px;
+        height: 24px;
+        padding: 0;
+        border-color: transparent;
+        background-color: transparent;
+        color: #1a1a1a;
+        fill: #1a1a1a;
+        margin-left: 5px;
+    }
+    .subContentTask > li .taskActions {
+        position: absolute;
+        right: 10px;
+        bottom: 3px;
+
+    }
     .button:hover {
         border-color: #cccccc;
         color: #676863;
@@ -313,6 +359,119 @@
         line-height: 26px;
         cursor: pointer;
         user-select: none;
+    }
+    .completeCheckboxArea .button {
+        height: 24px;
+        line-height: 24px;
+        z-index: 1;
+    }
+    .btnPrimary:hover {
+        border-color: #0074b7;
+        color: #fff;
+        background-color: #0074b7;
+    }
+    .btnPrimary {
+        border-color: #006a9c;
+        color: #fff;
+        background-color: #006a9c;
+    }
+    .completeCheckboxArea {
+        display: inline-block;
+        float: right;
+        margin: 0 0 5px 5px;
+    }
+    .taskDateLimit__dueDate--limitOver {
+        color: #a32c1f;
+        font-weight: 700;
+    }
+    .taskDateLimit {
+        margin-left: 8px;
+        display: inline-block;
+    }
+    .subContentSection .taskMetaArea .taskDateLimit {
+        vertical-align: middle;
+        margin-top: 2px;
+    }
+    img, a img {
+        border: 0;
+        vertical-align: middle;
+    }
+    .avatarTiny {
+        box-sizing: border-box;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+    .avatarClickTip {
+        border: 1px solid transparent;
+        cursor: pointer;
+    }
+    .taskMetaArea img {
+        box-sizing: border-box;
+        width: 20px;
+        height: 20px;
+        border-radius: 12px;
+    }
+    .taskMetaArea {
+        border-top: 1px dotted #cccccc;
+        margin-top: 5px;
+        padding-top: 5px;
+    }
+    .clearfix {
+        zoom: 1;
+    }
+    .subContentTask > li .taskActions {
+        position: absolute;
+        right: 10px;
+        bottom: 3px;
+
+    }
+    .subContentAreaInner {
+        position: relative;
+        padding: 10px;
+    }
+    .subContentTask > li .subContentAreaInner {
+        padding: 0;
+    }
+
+    .subContentSection {
+        position: relative;
+        margin: 10px;
+    }
+    .subContentTask > li {
+        box-sizing: border-box;
+        position: relative;
+        margin-bottom: 10px;
+        padding: 8px;
+        border: 1px solid #a9aaa6;
+        border-radius: 3px;
+        background-color: #fff;
+    }
+    .adminAllListArea ul li {
+        cursor: pointer;
+    }
+    .subContentTask > li.taskPanel {
+        border-width: 1px;
+        border-style: solid;
+        border-color: #fff;
+    }
+
+    .adminAllListArea {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 420px;
+        height: 100%;
+        overflow: auto;
+        box-shadow: 1px 0 3px rgba(0, 0, 0, 0.25);
+        z-index: 1;
+    }
+
+    .subContentTask > li.taskPanel:hover {
+        background-color: #fff;
+        border-color: #0a8abd;
+        box-shadow: -1px -1px 0 1px #dcf0fa inset, 1px 1px 0 1px #dcf0fa inset;
     }
     .btnNavList li {
         display: block;
