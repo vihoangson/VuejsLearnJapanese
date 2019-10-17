@@ -31,6 +31,7 @@ export default new Vuex.Store({
         data_contact: { list_contact: [1, 2, 3, 4] },
         is_show_to_member_list: false,
         openTaskDisplay: 'none',
+        openTaskEditDisplay: 'none',
     },
     getters,
     mutations,

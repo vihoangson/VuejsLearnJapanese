@@ -127,4 +127,7 @@ export default {
     setTaskDisplay(state, style) {
         state.openTaskDisplay = style;
     },
+    setTaskEditDisplay(state, style) {
+        state.openTaskEditDisplay = style;
+    },
 };

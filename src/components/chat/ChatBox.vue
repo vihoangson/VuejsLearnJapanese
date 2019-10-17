@@ -192,6 +192,16 @@
                     <hr>
                 </div>
             </div>
+
+            <div v-if="true">
+                <h2>Tasks</h2>
+
+                    <div style="width: 100%">
+                        <ListAllTask></ListAllTask>
+                    </div>
+            </div>
+
+
         </div>
 
     </div>
@@ -210,6 +220,7 @@ import ChatHeaderInfo from './partials/header/ChatHeaderInfo';
 import ListTo from './partials/ListTo';
 import Emoji from './partials/Emoji';
 import { setTimeout } from 'timers';
+import ListAllTask from '../task_management/ListAllTask';
 
 export default {
     name: 'ChatBox',
@@ -220,7 +231,8 @@ export default {
         ChatMessage,
         ChatHeaderInfo,
         ListTo,
-        Emoji
+        Emoji,
+        ListAllTask
     },
     props: {
         value: {

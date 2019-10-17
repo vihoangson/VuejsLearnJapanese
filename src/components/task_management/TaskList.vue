@@ -12,7 +12,7 @@
                 </h1>
                 <div class="floatWindow__closeButtonContainer">
                   <span class="_cwFWButton floatWindow__closeButton" data-cwui-fw-idx="-1" @click="closeTaskListPopup">
-                    <svg viewBox="0 0 10 10" class="floatWindow__closeButtonIcon" width="16" height="16">
+                    <svg class="floatWindow__closeButtonIcon" width="16" height="16">
                       <use fill-rule="evenodd" xlink:href="#icon_cancel"></use>
                     </svg>
                   </span>
@@ -92,59 +92,10 @@
                 <div class="adminWindowAllList">
 
                     <div id="_taskWindowBox" class="adminAllListArea">
+
+
                         <ul id="_taskWindowList" class="subContentTask">
-                            <li class="_taskList subContentSection taskPanel" data-task-id="97080880">
-                                <div class="subContentAreaInner">
-                                    <div class="clearfix">
-                                        <div class="completeCheckboxArea">
-                                            <div class="_taskCheck button btnPrimary" data-task-id="97080880"
-                                                 data-task-status="done">
-                                                <span class="_checkTaskLabel completeText">Done</span>
-                                            </div>
-                                        </div>
-                                        <pre class="_taskName taskName">
-                                            <div class="_taskNameContent">
-
-                                            </div>
-                                        </pre>
-                                    </div>
-                                    <div class="taskMetaArea">
-                                        <img
-                                            class=" _avatarHoverTip _avatarClickTip avatarClickTip avatarTiny _avatar _avatarAid2571977"
-                                            data-aid="2571977"
-                                            src="https://appdata.chatwork.com/avatar/3431/3431235.gif">
-                                        <div class="taskDateLimit">Due:
-                                            <time class="taskDateLimit__dueDate taskDateLimit__dueDate--limitOver"
-                                                  datetime="2018-9-1">9/1/2018
-                                            </time>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="taskActions">
-                                    <div class="_moveTask taskActions__button">
-                                        <span class="taskActions__iconContainer">
-                                            <svg viewBox="0 0 10 10" class="taskActions__icon" width="16" height="16">
-                                                <use fill-rule="evenodd" xlink:href="#icon_move"></use>
-                                            </svg>x1
-                                        </span>
-                                        <span class="icoTextHide">Jump to assignment</span>
-                                    </div>
-                                    <div class="_editTask taskActions__button">
-                                        <span class="taskActions__iconContainer">
-
-                                            <i class="taskActions__iconContainer fa fa-pencil-square-o" aria-hidden="true"></i>
-
-                                        </span>
-                                        <span class="icoTextHide">Edit</span>
-                                    </div>
-                                    <div class="_deleteTask taskActions__button">
-                                        <span class="taskActions__iconContainer">
-                                            <i class="taskActions__icon fa fa-trash-o" aria-hidden="true"></i>
-                                        </span>
-                                        <span class="icoTextHide">Delete</span>
-                                    </div>
-                                </div>
-                            </li>
+                            <ListAllTask></ListAllTask>
                         </ul>
 
                         <div id="_emptyTaskContent" class="adminAllListArea__emptyContainer" style="display: none;">
@@ -244,6 +195,7 @@
 
 
 <script>
+    import ListAllTask from '../task_management/ListAllTask';
     export default {
         name: "TaskList",
         waitForData: true,
@@ -258,6 +210,10 @@
 
 
             }
+        },
+        components: {
+            ListAllTask,
+
         },
         created() {
             window.addEventListener('resize', this.handleResize)
@@ -279,7 +235,12 @@
             // },
             floatWindowSetsize() {
                 this.marginPopup = (this.$refs.floatWindow.clientWidth - 908) / 2 + 'px';
-            }
+            },
+
+
+
+
+
         }
     };
 </script>

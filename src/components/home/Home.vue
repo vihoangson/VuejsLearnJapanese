@@ -15,6 +15,7 @@
             <PersonalInfo></PersonalInfo>
             <EditPersonalInfo></EditPersonalInfo>
             <TaskList></TaskList>
+            <EditTaskContent></EditTaskContent>
         </div>
         <Rooms></Rooms>
         <Group></Group>
@@ -51,6 +52,7 @@ import PersonalInfo from '../personal_info/PersonalInfo';
 import EditPersonalInfo from '../personal_info/EditPersonalInfo';
 import RemoveUser from '../contact/RemoveUser';
 import TaskList from '../task_management/TaskList';
+import EditTaskContent from '../task_management/EditTaskContent';
 export default {
     name: 'Home',
     components: {
@@ -69,7 +71,8 @@ export default {
         PersonalInfo,
         EditPersonalInfo,
         RemoveUser,
-        TaskList
+        TaskList,
+        EditTaskContent
     },
     data() {
         return {
