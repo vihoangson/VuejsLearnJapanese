@@ -337,6 +337,7 @@ export default {
             const end = this.message.content.substring(textarea.selectionEnd);
             const text = start + content + end;
             this.message.content = text;
+            textarea.focus();            
         },
         getClass(content) {
             let toall = content.match(AppConst.REGULAR.TO_ALL);

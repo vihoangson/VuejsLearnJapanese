@@ -106,6 +106,7 @@ export default {
                             });
 
                             this.$store.dispatch('setCurrentRoom', room);
+                            this.$root.$emit('change-room', room);
 
                             // Remove list
                             this.$store.dispatch('saveToListMember', '');
