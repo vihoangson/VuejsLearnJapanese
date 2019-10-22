@@ -335,7 +335,7 @@ export default {
                 textarea.selectionStart
             );
             const end = this.message.content.substring(textarea.selectionEnd);
-            const text = start + content + end;
+            const text = this.message.content + content ;
             this.message.content = text;
             textarea.focus();
         },
