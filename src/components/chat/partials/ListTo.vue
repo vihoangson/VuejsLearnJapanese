@@ -90,12 +90,24 @@ export default {
             }
             if (listName != null) {
 
-                let get_to_list_members = this.$store.getters.get_to_list_member;
-                let room_id = this.$store.getters.get_current_room.room_id;
+                let getToListMembers = this.$store.getters.get_to_list_member;
+                let roomId = this.$store.getters.get_current_room.room_id;
 
-                API.POST('/api/v1/contact/save_list_to',{'room_id': room_id,'list_name':listName,'list_to':get_to_list_members},function(data){
+                API.POST('/api/v1/contact/save_list_to',{'room_id': roomId,'list_name':listName,'list_to':getToListMembers})
+                    .then(data => {
                     if(data.error_code === 0){
-                        console.log(data);
+                        let room = this.$store.getters.get_current_room;
+                        let request = {room_id:room.room_id};
+                        API.POST('/api/v1/contact/get_list_to',request).then(data=>{
+                            if(data.error_code === 0){
+                                room.list_to = data.data ;
+                            }
+                        });
+
+                        this.$store.dispatch('setCurrentRoom',room);
+
+                        // Remove list
+                        this.$store.dispatch('saveToListMember','');
                     }
                 })
 
@@ -119,13 +131,14 @@ export default {
 
             // Add to store content
             this.$store.dispatch('saveToListMember',this.content);
-
             console.log(this.$store.getters.get_to_list_member);
         }
     },
     watch: {
         isShow: function() {
-            if (this.$store.getters.get_is_show_to_member_list) return 'popup';
+            if (this.$store.getters.get_is_show_to_member_list) {
+                return 'popup';
+            }
             return '';
         }
     }

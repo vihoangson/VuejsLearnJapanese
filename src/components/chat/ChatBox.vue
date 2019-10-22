@@ -127,6 +127,16 @@
                                     <strong>[code]</strong>
                                 </span>
                             </li>
+                            <li
+                                class="button-to"
+                                style=""
+                                v-for="(list_to, index) in $store.getters.get_current_room.list_to"
+                                @click="inserToList(list_to.content)"
+                            >
+                                <span class="icon-container">
+                                    <strong>[{{list_to.name}}]</strong>
+                                </span>
+                            </li>
                         </ul>
                     </div>
                     <div class="submit-container">
@@ -314,6 +324,22 @@ export default {
         });
     },
     methods: {
+        inserToList(content){
+            const textarea = this.$refs.textarea;
+            const cursorPosition = textarea.selectionEnd;
+            const start = this.message.content.substring(
+                0,
+                textarea.selectionStart
+            );
+            const end = this.message.content.substring(textarea.selectionEnd);
+            const text = start + content + end;
+            // this.$emit('input', text);
+            this.message.content = text;
+            // textarea.focus();
+            // this.$nextTick(() => {
+            //     textarea.selectionEnd = cursorPosition + content.length;
+            // });
+        },
         getClass(content) {
             let toall = content.match(AppConst.REGULAR.TO_ALL);
             if (toall) return 'mention';
@@ -1152,4 +1178,8 @@ textarea:focus:-webkit-placeholder {
     margin-top: 3px;
     margin-bottom: 0px;
 }
+    .button-to{
+        cursor: pointer;
+        padding-top:9px;
+    }
 </style>

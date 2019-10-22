@@ -142,7 +142,6 @@ export default {
             userInfoJson.icon_img = userInfoJson.icon_img;
             userInfoJson.cover_img = userInfoJson.cover_img;
             this.$store.dispatch('setCurrentUserInfo', userInfoJson);
-
         }
 
 
@@ -193,6 +192,12 @@ export default {
             });
         },
         changeRoom(room) {
+            let request = {room_id:room.room_id};
+            API.POST('/api/v1/contact/get_list_to',request).then(data=>{
+                if(data.error_code === 0){
+                    room.list_to = data.data ;
+                }
+            });
             this.$store.dispatch('setCurrentRoom', room);
             this.getListMessage(room);
             room.color = '#bfbab0';
