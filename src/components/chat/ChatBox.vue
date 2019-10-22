@@ -61,7 +61,7 @@
                                 class="emoji"
                                 v-if="this.$store.getters.get_current_room.is_mychat !== 1"
                             >
-                                <span id="showToMemberList" class="icon-container">
+                                <span id="showToMemberList" class="icon-container" @click="removeToList()">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_mention"
@@ -324,8 +324,8 @@ export default {
         });
     },
     methods: {
-        removeToList(id){
-            alert(id);
+        removeToList(){
+            this.$store.dispatch('saveToListMember', '');
         },
         inserToList(content){
             const textarea = this.$refs.textarea;
@@ -335,9 +335,9 @@ export default {
                 textarea.selectionStart
             );
             const end = this.message.content.substring(textarea.selectionEnd);
-            const text = start + content + end;
+            const text = this.message.content + content ;
             this.message.content = text;
-            textarea.focus();            
+            textarea.focus();
         },
         getClass(content) {
             let toall = content.match(AppConst.REGULAR.TO_ALL);
