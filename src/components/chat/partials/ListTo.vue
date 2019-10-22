@@ -27,7 +27,7 @@
                     />
                 </div>
                 <a class="select-all-text" @click="selectAll">Select All</a>
-                <a class="select-all-text" @click="saveContact">Save contact</a>
+                <a class="select-all-text" @click="saveContact"><i class="fa fa-plus" aria-hidden="true"></i></a>
 
             </div>
 
@@ -64,6 +64,7 @@
 
 <script>
 import {API} from "../../../services/api";
+import {ApiConst} from "../../../common/ApiConst";
 
 export default {
     name: 'ListTo',
@@ -93,24 +94,23 @@ export default {
                 let getToListMembers = this.$store.getters.get_to_list_member;
                 let roomId = this.$store.getters.get_current_room.room_id;
 
-                API.POST('/api/v1/contact/save_list_to',{'room_id': roomId,'list_name':listName,'list_to':getToListMembers})
+                API.POST(ApiConst.SAVE_LIST_TO, {'room_id': roomId, 'list_name': listName, 'list_to': getToListMembers})
                     .then(data => {
-                    if(data.error_code === 0){
-                        let room = this.$store.getters.get_current_room;
-                        let request = {room_id:room.room_id};
-                        API.POST('/api/v1/contact/get_list_to',request).then(data=>{
-                            if(data.error_code === 0){
-                                room.list_to = data.data ;
-                            }
-                        });
+                        if (data.error_code === 0) {
+                            let room = this.$store.getters.get_current_room;
+                            let request = {room_id: room.room_id};
+                            API.POST(ApiConst.GET_LIST_TO, request).then(data => {
+                                if (data.error_code === 0) {
+                                    room.list_to = data.data;
+                                }
+                            });
 
-                        this.$store.dispatch('setCurrentRoom',room);
+                            this.$store.dispatch('setCurrentRoom', room);
 
-                        // Remove list
-                        this.$store.dispatch('saveToListMember','');
-                    }
-                })
-
+                            // Remove list
+                            this.$store.dispatch('saveToListMember', '');
+                        }
+                    })
             }
         },
         selectAll() {
@@ -131,7 +131,6 @@ export default {
 
             // Add to store content
             this.$store.dispatch('saveToListMember',this.content);
-            console.log(this.$store.getters.get_to_list_member);
         }
     },
     watch: {

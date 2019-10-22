@@ -42,4 +42,6 @@ export const ApiConst = {
     DETAIL_IMAGE: '/api/v1/view-image',
     ROOM_UPLOAD_ICON_IMG: '/api/v1/room/upload-icon-img',
     USER_UPLOAD_ICON_IMG: '/api/v1/user/upload-icon-img',
+    GET_LIST_TO: '/api/v1/contact/get_list_to',
+    SAVE_LIST_TO: '/api/v1/contact/save_list_to',
 };

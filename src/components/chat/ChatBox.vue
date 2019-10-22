@@ -131,11 +131,11 @@
                                 class="button-to"
                                 style=""
                                 v-for="(list_to, index) in $store.getters.get_current_room.list_to"
-                                @click="inserToList(list_to.content)"
                             >
-                                <span class="icon-container">
-                                    <strong>[{{list_to.name}}]</strong>
+                                <span class="icon-container" @click="inserToList(list_to.content)">
+                                    <strong><div class="to-list btn btn-default">{{list_to.name}} </div> </strong>
                                 </span>
+                                <i class="fa fa-times hidden" @click="removeToList(list_to.name)"></i>
                             </li>
                         </ul>
                     </div>
@@ -324,6 +324,9 @@ export default {
         });
     },
     methods: {
+        removeToList(id){
+            alert(id);
+        },
         inserToList(content){
             const textarea = this.$refs.textarea;
             const cursorPosition = textarea.selectionEnd;
@@ -333,12 +336,7 @@ export default {
             );
             const end = this.message.content.substring(textarea.selectionEnd);
             const text = start + content + end;
-            // this.$emit('input', text);
             this.message.content = text;
-            // textarea.focus();
-            // this.$nextTick(() => {
-            //     textarea.selectionEnd = cursorPosition + content.length;
-            // });
         },
         getClass(content) {
             let toall = content.match(AppConst.REGULAR.TO_ALL);
@@ -1181,5 +1179,14 @@ textarea:focus:-webkit-placeholder {
     .button-to{
         cursor: pointer;
         padding-top:9px;
+    }
+.to-list.btn.btn-default {
+    background: #e2e2e2;
+    border: 1px solid #a8a8a8;
+    padding: 1px 11px;
+    margin-left: 9px;
+}
+    .hidden{
+        display:none;
     }
 </style>
