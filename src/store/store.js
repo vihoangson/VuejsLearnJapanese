@@ -32,6 +32,7 @@ export default new Vuex.Store({
         is_show_to_member_list: false,
         openTaskDisplay: 'none',
         openTaskEditDisplay: 'none',
+        list_user_task: []
     },
     getters,
     mutations,

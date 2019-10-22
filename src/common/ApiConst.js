@@ -42,4 +42,9 @@ export const ApiConst = {
     DETAIL_IMAGE: '/api/v1/view-image',
     ROOM_UPLOAD_ICON_IMG: '/api/v1/room/upload-icon-img',
     USER_UPLOAD_ICON_IMG: '/api/v1/user/upload-icon-img',
+    GET_USER_TASK_LIST: '/api/v1/task/get-all-user-tasks',
+    COMPLETE_USER_TASK: '/api/v1/task/complete-task',
+    DELETE_USER_TASK: '/api/v1/task/delete-task',
+    UPDATE_USER_TASK: '/api/v1/task/update-user-task',
+    CREATE_USER_TASK: '/api/v1/task/create-user-task',
 };

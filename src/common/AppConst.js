@@ -3,6 +3,7 @@ export const AppConst = {
            LOCAL_USER: 'user',
            LOCAL_USER_INFO: 'user_info',
            LOCAL_MESSAGE_BY_ROOM: 'message_by_room',
+           LOCAL_USER_TASK_LIST: 'user_task_list',
            MESSAGE_TYPE: {
                CREATE: 0,
                EDIT: 1,

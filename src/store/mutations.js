@@ -3,7 +3,6 @@ export default {
         if(message !== ""){
             return (state.to_list_member.push(message) );
         }else{
-            //alert('in');
             return (state.to_list_member = [] );
         }
     },
@@ -130,4 +129,7 @@ export default {
     setTaskEditDisplay(state, style) {
         state.openTaskEditDisplay = style;
     },
+    setUserTaskList(state, obj){
+        return (state.list_user_task = obj);
+    }
 };

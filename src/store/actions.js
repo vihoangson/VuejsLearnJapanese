@@ -87,4 +87,7 @@ export default {
     setTaskEditDisplay({ commit }, style) {
         commit('setTaskEditDisplay', style);
     },
+    setUserTaskList({ commit }, obj) {
+        commit('setUserTaskList', obj);
+    },
 };

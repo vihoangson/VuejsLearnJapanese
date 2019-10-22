@@ -152,6 +152,12 @@ export default {
         }
 
 
+        let userTaskList = localStorage.getItem(AppConst.LOCAL_USER_TASK_LIST);
+        if (userTaskList){
+            let userTaskListJson = JSON.parse(userTaskList);
+            this.$store.dispatch('setUserTaskList', userTaskListJson);
+        }
+
 
     },
     // beforeRouteUpdate(to, from, next) {

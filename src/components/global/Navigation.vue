@@ -140,6 +140,8 @@ export default {
             this.$store.dispatch('setCurrentRoom', {});
             this.$store.dispatch("setContactDisplay", 'none');
             localStorage.removeItem(AppConst.LOCAL_USER);
+            localStorage.removeItem(AppConst.LOCAL_USER_INFO);
+            localStorage.removeItem(AppConst.LOCAL_USER_TASK_LIST);
             this.$router.push({ path: '/login' });
             document.removeEventListener('click');
         },

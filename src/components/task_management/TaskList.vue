@@ -94,9 +94,9 @@
                     <div id="_taskWindowBox" class="adminAllListArea">
 
 
-                        <ul id="_taskWindowList" class="subContentTask">
-                            <ListAllTask></ListAllTask>
-                        </ul>
+<!--                        <ul id="_taskWindowList" class="subContentTask">-->
+                        <ListAllTask></ListAllTask>
+<!--                        </ul>-->
 
                         <div id="_emptyTaskContent" class="adminAllListArea__emptyContainer" style="display: none;">
                             <img src="https://assets.chatwork.com/images/empty/img_task_empty.png"

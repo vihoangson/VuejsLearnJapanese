@@ -66,4 +66,7 @@ export default {
     getTaskDisplay: state => {
         return state.openTaskDisplay;
     },
+    get_current_task_list: state => {
+        return state.list_user_task;
+    },
 };

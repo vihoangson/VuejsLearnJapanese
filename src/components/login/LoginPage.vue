@@ -134,6 +134,17 @@ export default {
                             id: res.data.id,
                         };
 
+                        API.GET(ApiConst.GET_USER_TASK_LIST, targetUser).then(res => {
+                            if (res.error_code === 0) {
+                                localStorage.setItem(
+                                    AppConst.LOCAL_USER_TASK_LIST,
+                                    JSON.stringify(res.data)
+                                );
+                            }
+                        });
+
+
+
                         API.POST(ApiConst.GET_USER_INFO, targetUser).then(res => {
                             if (res.error_code === 0) {
 
