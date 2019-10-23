@@ -45,9 +45,12 @@
                                     <div class="sc-kkbgRg gXxZBr">
                                         <div class="sc-ecaExY cYXuwv">
                                             <div class="_avatarHoverTip _avatarClickTip sc-Rmtcm itNNCX" data-aid="2571977">
-                                                <img src="https://appdata.chatwork.com/avatar/3431/3431235.gif" alt="Le Gia Le [PG]" class="sc-bRBYWo cawMIV">
+<!--                                                <img src="https://appdata.chatwork.com/avatar/3431/3431235.gif" alt="Le Gia Le [PG]" class="sc-bRBYWo cawMIV">-->
                                             </div></div>
-                                        <p class="sc-gbzWSY gLjfYE">Le Gia Le [PG]</p>
+
+                                        <p class="sc-gbzWSY gLjfYE">
+
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -58,7 +61,11 @@
                                     <div class="sc-dHmInP PGisl">
                                         <div class="sc-cjHlYL kAWJRM">
                                             <div class="sc-dRaagA gMLyAE">
-                                                <div class="sc-iYUSvU jeZRmO"><div class="sc-cHSUfg iBDtxa"><p class="sc-cTjmhe eDLUww">9/1</p></div></div>
+                                                <div class="sc-iYUSvU jeZRmO">
+                                                    <div class="sc-cHSUfg iBDtxa">
+                                                        <p class="sc-cTjmhe eDLUww">9/1</p>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="sc-dRaagA gMLyAE">
                                                 <div class="sc-gkFcWv EYtoc">
@@ -102,6 +109,16 @@
                 floatWindowHeight: '0px',
                 marginTopPopup: '0px',
                 marginPopup: '0px',
+                errors: {
+                    required_name: '',
+                    update_fail: ''
+                },
+                input_values:{
+
+                    name: this.$store.getters.get_current_user_info.name,
+                    company: this.$store.getters.get_current_user_info.company
+
+                },
             }
         },
         created() {

@@ -67,6 +67,12 @@ export default {
         return state.openTaskDisplay;
     },
     get_current_task_list: state => {
-        return state.list_user_task;
+        return state.list_user_task.filter(task => task.status === 0);
     },
+    get_current_task_list_completed: state => {
+        return state.list_user_task.filter(task => task.status === 1)
+    },
+    get_task_detail: (state, taskID) => {
+        return state.list_user_task.filter(task => task.id === taskID)
+    }
 };

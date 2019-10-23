@@ -142,6 +142,7 @@ export default {
             localStorage.removeItem(AppConst.LOCAL_USER);
             localStorage.removeItem(AppConst.LOCAL_USER_INFO);
             localStorage.removeItem(AppConst.LOCAL_USER_TASK_LIST);
+            localStorage.removeItem(AppConst.LOCAL_USER_TASK_LIST_COMPLETED);
             this.$router.push({ path: '/login' });
             document.removeEventListener('click');
         },

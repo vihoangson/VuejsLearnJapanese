@@ -143,8 +143,6 @@ export default {
                             }
                         });
 
-
-
                         API.POST(ApiConst.GET_USER_INFO, targetUser).then(res => {
                             if (res.error_code === 0) {
 

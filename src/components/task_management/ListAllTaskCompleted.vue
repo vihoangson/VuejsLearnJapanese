@@ -1,14 +1,12 @@
 <template>
     <div>
         <ul id="_taskWindowList" class="subContentTask">
-            <li v-for=" (item,index) in this.$store.getters.get_current_task_list" :key=index class="_taskList subContentSection taskPanel">
+            <li v-for="(item,index) in this.$store.getters.get_current_task_list_completed" :key=index class="_taskList subContentSection taskPanel" >
 
                 <div class="subContentAreaInner">
                     <div class="clearfix">
                         <div class="completeCheckboxArea">
-                            <div class="_taskCheck button btnPrimary" @click="actionCompleteTask(item)">
-                                <span class="_checkTaskLabel completeText">Done</span>
-                            </div>
+                            <div class="_taskCheck button"><span class="_checkTaskLabel completeText" @click="actionReOpenTask(item)">Open</span></div>
                         </div>
                         <div class="_taskName taskName">
                             <div class="_taskNameContent">
@@ -23,10 +21,6 @@
                         </div>
                     </div>
                     <div class="taskMetaArea">
-        <!--                <img-->
-        <!--                    class=" _avatarHoverTip _avatarClickTip avatarClickTip avatarTiny _avatar _avatarAid2571977"-->
-        <!--                    data-aid="2571977"-->
-        <!--                    src="https://appdata.chatwork.com/avatar/3431/3431235.gif">-->
                         <div class="taskDateLimit">Due:
                             <time class="taskDateLimit__dueDate taskDateLimit__dueDate--limitOver"
                                   datetime="2018-9-1">{{item['due_date']}}
@@ -73,12 +67,12 @@
     import {AppConst} from "../../common/AppConst";
 
     export default {
-        name: "ListAllTask",
+        name: "ListAllTaskCompleted",
         props: ["reload"],
         data() {
             return {
                 componentKey: 0,
-                task_list: this.$store.getters.get_current_task_list,
+                task_list: this.$store.getters.get_current_task_list_completed,
             }
         },
         methods: {
@@ -104,23 +98,21 @@
                     }
                 });
             },
-            actionCompleteTask(task){
-                let data = {
-                    task_id : task.id
-                };
+            actionReOpenTask(item){
 
-                API.POST(ApiConst.COMPLETE_USER_TASK, data).then(res => {
+                let data = {
+                    task_id : item.id
+                };
+                API.POST(ApiConst.REOPEN_USER_TASK, data).then(res => {
                     if (res.error_code === 0) {
-                        task.status = 1;
+                        item.status = 0;
                         localStorage.setItem(
                             AppConst.LOCAL_USER_TASK_LIST,
                             JSON.stringify(res.data)
                         );
-                        // let userTaskListJson = JSON.parse(res);
-                        // this.$store.dispatch('setUserTaskList', userTaskListJson);
-
                     }
                 });
+
             },
         }
     }

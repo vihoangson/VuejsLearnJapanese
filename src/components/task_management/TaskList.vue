@@ -2,7 +2,7 @@
     <div class="_cwFWBase floatWindow" ref="floatWindow" @click.self="closeTaskListPopup" style="z-index: 1002;"
          v-bind:style="{display: this.$store.state.openTaskDisplay, height: floatWindowHeight}">
 
-        <div id="_contactWindow" class="contactWindow _cwFWInner" v-bind:style="{left: marginPopup, right: marginPopup}"
+        <div id="_contactWindow" class="taskWindowContainer _cwFWInner" v-bind:style="{left: marginPopup, right: marginPopup}"
              role="dialog"
              aria-label="Tasks">
 
@@ -23,16 +23,17 @@
             <div class="_cwFWHeader taskWindowContainer__headerContainer">
                 <div class="taskWindowContainer__headerTabContainer">
                     <ul class="taskWindowContainer__headerTab">
-                        <li id="_taskWindowTabOpen" class="taskWindowContainer__headerTabItem floatTabSelect">
+                        <li id="_taskWindowTabOpen" class="taskWindowContainer__headerTabItem"  @click="activate(1)" :class="{ floatTabSelect : active_el == 1 }">
                             Open Tasks
                         </li>
-                        <li id="_taskWindowTabDone" class="taskWindowContainer__headerTabItem">
+                        <li id="_taskWindowTabDone" class="taskWindowContainer__headerTabItem" @click="activate(2)" :class="{ floatTabSelect : active_el == 2 }">
                             Completed Tasks
                         </li>
                     </ul>
                 </div>
 
                 <div class="taskWindowHeaderNavigationContainer">
+
                     <ul id="_taskWindowFilter" class="cwTextUnselectable btnNavList taskWindowFilterTypeLimit _cwBB" style="display: inline-block;"
                         role="menu">
                         <li role="menuitemradio" class="_cwBBButton button _cwBBSelected selected" data-cwui-bb-idx="0" aria-checked="true">
@@ -66,6 +67,7 @@
                             </span>
                         </li>
                     </ul>
+
                     <ul id="_taskWindowViewType"
                         class="cwTextUnselectable btnNavList taskWindowFilterTypeAssignee _cwBB" role="menu">
                         <li role="menuitemradio" class="_cwBBButton button _cwBBSelected selected" data-cwui-bb-idx="0" aria-label="自分のタスク" aria-checked="true">
@@ -83,6 +85,45 @@
                           </span>
                         </li>
                     </ul>
+
+                    <div class="taskWindowPagerContainer">
+                        <p id="_taskWindowPagerIndex" class="taskWindowPagerContainer__index">1 / 1</p>
+                        <ul id="_taskWindowPager" class="cwTextUnselectable btnNavList taskWindowPagerContainer__pager _cwBB" role="menu">
+                            <li role="menuitemradio" class="_cwBBButton button btnDisable" data-cwui-bb-idx="0" aria-disabled="true">
+                            <span class="taskWindowPagerContainer__pagerIconContainer">
+                              <svg viewBox="0 0 10 10" class="taskWindowPagerContainer__pagerIcon" width="16" height="16">
+                                <use fill-rule="evenodd" xlink:href="#icon_arrowDoubleLeft">
+                              </use></svg>
+                            </span>
+                            <span class="icoTextHide">Go to first page</span>
+                            </li>
+                            <li role="menuitemradio" class="_cwBBButton button btnDisable" data-cwui-bb-idx="1" aria-disabled="true">
+                            <span class="taskWindowPagerContainer__pagerIconContainer">
+                              <svg viewBox="0 0 10 10" class="taskWindowPagerContainer__pagerIcon" width="16" height="16">
+                                <use fill-rule="evenodd" xlink:href="#icon_triangleLeft">
+                              </use></svg>
+                            </span>
+                            <span class="icoTextHide">Back to previous page</span>
+                            </li>
+                            <li role="menuitemradio" class="_cwBBButton button btnDisable" data-cwui-bb-idx="2" aria-disabled="true">
+                            <span class="taskWindowPagerContainer__pagerIconContainer">
+                              <svg viewBox="0 0 10 10" class="taskWindowPagerContainer__pagerIcon" width="16" height="16">
+                                <use fill-rule="evenodd" xlink:href="#icon_triangleRight">
+                              </use></svg>
+                            </span>
+                            <span class="icoTextHide">Go to next page</span>
+                            </li>
+                            <li role="menuitemradio" class="_cwBBButton button btnDisable" data-cwui-bb-idx="3" aria-disabled="true">
+                            <span class="taskWindowPagerContainer__pagerIconContainer">
+                              <svg viewBox="0 0 10 10" class="taskWindowPagerContainer__pagerIcon" width="16" height="16">
+                                <use fill-rule="evenodd" xlink:href="#icon_arrowDoubleRight">
+                              </use></svg>
+                            </span>
+                            <span class="icoTextHide">Go to last page</span>
+                            </li>
+                        </ul>
+                    </div>
+
                 </div>
             </div>
 
@@ -93,10 +134,9 @@
 
                     <div id="_taskWindowBox" class="adminAllListArea">
 
+                        <ListAllTask :key='idd' v-show="active_el === 1" reload="aa"></ListAllTask>
 
-<!--                        <ul id="_taskWindowList" class="subContentTask">-->
-                        <ListAllTask></ListAllTask>
-<!--                        </ul>-->
+                        <ListAllTaskCompleted v-show="active_el === 2"></ListAllTaskCompleted>
 
                         <div id="_emptyTaskContent" class="adminAllListArea__emptyContainer" style="display: none;">
                             <img src="https://assets.chatwork.com/images/empty/img_task_empty.png"
@@ -196,6 +236,7 @@
 
 <script>
     import ListAllTask from '../task_management/ListAllTask';
+    import ListAllTaskCompleted from '../task_management/ListAllTaskCompleted';
     export default {
         name: "TaskList",
         waitForData: true,
@@ -207,13 +248,12 @@
                 floatWindowHeight: '0px',
                 bulkAdd: 'none',
                 marginPopup: '0px',
-
-
+                active_el:1,
             }
         },
         components: {
             ListAllTask,
-
+            ListAllTaskCompleted
         },
         created() {
             window.addEventListener('resize', this.handleResize)
@@ -229,23 +269,66 @@
                 this.$store.dispatch('setTaskDisplay', 'none');
             },
 
-
-            // openProfileEditDisplay(){
-            //     this.$store.dispatch('setProfileEdit', 'block');
-            // },
             floatWindowSetsize() {
                 this.marginPopup = (this.$refs.floatWindow.clientWidth - 908) / 2 + 'px';
             },
 
-
-
-
+            activate:function(el){
+                this.active_el = el;
+            }
 
         }
     };
 </script>
 
 <style>
+    .taskWindowPagerContainer__pagerIconContainer {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 100%;
+    }
+    .btnNavList li + li {
+        border-left: 0;
+    }
+    .btnDisable, .btnDisable:hover, .btnDisable:active {
+        border-color: #cccccc;
+        color: #cccccc;
+        fill: #cccccc;
+        background: #f2f2f2;
+        cursor: default;
+    }
+    .taskWindowPagerContainer__pager li {
+        padding: 0;
+        min-width: 26px;
+        width: 26px;
+        height: 26px;
+    }
+    .btnNavList li:first-child {
+        border-radius: 2px 0 0 2px;
+    }
+    .btnNavList {
+        zoom: 1;
+    }
+    .cwTextUnselectable {
+        user-select: none;
+    }
+    .taskWindowPagerContainer__pager {
+        display: inline-block;
+        margin-left: 5px;
+    }
+    .taskWindowPagerContainer__index {
+        display: inline-block;
+        vertical-align: top;
+        line-height: 26px;
+    }
+    .taskWindowPagerContainer {
+        position: absolute;
+        bottom: 12px;
+        right: 10px;
+    }
+
     svg, use {
         pointer-events: none;
     }
@@ -336,11 +419,7 @@
         color: #fff;
         background-color: #006a9c;
     }
-    .completeCheckboxArea {
-        display: inline-block;
-        float: right;
-        margin: 0 0 5px 5px;
-    }
+
     .taskDateLimit__dueDate--limitOver {
         color: #a32c1f;
         font-weight: 700;
@@ -639,7 +718,7 @@
         background: transparent;
     }
 
-    .contactWindow {
+    .taskWindowContainer  {
         position: absolute;
         top: 0;
         background-color: #f2f2f2;
