@@ -19,7 +19,7 @@
                     <div class="col-md-12">
                         <div class="form-group">
                             <label>Room Chat Name:</label><div class="error">{{roomNameError}}</div>
-                            <input type="text" name="roomName" v-model="roomName" class="form-control" placeholder="Group name">
+                            <input type="text" name="roomName" v-model="roomName" class="form-control" placeholder="Room name">
                         </div>
                         <div class="form-group">
                             <label>Room Description:</label> <div class="error">{{roomDescriptionError}}</div>
