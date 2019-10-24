@@ -90,4 +90,7 @@ export default {
     setUserTaskList({ commit }, obj) {
         commit('setUserTaskList', obj);
     },
+    setEditTaskDetail({ commit }, obj) {
+        commit('setEditTaskDetail', obj);
+    },
 };

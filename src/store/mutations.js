@@ -131,5 +131,8 @@ export default {
     },
     setUserTaskList(state, obj){
         return (state.list_user_task = obj);
-    }
+    },
+    setEditTaskDetail(state, obj) {
+        state.edit_task_detail = obj;
+    },
 };

@@ -72,16 +72,12 @@
                         class="cwTextUnselectable btnNavList taskWindowFilterTypeAssignee _cwBB" role="menu">
                         <li role="menuitemradio" class="_cwBBButton button _cwBBSelected selected" data-cwui-bb-idx="0" aria-label="自分のタスク" aria-checked="true">
                           <span class="taskWindowFilterTypeAssignee__iconContainer">
-                            <svg viewBox="0 0 10 10" class="taskWindowFilterTypeAssignee__icon" width="16" height="16">
-                              <use fill-rule="evenodd" xlink:href="#icon_taskMine">
-                            </use></svg>
+                              <i class="fa fa-user" aria-hidden="true"></i>
                           </span>
                         </li>
                         <li role="menuitemradio" class="_cwBBButton button" data-cwui-bb-idx="1" aria-label="Tasks I've assigned">
                           <span class="taskWindowFilterTypeAssignee__iconContainer">
-                            <svg viewBox="0 0 10 10" class="taskWindowFilterTypeAssignee__icon" width="16" height="16">
-                              <use fill-rule="evenodd" xlink:href="#icon_taskAssign">
-                            </use></svg>
+                            <i class="fa fa-check-square-o" aria-hidden="true"></i>
                           </span>
                         </li>
                     </ul>
@@ -89,37 +85,29 @@
                     <div class="taskWindowPagerContainer">
                         <p id="_taskWindowPagerIndex" class="taskWindowPagerContainer__index">1 / 1</p>
                         <ul id="_taskWindowPager" class="cwTextUnselectable btnNavList taskWindowPagerContainer__pager _cwBB" role="menu">
-                            <li role="menuitemradio" class="_cwBBButton button btnDisable" data-cwui-bb-idx="0" aria-disabled="true">
-                            <span class="taskWindowPagerContainer__pagerIconContainer">
-                              <svg viewBox="0 0 10 10" class="taskWindowPagerContainer__pagerIcon" width="16" height="16">
-                                <use fill-rule="evenodd" xlink:href="#icon_arrowDoubleLeft">
-                              </use></svg>
-                            </span>
-                            <span class="icoTextHide">Go to first page</span>
+                            <li role="menuitemradio" class="_cwBBButton button " data-cwui-bb-idx="0" aria-disabled="true">
+                                <span class="taskWindowPagerContainer__pagerIconContainer btnDisable">
+                                  <i class="fa fa-step-backward" aria-hidden="true"></i>
+                                </span>
+                                <span class="icoTextHide">Go to first page</span>
                             </li>
-                            <li role="menuitemradio" class="_cwBBButton button btnDisable" data-cwui-bb-idx="1" aria-disabled="true">
-                            <span class="taskWindowPagerContainer__pagerIconContainer">
-                              <svg viewBox="0 0 10 10" class="taskWindowPagerContainer__pagerIcon" width="16" height="16">
-                                <use fill-rule="evenodd" xlink:href="#icon_triangleLeft">
-                              </use></svg>
-                            </span>
-                            <span class="icoTextHide">Back to previous page</span>
+                            <li role="menuitemradio" class="_cwBBButton button" data-cwui-bb-idx="1" aria-disabled="true">
+                                <span class="taskWindowPagerContainer__pagerIconContainer btnDisable">
+                                  <i class="fa fa-caret-left" aria-hidden="true"></i>
+                                </span>
+                                <span class="icoTextHide">Back to previous page</span>
                             </li>
-                            <li role="menuitemradio" class="_cwBBButton button btnDisable" data-cwui-bb-idx="2" aria-disabled="true">
-                            <span class="taskWindowPagerContainer__pagerIconContainer">
-                              <svg viewBox="0 0 10 10" class="taskWindowPagerContainer__pagerIcon" width="16" height="16">
-                                <use fill-rule="evenodd" xlink:href="#icon_triangleRight">
-                              </use></svg>
-                            </span>
-                            <span class="icoTextHide">Go to next page</span>
+                            <li role="menuitemradio" class="_cwBBButton button " data-cwui-bb-idx="2" aria-disabled="true">
+                                <span class="taskWindowPagerContainer__pagerIconContainer btnDisable">
+                                 <i class="fa fa-caret-right" aria-hidden="true"></i>
+                                </span>
+                                <span class="icoTextHide">Go to next page</span>
                             </li>
-                            <li role="menuitemradio" class="_cwBBButton button btnDisable" data-cwui-bb-idx="3" aria-disabled="true">
-                            <span class="taskWindowPagerContainer__pagerIconContainer">
-                              <svg viewBox="0 0 10 10" class="taskWindowPagerContainer__pagerIcon" width="16" height="16">
-                                <use fill-rule="evenodd" xlink:href="#icon_arrowDoubleRight">
-                              </use></svg>
-                            </span>
-                            <span class="icoTextHide">Go to last page</span>
+                            <li role="menuitemradio" class="_cwBBButton  button " data-cwui-bb-idx="3" aria-disabled="true">
+                                <span class="taskWindowPagerContainer__pagerIconContainer btnDisable">
+                                  <i class="fa fa-step-forward" aria-hidden="true"></i>
+                                </span>
+                                <span class="icoTextHide">Go to last page</span>
                             </li>
                         </ul>
                     </div>
@@ -282,6 +270,14 @@
 </script>
 
 <style>
+
+    .btnDisable, .btnDisable:hover, .btnDisable:active {
+        border-color: #cccccc;
+        color: #cccccc;
+        fill: #cccccc;
+        background: #f2f2f2;
+        cursor: default;
+    }
     .taskWindowPagerContainer__pagerIconContainer {
         display: flex;
         align-items: center;

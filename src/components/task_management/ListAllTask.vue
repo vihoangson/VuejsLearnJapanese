@@ -14,7 +14,7 @@
                             <div class="_taskNameContent">
                                 <div class="dev_quote chatQuote">
                                     <div class="chatQuote__title">
-                                        <span  class="piconname"><span >{{item['owner_id']}}</span></span>
+                                        <span  class="piconname"><span >{{ item['owner_id'] }}</span></span>
                                         <time class="quoteTimeStamp chatQuote__timeStamp"><span>{{item['create_date']}}</span></time>
                                     </div>
                                     <div class="quoteText">{{item['content']}}</div>
@@ -79,15 +79,23 @@
             return {
                 componentKey: 0,
                 task_list: this.$store.getters.get_current_task_list,
+                edit_task_detail:{}
             }
         },
+
         methods: {
             actionJumpToAssignment(){
                 // alert("Go to message");
             },
             actionEditTaskContent(taskId){
-                alert(taskId);
+                // alert(taskId);
+
+                this.edit_task_detail = this.$store.getters.get_task_detail(taskId);
+console.log(this.edit_task_detail);
+                this.$store.dispatch('setEditTaskDetail', this.edit_task_detail);
+
                 this.$store.dispatch('setTaskEditDisplay', 'block');
+
             },
             actionDeleteTask(task){
 
@@ -116,9 +124,6 @@
                             AppConst.LOCAL_USER_TASK_LIST,
                             JSON.stringify(res.data)
                         );
-                        // let userTaskListJson = JSON.parse(res);
-                        // this.$store.dispatch('setUserTaskList', userTaskListJson);
-
                     }
                 });
             },

@@ -24,7 +24,7 @@
 
 <!--                        TASK CONTENT-->
                         <div class="sc-cBrjTV WPgkE">
-                            <textarea tabindex="1" placeholder="Enter task here" class="sc-ejGVNB iOAdgD">
+                            <textarea v-model="this.$store.getters.get_edit_task_detail[0].content" tabindex="1" placeholder="Enter task here" class="sc-ejGVNB iOAdgD">
 
                             </textarea>
                         </div>
@@ -90,7 +90,14 @@
                                 </div>
                             </div>
                             <div class="sc-jzJRlG sc-kNBZmU cgalwE">
-                                <div class="sc-hqyNC iYuHoU"><div role="button" tabindex="-1" class="sc-jbKcbu sc-dNLxif cBwtwK"><p class="sc-kvZOFW blpkQa">Save</p></div></div>
+                                <div @click="submitEditTask(this.$store.getters.get_edit_task_detail[0])" class="sc-hqyNC iYuHoU">
+                                    <div  role="button" tabindex="-1" class="sc-jbKcbu sc-dNLxif cBwtwK">
+                                        <p class="sc-kvZOFW blpkQa">Save</p>
+                                    </div>
+<!--                                    <div v-else role="button" tabindex="-1" class="sc-jbKcbu sc-dNLxif fhkBvZ">-->
+<!--                                        <p class="sc-kvZOFW blpkQa">Save</p>-->
+<!--                                    </div>-->
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -102,6 +109,10 @@
 </template>
 
 <script>
+    // import {API} from "../../services/api";
+    // import {ApiConst} from "../../common/ApiConst";
+    // import {AppConst} from "../../common/AppConst";
+
     export default {
         name: "EditTaskContent",
         data() {
@@ -113,18 +124,16 @@
                     required_name: '',
                     update_fail: ''
                 },
-                input_values:{
-
-                    name: this.$store.getters.get_current_user_info.name,
-                    company: this.$store.getters.get_current_user_info.company
-
-                },
+                edit_task_detail: () => {
+                    return this.$store.getters.get_edit_task_detail[0]
+                }
             }
         },
         created() {
             window.addEventListener('resize', this.handleResize)
             this.handleResizePopup();
         },
+
         methods:{
             handleResizePopup() {
                 this.marginTopPopup = '80px';
@@ -133,6 +142,25 @@
             },
             closeTaskEditPopup(){
                 this.$store.dispatch('setTaskEditDisplay', 'none');
+            },
+            submitEditTask(task){
+                console.log(this.edit_task_detail);
+                this.$store.dispatch('setTaskEditDisplay', 'none');
+                // let data = {
+                //     task_id : task.id,
+                //     content: task.content,
+                //     due_date: '25/10/2019'
+                // };
+                //
+                // API.POST(ApiConst.UPDATE_USER_TASK, data).then(res => {
+                //     if (res.error_code === 0) {
+                //         task.status = 1;
+                //         localStorage.setItem(
+                //             AppConst.LOCAL_USER_TASK_LIST,
+                //             JSON.stringify(res.data)
+                //         );
+                //     }
+                // });
             }
         }
 
@@ -146,6 +174,29 @@
         align-items: center;
         font-size: 13px;
     }
+    .fhkBvZ {
+        box-sizing: border-box;
+        display: inline-flex;
+        -webkit-box-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        justify-content: center;
+        min-width: 26px;
+        min-height: 26px;
+        background-color: rgb(242, 242, 242);
+        user-select: none;
+        color: rgb(204, 204, 204);
+        fill: rgb(204, 204, 204);
+        cursor: default;
+        padding: 0px 12px;
+        border-width: 1px;
+        border-style: solid;
+        border-color: rgb(204, 204, 204);
+        border-image: initial;
+        border-radius: 2px;
+        outline: none;
+    }
+
     .cBwtwK {
         box-sizing: border-box;
         display: inline-flex;

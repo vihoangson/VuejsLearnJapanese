@@ -72,7 +72,10 @@ export default {
     get_current_task_list_completed: state => {
         return state.list_user_task.filter(task => task.status === 1)
     },
-    get_task_detail: (state, taskID) => {
-        return state.list_user_task.filter(task => task.id === taskID)
-    }
+    get_task_detail: (state) => (taskId) => {
+        return state.list_user_task.filter(task => task.id === taskId)
+    },
+    get_edit_task_detail: state => {
+        return state.edit_task_detail;
+    },
 };
