@@ -180,7 +180,12 @@
         </div>
         <div class="chat-box-detail">
             <div v-if="true">
-                <h2>Description</h2>
+<!--                <h2>Description</h2>-->
+                <div class="roomTask__header">
+                    <p class="roomTask__headerText">
+                        Description
+                    </p>
+                </div>
                 <pre><span v-if="$store.getters.get_current_room.room_description===''|| $store.getters.get_current_room.room_description===null">No description</span><div v-else>{{$store.getters.get_current_room.room_description?$store.getters.get_current_room.room_description:''}}</div></pre>
 
 
@@ -194,9 +199,14 @@
             </div>
 
             <div v-if="true">
-                <h2>Tasks</h2>
+                <div class="roomTask__header">
+                    <p class="roomTask__headerText">
+                        Tasks
+                    </p>
+                </div>
 
                     <div style="width: 100%">
+                        <AddNewTask></AddNewTask>
                         <ListAllTask></ListAllTask>
                     </div>
             </div>
@@ -221,6 +231,7 @@ import ListTo from './partials/ListTo';
 import Emoji from './partials/Emoji';
 import { setTimeout } from 'timers';
 import ListAllTask from '../task_management/ListAllTask';
+import AddNewTask from '../task_management/AddNewTask';
 
 export default {
     name: 'ChatBox',
@@ -232,7 +243,8 @@ export default {
         ChatHeaderInfo,
         ListTo,
         Emoji,
-        ListAllTask
+        ListAllTask,
+        AddNewTask
     },
     props: {
         value: {
@@ -758,6 +770,19 @@ export default {
 </script>
 
 <style>
+    .roomTask__headerText {
+        display: flex;
+        align-items: center;
+        color: #666666;
+        font-weight: 600;
+        height: 24px;
+    }
+    .roomTask__header {
+        padding: 4px 8px;
+        margin-bottom: 8px;
+        background-color: #e6e6e6;
+    }
+
 .icon-close {
     float: right;
 }

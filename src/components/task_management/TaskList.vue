@@ -23,10 +23,10 @@
             <div class="_cwFWHeader taskWindowContainer__headerContainer">
                 <div class="taskWindowContainer__headerTabContainer">
                     <ul class="taskWindowContainer__headerTab">
-                        <li id="_taskWindowTabOpen" class="taskWindowContainer__headerTabItem"  @click="activate(1)" :class="{ floatTabSelect : active_el == 1 }">
+                        <li id="_taskWindowTabOpen" class="taskWindowContainer__headerTabItem"  @click="activate(1)" :class="{ floatTabSelect : active_el === 1 }">
                             Open Tasks
                         </li>
-                        <li id="_taskWindowTabDone" class="taskWindowContainer__headerTabItem" @click="activate(2)" :class="{ floatTabSelect : active_el == 2 }">
+                        <li id="_taskWindowTabDone" class="taskWindowContainer__headerTabItem" @click="activate(2)" :class="{ floatTabSelect : active_el === 2 }">
                             Completed Tasks
                         </li>
                     </ul>
