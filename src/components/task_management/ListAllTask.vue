@@ -91,7 +91,7 @@
                 // alert(taskId);
 
                 this.edit_task_detail = this.$store.getters.get_task_detail(taskId);
-console.log(this.edit_task_detail);
+
                 this.$store.dispatch('setEditTaskDetail', this.edit_task_detail);
 
                 this.$store.dispatch('setTaskEditDisplay', 'block');

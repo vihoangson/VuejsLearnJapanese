@@ -89,8 +89,9 @@
                                     <div @click="closeTaskEditPopup" role="button" tabindex="-1" class="sc-jbKcbu sc-dNLxif kOkaj"><p class="sc-kvZOFW blpkQa">Cancel</p></div>
                                 </div>
                             </div>
+<!--                            @click="submitEditTask(this.$store.getters.get_edit_task_detail[0])"-->
                             <div class="sc-jzJRlG sc-kNBZmU cgalwE">
-                                <div @click="submitEditTask(this.$store.getters.get_edit_task_detail[0])" class="sc-hqyNC iYuHoU">
+                                <div  @click="closeTaskEditPopup" class="sc-hqyNC iYuHoU">
                                     <div  role="button" tabindex="-1" class="sc-jbKcbu sc-dNLxif cBwtwK">
                                         <p class="sc-kvZOFW blpkQa">Save</p>
                                     </div>

@@ -73,6 +73,7 @@
             return {
                 componentKey: 0,
                 task_list: this.$store.getters.get_current_task_list_completed,
+                edit_task_detail:{}
             }
         },
         methods: {
@@ -80,7 +81,10 @@
                 // alert("Go to message");
             },
             actionEditTaskContent(taskId){
-                alert(taskId);
+                this.edit_task_detail = this.$store.getters.get_task_detail(taskId);
+
+                this.$store.dispatch('setEditTaskDetail', this.edit_task_detail);
+
                 this.$store.dispatch('setTaskEditDisplay', 'block');
             },
             actionDeleteTask(task){
