@@ -62,5 +62,20 @@ export default {
     },
     get_is_show_to_member_list: state => {
         return state.is_show_to_member_list;
-    }
+    },
+    getTaskDisplay: state => {
+        return state.openTaskDisplay;
+    },
+    get_current_task_list: state => {
+        return state.list_user_task.filter(task => task.status === 0);
+    },
+    get_current_task_list_completed: state => {
+        return state.list_user_task.filter(task => task.status === 1)
+    },
+    get_task_detail: (state) => (taskId) => {
+        return state.list_user_task.filter(task => task.id === taskId)
+    },
+    get_edit_task_detail: state => {
+        return state.edit_task_detail;
+    },
 };

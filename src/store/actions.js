@@ -81,4 +81,16 @@ export default {
     setUserIdToDelete({ commit }, id) {
         commit('setUserIdToDelete', id);
     },
+    setTaskDisplay({ commit }, style) {
+        commit('setTaskDisplay', style);
+    },
+    setTaskEditDisplay({ commit }, style) {
+        commit('setTaskEditDisplay', style);
+    },
+    setUserTaskList({ commit }, obj) {
+        commit('setUserTaskList', obj);
+    },
+    setEditTaskDetail({ commit }, obj) {
+        commit('setEditTaskDetail', obj);
+    },
 };

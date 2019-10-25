@@ -1,8 +1,9 @@
 export const AppConst = {
-           SOCKET_ADDRESS: 'http://172.16.218.254:3000',
+           SOCKET_ADDRESS: 'http://127.0.0.1:3000',
            LOCAL_USER: 'user',
            LOCAL_USER_INFO: 'user_info',
            LOCAL_MESSAGE_BY_ROOM: 'message_by_room',
+           LOCAL_USER_TASK_LIST: 'user_task_list',
            MESSAGE_TYPE: {
                CREATE: 0,
                EDIT: 1,

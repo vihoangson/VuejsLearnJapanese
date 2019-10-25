@@ -29,7 +29,11 @@ export default new Vuex.Store({
         list_not_user_by_room_id: [],
         is_admin_room: false,
         data_contact: { list_contact: [1, 2, 3, 4] },
-        is_show_to_member_list: false
+        is_show_to_member_list: false,
+        openTaskDisplay: 'none',
+        openTaskEditDisplay: 'none',
+        list_user_task: [],
+        edit_task_detail: {}
     },
     getters,
     mutations,

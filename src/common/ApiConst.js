@@ -44,4 +44,10 @@ export const ApiConst = {
     USER_UPLOAD_ICON_IMG: '/api/v1/user/upload-icon-img',
     GET_LIST_TO: '/api/v1/contact/get_list_to',
     SAVE_LIST_TO: '/api/v1/contact/save_list_to',
+    GET_USER_TASK_LIST: '/api/v1/task/get-all-user-tasks',
+    COMPLETE_USER_TASK: '/api/v1/task/complete-task',
+    REOPEN_USER_TASK: '/api/v1/task/undone-task',
+    DELETE_USER_TASK: '/api/v1/task/delete-task',
+    UPDATE_USER_TASK: '/api/v1/task/update-user-task',
+    CREATE_USER_TASK: '/api/v1/task/create-user-task',
 };

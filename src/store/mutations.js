@@ -124,4 +124,16 @@ export default {
     setUserIdToDelete(state, id) {
         state.UserIdToDelete = id;
     },
+    setTaskDisplay(state, style) {
+        state.openTaskDisplay = style;
+    },
+    setTaskEditDisplay(state, style) {
+        state.openTaskEditDisplay = style;
+    },
+    setUserTaskList(state, obj){
+        return (state.list_user_task = obj);
+    },
+    setEditTaskDetail(state, obj) {
+        state.edit_task_detail = obj;
+    },
 };

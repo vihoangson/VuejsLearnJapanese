@@ -14,6 +14,8 @@
             <Contact></Contact>
             <PersonalInfo></PersonalInfo>
             <EditPersonalInfo></EditPersonalInfo>
+            <TaskList></TaskList>
+            <EditTaskContent></EditTaskContent>
         </div>
         <Rooms></Rooms>
         <Group></Group>
@@ -49,6 +51,8 @@ import Contact from '../contact/Contact';
 import PersonalInfo from '../personal_info/PersonalInfo';
 import EditPersonalInfo from '../personal_info/EditPersonalInfo';
 import RemoveUser from '../contact/RemoveUser';
+import TaskList from '../task_management/TaskList';
+import EditTaskContent from '../task_management/EditTaskContent';
 export default {
     name: 'Home',
     components: {
@@ -66,7 +70,9 @@ export default {
         Contact,
         PersonalInfo,
         EditPersonalInfo,
-        RemoveUser
+        RemoveUser,
+        TaskList,
+        EditTaskContent
     },
     data() {
         return {
@@ -144,7 +150,9 @@ export default {
             this.$store.dispatch('setCurrentUserInfo', userInfoJson);
         }
 
-
+        let userTaskList = localStorage.getItem(AppConst.LOCAL_USER_TASK_LIST);
+        let userTaskListJson = JSON.parse(userTaskList);
+        this.$store.dispatch('setUserTaskList', userTaskListJson);
 
     },
     // beforeRouteUpdate(to, from, next) {
