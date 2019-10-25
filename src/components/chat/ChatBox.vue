@@ -405,15 +405,30 @@ export default {
             this.enterToSendMessage = e.target.value;
         },
         onReply(value) {
-            this.message.content =
+            let content =
                 '[Reply mid:' +
                 value.message_id +
                 ' to:' +
                 value.user_info.id +
                 '] ' +
                 value.user_info.name;
-            this.message.content += '\n';
             this.$refs.textarea.focus();
+
+            const textarea = this.$refs.textarea;
+            const cursorPosition = textarea.selectionEnd;
+            const start = this.message.content.substring(
+                0,
+                textarea.selectionStart
+            );
+            const end = this.message.content.substring(textarea.selectionEnd);
+            const text = start + content + end;
+            this.$emit('input', text);
+            this.message.content = text;
+            textarea.focus();
+            this.$nextTick(() => {
+                textarea.selectionEnd = cursorPosition + content.length;
+            });
+            this.showEmojiPicker = false;
         },
         onSend() {
             this.message.type = AppConst.MESSAGE_TYPE.CREATE;
@@ -445,16 +460,31 @@ export default {
             this.editMessage = false;
         },
         onQuoute(value) {
-            this.message.content =
+            let content =
                 '[Quote uid:' +
-                value.message_id +
+                value.user_info.id +
                 ' time:' +
                 value.timestamp +
                 ']' +
                 value.message +
                 '[/Quote]';
-            this.message.content += '\n';
             this.$refs.textarea.focus();
+
+            const textarea = this.$refs.textarea;
+            const cursorPosition = textarea.selectionEnd;
+            const start = this.message.content.substring(
+                0,
+                textarea.selectionStart
+            );
+            const end = this.message.content.substring(textarea.selectionEnd);
+            const text = start + content + end;
+            this.$emit('input', text);
+            this.message.content = text;
+            textarea.focus();
+            this.$nextTick(() => {
+                textarea.selectionEnd = cursorPosition + content.length;
+            });
+            this.showEmojiPicker = false;
         },
         showMyListFile() {
             this.showListFile = !this.showListFile;
@@ -548,18 +578,12 @@ export default {
                     'data:image/png;base64, ' +
                     this.reviewPhotoStore[id].base_64;
                 this.fileDetailInfo.content = this.reviewPhotoStore[id].content;
-                this.fileDetailInfo.name = this.reviewPhotoStore[
-                    id
-                ][0].file_name;
-                this.fileDetailInfo.size = this.reviewPhotoStore[
-                    id
-                ][0].file_size
+                this.fileDetailInfo.name = this.reviewPhotoStore[id][0].file_name;
+                this.fileDetailInfo.size = this.reviewPhotoStore[id][0].file_size
                     .toString()
                     .replace(/\B(?=(\d{3})+(?!\d))/g, ',');
                 this.fileDetailInfo.owner = this.reviewPhotoStore[id][0].name;
-                this.fileDetailInfo.uploadDate = this.reviewPhotoStore[
-                    id
-                ][0].created_at;
+                this.fileDetailInfo.uploadDate = this.reviewPhotoStore[id][0].created_at;
                 this.fileDetailInfo.id = this.reviewPhotoStore[id][0].id;
             }
         },

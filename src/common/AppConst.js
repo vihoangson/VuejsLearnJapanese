@@ -1,5 +1,5 @@
 export const AppConst = {
-           SOCKET_ADDRESS: 'http://172.16.218.254:3000',
+           SOCKET_ADDRESS: 'http://172.16.100.35:3001',
            LOCAL_USER: 'user',
            LOCAL_USER_INFO: 'user_info',
            LOCAL_MESSAGE_BY_ROOM: 'message_by_room',

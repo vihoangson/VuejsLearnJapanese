@@ -15,6 +15,7 @@ export function processQuote(listUsers, content) {
 
         if (content.match(AppConst.REGULAR.QUOTE_TAG)) {
             let toId = content.match(AppConst.REGULAR.QUOTE_TAG_USER_ID);
+
             let user = listUsers.find(function(x) {
                 return x.id === parseInt(toId[0]);
             });
@@ -52,6 +53,7 @@ export function processQuote(listUsers, content) {
             ) {
                 return quoteInfo + processQuote(listUsers, matchs) + '</div></div>';
             });
+            console.log(content);
         }
         return content;
     } else return content;
