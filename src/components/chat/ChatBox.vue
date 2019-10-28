@@ -6,11 +6,13 @@
         <div class="chat-box-content" id="chat-box-content" :style="{'height': `${myStyles}px`}">
             <div class="timeline">
                 <div
+                    id="timeline-message"
                     class="timeline-message"
                     :style="{'height': `${timelineMessage}px`, 'overflow': 'hidden', 'overflow-y': 'scroll'}"
                 >
                     <div
                         class="timeline-message-body"
+                        v-bind:id="'parent-mid-'+item.message_id"
                         v-bind:class="getClass(item.message)"
                         v-for="item in this.$store.getters.get_current_room.list_message"
                         :key="item.message_id"
@@ -18,7 +20,7 @@
                         <div class="timeline-avatar">
                             <img :src="item.user_info.icon_img" alt class="avatar" />
                         </div>
-                        <div class="timeline-content">
+                        <div class="timeline-content" v-bind:id="'mid-'+item.message_id">
                             <div class="timeline-content-header">
                                 <p class="timeline-content-header-username">{{item.user_info.name}}</p>
                                 <p
@@ -28,14 +30,14 @@
                             <div class="timeline-content-message">
                                 <ChatMessage :message-object="item" :message_content="item.message"></ChatMessage>
                             </div>
-                            <ChatAction
-                                :message="item"
-                                @reply="onReply"
-                                @edit="onEdit"
-                                @delete="onDelete"
-                                @quoute="onQuoute"
-                            ></ChatAction>
                         </div>
+                        <ChatAction
+                            :message="item"
+                            @reply="onReply"
+                            @edit="onEdit"
+                            @delete="onDelete"
+                            @quoute="onQuoute"
+                        ></ChatAction>
                     </div>
                 </div>
             </div>
