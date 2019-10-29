@@ -24,7 +24,7 @@
 
 <!--                        TASK CONTENT-->
                         <div class="sc-cBrjTV WPgkE">
-                            <textarea v-model="this.$store.getters.get_edit_task_detail[0].content" tabindex="1" placeholder="Enter task here" class="sc-ejGVNB iOAdgD">
+                            <textarea v-model="this.$store.getters.get_edit_task_detail[0]" tabindex="1" placeholder="Enter task here" class="sc-ejGVNB iOAdgD">
 
                             </textarea>
                         </div>
