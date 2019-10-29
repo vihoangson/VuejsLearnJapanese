@@ -203,10 +203,10 @@ export default {
                             prmCurrentRoom
                         );
                     }else{
-                        this.$root.$emit('push-notice', {
-                            message: 'Error page',
-                            alert: 'alert-danger'
-                        });
+                        // this.$root.$emit('push-notice', {
+                        //     message: 'Error page',
+                        //     alert: 'alert-danger'
+                        // });
                     }
                 })
             }
