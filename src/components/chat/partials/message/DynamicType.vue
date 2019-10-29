@@ -9,7 +9,31 @@ export default {
     },
     render(h) {
         const render = {
-            template: '<pre>' + this.string + '</pre>'
+            template: '<pre>' + this.string + '</pre>',
+            methods: {
+                reply(e,mid){
+                    var replyPopup = document.getElementsByClassName('reply-message-popup');
+                    for(var i = 0; i < replyPopup.length; i++)
+                        if(replyPopup[i].style.display === 'block')
+                            replyPopup[i].style.display = 'none';
+                        
+                    var messageContent = document.getElementById('mid-'+mid);
+                    var divReplyMessage = document.getElementById('reply-message-popup-content-'+mid);
+                    divReplyMessage.innerHTML = messageContent.innerHTML;
+                    var divReplyPopup = document.getElementById('reply-message-popup-'+mid);
+                    divReplyPopup.style.top = e.pageY - 150 + "px";
+                    divReplyPopup.style.left = e.pageX - 200 + "px";
+                    divReplyPopup.style.display = 'block';
+                },
+                gotoMessage(mid){
+                    var message = document.getElementsByClassName('timeline-message-body');
+                    for(var i = 0;i<message.length;i++)
+                        message[i].style.background = '#FFF';
+                    document.getElementById('parent-mid-'+mid).style.background = '#dcf0fa';
+                    var topPos = document.getElementById('mid-'+mid).offsetTop;
+                    document.getElementById('timeline-message').scrollTop = topPos-10;
+                }
+            }
         };
         return h(render);
     }

@@ -78,6 +78,13 @@ export default {
 
                 });
             }
+            console.log(e.target.parentElement);
+            if(e.target.parentElement !== null){
+                if( e.target.parentElement.className !== 'reply-message')
+                    var replyPopup = document.getElementsByClassName('reply-message-popup');
+                        for(var i = 0; i < replyPopup.length; i++)
+                            replyPopup[i].style.display = 'none';
+            }
         });
     },
     methods: {

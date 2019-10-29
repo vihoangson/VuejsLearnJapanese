@@ -120,7 +120,7 @@ export default {
             let html = content.replace(AppConst.REGULAR.REPY, function(
                 matches
             ) {
-                let reply = `<div class="message-badge"><div class="reply-message"><span class="reply-message-icon"><svg viewBox="0 0 10 10" id="icon_chatTimeLineReplyBadge" xmlns="http://www.w3.org/2000/svg" > <path d="M6.67 3.336H3.192l1.818-1.819a.415.415 0 0 0 0-.589L4.42.34a.415.415 0 0 0-.589 0L.297 3.874a.416.416 0 0 0 0 .59L3.832 8a.415.415 0 0 0 .59 0l.589-.589a.415.415 0 0 0 0-.59L3.192 5.003H6.67c.92 0 1.667.746 1.667 1.667v2.083c0 .23.186.417.416.417h.834c.23 0 .416-.187.416-.417V6.67A3.333 3.333 0 0 0 6.67 3.336"/> </svg></span><span class="reply-message-txticon">RE</span></div>{img}</div>`;
+                let reply = `<div class="message-badge"><div class="reply-message" @click="reply($event,{mid})"><span class="reply-message-icon"><svg viewBox="0 0 10 10" id="icon_chatTimeLineReplyBadge" xmlns="http://www.w3.org/2000/svg"><path d="M6.67 3.336H3.192l1.818-1.819a.415.415 0 0 0 0-.589L4.42.34a.415.415 0 0 0-.589 0L.297 3.874a.416.416 0 0 0 0 .59L3.832 8a.415.415 0 0 0 .59 0l.589-.589a.415.415 0 0 0 0-.59L3.192 5.003H6.67c.92 0 1.667.746 1.667 1.667v2.083c0 .23.186.417.416.417h.834c.23 0 .416-.187.416-.417V6.67A3.333 3.333 0 0 0 6.67 3.336" /></svg></span><span class="reply-message-txticon">RE</span></div>{img}<div class="reply-message-popup" id="reply-message-popup-{mid}"><div class="tooltipTriangle" style="left: 220px;"></div><div class="reply-message-popup-content" id="reply-message-popup-content-{mid}"></div><div class="reply-message-popup-footer"><div class="reply-popup-button" @click="gotoMessage({mid})">Go to this message</div></div></div></div>`;
                 let toId = matches.match(AppConst.REGULAR.REPLY_TO_ID);
                 let user = listUsers.find(function(x) {
                     return x.id === parseInt(toId[0]);
@@ -136,6 +136,8 @@ export default {
                         '<img class="message-badge-avatar" src="https://appdata.chatwork.com/avatar/ico_avatar_notfound.png"/>';
                     reply = reply.replace(/{img}/g, img);
                 }
+                let messageId = matches.match(AppConst.REGULAR.REPLY_MESSAGE_ID);
+                reply = reply.replace(/{mid}/g, messageId);
                 return reply;
             });
             return html;
@@ -207,7 +209,7 @@ export default {
     box-sizing: border-box;
     height: 18px;
     background-color: #66a300;
-    border-radius: 2px;
+    border-radius: 2px 0px 0px 2px;
     padding: 2px 4px 2px 3px;
     cursor: pointer;
 }
@@ -371,4 +373,73 @@ pre {
 }
 
 .chatInfo {margin-bottom: 14px;}
+.reply-message-popup{
+    position: fixed;
+    z-index: 9999;
+    background: white;
+    -webkit-box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.75);
+    box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.75);
+    width: 450px;
+    border-radius: 7px;
+    padding: 2px;
+}
+.reply-message-popup-content{
+    padding: 10px 20px;
+}
+.reply-message-popup-footer{
+    border-radius: 0 0 3px 3px;
+    background: #e6e6e6;
+    text-align: center;
+    padding: 5px 0;
+}
+.reply-popup-button{
+    box-sizing: border-box;
+    display: inline-flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-style: solid;
+    border-width: 1px;
+    border-radius: 2px;
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
+    padding: 0 12px;
+    min-width: 26px;
+    min-height: 26px;
+    line-height: 26px;
+    font-size: 13px;
+    border-color: #b3b3b3;
+    background-color: #f5f5f4;
+    color: #34362f;
+    fill: #34362f;
+}
+.tooltipTriangle{
+    display: block;
+    position: absolute;
+    width: 0;
+    height: 0;
+    content: '';
+    border-style: solid;
+    border-color: transparent;
+    pointer-events: none;
+    bottom: -8px;
+    border-top-color: #b3b3b3;
+    border-width: 8px 8px 0;
+}
+.tooltipTriangle:after {
+    display: block;
+    position: absolute;
+    width: 0;
+    height: 0;
+    content: '';
+    border-style: solid;
+    border-color: transparent;
+    pointer-events: none;
+    left: -7px;
+    bottom: 1px;
+    border-top-color: #fff;
+    border-width: 7px 7px 0;
+}
 </style>
