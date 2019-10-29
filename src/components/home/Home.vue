@@ -23,8 +23,8 @@
 </template>
 <style>
 .content {
-    position: relative;
-    top: 42px;
+    position: absolute;
+    top: 45px;
     width: 100%;
     height: calc(100% - 42px);
     z-index: 1;

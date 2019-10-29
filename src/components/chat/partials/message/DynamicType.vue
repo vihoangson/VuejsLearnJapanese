@@ -12,7 +12,8 @@ export default {
             template: '<pre>' + this.string + '</pre>',
             methods: {
                 reply(e,mid){
-                    var replyPopup = document.getElementsByClassName('reply-message-popup');
+                    setTimeout(function(){
+                        var replyPopup = document.getElementsByClassName('reply-message-popup');
                     for(var i = 0; i < replyPopup.length; i++)
                         if(replyPopup[i].style.display === 'block')
                             replyPopup[i].style.display = 'none';
@@ -24,6 +25,8 @@ export default {
                     divReplyPopup.style.top = e.pageY - 150 + "px";
                     divReplyPopup.style.left = e.pageX - 200 + "px";
                     divReplyPopup.style.display = 'block';
+                    divReplyPopup.classList.add('test');
+                    }, 100);
                 },
                 gotoMessage(mid){
                     var message = document.getElementsByClassName('timeline-message-body');
