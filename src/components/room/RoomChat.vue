@@ -435,6 +435,7 @@ export default {
     width: 256px;
     height: 100%;
     background-color: #f2f2f2;
+    border-right: 1px solid #b3b3b3;
 }
 .room-header {
     display: flex;
@@ -518,6 +519,7 @@ export default {
     overflow-y: auto;
     max-height: calc(100vh - 85px);
     background: #f2f2f2;
+    height: 100%;
 }
 .room-body ul {
     list-style: none;

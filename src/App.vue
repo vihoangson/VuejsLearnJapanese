@@ -78,13 +78,12 @@ export default {
 
                 });
             }
-            console.log(e.target.parentElement);
-            if(e.target.parentElement !== null){
-                if( e.target.parentElement.className !== 'reply-message')
-                    var replyPopup = document.getElementsByClassName('reply-message-popup');
-                        for(var i = 0; i < replyPopup.length; i++)
-                            replyPopup[i].style.display = 'none';
-            }
+            let popups = document.getElementsByClassName('test');
+                 for (let i = 0; i < popups.length; i++){
+                     if (popups[i].style.display === 'block') {
+                         popups[i].style.display = 'none';
+                     }
+                }
         });
     },
     methods: {
@@ -132,16 +131,6 @@ body {
 /* width */
 ::-webkit-scrollbar {
     width: 10px;
-}
-
-/* Track */
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-    background: #888;
 }
 
 /* Handle on hover */

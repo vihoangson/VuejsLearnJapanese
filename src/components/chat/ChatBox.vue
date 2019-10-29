@@ -1,5 +1,6 @@
 <template>
-    <div id="chat-box" @dragover="showDropzoneForm" @dragend="hideDropzoneForm">
+    <div>
+        <div id="chat-box" @dragover="showDropzoneForm" @dragend="hideDropzoneForm">
         <div class="chat-box-header">
             <ChatHeaderInfo></ChatHeaderInfo>
         </div>
@@ -133,6 +134,7 @@
                                 class="button-to"
                                 style=""
                                 v-for="(list_to, index) in $store.getters.get_current_room.list_to"
+                                :key="index"
                             >
                                 <span class="icon-container" @click="inserToList(list_to.content)">
                                     <strong><div class="to-list btn btn-default">{{list_to.name}} </div> </strong>
@@ -190,9 +192,9 @@
             </div>
             <div class="sideContentResizeCtrlArea cwResizeHandleCol"></div>
         </div>
-        <div class="chat-box-detail">
+    </div>
+    <div class="chat-box-detail">
             <div v-if="true">
-<!--                <h2>Description</h2>-->
                 <div class="roomTask__header">
                     <p class="roomTask__headerText">
                         Description
@@ -222,10 +224,7 @@
                         <ListAllTask></ListAllTask>
                     </div>
             </div>
-
-
         </div>
-
     </div>
 </template>
 
@@ -1004,6 +1003,7 @@ export default {
     border-right: 1px solid #b3b3b3;
     border-left: 1px solid #cccccc;
     z-index: -1;
+    height: 100%;
 }
 .chat-box-detail span{
     color:#909090;
@@ -1030,8 +1030,6 @@ export default {
     left: 0;
     min-width: 400px;
     background: #fff;
-    border-right: 1px solid #b3b3b3;
-    border-left: 1px solid #cccccc;
     z-index: -1;
 }
 .titmeline-message {
