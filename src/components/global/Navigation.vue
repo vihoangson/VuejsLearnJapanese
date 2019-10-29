@@ -3,7 +3,7 @@
         <div class="admin">
             <ul class="menu-admin" role="navigation">
                 <li class="menu-admin-item ">
-                    <span class="disable-mark">
+                    <span @click="openTaskManagement">
                         <svg
                             viewBox="0 0 10 10"
                             id="icon_menuTask"
@@ -140,6 +140,9 @@ export default {
             this.$store.dispatch('setCurrentRoom', {});
             this.$store.dispatch("setContactDisplay", 'none');
             localStorage.removeItem(AppConst.LOCAL_USER);
+            localStorage.removeItem(AppConst.LOCAL_USER_INFO);
+            localStorage.removeItem(AppConst.LOCAL_USER_TASK_LIST);
+            localStorage.removeItem(AppConst.LOCAL_USER_TASK_LIST_COMPLETED);
             this.$router.push({ path: '/login' });
             document.removeEventListener('click');
         },
@@ -162,7 +165,10 @@ export default {
         },
         openProfile() {
             this.$store.dispatch('setProfileDisplay', 'block');
-        }
+        },
+        openTaskManagement() {
+            this.$store.dispatch('setTaskDisplay', 'block');
+        },
     }
 };
 </script>

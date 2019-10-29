@@ -27,7 +27,7 @@
                         </div>
                         <ul role="list" class="selectboxContent">
                             <li class="category">
-                                Category
+                                Group
                                 <span @click="iconCreate">
                                     <svg
                                         class="sc-bwzfXH jhCIfQ"
@@ -94,7 +94,7 @@
                         />
                     </svg>
                     <div id="menu-create-new-room" class="add-option popup">
-                        <span @click="addRooms">Create a new Group Chat</span>
+                        <span @click="addRooms">Create a new Room Chat</span>
                     </div>
                 </span>
             </div>
@@ -579,7 +579,7 @@ export default {
     color: #13202f;
     position: relative;
     top: 10px;
-    border: 1px #ccc solid; 
+    border: 1px #ccc solid;
     width: 200px;
     display: block;
     text-align: center;
@@ -590,7 +590,7 @@ export default {
     background: #0084b2;
     color: #fff;
     transition: 0.5s;
-    border: 1px #0084b2 solid; 
+    border: 1px #0084b2 solid;
 }
 
 span.not-read-number {

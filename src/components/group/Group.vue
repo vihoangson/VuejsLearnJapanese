@@ -13,7 +13,7 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label class="label-left">Category name:</label>
+                            <label class="label-left">Group name:</label>
                         </div>
                     </div>
                     <div class="col-md-9">
@@ -29,7 +29,7 @@
                                 name="groupName"
                                 v-model="groupName"
                                 class="form-control"
-                                placeholder="Category name"
+                                placeholder="Group name"
                             />
                             <div class="error">{{groupNameError}}</div>
                         </div>
@@ -131,7 +131,7 @@ export default {
             this.selected = [];
             if (groupId !== 0) {
                 this.buttonName = 'Update';
-                this.$store.getters.get_list_group.forEach(data =>{ 
+                this.$store.getters.get_list_group.forEach(data =>{
                     this.items = this.$store.getters.get_list_room;
                     if(data.id === groupId){
                         this.groupName = data.name;

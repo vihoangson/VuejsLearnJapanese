@@ -63,7 +63,7 @@
                                 class="emoji"
                                 v-if="this.$store.getters.get_current_room.is_mychat !== 1"
                             >
-                                <span id="showToMemberList" class="icon-container">
+                                <span id="showToMemberList" class="icon-container" @click="removeToList()">
                                     <svg
                                         viewBox="0 0 10 10"
                                         id="icon_mention"
@@ -129,6 +129,16 @@
                                     <strong>[code]</strong>
                                 </span>
                             </li>
+                            <li
+                                class="button-to"
+                                style=""
+                                v-for="(list_to, index) in $store.getters.get_current_room.list_to"
+                            >
+                                <span class="icon-container" @click="inserToList(list_to.content)">
+                                    <strong><div class="to-list btn btn-default">{{list_to.name}} </div> </strong>
+                                </span>
+                                <i class="fa fa-times hidden" @click="removeToList(list_to.name)"></i>
+                            </li>
                         </ul>
                     </div>
                     <div class="submit-container">
@@ -182,7 +192,12 @@
         </div>
         <div class="chat-box-detail">
             <div v-if="true">
-                <h2>Description</h2>
+<!--                <h2>Description</h2>-->
+                <div class="roomTask__header">
+                    <p class="roomTask__headerText">
+                        Description
+                    </p>
+                </div>
                 <pre><span v-if="$store.getters.get_current_room.room_description===''|| $store.getters.get_current_room.room_description===null">No description</span><div v-else>{{$store.getters.get_current_room.room_description?$store.getters.get_current_room.room_description:''}}</div></pre>
 
 
@@ -194,6 +209,21 @@
                     <hr>
                 </div>
             </div>
+
+            <div v-if="true">
+                <div class="roomTask__header">
+                    <p class="roomTask__headerText">
+                        Tasks
+                    </p>
+                </div>
+
+                    <div style="width: 100%">
+                        <AddNewTask></AddNewTask>
+                        <ListAllTask></ListAllTask>
+                    </div>
+            </div>
+
+
         </div>
 
     </div>
@@ -212,6 +242,8 @@ import ChatHeaderInfo from './partials/header/ChatHeaderInfo';
 import ListTo from './partials/ListTo';
 import Emoji from './partials/Emoji';
 import { setTimeout } from 'timers';
+import ListAllTask from '../task_management/ListAllTask';
+import AddNewTask from '../task_management/AddNewTask';
 
 export default {
     name: 'ChatBox',
@@ -222,7 +254,9 @@ export default {
         ChatMessage,
         ChatHeaderInfo,
         ListTo,
-        Emoji
+        Emoji,
+        ListAllTask,
+        AddNewTask
     },
     props: {
         value: {
@@ -316,6 +350,21 @@ export default {
         });
     },
     methods: {
+        removeToList(){
+            this.$store.dispatch('saveToListMember', '');
+        },
+        inserToList(content){
+            const textarea = this.$refs.textarea;
+            const cursorPosition = textarea.selectionEnd;
+            const start = this.message.content.substring(
+                0,
+                textarea.selectionStart
+            );
+            const end = this.message.content.substring(textarea.selectionEnd);
+            const text = this.message.content + content ;
+            this.message.content = text;
+            textarea.focus();
+        },
         getClass(content) {
             let toall = content.match(AppConst.REGULAR.TO_ALL);
             if (toall) return 'mention';
@@ -772,6 +821,19 @@ export default {
 </script>
 
 <style>
+    .roomTask__headerText {
+        display: flex;
+        align-items: center;
+        color: #666666;
+        font-weight: 600;
+        height: 24px;
+    }
+    .roomTask__header {
+        padding: 4px 8px;
+        margin-bottom: 8px;
+        background-color: #e6e6e6;
+    }
+
 .icon-close {
     float: right;
 }
@@ -1178,4 +1240,17 @@ textarea:focus:-webkit-placeholder {
     margin-top: 3px;
     margin-bottom: 0px;
 }
+    .button-to{
+        cursor: pointer;
+        padding-top:9px;
+    }
+.to-list.btn.btn-default {
+    background: #e2e2e2;
+    border: 1px solid #a8a8a8;
+    padding: 1px 11px;
+    margin-left: 9px;
+}
+    .hidden{
+        display:none;
+    }
 </style>

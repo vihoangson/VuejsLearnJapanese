@@ -7,12 +7,15 @@
         <ShowUser></ShowUser>
         <ChatSetting></ChatSetting>
         <DeleteRoom></DeleteRoom>
+        <RemoveUser></RemoveUser>
         <div class="content">
             <Room @changeRoomEvent="changeRoomEvent"></Room>
             <Chat ref="chat"></Chat>
             <Contact></Contact>
             <PersonalInfo></PersonalInfo>
             <EditPersonalInfo></EditPersonalInfo>
+            <TaskList></TaskList>
+            <EditTaskContent></EditTaskContent>
         </div>
         <Rooms></Rooms>
         <Group></Group>
@@ -47,6 +50,9 @@ import ChatSetting from '../room/ChatSetting';
 import Contact from '../contact/Contact';
 import PersonalInfo from '../personal_info/PersonalInfo';
 import EditPersonalInfo from '../personal_info/EditPersonalInfo';
+import RemoveUser from '../contact/RemoveUser';
+import TaskList from '../task_management/TaskList';
+import EditTaskContent from '../task_management/EditTaskContent';
 export default {
     name: 'Home',
     components: {
@@ -63,7 +69,10 @@ export default {
         Notice,
         Contact,
         PersonalInfo,
-        EditPersonalInfo
+        EditPersonalInfo,
+        RemoveUser,
+        TaskList,
+        EditTaskContent
     },
     data() {
         return {
@@ -139,10 +148,11 @@ export default {
             userInfoJson.icon_img = userInfoJson.icon_img;
             userInfoJson.cover_img = userInfoJson.cover_img;
             this.$store.dispatch('setCurrentUserInfo', userInfoJson);
-
         }
 
-
+        let userTaskList = localStorage.getItem(AppConst.LOCAL_USER_TASK_LIST);
+        let userTaskListJson = JSON.parse(userTaskList);
+        this.$store.dispatch('setUserTaskList', userTaskListJson);
 
     },
     // beforeRouteUpdate(to, from, next) {
@@ -190,6 +200,12 @@ export default {
             });
         },
         changeRoom(room) {
+            let request = {room_id:room.room_id};
+            API.POST('/api/v1/contact/get_list_to',request).then(data=>{
+                if(data.error_code === 0){
+                    room.list_to = data.data ;
+                }
+            });
             this.$store.dispatch('setCurrentRoom', room);
             this.getListMessage(room);
             room.color = '#bfbab0';

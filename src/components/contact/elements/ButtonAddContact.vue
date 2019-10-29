@@ -4,6 +4,7 @@
         <button v-if="status === 0" class="btn btn-sm btn-warning" @click="removeContact">Cancel request</button>
         <button v-if="status === 2" class="btn btn-sm btn-success" @click="Approve">Approve</button>
         <button v-if="status === 1" class="btn btn-sm btn-default">View info user</button>
+        <button v-if="status === 1" class="btn btn-sm btn-danger" @click="deleteContact">Delete contact</button>
     </div>
 </template>
 
@@ -16,6 +17,11 @@
     export default {
         name: "ButtonAddContact.vue",
         props:['status','email','id'],
+        created(){
+            this.$root.$on('EVENT_BUTTON_'+this.id,data => {
+                this.$parent.isActive = false;
+            })
+        },
         methods:{
             // ACTION APPROVE
             Approve(){
@@ -80,13 +86,19 @@
                     console.log(response);
                 })
             },
+            deleteContact(){
+                this.$root.$emit('open-modal-delete-room');
+                this.$store.dispatch('setUserIdToDelete',this.id);
+                this.$bvModal.show('modal-prevent-remove-user');
 
+            },
             // ACTION REMOVE
             removeContact(){
                 let requestData = {
                     id: this.id
                 };
                 API.POST(ApiConst.CANCEL_REQUEST_CONTACT, requestData).then(response => {
+
                     if(response.error_code ===0){
                         this.status = null;
                         // this.$parent.isActive = false;

@@ -1,4 +1,12 @@
 export default {
+    set_to_list_member(state, message) {
+        if(message !== ""){
+            return (state.to_list_member.push(message) );
+        }else{
+            return (state.to_list_member = [] );
+        }
+    },
+
     set_all_user(state, message) {
         return (state.all_user = message);
     },
@@ -112,5 +120,20 @@ export default {
     },
     setIsShowToMemberList(state, isShow) {
         state.is_show_to_member_list = isShow;
-    }
+    },
+    setUserIdToDelete(state, id) {
+        state.UserIdToDelete = id;
+    },
+    setTaskDisplay(state, style) {
+        state.openTaskDisplay = style;
+    },
+    setTaskEditDisplay(state, style) {
+        state.openTaskEditDisplay = style;
+    },
+    setUserTaskList(state, obj){
+        return (state.list_user_task = obj);
+    },
+    setEditTaskDetail(state, obj) {
+        state.edit_task_detail = obj;
+    },
 };

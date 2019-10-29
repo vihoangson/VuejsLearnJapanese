@@ -27,6 +27,8 @@
                     />
                 </div>
                 <a class="select-all-text" @click="selectAll">Select All</a>
+                <a class="select-all-text" @click="saveContact"><i class="fa fa-plus" aria-hidden="true"></i></a>
+
             </div>
 
             <ul>
@@ -63,6 +65,9 @@
 </template>
 
 <script>
+import {API} from "../../../services/api";
+import {ApiConst} from "../../../common/ApiConst";
+
 export default {
     name: 'ListTo',
     data() {
@@ -81,6 +86,37 @@ export default {
         onFocusListUserTo() {
             return this.isShow;
         },
+        saveContact(){
+            var listName = prompt("Please enter your name", "");
+            if(listName === ""){
+                alert('Please enter name !');
+                return false;
+            }
+            if (listName != null) {
+
+                let getToListMembers = this.$store.getters.get_to_list_member;
+                let roomId = this.$store.getters.get_current_room.room_id;
+
+                API.POST(ApiConst.SAVE_LIST_TO, {'room_id': roomId, 'list_name': listName, 'list_to': getToListMembers})
+                    .then(data => {
+                        if (data.error_code === 0) {
+                            let room = this.$store.getters.get_current_room;
+                            let request = {room_id: room.room_id};
+                            API.POST(ApiConst.GET_LIST_TO, request).then(data => {
+                                if (data.error_code === 0) {
+                                    room.list_to = data.data;
+                                }
+                            });
+
+                            this.$store.dispatch('setCurrentRoom', room);
+                            this.$root.$emit('change-room', room);
+
+                            // Remove list
+                            this.$store.dispatch('saveToListMember', '');
+                        }
+                    })
+            }
+        },
         selectAll() {
             let memberList = this.$store.getters.get_current_room.member_list;
             this.content = '';
@@ -96,11 +132,16 @@ export default {
         selectItem(item) {
             this.content = '[To:' + item.id + '] ' + item.name + '\n';
             this.$root.$emit('set-content-message', this.content);
+
+            // Add to store content
+            this.$store.dispatch('saveToListMember',this.content);
         }
     },
     watch: {
         isShow: function() {
-            if (this.$store.getters.get_is_show_to_member_list) return 'popup';
+            if (this.$store.getters.get_is_show_to_member_list) {
+                return 'popup';
+            }
             return '';
         }
     }
