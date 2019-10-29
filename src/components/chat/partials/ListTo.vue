@@ -43,12 +43,14 @@
                     v-for="(item, index) in this.$store.getters.get_current_room.member_list"
                     :key="index"
                 >
-                    <img
-                        class="_avatarHoverTip avatarSmall _avatar _avatarAid3054295"
-                        data-aid="3054295"
-                        :src="item.icon_img"
-                    />
-                    <span>{{item.name}}</span>
+                    <div v-if="item.id !== current_user">
+                        <img
+                            class="_avatarHoverTip avatarSmall _avatar _avatarAid3054295"
+                            data-aid="3054295"
+                            :src="item.icon_img"
+                        />
+                        <span>{{item.name}}</span>
+                    </div>
                 </li>
             </ul>
 
@@ -66,7 +68,8 @@ export default {
     data() {
         return {
             content: '',
-            isShow: false
+            isShow: false,
+            current_user: this.$store.getters.get_current_user.user_id
         };
     },
     created() {
