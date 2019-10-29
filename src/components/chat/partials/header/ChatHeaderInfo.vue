@@ -71,7 +71,7 @@
                         />
                     </svg>
                     <div id="listFile" ref="chatSetting" class="group-option popup">
-                        <span @click="settingRooms">Group Chat Setting</span>
+                        <span @click="settingRooms">Room Chat Setting</span>
                         <span @click="leaveRooms">Leave this group chat</span>
                         <span
                             @click="deleteRooms"

@@ -4,7 +4,7 @@
             id="modal-prevent-setting-group"
             ref="modal"
             size="lg"
-            title="Group Chat Setting"
+            title="Room Chat Setting"
             @show="resetModal"
             @hidden="hiddenModal"
             @ok="handleOk"
@@ -12,7 +12,7 @@
             <div class="row">
                 <div class="col-md-12">
                         <b-tabs content-class="mt-3">
-                            <b-tab title="Group Chat Setting" active>
+                            <b-tab title="Room Chat Setting" active>
                                 <form @submit="btnSaveSetting" id="saveSetting">
                                     <fieldset class="avatar-room">
                                         <div>
@@ -29,7 +29,7 @@
                                             <div class="row">
 
                                                 <div class="col-md-12">
-                                                    <span>Group Chat Name:</span>
+                                                    <span>Room Chat Name:</span>
                                                     <span class="roomName">
                                                         <input v-model="roomName"  required>
                                                     </span>
@@ -164,8 +164,17 @@ export default {
 
         },
         handleSubmit(){
+
+            // Validation
+            if(this.roomName === ""){
+                alert('Please fill name');
+                this.$store.dispatch('setLoadingPage',false);
+                return;
+            }
+
             this.$store.dispatch('setLoadingPage',true);
             this.error_msgs.room_name = '';
+
             let data = {
                 room_name : this.roomName,
                 room_description : this.roomDescription,
@@ -193,6 +202,11 @@ export default {
                             'change-list-room',
                             prmCurrentRoom
                         );
+                    }else{
+                        this.$root.$emit('push-notice', {
+                            message: 'Error page',
+                            alert: 'alert-danger'
+                        });
                     }
                 })
             }
