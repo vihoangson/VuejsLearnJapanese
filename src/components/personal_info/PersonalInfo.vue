@@ -498,7 +498,7 @@
     svg, use {
         pointer-events: none;
     }
-    ._avatar {
+    ._avatar.avatarHuge {
         height: 125px;
         width: 125px;
     }
