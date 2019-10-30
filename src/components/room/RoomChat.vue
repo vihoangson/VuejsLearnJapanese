@@ -516,10 +516,12 @@ export default {
 }
 .room-body {
     overflow: hidden;
+    position: fixed;
     overflow-y: auto;
     max-height: calc(100vh - 85px);
     background: #f2f2f2;
     height: 100%;
+    width: 257px;
 }
 .room-body ul {
     list-style: none;
