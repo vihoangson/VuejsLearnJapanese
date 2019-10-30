@@ -23,7 +23,7 @@
 </template>
 <style>
 .content {
-    position: absolute;
+    position: relative;
     top: 45px;
     width: 100%;
     height: calc(100% - 42px);
