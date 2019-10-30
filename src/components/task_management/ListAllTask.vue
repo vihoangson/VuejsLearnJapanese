@@ -37,14 +37,13 @@
                 <div class="taskActions">
                     <div class="_moveTask taskActions__button">
 
-                        <span class="taskActions__iconContainer" @click="actionJumpToAssignment">
+                        <span class="taskActions__iconContainer disable-mark" @click="actionJumpToAssignment">
                            <i class="fa fa-glass" aria-hidden="true"></i>
                         </span>
 
                         <span class="icoTextHide">Jump to assignment</span>
                     </div>
                     <div class="_editTask taskActions__button">
-<!--  <span class="taskActions__iconContainer" @click="actionEditTaskContent(item['id'])">-->
                         <span class="taskActions__iconContainer" @click="actionEditTaskContent(item)">
                             <i class="taskActions__iconContainer fa fa-pencil-square-o" aria-hidden="true"></i>
                         </span>
