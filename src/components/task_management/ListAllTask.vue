@@ -44,8 +44,8 @@
                         <span class="icoTextHide">Jump to assignment</span>
                     </div>
                     <div class="_editTask taskActions__button">
-
-                        <span class="taskActions__iconContainer" @click="actionEditTaskContent(item['id'])">
+<!--  <span class="taskActions__iconContainer" @click="actionEditTaskContent(item['id'])">-->
+                        <span class="taskActions__iconContainer" @click="actionEditTaskContent(item)">
                             <i class="taskActions__iconContainer fa fa-pencil-square-o" aria-hidden="true"></i>
                         </span>
 
@@ -71,15 +71,18 @@
     import {API} from "../../services/api";
     import {ApiConst} from "../../common/ApiConst";
     import {AppConst} from "../../common/AppConst";
+    import EditTaskContent from "./EditTaskContent";
+
 
     export default {
         name: "ListAllTask",
-        props: ["reload"],
+
+        components:{
+            EditTaskContent
+        },
         data() {
             return {
-                componentKey: 0,
                 task_list: this.$store.getters.get_current_task_list,
-                edit_task_detail:{}
             }
         },
 
@@ -87,15 +90,9 @@
             actionJumpToAssignment(){
                 // alert("Go to message");
             },
-            actionEditTaskContent(taskId){
-                // alert(taskId);
-
-                this.edit_task_detail = this.$store.getters.get_task_detail(taskId);
-
-                this.$store.dispatch('setEditTaskDetail', this.edit_task_detail);
-
+            actionEditTaskContent(task){
+                this.$bus.$emit('doEditEvent', task);
                 this.$store.dispatch('setTaskEditDisplay', 'block');
-
             },
             actionDeleteTask(task){
 
@@ -132,6 +129,7 @@
 </script>
 
 <style scoped>
+
 
     .chatQuote__timeStamp {
         display: inline-flex;

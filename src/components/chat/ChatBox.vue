@@ -769,7 +769,7 @@ export default {
 };
 </script>
 
-<style>
+<style >
     .roomTask__headerText {
         display: flex;
         align-items: center;

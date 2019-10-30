@@ -169,7 +169,7 @@
             },
 
             submitAddTask(){
-               
+
                 let data = {
                     content: this.add_task_content,
                     due_date: '25/10/2019',
