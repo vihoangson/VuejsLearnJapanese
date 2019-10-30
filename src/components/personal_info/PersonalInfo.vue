@@ -498,4 +498,8 @@
     svg, use {
         pointer-events: none;
     }
+    ._avatar {
+        height: 125px;
+        width: 125px;
+    }
 </style>
