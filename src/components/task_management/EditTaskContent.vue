@@ -92,12 +92,12 @@
 
                             <div class="sc-jzJRlG sc-kNBZmU cgalwE">
                                 <div  @click="submitEditTask" class="sc-hqyNC iYuHoU">
-                                    <div  role="button" tabindex="-1" class="sc-jbKcbu sc-dNLxif cBwtwK">
+                                    <div v-if="edit_task_content.length >0" role="button" tabindex="-1" class="sc-jbKcbu sc-dNLxif cBwtwK">
                                         <p class="sc-kvZOFW blpkQa">Save</p>
                                     </div>
-<!--                                    <div v-else role="button" tabindex="-1" class="sc-jbKcbu sc-dNLxif fhkBvZ">-->
-<!--                                        <p class="sc-kvZOFW blpkQa">Save</p>-->
-<!--                                    </div>-->
+                                    <div v-else role="button" tabindex="-1" class="sc-jbKcbu sc-dNLxif fhkBvZ">
+                                        <p class="sc-kvZOFW blpkQa">Save</p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

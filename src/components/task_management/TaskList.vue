@@ -76,7 +76,7 @@
                           </span>
                         </li>
                         <li role="menuitemradio" class="_cwBBButton button" data-cwui-bb-idx="1" aria-label="Tasks I've assigned">
-                          <span class="taskWindowFilterTypeAssignee__iconContainer">
+                          <span class="taskWindowFilterTypeAssignee__iconContainer disable-mark">
                             <i class="fa fa-check-square-o" aria-hidden="true"></i>
                           </span>
                         </li>
