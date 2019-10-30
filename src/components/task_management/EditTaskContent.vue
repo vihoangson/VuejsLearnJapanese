@@ -1,3 +1,4 @@
+<!--eslint-disable-->
 <template>
     <div class="_cwFWBase floatWindow" ref="floatWindow" @click.self="closeTaskEditPopup" style="z-index: 1002;"
          v-bind:style="{display: this.$store.state.openTaskEditDisplay, height: floatWindowHeight}">
@@ -24,9 +25,8 @@
 
 <!--                        TASK CONTENT-->
                         <div class="sc-cBrjTV WPgkE">
-                            <textarea v-model="this.$store.getters.get_edit_task_detail[0]" tabindex="1" placeholder="Enter task here" class="sc-ejGVNB iOAdgD">
-
-                            </textarea>
+<!--                            <textarea tabindex="1" v-if="edit_task_detaill" v-model="edit_task_detaill.content" placeholder="Enter task here" class="sc-ejGVNB iOAdgD"></textarea>-->
+                            <textarea tabindex="1" v-model="edit_task_content" placeholder="Enter task here" class="sc-ejGVNB iOAdgD"></textarea>
                         </div>
 
 <!--                        TASK DETAIL-->
@@ -89,9 +89,9 @@
                                     <div @click="closeTaskEditPopup" role="button" tabindex="-1" class="sc-jbKcbu sc-dNLxif kOkaj"><p class="sc-kvZOFW blpkQa">Cancel</p></div>
                                 </div>
                             </div>
-<!--                            @click="submitEditTask(this.$store.getters.get_edit_task_detail[0])"-->
+
                             <div class="sc-jzJRlG sc-kNBZmU cgalwE">
-                                <div  @click="closeTaskEditPopup" class="sc-hqyNC iYuHoU">
+                                <div  @click="submitEditTask" class="sc-hqyNC iYuHoU">
                                     <div  role="button" tabindex="-1" class="sc-jbKcbu sc-dNLxif cBwtwK">
                                         <p class="sc-kvZOFW blpkQa">Save</p>
                                     </div>
@@ -110,9 +110,9 @@
 </template>
 
 <script>
-    // import {API} from "../../services/api";
-    // import {ApiConst} from "../../common/ApiConst";
-    // import {AppConst} from "../../common/AppConst";
+    import {API} from "../../services/api";
+    import {ApiConst} from "../../common/ApiConst";
+    import {AppConst} from "../../common/AppConst";
 
     export default {
         name: "EditTaskContent",
@@ -125,14 +125,17 @@
                     required_name: '',
                     update_fail: ''
                 },
-                edit_task_detail: () => {
-                    return this.$store.getters.get_edit_task_detail[0]
-                }
+                edit_task_details: Object,
+                edit_task_content: String,
             }
         },
         created() {
-            window.addEventListener('resize', this.handleResize)
+            window.addEventListener('resize', this.handleResize);
             this.handleResizePopup();
+            this.$bus.$on('doEditEvent', (server) => {
+                this.edit_task_details = server;
+                this.edit_task_content = server.content
+            });
         },
 
         methods:{
@@ -142,26 +145,31 @@
                 this.floatWindowHeight = window.innerHeight + 'px';
             },
             closeTaskEditPopup(){
+                this.edit_task_content= '';
                 this.$store.dispatch('setTaskEditDisplay', 'none');
             },
-            submitEditTask(task){
-                console.log(this.edit_task_detail);
+            submitEditTask(){
+
+                let data = {
+                    task_id : this.edit_task_details.id,
+                    content: this.edit_task_content,
+                    due_date: '25/10/2019'
+                };
+
+                API.POST(ApiConst.UPDATE_USER_TASK, data).then(res => {
+
+                    if (res.error_code === 0) {
+
+                        localStorage.setItem(
+                            AppConst.LOCAL_USER_TASK_LIST,
+                            JSON.stringify(res.data)
+                        );
+                        let userTaskList = localStorage.getItem(AppConst.LOCAL_USER_TASK_LIST);
+                        let userTaskListJson = JSON.parse(userTaskList);
+                        this.$store.dispatch('setUserTaskList', userTaskListJson);
+                    }
+                });
                 this.$store.dispatch('setTaskEditDisplay', 'none');
-                // let data = {
-                //     task_id : task.id,
-                //     content: task.content,
-                //     due_date: '25/10/2019'
-                // };
-                //
-                // API.POST(ApiConst.UPDATE_USER_TASK, data).then(res => {
-                //     if (res.error_code === 0) {
-                //         task.status = 1;
-                //         localStorage.setItem(
-                //             AppConst.LOCAL_USER_TASK_LIST,
-                //             JSON.stringify(res.data)
-                //         );
-                //     }
-                // });
             }
         }
 
