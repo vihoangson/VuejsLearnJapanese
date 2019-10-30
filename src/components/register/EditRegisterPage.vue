@@ -215,12 +215,15 @@ export default {
             });
 		},
         logout () {
-            API.POST(ApiConst.LOGOUT, null).then(res => {
-                if (res.error_code === 0) {
-                    localStorage.removeItem(AppConst.LOCAL_USER);
-                    this.$router.push({ path: '/login' });
-                }
-            });
+
+            if(confirm('Do you want to logout?')){
+                API.POST(ApiConst.LOGOUT, null).then(res => {
+                    if (res.error_code === 0) {
+                        localStorage.removeItem(AppConst.LOCAL_USER);
+                        this.$router.push({ path: '/login' });
+                    }
+                });
+            }
 		}
 	}
 }

@@ -120,6 +120,9 @@ export default {
     },
     methods: {
         logout() {
+            if(!confirm('Do you want to logout?')){
+                return;
+            }
             this.$root.$off('push-list-room');
             this.$root.$off('change-list-room');
             this.$root.$off('remove-list-room');
