@@ -128,9 +128,11 @@
 </script>
 
 <style scoped>
+._checkTaskLabel{
+    color:white;
+}
 
-
-    .chatQuote__timeStamp {
+.chatQuote__timeStamp {
         display: inline-flex;
         flex-shrink: 0;
     }

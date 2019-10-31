@@ -388,6 +388,9 @@
 </script>
 
 <style>
+    .room-body li:hover {
+        background: #ffffff;
+    }
     .selectRole .selectContent li:hover{
         background: #0a8abd;
         color: #fff;
