@@ -18,18 +18,20 @@
                         v-for="item in this.$store.getters.get_current_room.list_message"
                         :key="item.message_id"
                     >
-                        <div class="timeline-avatar">
-                            <img :src="item.user_info.icon_img" alt class="avatar" />
-                        </div>
-                        <div class="timeline-content" v-bind:id="'mid-'+item.message_id">
-                            <div class="timeline-content-header">
-                                <p class="timeline-content-header-username">{{item.user_info.name}}</p>
-                                <p
-                                    class="timeline-content-header-organization"
-                                >{{item.user_info.company}}</p>
+                        <div v-bind:id="'mid-'+item.message_id">
+                            <div class="timeline-avatar">
+                                <img :src="item.user_info.icon_img" alt class="avatar" />
                             </div>
-                            <div class="timeline-content-message">
-                                <ChatMessage :message-object="item" :message_content="item.message"></ChatMessage>
+                            <div class="timeline-content">
+                                <div class="timeline-content-header">
+                                    <p class="timeline-content-header-username">{{item.user_info.name}}</p>
+                                    <p
+                                        class="timeline-content-header-organization"
+                                    >{{item.user_info.company}}</p>
+                                </div>
+                                <div class="timeline-content-message">
+                                    <ChatMessage :message-object="item" :message_content="item.message"></ChatMessage>
+                                </div>
                             </div>
                         </div>
                         <ChatAction
@@ -354,12 +356,6 @@ export default {
         },
         inserToList(content){
             const textarea = this.$refs.textarea;
-            const cursorPosition = textarea.selectionEnd;
-            const start = this.message.content.substring(
-                0,
-                textarea.selectionStart
-            );
-            const end = this.message.content.substring(textarea.selectionEnd);
             const text = this.message.content + content ;
             this.message.content = text;
             textarea.focus();
@@ -1251,4 +1247,11 @@ textarea:focus:-webkit-placeholder {
     .hidden{
         display:none;
     }
+.messegeDelete {
+    border: 1px solid #e6e6e6;
+    padding: 1px 5px;
+    font-size: 12px;
+    color: #999999;
+    border-radius: 3px;
+}
 </style>

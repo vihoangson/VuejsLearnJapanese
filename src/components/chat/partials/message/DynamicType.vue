@@ -14,18 +14,23 @@ export default {
                 reply(e,mid){
                     setTimeout(function(){
                         var replyPopup = document.getElementsByClassName('reply-message-popup');
-                    for(var i = 0; i < replyPopup.length; i++)
-                        if(replyPopup[i].style.display === 'block')
-                            replyPopup[i].style.display = 'none';
-                        
-                    var messageContent = document.getElementById('mid-'+mid);
-                    var divReplyMessage = document.getElementById('reply-message-popup-content-'+mid);
-                    divReplyMessage.innerHTML = messageContent.innerHTML;
-                    var divReplyPopup = document.getElementById('reply-message-popup-'+mid);
-                    divReplyPopup.style.top = e.pageY - 150 + "px";
-                    divReplyPopup.style.left = e.pageX - 200 + "px";
-                    divReplyPopup.style.display = 'block';
-                    divReplyPopup.classList.add('test');
+                        for(var i = 0; i < replyPopup.length; i++)
+                            if(replyPopup[i].style.display === 'block')
+                                replyPopup[i].style.display = 'none';
+
+                        var messageContent = document.getElementById('mid-'+mid);
+                        var divReplyMessage = document.getElementById('reply-message-popup-content-'+mid);
+
+                        if(messageContent !== null)
+                            divReplyMessage.innerHTML = messageContent.innerHTML;
+                        else divReplyMessage.innerHTML = '<div class="messegeDelete">Message deleted.</div>';
+
+                        var divReplyPopup = document.getElementById('reply-message-popup-'+mid);
+                        divReplyPopup.style.top = e.pageY - 150 + "px";
+                        divReplyPopup.style.left = e.pageX - 200 + "px";
+                        divReplyPopup.style.display = 'block';
+                        divReplyPopup.classList.add('test');
+
                     }, 100);
                 },
                 gotoMessage(mid){
@@ -33,8 +38,10 @@ export default {
                     for(var i = 0;i<message.length;i++)
                         message[i].style.background = '#FFF';
                     document.getElementById('parent-mid-'+mid).style.background = '#dcf0fa';
-                    var topPos = document.getElementById('mid-'+mid).offsetTop;
-                    document.getElementById('timeline-message').scrollTop = topPos-10;
+                    var topPos = 'mid-'+mid;
+                    document.getElementById(topPos).scrollIntoView({
+                        behavior: 'smooth'
+                    });
                 }
             }
         };
@@ -115,4 +122,5 @@ svg:not(:root) {
     margin-left: 20px;
     word-wrap: break-word;
 }
+
 </style>

@@ -388,6 +388,7 @@ pre {
     width: 450px;
     border-radius: 7px;
     padding: 2px;
+    display: none;
 }
 .reply-message-popup-content{
     padding: 10px 20px;
