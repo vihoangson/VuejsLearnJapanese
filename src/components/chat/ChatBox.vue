@@ -820,6 +820,7 @@ export default {
 
 <style >
     .col-right-sns {
+        background: #f2f2f2;
         position: fixed;
         width: 297px;
         height: 100%;
