@@ -196,6 +196,7 @@
         </div>
     </div>
     <div class="chat-box-detail">
+        <div class="col-right-sns">
             <div v-if="true">
                 <div class="roomTask__header">
                     <p class="roomTask__headerText">
@@ -221,11 +222,13 @@
                     </p>
                 </div>
 
-                    <div style="width: 100%">
-                        <AddNewTask></AddNewTask>
-                        <ListAllTask></ListAllTask>
-                    </div>
+                <div style="width: 100%">
+                    <AddNewTask></AddNewTask>
+                    <ListAllTask></ListAllTask>
+                </div>
             </div>
+        </div>
+
         </div>
     </div>
 </template>
@@ -816,6 +819,12 @@ export default {
 </script>
 
 <style >
+    .col-right-sns {
+        position: fixed;
+        width: 297px;
+        height: 100%;
+        overflow: scroll;
+    }
     .roomTask__headerText {
         display: flex;
         align-items: center;
