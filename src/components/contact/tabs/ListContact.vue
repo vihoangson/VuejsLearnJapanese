@@ -9,7 +9,7 @@
                 </form>
                 <div class="adminNavigation">
                     <div v-for="(item, index) in listContact" :key="index">
-                        <box-contact v-bind:item="item"></box-contact>
+                        <box-contact v-if="item.id !== $store.getters.get_current_user_info.id" v-bind:item="item"></box-contact>
                     </div>
                 </div>
             </div>
