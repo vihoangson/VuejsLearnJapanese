@@ -174,8 +174,8 @@
                         </div>
                         <div id="_contentInviteMailFinished" class="contactInviteMailContent"
                              v-bind:style="{display: showResultData.display}">
-                            <div class="contactInviteMailSection">
-                                <p v-for="(item, index) in contactInviteMailSection" :key="index" v-bind:class="item.class"
+                            <div class="contactInviteMailSection alert alert-danger">
+                                <p  v-for="(item, index) in contactInviteMailSection" :key="index" v-bind:class="item.class"
                                    v-bind:style="{display: item.display}">{{item.text}}</p>
                             </div>
                             <div v-bind:key="content.key"
@@ -372,10 +372,10 @@
                 ],
                 contactInviteMailSection:
                     [
-                        {text: 'Invitation was sent successfully.', class: 'alert alertSuccess', display: 'none'},
+                        {text: 'Invitation was sent successfully.', class: '', display: 'none'},
                         {
                             text: 'Invitation wasn\'t sent due to the following reasons.',
-                            class: 'alert alertDanger',
+                            class: '',
                             display: 'none'
                         }
                     ],
@@ -581,6 +581,8 @@
                  **/
                 let hasError = false;
                 let emails = [];
+
+                // Tách email thành array
                 if (this.bulkAdd === 'block') {
                     emails = this.textareas.bulkEmails.text.split('\n');
                 } else {
@@ -593,10 +595,14 @@
                     }
                 }
 
+                // Kiểm tra có lỗi thì hiển thị error message
                 if (hasError || emails.length < 1) {
                     this.contactInviteErrorMessage.display = 'block';
+
                 } else {
+                    // Không có lỗi thì tắt ô báo lỗi đi
                     this.contactInviteErrorMessage.display = 'none';
+
                     /**
                      * Call API
                      */
@@ -618,6 +624,7 @@
                         if (response.error_code === 0) {
                             this.contactInviteMailSection[0].display = 'block';
                             this.contactInviteMailSection[1].display = 'none';
+
                             this.contentInviteMailFinished.push({
                                 key: 'SentEmails',
                                 id: '_contactInviteMailSentEmails',
@@ -630,6 +637,7 @@
                         } else {
                             this.contactInviteMailSection[1].display = 'block';
                             this.contactInviteMailSection[0].display = 'none';
+
                             var arr = Object.keys(response.data);
                             var errList = [];
                             arr.forEach(function (key, index) {
@@ -653,6 +661,7 @@
                             this.appendToErrList(errList);
                         }
                     })
+
                 }
             }
         }
@@ -660,6 +669,9 @@
 </script>
 
 <style scoped>
+    .contactInviteErrorMessage,.contactInviteMailContent {
+        width: 100%;
+    }
 
     .floatWindow {
         position: absolute;
