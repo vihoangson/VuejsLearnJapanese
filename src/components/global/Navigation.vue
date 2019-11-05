@@ -58,9 +58,7 @@
         </div>
         <div
             class="my-account"
-            v-on:focus.native="onFocus"
-            v-on:click="isHidden = !isHidden"
-            v-bind:class="{active: !isHidden}"
+            v-on:click="activeMenu()"
         >
             <div class="avatar">
                 <img :src="this.$store.getters.get_current_user_info.icon_img" alt />
@@ -78,25 +76,25 @@
                     </svg>
                 </span>
             </p>
-        </div>
-        <div class="menu" role="menu" v-if="!isHidden">
-            <ul class="account-menu">
-                <li class="menu-item" id="profile">
-                    <a @click="openProfile">Profile</a>
-                </li>
-                <li class="menu-item disable-mark" id="personal">
-                    <a>Personal Settings</a>
-                </li>
-                <li class="menu-item" id="account">
-                    <a @click="ShowFormEditRegister">Account Settings</a>
-                </li>
-                <li class="menu-item disable-mark" id="api">
-                    <a>API Setting</a>
-                </li>
-                <li class="menu-item separate-top" id="logout">
-                    <a @click="logout">Logout</a>
-                </li>
-            </ul>
+            <div class="menu" role="menu">
+                <ul class="account-menu">
+                    <li class="menu-item" id="profile">
+                        <a @click="openProfile">Profile</a>
+                    </li>
+                    <li class="menu-item disable-mark" id="personal">
+                        <a>Personal Settings</a>
+                    </li>
+                    <li class="menu-item" id="account">
+                        <a @click="ShowFormEditRegister">Account Settings</a>
+                    </li>
+                    <li class="menu-item disable-mark" id="api">
+                        <a>API Setting</a>
+                    </li>
+                    <li class="menu-item separate-top" id="logout">
+                        <a @click="logout">Logout</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
@@ -117,8 +115,23 @@ export default {
     created() {
         let _user = localStorage.getItem(AppConst.LOCAL_USER);
         if (_user) this.user = JSON.parse(_user);
+        document.addEventListener('click', function(e){
+            var x = document.querySelector('.my-account.active');
+            if(x !== null && e.target.className !== 'my-account active' && e.target.className !== 'name')
+            {
+                x.classList.remove('active');
+            }
+        });
     },
     methods: {
+        activeMenu(){
+            var x = document.querySelector('.my-account');
+            if(x.classList.value.indexOf('active') > -1)
+                x.classList.remove('active');
+            else{
+                x.classList.add('active');
+            }
+        },
         logout() {
             if(!confirm('Do you want to logout?')){
                 return;
@@ -241,6 +254,12 @@ export default {
     border-color: #33455b;
     background-color: #33455b;
 }
+.active .menu{
+    display: block;
+}
+.menu{
+    display: none;
+}
 .avatar {
     height: 32px;
     width: 32px;
@@ -280,8 +299,8 @@ export default {
     box-sizing: border-box;
     position: absolute;
     min-width: 198px;
-    top: 45px;
-    right: 0;
+    top: 43px;
+    right: -2px;
     padding: 1px 0 5px;
     background-color: #33455b;
     border-radius: 0 0 0 5px;

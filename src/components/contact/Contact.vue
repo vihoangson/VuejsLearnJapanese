@@ -111,7 +111,7 @@
                     </div>
                 </div>
             </div>
-            <div class="_cwFWContent" style="height: 600px;">
+            <div class="_cwFWContent" v-bind:style="{height: cwFWContentHeight}">
                 <div class="adminWindowAllList">
                     <div id="_contactInviteMailArea" class="contactInviteMailArea" v-bind:style="{display: contentInviteMailNew.display}">
                         <div v-bind:id="contentInviteMailNew.id" v-bind:class="contentInviteMailNew.class"
@@ -275,7 +275,7 @@
                 </div>
             </div>
 
-            <div class="_cwFWFooter contactInviteMailFooter" style="">
+            <div class="_cwFWFooter contactInviteMailFooter">
                 <div v-bind:key="buttons.send.key" v-bind:class="buttons.send.class" v-bind:role="buttons.send.role"
                      v-bind:style="{display: buttons.send.display}"
                      @click="postInviteByEmail">{{buttons.send.text}}
@@ -314,6 +314,7 @@
                 displayCloseIcon: 'none',
                 individualAdd: 'block',
                 floatWindowHeight: '0px',
+                cwFWContentHeight: '0px',
                 bulkAdd: 'none',
                 marginPopup: '0px',
                 emailInput: '',
@@ -472,7 +473,7 @@
             }
         },
         created() {
-            window.addEventListener('resize', this.handleResize)
+            window.addEventListener('resize', this.handleResizePopup)
             this.handleResizePopup();
         },
         methods: {
@@ -528,7 +529,9 @@
             },
             handleResizePopup() {
                 this.marginPopup = (window.innerWidth*0.15) + 'px';
-                this.floatWindowHeight = window.innerHeight + 'px';
+                this.floatWindowHeight = window.innerHeight - 45 + 'px';
+                this.cwFWContentHeight = window.innerHeight - 176 + 'px';
+                console.log(this.cwFWContentHeight);
             },
             onChangeEmail(object, index) {
                 if (index === 0 && object.text.length === 0) {
@@ -678,7 +681,7 @@
         align-items: center;
         position: relative;
         padding: 0 10px;
-        height: 40px;
+        height: 50px;
         background-color: #f2f2f2;
         border-bottom: 1px solid #b3b3b3;
     }
@@ -729,16 +732,6 @@
         border-left: 1px solid #b3b3b3;
         box-shadow: 0 1px 10px rgba(0, 0, 0, 0.6);
         z-index: -1;
-    }
-
-    .floatWindow__header {
-        display: flex;
-        align-items: center;
-        position: relative;
-        padding: 0 10px;
-        height: 40px;
-        background-color: #f2f2f2;
-        border-bottom: 1px solid #b3b3b3;
     }
 
     .floatWindow__title {
@@ -832,13 +825,13 @@
     }
 
     .contactInviteMailFooter {
-        position: absolute;
         left: 0;
         width: 100%;
         border-top: 1px solid #cccccc;
         background: #f0f0f0 linear-gradient(to bottom, #e6e6e6, #fff) repeat-x;
         text-align: center;
         padding: 10px 0;
+        height: 50px;
     }
 
     .btnPrimary {
@@ -873,16 +866,6 @@
         line-height: 26px;
         cursor: pointer;
         user-select: none;
-    }
-
-    .contactInviteMailFooter {
-        position: absolute;
-        left: 0;
-        width: 100%;
-        border-top: 1px solid #cccccc;
-        background: #f0f0f0 linear-gradient(to bottom, #e6e6e6, #fff) repeat-x;
-        text-align: center;
-        padding: 10px 0;
     }
 
     .btnPrimary:active {
