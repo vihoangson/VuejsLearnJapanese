@@ -85,21 +85,38 @@ export default {
         },
         login(e) {
             e.preventDefault();
+            let isValidForm = true;
             this.errors.login_fail = '';
             this.showLoader = 'visible';
-            if (this.email === '') this.errors.email = '* Userame required!';
+            if (this.email === '') this.errors.email = '* The username is required!';
+            else {
+                this.errors.email = '';
+                let regexEmail = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$/;
+                if (!regexEmail.test(this.email)) {
+                    isValidForm = false;
+                    this.errors.email = '* Email invalid!';
+                }
+            }
 
-            if (this.password === '')
-                this.errors.password = '* Password required!';
+            if (this.password === ''){
+                this.errors.password = '* The password is required!';
+                isValidForm = false;
+            }
+            else this.errors.password = '';
 
             if (!this.recaptchaVerified)
+            {
                 this.errors.pleaseTickRecaptchaMessage =
-                    '* Please tick recaptcha!';
+                '* Please tick recaptcha!';
+                isValidForm = false;
+            }
+            else this.errors.pleaseTickRecaptchaMessage = '';
 
             if (
                 this.email !== '' &&
                 this.password !== '' &&
-                this.recaptchaVerified
+                this.recaptchaVerified &&
+                isValidForm
             ) {
                 let data = {
                     email: this.email,
@@ -107,6 +124,8 @@ export default {
                     only_token: true
                 };
                 this.$store.dispatch('setLoadingPage',true);
+
+                this.errors.login_fail = '';
                 API.POST(ApiConst.LOGIN, data).then(res => {
                     if (res.error_code === 0) {
                         let user = {
