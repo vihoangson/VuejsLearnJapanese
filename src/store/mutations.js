@@ -147,5 +147,7 @@ export default {
         // Remove room in state
         if (idx > -1) state.list_room.splice(idx, 1);
     },
-
+    getWaitingAccept(state, obj){
+        state.number_waiting_accept = obj.number_waiting_accept;
+    }
 };

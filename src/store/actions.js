@@ -1,3 +1,6 @@
+import { API } from '../services/api';
+import { ApiConst } from '../common/ApiConst';
+
 export default {
     setAllUser({ commit }, message) {
         commit('set_all_user', message);
@@ -95,5 +98,11 @@ export default {
     },
     removeRoomById({ commit }, obj) {
         commit('removeRoomById', obj);
+    },
+    getWaitingAccept({commit},obj){
+        let data = [];
+        API.GET(ApiConst.UTILITY_GET_INIT, data).then(res => {
+            commit('getWaitingAccept', {number_waiting_accept: res.data.getWaitAccept});
+        });
     },
 };

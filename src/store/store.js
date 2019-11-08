@@ -33,7 +33,8 @@ export default new Vuex.Store({
         openTaskDisplay: 'none',
         openTaskEditDisplay: 'none',
         list_user_task: [],
-        edit_task_detail: {}
+        edit_task_detail: {},
+        number_waiting_accept:0
     },
     getters,
     mutations,

@@ -25,6 +25,7 @@
         methods:{
             // ACTION APPROVE
             Approve(){
+
                 let requestData = {
                     contact_user_id: this.id
                 };
@@ -66,6 +67,7 @@
                         this.$socket.emit(AppConst.EVENT_MESSAGE.ADD_NEW_ROOM, data2);
 
                         this.$parent.$parent.$parent.contactTabs.find((e)=>{return e.id === '_contactWindowTabWaitForAccept'}).subtext  = '';
+                        this.$store.dispatch('getWaitingAccept');
 
                     }
                     console.log(response);

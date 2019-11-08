@@ -78,4 +78,8 @@ export default {
     get_edit_task_detail: state => {
         return state.edit_task_detail;
     },
+    get_number_waiting_accept: state => {
+        return state.number_waiting_accept;
+    },
+
 };

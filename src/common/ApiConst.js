@@ -50,4 +50,5 @@ export const ApiConst = {
     DELETE_USER_TASK: '/api/v1/task/delete-task',
     UPDATE_USER_TASK: '/api/v1/task/update-user-task',
     CREATE_USER_TASK: '/api/v1/task/create-user-task',
+    UTILITY_GET_INIT: '/api/v1/utilities/get-init-info',
 };
