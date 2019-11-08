@@ -86,6 +86,9 @@ export default {
 
                                 this.$root.$emit('EVENT_BUTTON_'+this.$store.state.UserIdToDelete, {id:123});
 
+                                let roomID = response.data.roomID;
+                                this.$store.dispatch('removeRoomById',roomID);
+
                                 this.$refs.modal.hide();
                                 break;
                             default:

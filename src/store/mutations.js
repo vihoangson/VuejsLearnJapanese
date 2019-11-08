@@ -136,4 +136,16 @@ export default {
     setEditTaskDetail(state, obj) {
         state.edit_task_detail = obj;
     },
+
+    removeRoomById(state, obj) {
+        // Find room by room _id
+        let room = state.list_room.find(function (d) {
+            return d.room_id === obj;
+        })
+        // Get index of room id
+        var idx = state.list_room.indexOf(room);
+        // Remove room in state
+        if (idx > -1) state.list_room.splice(idx, 1);
+    },
+
 };

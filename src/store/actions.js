@@ -93,4 +93,7 @@ export default {
     setEditTaskDetail({ commit }, obj) {
         commit('setEditTaskDetail', obj);
     },
+    removeRoomById({ commit }, obj) {
+        commit('removeRoomById', obj);
+    },
 };
