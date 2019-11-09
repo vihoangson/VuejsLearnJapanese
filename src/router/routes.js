@@ -89,5 +89,23 @@ export default [
                 })
             }
         ]
+    },
+
+    {
+        path: '/admin',
+        component: {
+            template: `
+              <div>
+                <router-view></router-view>
+              </div>
+            `
+        },
+        children: [
+            {
+                path: 'status',
+                name: 'status',
+                component: () => import('@/components/admin/Status')
+            },
+        ]
     }
 ];
