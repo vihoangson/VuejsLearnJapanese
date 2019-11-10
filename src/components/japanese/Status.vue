@@ -1,6 +1,6 @@
 <template>
-    <div class="container mt-5">
-        <button class="btn btn-primary" @click="changeName">Change name</button>
+    <div class="container mt-5 p-4" id="status-component">
+        <button class="btn btn-primary" @click="changeName"><i class="fa fa-bar-chart" aria-hidden="true"></i> Change name</button>
 
         <div class="m-3 alert alert-dark">{{name}}</div>
 
@@ -9,7 +9,7 @@
         </div>
         <div class="row mt-2">
             <div class="col-lg-6">
-                <log-message :name="name" @resetName="name = $event"></log-message>
+                <log-message :name="name" @resetName="name = $event" :resetFn = "changeName"></log-message>
             </div>
             <div class="col-lg-6">
                 <backup-message></backup-message>
@@ -24,8 +24,6 @@
     import StatusMessage from "./admin-block/StatusMessage";
     import LogMessage from "./admin-block/LogMessage";
     import BackupMessage from "./admin-block/BackupMessage";
-    import {API} from "../../services/api";
-    import {ApiConst} from "../../common/ApiConst";
 
     export default {
         name: 'AdminStatus',
@@ -47,10 +45,10 @@
         },
         methods:{
             changeName(){
-                if(this.name === "Min"){
-                    this.name="Max";
+                if(this.name === "Min1"){
+                    this.name="Max1";
                 }else{
-                    this.name="Min";
+                    this.name="Min1";
                 }
 
             }
@@ -75,6 +73,9 @@
     text-align: center;
     font-size: 22px;
 }
+    #status-component{
+        background: #daf0ff;
+    }
 </style>
 
 

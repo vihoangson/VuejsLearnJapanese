@@ -1,6 +1,8 @@
 <template>
     <div>
-        <div @click="handleClick(text.k3)">{{text.k2}}</div>
+        <div @click="handleClick(text.k3)">
+            {{text.k2}}
+        </div>
     </div>
 </template>
 

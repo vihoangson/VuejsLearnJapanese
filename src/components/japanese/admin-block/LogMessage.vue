@@ -1,6 +1,8 @@
 <template>
     <div>
         <div id="log-message">
+
+            <button class="btn btn-danger m-2" @click="resetFn()">Change name in child component</button>
             <button class="btn btn-danger m-2" @click="changName">Change name in child component</button>
             <div class="m-4">{{name}}</div>
             <div class="m-4">{{handleName()}}</div>
@@ -15,7 +17,7 @@
         name: 'Log',
         mixins: [],
         components: {},
-        props:['name'],
+        props:['name','resetFn'],
         methods:{
             changName(){
                 this.$emit('resetName','Reseted !');
@@ -36,6 +38,6 @@
     #log-message{
         background: #1c6989;
         width:100%;
-        height:100px;
+        min-height: 300px;
     }
 </style>

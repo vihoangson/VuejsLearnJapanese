@@ -25,6 +25,6 @@
     #log-message{
         background: #66a300;
         width:100%;
-        height:100px;
+        min-height: 300px;
     }
 </style>
