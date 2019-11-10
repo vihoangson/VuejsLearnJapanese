@@ -81,5 +81,7 @@ export default {
     get_number_waiting_accept: state => {
         return state.number_waiting_accept;
     },
-
+    get_word: state => {
+        return state.word;
+    },
 };

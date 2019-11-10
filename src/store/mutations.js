@@ -149,5 +149,8 @@ export default {
     },
     getWaitingAccept(state, obj){
         state.number_waiting_accept = obj.number_waiting_accept;
+    },
+    setWord(state, obj){
+        state.word = obj.word;
     }
 };

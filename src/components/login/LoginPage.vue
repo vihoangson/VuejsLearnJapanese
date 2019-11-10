@@ -78,7 +78,6 @@ export default {
         };
     },
     methods: {
-
         markRecaptchaAsVerified() {
             this.errors.pleaseTickRecaptchaMessage = '';
             this.recaptchaVerified = true;
