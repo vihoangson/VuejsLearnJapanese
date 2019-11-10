@@ -1,6 +1,7 @@
 <template>
     <div>
         <div id="log-message">
+            <button class="btn btn-danger m-2" @click="changName">Change name in child component</button>
             <div class="m-4">{{name}}</div>
             <div class="m-4">{{handleName()}}</div>
 
@@ -16,6 +17,9 @@
         components: {},
         props:['name'],
         methods:{
+            changName(){
+                this.$emit('resetName','Reseted !');
+            },
             handleName(){
                 return this.name.split("").reverse().join("");
             },
@@ -31,7 +35,7 @@
 <style scoped>
     #log-message{
         background: #1c6989;
-        width:100px;
+        width:100%;
         height:100px;
     }
 </style>

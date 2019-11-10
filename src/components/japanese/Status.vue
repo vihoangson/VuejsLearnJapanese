@@ -9,7 +9,7 @@
         </div>
         <div class="row mt-2">
             <div class="col-lg-6">
-                <log-message :name="name"></log-message>
+                <log-message :name="name" @resetName="name = $event"></log-message>
             </div>
             <div class="col-lg-6">
                 <backup-message></backup-message>

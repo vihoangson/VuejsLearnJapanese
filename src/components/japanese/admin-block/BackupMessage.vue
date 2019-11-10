@@ -24,7 +24,7 @@
 <style scoped>
     #log-message{
         background: #66a300;
-        width:100px;
+        width:100%;
         height:100px;
     }
 </style>
