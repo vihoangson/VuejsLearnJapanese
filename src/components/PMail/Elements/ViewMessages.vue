@@ -28,7 +28,8 @@
             }
         },
         activated() {
-            if(typeof this.data.message.isRead  === 'undefined'){
+            console.log(this.data.message);
+            if(typeof this.data.message.isRead  === 'undefined' || this.data.message.isRead === false){
                 this.data.message.isRead = true;
             }
         },

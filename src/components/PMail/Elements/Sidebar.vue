@@ -12,8 +12,8 @@
 
         <ul class="inbox-nav">
             <li class="active">
-                <a href="#" @click.prevent="navigate('appInbox','Inbox',unreadMessage)">
-                    <i class="fa fa-inbox"></i>Inbox <span class="label label-danger pull-right">{{unreadMessage.length}}</span>
+                <a href="#" @click.prevent="navigate('appInbox','Inbox',inboxMessage    )">
+                    <i class="fa fa-inbox"></i>Inbox <span class="label label-danger pull-right">{{unreadMessage.length}}/{{inboxMessage.length}}</span>
                 </a>
             </li>
 
@@ -59,9 +59,14 @@
             }
         },
         computed:{
+            inboxMessage() {
+                return this.messages.filter(e => {
+                    return e.type === "incoming" &&  e.isDeleted === false;
+                })
+            },
             unreadMessage() {
                 return this.messages.filter(e => {
-                    return e.type === "incoming" && e.isRead === true;
+                    return e.type === "incoming" && e.isRead === false &&  e.isDeleted === false;
                 })
             },
             sentMessage() {
