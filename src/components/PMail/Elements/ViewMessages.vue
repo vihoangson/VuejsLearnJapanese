@@ -1,24 +1,5 @@
 <template>
     <div class="inbox-body">
-        <div class="mail-option">
-            <button class="btn btn-primary" @click="navigateBack">
-                <i class="fa fa-arrow-left" aria-hidden="true"></i>&nbsp; Back
-            </button>
-
-            <button class="btn btn-danger" @click="data.message.isDeleted = true" :disabled="data.message.isDeleted">
-                <i class="fa fa-trash-o"></i>&nbsp; {{ data.message.isDeleted ? 'Deleted' : 'Delete' }}
-            </button>
-
-            <template v-if="typeof data.message.isRead !== 'undefined'">
-                <button class="btn btn-primary" @click="data.message.isRead = false" :disabled="!data.message.isRead">
-                    <i class="fa fa-envelope-open" aria-hidden="true"></i>&nbsp; Mark as unread
-                </button>
-
-                <button class="btn btn-primary" @click="data.message.isRead = true" :disabled="data.message.isRead">
-                    <i class="fa fa-envelope" aria-hidden="true"></i>&nbsp; Mark as read
-                </button>
-            </template>
-        </div>
 
         <p><strong>Date:</strong> {{ data.message.date.fromNow() }}</p>
         <p><strong>From:</strong> {{ data.message.from.name }} <{{ data.message.from.email }}></p>
@@ -40,15 +21,20 @@
 
 <script>
     export default {
-        props:{
-            data:{
-                type:Object,
-                required:true,
+        props: {
+            data: {
+                type: Object,
+                required: true,
+            }
+        },
+        activated() {
+            if(typeof this.data.message.isRead  === 'undefined'){
+                this.data.message.isRead = true;
             }
         },
         filters: {
             formatBytes(bytes) {
-                if (bytes == 0) {
+                if (bytes === 0) {
                     return '0 Bytes';
                 }
 
