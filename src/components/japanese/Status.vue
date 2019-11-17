@@ -15,6 +15,16 @@
                 <backup-message></backup-message>
             </div>
         </div>
+        <hr>
+
+        <button @click.prevent="activeView='Demo2'; bindText=ListCharactor" class="btn btn-primary">Demo2</button>
+        <button @click.prevent="activeView='BackupMessage'; bindText=ListCharactor" class="btn btn-primary">BackupMessage</button>
+
+        <keep-alive>
+            <component :is="activeView" :text = "bindText" ></component>
+        </keep-alive>
+
+
 
     </div>
 </template>
@@ -24,11 +34,13 @@
     import StatusMessage from "./admin-block/StatusMessage";
     import LogMessage from "./admin-block/LogMessage";
     import BackupMessage from "./admin-block/BackupMessage";
-
+import Demo2 from "./admin-block/Demo2";
     export default {
         name: 'AdminStatus',
         data(){
             return {
+                bindText:'textDefault',
+                activeView:'BackupMessage',
                 name:"Max"
             }
         },
@@ -54,6 +66,7 @@
             }
         },
         components: {
+            Demo2,
             StatusMessage,
             LogMessage,
             BackupMessage
