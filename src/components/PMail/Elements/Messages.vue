@@ -22,15 +22,26 @@
 
 
 <script>
-
+    import {eventBusEmail} from "../../../main"
 
     export default {
         props: {
             messages: {
                 type: Object
             }
+        },
+        methods:{
+            openMessage:function(message){
+                eventBusEmail.$emit('changeView',{
+                    tag:'appViewMessages',
+                    title:'View Message',
+                    data:{
+                        message: message
+                    }
+                });
+
+            }
         }
     }
 </script>
-
 

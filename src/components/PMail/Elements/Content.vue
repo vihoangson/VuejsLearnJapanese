@@ -15,6 +15,7 @@
     import Sent from "./Sent";
     import Important from "./Important";
     import Trash from "./Trash";
+    import ViewMessages from "./ViewMessages";
     import {eventBusEmail} from '../../../main';
 
     export default {
@@ -56,7 +57,7 @@
             'appSent': Sent,
             'appImportant': Important,
             'appTrash': Trash,
-
+            'appViewMessages':ViewMessages,
         }
 
     }

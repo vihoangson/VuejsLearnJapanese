@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3>Inbox</h3>
+        <h3>Important</h3>
         <app-messages :messages="incomingMessages"></app-messages>
     </div>
 </template>
