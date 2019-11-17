@@ -2,7 +2,7 @@
     <div>
         <div class="container">
             <div class="mail-box">
-                <app-sidebar></app-sidebar>
+                <app-sidebar :messages="messages"></app-sidebar>
                 <app-content></app-content>
             </div>
 
@@ -14,12 +14,18 @@
 <script>
     import Sidebar from "./Elements/Sidebar";
     import Content from "./Elements/Content";
+    import data from "./data/data";
 
     export default {
+        data() {
+            return {
+                messages: data,
+            }
+        },
         components: {
             'appSidebar': Sidebar,
             'appContent': Content,
-        }
+        },
     }
 </script>
 
