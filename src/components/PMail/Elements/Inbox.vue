@@ -1,6 +1,6 @@
 <template>
     <div>
-        Sidebar
+        <h3>Inbox</h3>
     </div>
 </template>
 

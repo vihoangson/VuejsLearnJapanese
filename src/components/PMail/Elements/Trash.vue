@@ -1,6 +1,6 @@
 <template>
     <div>
-        Sent
+        <h3>Trash</h3>
     </div>
 </template>
 

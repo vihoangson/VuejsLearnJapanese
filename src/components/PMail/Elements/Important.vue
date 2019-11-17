@@ -1,6 +1,6 @@
 <template>
     <div>
-        Important
+        <h3>Important</h3>
     </div>
 </template>
 

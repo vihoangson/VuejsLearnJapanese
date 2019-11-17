@@ -1,5 +1,8 @@
 <template>
     <div id="home">
+        <hr>
+            <div class="text-center"><a href="/mail" class="btn btn-primary"><i class="fas fa-mail-bulk"></i> Feature Mail</a></div>
+        <hr>
         <status></status>
     </div>
 </template>

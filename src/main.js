@@ -38,6 +38,8 @@ new Vue({
 
 const EventBus = new Vue();
 
+export const eventBusEmail = new Vue();
+
 Object.defineProperties(Vue.prototype, {
     $bus: {
         get: function () {

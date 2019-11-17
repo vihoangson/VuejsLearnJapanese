@@ -1,4 +1,5 @@
 export default [
+
     {
         path: '/',
         name: 'home',
@@ -107,5 +108,12 @@ export default [
                 component: () => import('@/components/admin/Status')
             },
         ]
-    }
+    },
+
+    {
+        path: '/mail',
+        name: 'mail',
+        component: () => import('@/components/PMail/Mail.vue')
+    },
+
 ];

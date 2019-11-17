@@ -1,6 +1,6 @@
 <template>
     <div>
-        Content
+        <h3>Sent</h3>
     </div>
 </template>
 
