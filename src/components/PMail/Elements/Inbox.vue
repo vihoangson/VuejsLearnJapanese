@@ -18,7 +18,7 @@
         computed: {
             incomingMessages: function () {
                 return this.data.filter(e => {
-                    return e;
+                    return e.type === 'incoming' && e.isDeleted === false;
                 });
             }
         },
