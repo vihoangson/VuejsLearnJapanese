@@ -12,25 +12,25 @@
 
         <ul class="inbox-nav">
             <li class="active">
-                <a href="#" @click.prevent="navigate('appInbox','Inbox')">
+                <a href="#" @click.prevent="navigate('appInbox','Inbox',unreadMessage)">
                     <i class="fa fa-inbox"></i>Inbox <span class="label label-danger pull-right">{{unreadMessage.length}}</span>
                 </a>
             </li>
 
             <li>
-                <a href="#" @click.prevent="navigate('appSent','Sent')">
+                <a href="#" @click.prevent="navigate('appSent','Sent',sentMessage)">
                     <i class="fa fa-envelope-o"></i>Sent <span class="label label-default pull-right">{{sentMessage.length}}</span>
                 </a>
             </li>
 
             <li>
-                <a href="#" @click.prevent="navigate('appImportant','Important')">
+                <a href="#" @click.prevent="navigate('appImportant','Important',importantMessage)">
                     <i class="fa fa-bookmark-o"></i>Important <span class="label label-warning pull-right">{{importantMessage.length}}</span>
                 </a>
             </li>
 
             <li>
-                <a href="#" @click.prevent="navigate('appTrash','Trash')">
+                <a href="#" @click.prevent="navigate('appTrash','Trash',trashMessage)">
                     <i class=" fa fa-trash-o"></i>Trash <span class="label label-default pull-right">{{trashMessage.length}}</span>
                 </a>
             </li>
@@ -50,10 +50,11 @@
             }
         },
         methods: {
-            navigate(newView, title) {
+            navigate(newView, title, data) {
                 eventBusEmail.$emit('changeView', {
                     tag: newView,
                     title: title,
+                    data: data,
                 })
             }
         },

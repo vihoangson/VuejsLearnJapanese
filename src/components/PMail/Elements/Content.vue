@@ -4,7 +4,7 @@
             <h3>{{currentView.title}}</h3>
         </div>
         <keep-alive>
-            <component :is="currentView.tag"></component>
+            <component :is="currentView.tag" :data="currentView.data"></component>
         </keep-alive>
     </aside>
 </template>
@@ -28,12 +28,19 @@
                 ]
             }
         },
+        props: {
+            messages: {
+                type: Array,
+                required: true,
+            }
+        },
         created() {
             eventBusEmail.$on('changeView', (data) => {
                 let temp = [
                     {
                         tag: data.tag,
                         title: data.title,
+                        data: data.data || {},
                     }
                 ]
                 this.history = temp.concat(this.history.splice(0));
