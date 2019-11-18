@@ -27,7 +27,6 @@ export default {
                 pathname.match('changepass') != null
             ) {
             } else {
-                this.$router.push({ path: 'login' });
             }
         }
     },
