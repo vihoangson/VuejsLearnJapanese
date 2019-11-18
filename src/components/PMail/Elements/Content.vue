@@ -37,6 +37,8 @@
         },
         created() {
             eventBusEmail.$on('changeView', (data) => {
+                console.log("data.data")
+                console.log(data.data)
                 let temp = [
                     {
                         tag: data.tag,
