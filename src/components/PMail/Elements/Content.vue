@@ -50,6 +50,9 @@
         computed: {
             currentView() {
                 return this.history[0]
+            },
+            previousView(){
+                return this.history[1]
             }
         },
         components: {

@@ -1,6 +1,8 @@
 <template>
     <div class="inbox-body">
-
+        <button class="btn btn-primary" @click="eventBack"><i class="fas fa-arrow-left"></i> Back</button>
+        <button class="btn btn-danger" @click="deleteMessage" :disabled="data.message.isDeleted"><i class="fas fa-trash"></i> Delete</button>
+        <hr>
         <p><strong>Date:</strong> {{ data.message.date.fromNow() }}</p>
         <p><strong>From:</strong> {{ data.message.from.name }} <{{ data.message.from.email }}></p>
         <hr>
@@ -20,6 +22,8 @@
 </template>
 
 <script>
+    import {eventBusEmail} from "../../../main";
+
     export default {
         props: {
             data: {
@@ -29,7 +33,7 @@
         },
         activated() {
             console.log(this.data.message);
-            if(typeof this.data.message.isRead  === 'undefined' || this.data.message.isRead === false){
+            if (typeof this.data.message.isRead === 'undefined' || this.data.message.isRead === false) {
                 this.data.message.isRead = true;
             }
         },
@@ -47,6 +51,20 @@
 
                 return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
             }
+        },
+        methods: {
+            eventBack () {
+                let backpage = this.$parent.previousView;
+                eventBusEmail.$emit('changeView',{
+                    tag: backpage.tag,
+                    title: backpage.title,
+                    data: backpage.data,
+                })
+            },
+            deleteMessage(){
+                this.data.message.isDeleted = true;
+            }
+
         }
 
     }
