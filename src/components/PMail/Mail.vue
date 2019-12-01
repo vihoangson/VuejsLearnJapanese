@@ -26,6 +26,10 @@
         },
 
         created(){
+            eventBusEmail.$on('sendMessage',(data) => {
+                let temp = [data.message]
+                this.messages = temp.concat(this.messages.slice(0));
+            });
             eventBusEmail.$on('refeshMessage',() => {
                 let randomIndex = Math.floor(Math.random()*dataRandom.length);
                 let temp = [dataRandom[randomIndex]];

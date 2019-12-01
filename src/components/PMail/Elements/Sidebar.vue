@@ -10,6 +10,10 @@
             </div>
         </div>
 
+
+        <div class="compose-wrapper">
+            <app-compose></app-compose>
+        </div>
         <ul class="inbox-nav">
             <li class="active">
                 <a href="#" @click.prevent="navigate('appInbox','Inbox',inboxMessage    )">
@@ -41,6 +45,7 @@
 
 <script>
     import {eventBusEmail} from '../../../main';
+    import Compose from "./Compose";
 
     export default {
         props:{
@@ -85,7 +90,10 @@
                 })
             },
 
-        }
+        },
+        components:{
+            'appCompose':Compose
+        },
 
     }
 </script>
