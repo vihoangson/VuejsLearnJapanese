@@ -116,4 +116,23 @@ export default [
         component: () => import('@/components/PMail/Mail.vue')
     },
 
+    {
+        path: '/transition',
+        name: 'transition',
+        component: {
+            template: `
+              <div>
+                <router-view></router-view>
+              </div>
+            `
+        },
+        children: [
+            {
+                path: 'case1',
+                name: 'case1',
+                component: () => import('@/components/transitions/transition1.vue')
+            },
+        ]
+
+    },
 ];
