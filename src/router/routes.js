@@ -120,4 +120,9 @@ export default [
         name: 'timeline',
         component: () => import('@/components/timeline/Timeline.vue')
     },
+    {
+        path: '/socket',
+        name: 'socket',
+        component: () => import('@/components/timeline/Socket.vue')
+    },
 ];

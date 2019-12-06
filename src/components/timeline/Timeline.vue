@@ -1,17 +1,19 @@
 <template>
     <div>
         <div>
-            <div id="app">
+            <div class="container">
+
                 <!-- default props -->
                 <vue-slider
                     ref="slider"
                     v-model="value"
                     v-bind="options"
                 ></vue-slider>
-                <h1>{{ value+1 }} Tháng</h1>
+                <div class="text-center"><h1>{{ value+1 }} Tháng</h1></div>
                 <div class="text-center"><img :src="img[value]"></div>
             </div>
         </div>
+        <b-button @click="doSocket">Socket</b-button>
     </div>
 </template>
 
@@ -25,6 +27,7 @@
         name: "Timeline",
         created(){
             this.options.max = this.img.length-1;
+
         },
         data() {
             return {
@@ -114,7 +117,14 @@
         },
         components: {
             'VueSlider': VueSlider
-        }
+        },
+        methods:{
+            doSocket(){
+                alert(123);
+
+                this.$socket.emit('add_channel',{Ok:true})
+            }
+        },
 
     };
 </script>

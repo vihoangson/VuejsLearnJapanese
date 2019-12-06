@@ -93,6 +93,7 @@ export default {
         setAuthenticated(status) {
             this.authenticated = status;
         },
+
         logout() {
             this.authenticated = false;
         }

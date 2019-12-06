@@ -11,6 +11,10 @@ export const SocketService = {
             rooms
         );
     },
+    something:function(e){
+        alert('something');
+        console.log(e);
+    },
     broadcast: function(e) {
         broadcast(this.$store, this.$el, e);
     },
