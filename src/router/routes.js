@@ -115,5 +115,9 @@ export default [
         name: 'mail',
         component: () => import('@/components/PMail/Mail.vue')
     },
-
+    {
+        path: '/timeline',
+        name: 'timeline',
+        component: () => import('@/components/timeline/Timeline.vue')
+    },
 ];
