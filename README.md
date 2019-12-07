@@ -38,3 +38,48 @@ this.$root.$emit('push-notice', {message:'Upload Fail', alert: 'alert-danger'});
 this.$store.dispatch('setLoadingPage',true);
 this.$store.dispatch('setLoadingPage',false);
 ```
+```javascript
+Toast message
+this.$bvToast.toast('up', {
+    title: 'Notice',
+    autoHideDelay: AppConst.timeAutoHideDelay,
+    toaster: 'b-toaster-bottom-right',
+    appendToast: true
+});
+this.$bvToast.toast('up', {
+    title: 'Notice',
+    autoHideDelay: 1000,
+    toaster: 'b-toaster-bottom-right',
+    appendToast: true
+});
+```
+```javascript
+Modal 
+this.$bvModal.msgBoxConfirm('Are you sure?',{
+    title: 'Please Confirm',
+    size: 'sm',
+    buttonSize: 'sm',
+    okVariant: 'danger',
+    okTitle: 'YES',
+    cancelTitle: 'NO',
+    footerClass: 'p-2',
+    hideHeaderClose: false,
+    centered: true
+}).then(e=>{
+    if(e === true){
+        // Do st true
+    }else{
+        // Do st false
+    }
+})
+
+//Listening to modal changes via $root events
+
+this.$root.$on('bv::modal::show', (bvEvent, modalId) => {
+  console.log('Modal is about to be shown', bvEvent, modalId)
+})
+this.$root.$on('bv::modal::hide', (bvEvent, modalId) => {
+  console.log('Modal is about to be hide', bvEvent, modalId)
+})
+```
+

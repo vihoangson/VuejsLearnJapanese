@@ -12,8 +12,12 @@ export const SocketService = {
         );
     },
     something:function(e){
-        alert('something');
-        console.log(e);
+        this.$bvToast.toast(e, {
+            title: 'Notice',
+            autoHideDelay: 7000,
+            toaster: 'b-toaster-bottom-right',
+            appendToast: true
+        });
     },
     broadcast: function(e) {
         broadcast(this.$store, this.$el, e);
