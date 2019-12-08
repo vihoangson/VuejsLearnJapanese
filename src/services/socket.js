@@ -11,14 +11,27 @@ export const SocketService = {
             rooms
         );
     },
+
     something:function(e){
-        this.$bvToast.toast(e, {
+        console.log(e);
+        this.$bvToast.toast('something', {
             title: 'Notice',
             autoHideDelay: 7000,
             toaster: 'b-toaster-bottom-right',
             appendToast: true
         });
     },
+    pushroom:function(e){
+        console.log(e);
+        this.$store.dispatch('setListRoomSocket',e);
+        this.$bvToast.toast('socket.js: method: pushroom', {
+            title: 'Notice',
+            autoHideDelay: 1000,
+            toaster: 'b-toaster-bottom-right',
+            appendToast: true
+        });
+    },
+
     broadcast: function(e) {
         broadcast(this.$store, this.$el, e);
     },

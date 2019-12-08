@@ -152,5 +152,8 @@ export default {
     },
     setWord(state, obj){
         state.word = obj.word;
+    },
+    setListRoomSocket(state, obj){
+        state.listRoomSocket = obj;
     }
 };

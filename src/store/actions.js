@@ -105,6 +105,9 @@ export default {
             commit('getWaitingAccept', {number_waiting_accept: res.data.getWaitAccept});
         });
     },
+    setListRoomSocket({commit},obj) {
+        commit('setListRoomSocket',obj)
+    },
     setWord({commit},obj){
 
         commit('setWord', {word: [

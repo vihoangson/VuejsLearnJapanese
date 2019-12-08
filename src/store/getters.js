@@ -84,4 +84,7 @@ export default {
     get_word: state => {
         return state.word;
     },
+    get_list_room_socket:state=>{
+        return state.listRoomSocket;
+    }
 };
